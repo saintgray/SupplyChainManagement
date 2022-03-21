@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.mng.dao.HomeworkDao">
+
+	<select id="selectCIListCnt" resultType="_int">
+		SELECT COUNT(*)
+		  FROM tb_classinfo CIF 
+    INNER JOIN tb_courselist CLI
+		    ON CIF.class_no = CLI.class_no
+		 WHERE CLI.loginID = #{loginID}
+	</select>
+	
+	<select id="selectClassList" resultType="ClassInfoDto">		 
+		 SELECT CIF.class_no, CIF.class_nm, CIF.loginID, CIF.class_startdate , CIF.class_enddate, CIF.class_type , UI.name
+		  FROM tb_classinfo CIF 
+    INNER JOIN tb_courselist CLI
+		    ON CIF.class_no = CLI.class_no 
+    INNER JOIN tb_userinfo UI
+		    ON CIF.loginID = UI.loginID 
+		 WHERE CLI.loginID = #{loginID}
+	</select>
+	
+	<select id="selectHWListCnt" resultType="_int">
+		SELECT COUNT(*)
+		  FROM tb_homework
+		 WHERE class_no = #{class_No}
+	</select>
+	
+	<select id="selectHomeworkList" resultType="HomeworkDto">
+	        SELECT hw.* , TP.name, TP.class_nm, FU.file_name file_name
+			  FROM tb_homework hw 
+	    INNER JOIN 
+			      (
+			       SELECT UI.name name , CI.class_no class_no, CI.class_nm class_nm
+			         FROM tb_userinfo UI 
+			   INNER JOIN tb_classinfo CI
+			           ON UI.loginID = CI.loginID
+			      ) TP
+			    ON hw.class_no = TP.class_no
+   LEFT OUTER JOIN tb_Fileup FU 
+	            ON hw.no = FU.file_no 
+			 WHERE hw.class_no = #{class_No} 
+		  ORDER BY hw.hw_date DESC
+	</select>
+	
+	<select id="selectHomework" resultType="HomeworkDto">		
+	    SELECT hw.*,FU.file_name file_name  
+		  FROM tb_homework hw
+LEFT OUTER JOIN tb_Fileup FU 
+            ON hw.no = FU.file_no 
+		 WHERE hw_no = #{hw_No}
+	</select>	
+	
+	<insert id="insertFileInfo" parameterType="FileInfoDto">		
+		<selectKey resultType="_int" keyProperty="file_No" order="BEFORE">
+            SELECT IFNULL(MAX(file_no),0) + 1 FROM tb_Fileup 
+        </selectKey> 	
+	 	INSERT 
+	 	  INTO tb_Fileup
+	 	  	   (
+	 	  	   	file_no, file_name, file_title , file_root 	  	   
+	 	  	   )
+	 	VALUES 
+	 		   (
+	 		    #{file_No},#{file_Name},#{file_Title},#{file_Root}
+	 		   )
+	</insert>
+	
+	<insert id="insertHwsubmit" parameterType="HwSubmitDto">
+		INSERT
+		  INTO tb_hwsubmit 
+		VALUES (
+		 		null,#{hw_No},#{class_No},#{loginID},#{hw_Content},
+		 	<if test="no != 0">
+		 		#{no}
+		 	</if>
+		 	<if test="no == 0">
+		 		null
+		 	</if>
+		 		,NOW()	
+				)	
+	</insert>
+	
+	<select id="selectCheckSubmit" resultType="HwSubmitDto" parameterType="HwSubmitDto">
+		SELECT * 
+		  FROM tb_hwsubmit 
+		 WHERE hw_no = #{hw_No} 
+		   AND loginID = #{loginID}
+	</select>
+	
+	<select id="selectFileInfo" resultType="FileInfoDto">
+		SELECT * 
+		  FROM tb_Fileup 
+		 WHERE file_no = #{file_No}
+	</select>
+	
+	<update id="updateFileInfo" parameterType="FileInfoDto">
+		UPDATE tb_Fileup 
+		   SET file_name = #{file_Name}, file_title = #{file_Title}, file_root = #{file_Root} 
+		 WHERE file_no = #{file_No}
+	</update>
+	
+	<update id="updateHwsubmit" parameterType="HwSubmitDto">
+		UPDATE tb_hwsubmit 
+		   SET no = 
+		   	<if test="no != 0">
+		 		#{no},
+		 	</if>
+		 	<if test="no == 0">
+		 		null ,
+		 	</if>
+		 	   hw_content = #{hw_Content} 
+		 WHERE hw_submit_no = #{hw_Submit_No} 
+	</update>
+	
+	<delete id="deleteFileInfo" parameterType="FileInfoDto">
+		DELETE 
+		  FROM tb_Fileup
+		 WHERE file_no = #{file_No}
+	</delete>
+	
+	<delete id="deleteHwsubmit">
+		DELETE 
+		  FROM tb_hwsubmit
+		 WHERE hw_submit_no = #{hw_Submit_No} 
+	</delete>
+	
+	
+	<select id="selectCITListCnt" resultType="_int">
+		SELECT COUNT(*)
+		  FROM tb_classinfo  
+		 WHERE loginID = #{loginID}
+	</select>
+	
+	<select id="selectClassTList" resultType="ClassInfoDto">		 
+		 SELECT CIF.class_no, CIF.class_nm, CIF.loginID, CIF.class_startdate , CIF.class_enddate, CIF.class_type , UI.name
+		  FROM tb_classinfo CIF 
+    INNER JOIN tb_userinfo UI
+		    ON CIF.loginID = UI.loginID 
+		 WHERE CIF.loginID = #{loginID}
+	</select>
+	
+	<insert id="insertHomework" parameterType="HomeworkDto">
+		<selectKey resultType="_int" keyProperty="hw_No" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey> 
+        INSERT
+          INTO tb_homework
+        VALUES (
+        		null,#{class_No},#{hw_Subject},#{hw_Content},
+        	<if test="no != 0">
+		 		#{no},
+		 	</if>
+		 	<if test="no == 0">
+		 		null ,
+		 	</if>
+		 		NOW()
+      		   )
+	</insert>
+
+	<update id="updateHomework" parameterType="HomeworkDto">
+		UPDATE tb_homework 
+		   SET no = 
+		   	<if test="no != 0">
+		 		#{no},
+		 	</if>
+		 	<if test="no == 0">
+		 		null ,
+		 	</if>
+		 	   hw_content = #{hw_Content}, hw_subject = #{hw_Subject} 	 	    
+		 WHERE hw_no = #{hw_No} 
+	</update>
+	
+	<delete id="deleteHomework">
+		DELETE 
+		  FROM tb_homework
+		 WHERE hw_no = #{hw_No} 
+	</delete>
+	
+	<select id="selectHWSubmitListCnt" resultType="_int">
+			
+          SELECT count(*) 
+            FROM tb_homework HW
+      INNER JOIN tb_courselist CL
+              ON HW.class_no = CL.class_no
+      INNER JOIN tb_userinfo UI 
+              ON CL.loginID = UI.loginID 
+ LEFT OUTER JOIN tb_hwsubmit HS
+              ON CL.loginID = HS.loginID
+             AND HW.hw_no = HS.hw_no
+ LEFT OUTER JOIN tb_Fileup FU
+              ON HS.no = FU.file_no 
+           WHERE HW.hw_no = #{hw_No} 
+           
+	</select>
+	
+	<select id="selectHWSubmitList" resultType="HwSubmitInfoDto">
+		  SELECT HW.hw_subject, UI.name,HS.hw_date,FU.file_name,HS.hw_submit_no,FU.file_no
+            FROM tb_homework HW
+      INNER JOIN tb_courselist CL
+              ON HW.class_no = CL.class_no
+      INNER JOIN tb_userinfo UI 
+              ON CL.loginID = UI.loginID 
+ LEFT OUTER JOIN tb_hwsubmit HS
+              ON CL.loginID = HS.loginID
+             AND HW.hw_no = HS.hw_no
+ LEFT OUTER JOIN tb_Fileup FU
+              ON HS.no = FU.file_no 
+           WHERE HW.hw_no = #{hw_No}
+	    ORDER BY HS.hw_date DESC
+	</select>
+	
+	<select id="selectTHwsubmit" resultType="HwSubmitDto">
+			   
+		SELECT * 
+		  FROM tb_hwsubmit 
+		 WHERE hw_submit_no = #{hw_Submit_No} 
+	</select>	
+	
+	
+</mapper>
+
+

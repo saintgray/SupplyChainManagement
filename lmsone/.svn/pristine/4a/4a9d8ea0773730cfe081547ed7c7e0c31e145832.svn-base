@@ -1,0 +1,29 @@
+package kr.happyjob.study.test.controller;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/test/")
+public class TestController {
+
+ // @Autowired
+
+  private final Logger logger = LogManager.getLogger(this.getClass());
+
+  // Get class name for logger
+  private final String className = this.getClass().toString();
+
+  /** 과정 목록 초기 화면 */
+  @RequestMapping("test.do")
+  public String initTest() throws Exception {
+
+    logger.info("+ Start " + className + ".initTest");
+
+    return "test/test";
+  }
+
+
+}

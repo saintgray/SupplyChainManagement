@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.mng.dao.ExamDao">
+
+   <!-- 강의 목록 조회 -->
+	<select id="listClass" resultType="kr.happyjob.study.mng.model.ExamMgtModel">
+		/*kr.happy.study.mng.dao.ExamDao.listClass*/
+		SELECT		
+				class_nm AS classNm
+			 ,	class_startdate AS classStartdate
+			 ,	class_enddate AS classEnddate
+			 ,	class_no AS classNo
+		  FROM	tb_classinfo
+			<if test="(classname != null) and (!classname.equals(''))">
+				WHERE class_nm LIKE CONCAT('%', #{classname}, '%')
+			</if>
+	 ORDER BY	class_enddate DESC, class_no ASC
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 강의 목록 총 개수 조회 -->
+	<select id="countListClass" resultType="int">
+		/*kr.happy.study.mng.dao.ExamDao.countListClass*/
+		SELECT	COUNT(*) AS cnt
+		  FROM	tb_classinfo
+			<if test="(classname != null) and (!classname.equals(''))">
+				WHERE class_nm LIKE CONCAT('%', #{classname}, '%')
+			</if>
+	</select>
+	
+	<!-- 선택한 강의에 등록된 시험 조회 -->
+	<select id="listExam" resultType="kr.happyjob.study.mng.model.ExamMgtModel">
+		/*kr.happy.study.mng.dao.ExamDao.listExam*/
+		SELECT	class_no AS exClassNo
+		 	 ,	q_no AS qNo
+			 ,	q_type AS qType
+			 ,	q_content AS qContent
+			 , 	q_1 AS qOne
+			 ,	q_2 AS qTwo
+			 ,	q_3 AS qThree
+			 ,	q_4 AS qFour
+			 ,	q_solution AS qSolution
+	      FROM	tb_question
+	 	 WHERE	class_no = #{classNo}
+		<if test="type.toString().equals('type_a')">
+			AND q_type = 'A'
+ 		</if>
+ 		<if test="type.toString().equals('type_b')">
+			AND q_type = 'B'
+ 		</if>
+		<if test="type.toString().equals('type_c')">
+			AND q_type = 'C'
+ 		</if>
+			ORDER BY qNo ASC
+		<if test="(pageIndex != null) and (!pageIndex.equals('')) and (pageSize != null) and (!pageSize.equals(''))">	
+			LIMIT #{pageIndex}, #{pageSize}	
+		</if>
+	</select>
+	
+	<!-- 선택한 강의에 등록된 시험 총 개수 및 가장 높은 문항 번호 조회 -->
+	<select id="countMapExam" resultType="map">
+		/*kr.happy.study.mng.dao.ExamDao.countMapExam*/
+		SELECT COUNT(*) AS examCnt 
+			 , IFNULL(MAX(q_no), 0) AS examMaxqNo
+		  FROM	tb_question
+	 	 WHERE	class_no = #{classNo}
+		<if test="type.toString().equals('type_a')">
+			AND q_type = 'A'
+ 		</if>
+ 		<if test="type.toString().equals('type_b')">
+			AND q_type = 'B'
+ 		</if>
+		<if test="type.toString().equals('type_c')">
+			AND q_type = 'C'
+ 		</if>
+	</select>
+	
+	<!-- 문항 상세 조회 -->
+	<select id="selectQuestion" resultType="map">
+		/*kr.happy.study.mng.dao.ExamDao.selectQuestion*/
+		SELECT	class_no AS exClassNo
+		 	 ,	q_no AS qNo
+			 ,	q_type AS qType
+			 ,	q_content AS qContent
+			 , 	q_1 AS qOne
+			 ,	q_2 AS qTwo
+			 ,	q_3 AS qThree
+			 ,	q_4 AS qFour
+			 ,	q_solution AS qSolution
+	      FROM	tb_question
+	 	 WHERE	class_no = #{classNo}
+	 	   AND	q_no = #{qNo}
+	 	   AND	q_type = #{qType}
+	</select>
+	
+	<!-- 응시자 수 조회 -->
+	<select id="chkMemberCnt" resultType="map">
+		/*kr.happy.study.mng.dao.ExamDao.chkMemberCnt*/
+		SELECT	COUNT(DISTINCT loginID) as memberCnt
+	      FROM	tb_answer
+	     WHERE	class_no = #{classNo};
+	</select>
+	
+	<!-- 문항 저장 INSERT -->
+	<insert id="insertQuestion">
+		/*kr.happy.study.mng.dao.ExamDao.insertQuestion*/
+		INSERT INTO tb_question
+		(
+			  class_no, q_1, q_2, q_3, q_4, q_content
+			, q_no, q_solution, q_type
+		)
+		VALUES
+		(
+				#{tmpClassNo}
+			,	#{setOne}
+			,	#{setTwo}
+			,	#{setThree}
+			, 	#{setFour}
+			,	#{setQcontent}
+			,	#{setQno}
+			,	#{setQsolution}
+			,	#{setQtype}
+		)
+	</insert>
+	
+	<!-- 문항 저장 UPDATE -->
+	<update id="updateQuestion">
+		/*kr.happy.study.mng.dao.ExamDao.updateQuestion*/
+		UPDATE tb_question SET
+				q_1 = #{setOne}
+			,	q_2 = #{setTwo}
+			, 	q_3 = #{setThree}
+			,	q_4 = #{setFour}
+			,	q_content = #{setQcontent}
+			,	q_no = #{setQno}
+			,	q_solution = #{setQsolution}	
+			,	q_type = #{setQtype}
+		<if test="setQno != tmpQno">
+			,	q_no = #{setQno}
+ 		</if>
+		WHERE	class_no = #{tmpClassNo}
+		  AND	q_no = #{tmpQno}
+	</update>
+	
+	<!-- 문항 관리 폼 문제 번호 중복 검사 -->
+	<select id="qNoCheck" resultType="int">
+		/*kr.happy.study.mng.dao.ExamDao.qNoCheck*/
+		SELECT	COUNT(1) AS cnt
+		  FROM	tb_question
+		 WHERE	class_no = #{classNo}
+		   AND	q_no = #{qNo}
+		   AND	q_type = #{qType}
+	</select>
+	
+	<!-- 문항 삭제 DELETE -->
+	<delete id="deleteQuestion">
+		/*kr.happy.study.mng.dao.ExamDao.deleteQuestion*/
+		DELETE FROM tb_question WHERE class_no = #{classNo} AND q_no = #{qNo} AND q_type = #{qType}
+	</delete>
+	
+</mapper>

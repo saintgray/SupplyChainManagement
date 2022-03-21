@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.mng.dao.ExamMemberDao">
+
+   <!-- 시험 목록 조회 -->
+	<select id="listExam2" resultType="map">
+		/*kr.happy.study.mng.dao.ExamMemberDao.listExam2*/
+		SELECT	ci.class_no AS classNo
+			 ,	ci.class_nm AS classNm
+			 ,	ci.class_startdate AS classStartdate
+			 ,	ci.class_enddate AS classEnddate
+			 ,	IF(ci.class_enddate >= NOW(), '진행중', '종료') AS state
+			 ,	(SELECT COUNT(loginID)
+            	   FROM tb_courselist
+           		  WHERE class_no = classNo) AS totCnt
+			 ,	(SELECT COUNT(loginID)
+           		   FROM tb_courselist
+           		  WHERE class_no = classNo
+           		  	AND score IS NOT NULL) AS doCnt
+			 ,	(SELECT totCnt - doCnt) AS doNotCnt
+		  FROM	tb_classinfo ci
+			<where>
+				<if test='(userType eq "D")'>
+					AND ci.loginID = #{loginID}
+				</if>
+				<if test="(examname != null) and (!examname.equals(''))">
+					AND ci.class_nm LIKE CONCAT('%', #{examname}, '%')
+				</if>
+				<if test="(searchKey != null) and (!searchKey.equals('')) and (!searchKey.equals('key_all'))">
+					<choose>
+						<when test="searchKey eq 'key_pro'.toString()">
+							AND ci.class_enddate <![CDATA[>=]]>NOW()
+						</when>
+						<when test="searchKey eq 'key_end'.toString()">
+							AND ci.class_enddate <![CDATA[<]]>NOW()
+						</when>
+						<otherwise>
+							AND 1=2
+						</otherwise>
+					</choose>
+ 				</if>
+			</where>
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 시험 목록 총 개수 조회 -->
+	<select id="countListExam2" resultType="int">
+		/*kr.happy.study.mng.dao.ExamMemberDao.countListExam2*/
+		SELECT	COUNT(*) AS cnt
+		  FROM	tb_classinfo
+			<where>
+				<if test='(userType eq "D")'>
+					AND loginID = #{loginID}
+				</if>
+				<if test="(examname != null) and (!examname.equals(''))">
+					AND class_nm LIKE CONCAT('%', #{examname}, '%')
+				</if>
+				<if test="(searchKey != null) and (!searchKey.equals('')) and (!searchKey.equals('key_all'))">
+					<choose>
+						<when test="searchKey eq 'key_pro'.toString()">
+							AND class_enddate <![CDATA[>=]]>NOW()
+						</when>
+						<when test="searchKey eq 'key_end'.toString()">
+							AND class_enddate <![CDATA[<]]>NOW()
+						</when>
+						<otherwise>
+							AND 1=2
+						</otherwise>
+					</choose>
+ 				</if>
+			</where>
+	</select>
+	
+	<!-- 선택한 시험의 응시자 목록 조회 -->
+	<select id="listExamMember" resultType="map">
+		/*kr.happy.study.mng.dao.ExamMemberDao.listExamMember*/
+		SELECT	ui.name AS name
+			 ,	IF(cl.q_type IS NULL, '미응시', cl.q_type) AS examType
+			 ,	IF(cl.score IS NULL, '미응시', cl.score) AS score
+			 ,	IF((SELECT examType) = '미응시', '미응시', IF(cl.score <![CDATA[ >= ]]> 60, 'PASS', 'FAIL')) AS state
+	      FROM	tb_courselist cl INNER JOIN tb_userinfo ui ON cl.loginID = ui.loginID
+	 	 WHERE	class_no = #{classNo}
+	  ORDER BY	examType ASC, score DESC  
+		<if test="(pageIndex != null) and (!pageIndex.equals('')) and (pageSize != null) and (!pageSize.equals(''))">	
+			LIMIT #{pageIndex}, #{pageSize}	
+		</if>
+	</select>
+	
+	<!-- 선택한 시험의 응시자 수 조회 -->
+	<select id="countListExamMember" resultType="int">
+		/*kr.happy.study.mng.dao.ExamMemberDao.countListExamMember*/
+		SELECT	COUNT(*) AS examMemCnt
+		  FROM	tb_courselist cl INNER JOIN tb_userinfo ui ON cl.loginID = ui.loginID
+	 	 WHERE	class_no = #{classNo}
+	</select>
+	
+	<!-- 미출제 시험 유형 확인 -->
+	<select id="typeNullChk" resultType="map">
+		/*kr.happy.study.mng.dao.ExamMemberDao.typeNullChk*/
+		SELECT	IF((SELECT GROUP_CONCAT(q_solution) FROM tb_question WHERE class_no = #{classNo} AND q_type = 'A' ORDER BY q_no ASC) IS NULL, 'F', 'T') AS isNullA
+			 ,	IF((SELECT GROUP_CONCAT(q_solution) FROM tb_question WHERE class_no = #{classNo} AND q_type = 'B' ORDER BY q_no ASC) IS NULL, 'F', 'T') AS isNullB
+			 ,	IF((SELECT GROUP_CONCAT(q_solution) FROM tb_question WHERE class_no = #{classNo} AND q_type = 'C' ORDER BY q_no ASC) IS NULL, 'F', 'T') AS isNullC;
+	</select>
+	
+	
+</mapper>

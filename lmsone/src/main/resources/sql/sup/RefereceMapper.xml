@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.sup.dao.ReferenceDao">
+   
+   <!-- 강의계획서 리스트 -->
+   <select id="selectReferenceList" resultType="java.util.Map">
+ 		/*kr.happyjob.study.sup.ReferenceListDao.selectReferenceList*/
+   
+	SELECT tb.board_nm
+	     , tb.board_date
+	     , tui.name
+	     , tb.board_no
+	     , tb.board_content
+	  FROM tb_board tb 
+	  JOIN tb_userinfo tui 
+	    ON tb.loginID = tui.loginID 
+	   AND tb.board_type = '2'
+	   <where>
+		   <if test="(!startDate.equals('') and (!endDate.equals('')))">
+			 	AND (tb.board_date between #{startDate} AND #{endDate})
+			</if>
+			<if test="(searchKey eq '0'.toString())">
+				AND tb.board_nm LIKE CONCAT('%',#{searchContent},'%')
+			</if>
+			<if test="(searchKey eq '1'.toString())">	
+				AND tui.name LIKE CONCAT('%',#{searchContent},'%')
+			</if>
+			<if test="(searchKey eq '2'.toString())">	
+				AND tb.board_content LIKE CONCAT('%',#{searchContent},'%')
+			</if>
+		</where>
+		 ORDER BY tb.board_date DESC
+		 LIMIT #{pageIndex}, #{pageSize}
+		 
+	</select>
+	
+	<!-- 강의계획서 몇명? -->
+	<select id="countReferenceList" resultType="int">
+	/*kr.happyjob.study.sup.ClassPlanDao.countReferenceList*/
+ 
+	 SELECT count(board_no) 
+	   FROM tb_board tb
+	   JOIN tb_userinfo tui 
+	     ON tb.loginID = tui.loginID 
+	    AND board_type = '2'
+	<where>
+		<if test="(!startDate.equals('') and (!endDate.equals('')))">
+		 	AND (tb.board_date between #{startDate} AND #{endDate})
+		</if>
+		<if test="(searchKey eq '0'.toString())">
+			AND tb.board_nm LIKE CONCAT('%',#{searchContent},'%')
+		</if>
+		<if test="(searchKey eq '1'.toString())">	
+			AND tui.name LIKE CONCAT('%',#{searchContent},'%')
+		</if>
+		<if test="(searchKey eq '2'.toString())">	
+			AND tb.board_content LIKE CONCAT('%',#{searchContent},'%')
+		</if>	
+	</where>	 
+	</select>
+	
+	
+		<!-- 자료실 파일 저장 -->
+	<insert id="registerReferenceBoardFile" useGeneratedKeys ="true"  keyProperty="file_no" parameterType="java.util.Map">
+		/*kr.happy.study.sup.dao.ReferenceDao.registerReferenceBoardFile*/
+
+		INSERT 
+		  INTO tb_Fileup
+			 (
+
+			   file_name
+			 , file_title
+			 , file_root
+			 , file_size
+			 )
+		VALUES
+			 (
+
+			   #{fileInfo.file_nm}
+			 , #{refer_title}
+			 , #{fileInfo.file_loc}
+			 , #{fileInfo.file_size}
+			 )
+	</insert>
+	
+	<!-- 자료실 게시물 저장 : -->
+	<insert id="registerReferenceBoardContent" parameterType="java.util.Map">
+		/*kr.happy.study.sup.dao.ReferenceDao.registerReferenceBoardContent*/
+
+		INSERT
+		  INTO tb_board
+		     (
+
+		       loginID
+		     , board_nm
+		     , board_content
+		     , board_date
+		     , board_type
+		     , no
+		     )
+	    VALUES
+		     (
+		       
+		       #{loginID}
+		     , #{referenceContent}
+		     , #{referenceSubject}
+		     , NOW()
+		     , '2'
+		     , #{file_no}
+		     )
+	</insert>
+
+	<select id= "selectDownloadFile" resultType="java.util.Map" parameterType="java.util.Map">
+	/*kr.happy.study.sup.dao.ReferenceDao.selectDownloadFile*/
+	SELECT tf.file_root, tf.file_name  
+	  FROM tb_board tb
+	  JOIN tb_Fileup tf 
+	    ON tf.file_no = tb.no 
+	 WHERE board_no = #{board_no} 
+	</select>
+	<select id = "referenceDtlInfo"  resultType="java.util.Map" parameterType="java.util.Map">
+	/*kr.happy.study.sup.dao.ReferenceDao.referenceDtlInfo*/
+	SELECT tb.board_no
+		 , tb.board_nm
+		 , tb.board_content
+		 , tb.no
+		 , tb.loginID
+		 , tf.file_name
+	  FROM tb_board tb
+	  JOIN tb_Fileup tf 
+	    ON tf.file_no = tb.no 
+	 WHERE board_no = #{board_no} 
+	</select>
+	<!-- 파일삭제하기 위한 파일정보 -->
+	<select id = "selectReferenceFileInfo" resultType="java.util.Map" parameterType="java.util.Map">
+	SELECT tf.file_no as file_no
+		 , tf.file_root as file_root
+		 , tf.file_name as file_name
+	  FROM tb_board tb 
+	  JOIN tb_Fileup tf 
+	    ON tb.no = tf.file_no 
+	 WHERE board_no = #{board_no}
+	</select>
+	
+	
+	<!--수정해야함  -->
+	<update id="updateReferenceBoardFile" parameterType="java.util.Map">
+	/*kr.happy.study.sup.dao.ReferenceDao.updateReferenceBoardFile*/
+
+		 UPDATE tb_Fileup 
+		    SET
+			    file_name = #{fileInfo.file_nm}
+			  , file_title = #{refer_title}
+		 	  , file_root = #{fileInfo.file_loc}
+		 	  , file_size = #{fileInfo.file_size}
+		
+		  WHERE file_no = #{file_no}
+	</update>
+	
+	<update id = "updateReferenceBoardContent" parameterType="java.util.Map">
+	/*kr.happy.study.sup.dao.ReferenceDao.updateReferenceBoardFile*/
+	UPDATE tb_board 
+	   SET
+	       board_nm = #{referenceSubject}
+		 , board_content = #{referenceContent}
+     WHERE board_no = #{board_no}
+	
+	</update>
+	
+	<delete id="deleteReferenceBoardContent" parameterType="java.util.Map">
+	DELETE 
+	  FROM tb_board
+	 WHERE board_no = #{board_no}
+	</delete>
+	<delete id="deleteReferenceBoardFile" parameterType="java.util.Map">
+	DELETE 
+	  FROM tb_Fileup 
+	 WHERE file_no = #{file_no}
+	</delete>
+</mapper>
+

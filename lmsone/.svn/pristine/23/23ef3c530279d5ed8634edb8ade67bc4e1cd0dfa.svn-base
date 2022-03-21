@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.tmg.dao.TeacherListDao">
+   
+   <!-- 강사 리스트 -->
+   <select id="selectTeacherList" resultType="java.util.Map">
+	/*kr.happyjob.study.tmg.dao.TeacherListDao.selectTeacherList*/
+	SELECT name
+		 , loginID
+		 , password
+		 , tel
+		 , reg_date 
+	  FROM tb_userinfo 
+	 WHERE user_type = 'D' and delete_yn = 'n'
+	 	<if test="(!teacherName.equals(''))">
+			AND name LIKE CONCAT('%',#{teacherName},'%')	 
+	 	</if>
+	 	<if test="(!startDate.equals('') and (!endDate.equals('')))">
+			AND reg_date BETWEEN #{startDate} and #{endDate}
+	  	</if>
+		
+	 LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 강사 몇명? -->
+	<select id="countTeacher" resultType="int">
+	/*kr.happyjob.study.tmg.dao.TeacherListDao.selectTeacherList*/
+	SELECT COUNT(loginID)
+	  FROM tb_userinfo 
+	 WHERE user_type = 'D' and delete_yn = 'n'
+	 <if test="(!teacherName.equals(''))">
+			AND name LIKE CONCAT('%',#{teacherName},'%')	 
+	 </if>
+	 <if test="(!startDate.equals('') and (!endDate.equals('')))">
+			AND reg_date BETWEEN #{startDate} and #{endDate}
+	 </if>
+	 
+	</select>
+	
+	<select id="teacherDtlInfo" resultType="java.util.Map">
+	SELECT 
+		   loginID
+	     , user_type
+	     , password
+	     , name
+	     , gender
+	     , tel
+	     , SUBSTRING_INDEX(tel,'-', 1) as tel1
+         , SUBSTRING_INDEX( SUBSTRING_INDEX(tel,'-', 2),'-', -1) as tel2
+         , SUBSTRING_INDEX(tel,'-', -1) as tel3
+	     , zipcd
+	     , addr
+	     , dtl_addr
+	     , birth
+	     , email
+	     , SUBSTRING_INDEX(email,'@', 1)  as user_email
+         , SUBSTRING_INDEX(email,'@', -1) as user_email2
+		 , join_yn
+		 , reg_date
+	 FROM  tb_userinfo 
+	WHERE  loginID =#{loginID}
+	</select>
+	
+
+
+
+</mapper>
+
