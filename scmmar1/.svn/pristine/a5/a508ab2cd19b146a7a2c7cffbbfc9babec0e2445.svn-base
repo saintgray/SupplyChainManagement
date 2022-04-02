@@ -1,5 +1,0 @@
-package kr.happyjob.study.ged.service;
-
-public class SalesStatusServicelmpl implements SelesStatusService{
-
-}
