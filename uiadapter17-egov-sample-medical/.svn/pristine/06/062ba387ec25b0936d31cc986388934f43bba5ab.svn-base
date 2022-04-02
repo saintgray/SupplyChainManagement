@@ -1,0 +1,467 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Main" width="1010" height="580" titletext="New Form" onload="main_onload" visible="true">
+    <Layouts>
+      <Layout height="580" mobileorientation="landscape" width="1010">
+        <Div id="cbo_ID" taborder="0" text="전체" left="6" top="10" width="994" height="570">
+          <Layouts>
+            <Layout>
+              <Grid id="noticeList" taborder="0" left="10" top="46" width="954" height="214" binddataset="ds_Notice" autosizebandtype="body" autoenter="key" oncellclick="noticeList_onclick">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="48" band="left"/>
+                      <Column size="635"/>
+                      <Column size="270"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="NO"/>
+                      <Cell col="1" text="제목"/>
+                      <Cell col="2" text="작성일"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:noti_code" textAlign="center"/>
+                      <Cell col="1" text="bind:noti_name" textAlign="center"/>
+                      <Cell col="2" text="bind:noti_date" displaytype="date" edittype="date"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Static id="Static00" taborder="1" text="NOTICE" left="10" top="15" width="74" height="30" cssclass="sta_WF_SubTitle" font="bold 15pt/normal &quot;Arial&quot;" onclick="cbo_ID_Static00_onclick"/>
+              <Div id="proSearchDiv" taborder="2" left="11" top="300" width="953" height="115" border="1px solid" text="">
+                <Layouts>
+                  <Layout>
+                    <ImageViewer id="img00" taborder="0" text="img00" left="29" top="13" width="93" height="86" onclick="cbo_ID_proSearchDiv_img00_onclick" image="URL(&quot;_resource_\_theme_\default\images\다음.png&quot;)" maxwidth="93" minwidth="" maxheight="86" minheight="" stretch="fit"/>
+                    <ImageViewer id="img01" taborder="1" text="img00" left="292" top="13" width="92" height="86" onclick="cbo_ID_proSearchDiv_img01_onclick" image="URL(&quot;_resource_\_theme_\default\images\넥슨.png&quot;)" stretch="fit"/>
+                    <ImageViewer id="img02" taborder="2" text="img00" left="162" top="13" width="92" height="86" onclick="cbo_ID_proSearchDiv_img02_onclick" image="URL(&quot;_resource_\_theme_\default\images\네이버.png&quot;)" minwidth="" minheight="" fittocontents="none" stretch="fit"/>
+                    <ImageViewer id="img03" taborder="3" text="img00" left="426" top="13" width="92" height="86" onclick="cbo_ID_proSearchDiv_img03_onclick" image="URL(&quot;_resource_\_theme_\default\images\lol.jpg&quot;)" stretch="fit"/>
+                    <ImageViewer id="img04" taborder="4" text="img00" left="562" top="13" width="92" height="86" onclick="cbo_ID_proSearchDiv_img04_onclick" image="URL(&quot;_resource_\_theme_\default\images\배그.png&quot;)" stretch="fit"/>
+                    <ImageViewer id="img05" taborder="5" text="img00" left="696" top="13" width="92" height="86" onclick="cbo_ID_proSearchDiv_img05_onclick" image="URL(&quot;_resource_\_theme_\default\images\메이플.jpg&quot;)" stretch="fit"/>
+                    <ImageViewer id="img06" taborder="6" text="img00" left="826" top="13" width="86" height="86" onclick="cbo_ID_proSearchDiv_img06_onclick" image="URL(&quot;_resource_\_theme_\default\images\카트.png&quot;)" imagealign="center" stretch="fit"/>
+                  </Layout>
+                </Layouts>
+              </Div>
+            </Layout>
+          </Layouts>
+          <InitValue/>
+        </Div>
+        <Static id="Static01" taborder="1" text="검색조건" left="10" top="-242" width="74" height="16" cssclass="sta_WF_SubTitle"/>
+        <Combo id="cboCDchoice" taborder="2" text="전체" left="66" top="-245" width="88" height="23" value="" index="0" innerdataset="ds_cdChoice" codecolumn="cbo_cdID" datacolumn="cbo_cdName" onitemchanged="Div00_cboCDchoice_onitemchanged"/>
+        <Edit id="edt_Keyword" taborder="3" left="255" top="-245" width="157" height="23" canchange="div_detail_edt_name_canchange" onchanged="cbo_ID_edt_Keyword_onchanged"/>
+        <Button id="btn_Dcode_add" taborder="4" text="추가" left="820" top="-185" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="Div00_btn_Gcode_plus_onclick" visible="false"/>
+        <Button id="btn_Dcode_del" taborder="5" text="삭제" left="914" top="-186" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Gcode_del_onclick" visible="false"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		ComcodeList.xfdl
+*  @Creator 		이미혜
+*  @CreateDate 	2019.09.19
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+*  2019.09.11        	이미혜 	            최초 생성(그룹코드 CRUD작성)
+*******************************************************************************
+*  2019.09.20			이미혜 	   			상세코드CRUD작성
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+var noti_code;
+var noti_name;
+var noti_date;
+
+
+//화면 로드시 => 공지사항, 프로젝트 리스트 뿌리기
+this.main_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	
+	//공지사항 리스트
+	this.noticeList();
+	
+};
+
+
+
+/*****************공지사항 list Transaction**********************/
+this.noticeList=function()
+{
+	var strSvcId = "noticeList";
+	var strSvcUrl = "noticeList.do";
+	var inData = "";
+	var outData = "ds_Notice=ds_Notice";
+	var strArg = "";
+	var callBackFnc = "fnCallback";
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+}
+
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+ 		case "noticeList":
+	
+ 		break;
+ 	
+		}
+};
+
+/************************************************************************
+* 웹 연결
+*************************************************************************/
+
+
+this.cbo_ID_proSearchDiv_img00_onclick = function(obj:nexacro.ImageViewer,e:nexacro.ClickEventInfo)
+{
+
+    var sURL = "www.daum.net";
+	this.browser(sURL);
+	//this.WebBrowser00.set_url(sURL);
+	
+};
+
+this.cbo_ID_proSearchDiv_img02_onclick = function(obj:nexacro.ImageViewer,e:nexacro.ClickEventInfo)
+{
+
+    var sURL = "www.naver.com";
+	this.browser1(sURL);
+	//this.WebBrowser00.set_url(sURL);
+	
+};
+
+this.cbo_ID_proSearchDiv_img01_onclick = function(obj:nexacro.ImageViewer,e:nexacro.ClickEventInfo)
+{
+
+    var sURL = "www.nexon.com";
+	this.browser2(sURL);
+	//this.WebBrowser00.set_url(sURL);
+	
+};
+
+this.cbo_ID_proSearchDiv_img03_onclick = function(obj:nexacro.ImageViewer,e:nexacro.ClickEventInfo)
+{
+
+    var sURL = "https://kr.leagueoflegends.com/ko-kr/";
+	this.browser3(sURL);
+	//this.WebBrowser00.set_url(sURL);
+	
+};
+
+this.cbo_ID_proSearchDiv_img04_onclick = function(obj:nexacro.ImageViewer,e:nexacro.ClickEventInfo)
+{
+
+    var sURL = "https://pubg.game.daum.net/pubg/index.daum";
+	this.browser4(sURL);
+	//this.WebBrowser00.set_url(sURL);
+	
+};
+
+this.cbo_ID_proSearchDiv_img05_onclick = function(obj:nexacro.ImageViewer,e:nexacro.ClickEventInfo)
+{
+
+    var sURL = "https://maplestory.nexon.com/Home/Main";
+	this.browser5(sURL);
+	//this.WebBrowser00.set_url(sURL);
+	
+};
+
+this.cbo_ID_proSearchDiv_img06_onclick = function(obj:nexacro.ImageViewer,e:nexacro.ClickEventInfo)
+{
+
+    var sURL = "http://kart.nexon.com/events/2020/0611/Event.aspx";
+	this.browser6(sURL);
+	//this.WebBrowser00.set_url(sURL);
+	
+};
+
+this.browser = function(sURL)
+{
+	var nW = 860;
+	var nH = 650;
+  
+	var objApp = nexacro.getApplication();
+	var nLeft = (objApp.mainframe.width  / 2) - Math.round(nW / 2);
+	var nTop  = (objApp.mainframe.height / 2) - Math.round(nH / 2) ;		
+
+	nLeft = system.clientToScreenX(this, nLeft);
+	nTop  = system.clientToScreenY(this, nTop);
+
+	var sOpenStyle = "dragmovetype=all"
+//				   + " openalign='center middle'"
+				   + " resizable=true"
+				   + " titletext=Modeless"
+				   + " showtitlebar=true"
+				   + " showstatusbar=false";
+				   
+	alert("sURL : " + sURL);			   
+				   
+	var objParam = {param1:sURL};
+				  
+	nexacro.open("chf_popup3"
+			   , "main::Webpopup.xfdl"
+			   , this.getOwnerFrame()
+			   , objParam
+			   , sOpenStyle
+			   , nLeft
+			   , nTop
+			   , nW
+			   , nH
+			   , this);
+};
+
+this.browser1 = function(sURL)
+{
+	var nW = 860;
+	var nH = 650;
+  
+	var objApp = nexacro.getApplication();
+	var nLeft = (objApp.mainframe.width  / 2) - Math.round(nW / 2);
+	var nTop  = (objApp.mainframe.height / 2) - Math.round(nH / 2) ;		
+
+	nLeft = system.clientToScreenX(this, nLeft);
+	nTop  = system.clientToScreenY(this, nTop);
+
+	var sOpenStyle = "dragmovetype=all"
+//				   + " openalign='center middle'"
+				   + " resizable=true"
+				   + " titletext=Modeless"
+				   + " showtitlebar=true"
+				   + " showstatusbar=false";
+				   
+	alert("sURL : " + sURL);			   
+				   
+	var objParam = {param1:sURL};
+				  
+	nexacro.open("chf_popup3"
+			   , "main::Webpopup.xfdl"
+			   , this.getOwnerFrame()
+			   , objParam
+			   , sOpenStyle
+			   , nLeft
+			   , nTop
+			   , nW
+			   , nH
+			   , this);
+};
+
+this.browser2 = function(sURL)
+{
+	var nW = 860;
+	var nH = 650;
+  
+	var objApp = nexacro.getApplication();
+	var nLeft = (objApp.mainframe.width  / 2) - Math.round(nW / 2);
+	var nTop  = (objApp.mainframe.height / 2) - Math.round(nH / 2) ;		
+
+	nLeft = system.clientToScreenX(this, nLeft);
+	nTop  = system.clientToScreenY(this, nTop);
+
+	var sOpenStyle = "dragmovetype=all"
+//				   + " openalign='center middle'"
+				   + " resizable=true"
+				   + " titletext=Modeless"
+				   + " showtitlebar=true"
+				   + " showstatusbar=false";
+				   
+	alert("sURL : " + sURL);			   
+				   
+	var objParam = {param1:sURL};
+				  
+	nexacro.open("chf_popup3"
+			   , "main::Webpopup.xfdl"
+			   , this.getOwnerFrame()
+			   , objParam
+			   , sOpenStyle
+			   , nLeft
+			   , nTop
+			   , nW
+			   , nH
+			   , this);
+};
+
+this.browser3 = function(sURL)
+{
+	var nW = 860;
+	var nH = 650;
+  
+	var objApp = nexacro.getApplication();
+	var nLeft = (objApp.mainframe.width  / 2) - Math.round(nW / 2);
+	var nTop  = (objApp.mainframe.height / 2) - Math.round(nH / 2) ;		
+
+	nLeft = system.clientToScreenX(this, nLeft);
+	nTop  = system.clientToScreenY(this, nTop);
+
+	var sOpenStyle = "dragmovetype=all"
+//				   + " openalign='center middle'"
+				   + " resizable=true"
+				   + " titletext=Modeless"
+				   + " showtitlebar=true"
+				   + " showstatusbar=false";
+				   
+	alert("sURL : " + sURL);			   
+				   
+	var objParam = {param1:sURL};
+				  
+	nexacro.open("chf_popup3"
+			   , "main::Webpopup.xfdl"
+			   , this.getOwnerFrame()
+			   , objParam
+			   , sOpenStyle
+			   , nLeft
+			   , nTop
+			   , nW
+			   , nH
+			   , this);
+};
+
+this.browser4 = function(sURL)
+{
+	var nW = 860;
+	var nH = 650;
+  
+	var objApp = nexacro.getApplication();
+	var nLeft = (objApp.mainframe.width  / 2) - Math.round(nW / 2);
+	var nTop  = (objApp.mainframe.height / 2) - Math.round(nH / 2) ;		
+
+	nLeft = system.clientToScreenX(this, nLeft);
+	nTop  = system.clientToScreenY(this, nTop);
+
+	var sOpenStyle = "dragmovetype=all"
+//				   + " openalign='center middle'"
+				   + " resizable=true"
+				   + " titletext=Modeless"
+				   + " showtitlebar=true"
+				   + " showstatusbar=false";
+				   
+	alert("sURL : " + sURL);			   
+				   
+	var objParam = {param1:sURL};
+				  
+	nexacro.open("chf_popup3"
+			   , "main::Webpopup.xfdl"
+			   , this.getOwnerFrame()
+			   , objParam
+			   , sOpenStyle
+			   , nLeft
+			   , nTop
+			   , nW
+			   , nH
+			   , this);
+};
+
+this.browser5 = function(sURL)
+{
+	var nW = 860;
+	var nH = 650;
+  
+	var objApp = nexacro.getApplication();
+	var nLeft = (objApp.mainframe.width  / 2) - Math.round(nW / 2);
+	var nTop  = (objApp.mainframe.height / 2) - Math.round(nH / 2) ;		
+
+	nLeft = system.clientToScreenX(this, nLeft);
+	nTop  = system.clientToScreenY(this, nTop);
+
+	var sOpenStyle = "dragmovetype=all"
+//				   + " openalign='center middle'"
+				   + " resizable=true"
+				   + " titletext=Modeless"
+				   + " showtitlebar=true"
+				   + " showstatusbar=false";
+				   
+	alert("sURL : " + sURL);			   
+				   
+	var objParam = {param1:sURL};
+				  
+	nexacro.open("chf_popup3"
+			   , "main::Webpopup.xfdl"
+			   , this.getOwnerFrame()
+			   , objParam
+			   , sOpenStyle
+			   , nLeft
+			   , nTop
+			   , nW
+			   , nH
+			   , this);
+};
+
+this.browser6 = function(sURL)
+{
+	var nW = 860;
+	var nH = 650;
+  
+	var objApp = nexacro.getApplication();
+	var nLeft = (objApp.mainframe.width  / 2) - Math.round(nW / 2);
+	var nTop  = (objApp.mainframe.height / 2) - Math.round(nH / 2) ;		
+
+	nLeft = system.clientToScreenX(this, nLeft);
+	nTop  = system.clientToScreenY(this, nTop);
+
+	var sOpenStyle = "dragmovetype=all"
+//				   + " openalign='center middle'"
+				   + " resizable=true"
+				   + " titletext=Modeless"
+				   + " showtitlebar=true"
+				   + " showstatusbar=false";
+				   
+	alert("sURL : " + sURL);			   
+				   
+	var objParam = {param1:sURL};
+				  
+	nexacro.open("chf_popup3"
+			   , "main::Webpopup.xfdl"
+			   , this.getOwnerFrame()
+			   , objParam
+			   , sOpenStyle
+			   , nLeft
+			   , nTop
+			   , nW
+			   , nH
+			   , this);
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_Notice">
+        <ColumnInfo>
+          <Column id="noti_code" type="STRING" size="256"/>
+          <Column id="noti_name" type="STRING" size="256"/>
+          <Column id="noti_date" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <InitValue>
+      <Combo id="cboCDchoice" innerdataset="ds_cdChoice" datacolumn="cbo_cdName" codecolumn="cbo_cdID"/>
+    </InitValue>
+    <Bind>
+      <BindItem id="item0" compid="cbo_ID.form.noticeList" propid="binddataset" datasetid="ds_Notice" columnid=""/>
+    </Bind>
+  </Form>
+</FDL>

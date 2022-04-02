@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Main" width="1010" height="580" titletext="New Form" onload="main_onload" visible="true">
+    <Layouts>
+      <Layout height="580" mobileorientation="landscape" width="1010">
+        <Static id="Static01" taborder="0" text="검색조건" left="10" top="-242" width="74" height="16" cssclass="sta_WF_SubTitle"/>
+        <Combo id="cboCDchoice" taborder="1" text="전체" left="66" top="-245" width="88" height="23" value="" index="0" innerdataset="ds_cdChoice" codecolumn="cbo_cdID" datacolumn="cbo_cdName" onitemchanged="Div00_cboCDchoice_onitemchanged"/>
+        <Edit id="edt_Keyword" taborder="2" left="255" top="-245" width="157" height="23" canchange="div_detail_edt_name_canchange" onchanged="cbo_ID_edt_Keyword_onchanged"/>
+        <Button id="btn_Dcode_add" taborder="3" text="추가" left="820" top="-185" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="Div00_btn_Gcode_plus_onclick" visible="false"/>
+        <Button id="btn_Dcode_del" taborder="4" text="삭제" left="914" top="-186" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Gcode_del_onclick" visible="false"/>
+        <Static id="sta00" taborder="5" text="메인 페이지" left="78" top="86" width="595" height="123" font="72px/normal &quot;Gulim&quot;"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		Main.xfdl
+*  @Creator 		이미혜
+*  @CreateDate 	2019.09.19
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+*  2019.09.11        	이미혜 	            최초 생성(그룹코드 CRUD작성)
+*******************************************************************************
+*  2019.09.20			이미혜 	   			상세코드CRUD작성
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+
+
+
+//화면 로드시
+this.main_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	
+
+	
+};
+
+
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+
+]]></Script>
+    <Objects>
+      <Dataset id="ds_Notice">
+        <ColumnInfo>
+          <Column id="noti_code" type="STRING" size="256"/>
+          <Column id="noti_name" type="STRING" size="256"/>
+          <Column id="noti_date" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <InitValue>
+      <Combo id="cboCDchoice" innerdataset="ds_cdChoice" datacolumn="cbo_cdName" codecolumn="cbo_cdID"/>
+    </InitValue>
+  </Form>
+</FDL>

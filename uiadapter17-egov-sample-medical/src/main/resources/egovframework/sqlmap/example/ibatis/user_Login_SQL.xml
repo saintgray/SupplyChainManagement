@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="user">
+
+    <typeAlias  alias="loginVO" type="com.nexacro.sample.vo.LoginVO"/>
+
+<!-- Sample resultObject -->
+    <resultMap id="user" class="loginVO">
+        <result property="id" column="LOGINID" />
+        <result property="usertype" column="USER_TYPE" />
+        <result property="userName" column="NAME" />
+    </resultMap>
+    
+ 	<select id="user.login" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+             SELECT
+	                loginID AS id
+	               ,password AS pw
+	               ,user_type AS usertype
+	               ,name AS  userName
+            FROM tb_userinfo  
+            WHERE loginID = #id#
+	          AND password = #password#
+    </select>
+      
+ 	<select id="user.loginvo" parameterClass="MAP" resultMap="user">
+             SELECT
+	                loginID AS LOGINID
+	               ,user_type AS USER_TYPE
+	               ,name AS NAME
+            FROM tb_userinfo  
+            WHERE loginID = #id#
+	          AND password = #password#
+    </select>    
+    
+    <update id="user.start" parameterClass="MAP"> 
+    		UPDATE tb_userinfo
+    		SET use_yn = 'y'
+    		WHERE loginID = #userId#
+    </update>
+    
+    <update id="user.end" parameterClass="MAP"> 
+    		UPDATE tb_userinfo
+    		SET use_yn = 'n'
+    		WHERE loginID = #userId#
+    </update>
+</sqlMap>

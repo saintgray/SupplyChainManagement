@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="UseList2" width="1280" height="720" titletext="결제정보" onload="useList_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Div id="cbo_ID" taborder="0" text="전체" left="6" top="10" width="994" height="440">
+          <Layouts>
+            <Layout>
+              <Grid id="gUseList" taborder="0" left="14" top="178" width="500" height="500" binddataset="ds_useList" oncellclick="List_oncellclick" autosizebandtype="body" autoenter="key">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="48" band="left"/>
+                      <Column size="80"/>
+                      <Column size="80"/>
+                      <Column size="80"/>
+                      <Column size="80"/>
+                      <Column size="80"/>
+                      <Column size="80"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="아이디"/>
+                      <Cell col="1" text="이용일자"/>
+                      <Cell col="2" text="PC번호"/>
+                      <Cell col="3" text="총사용시간"/>
+                      <Cell col="4" text="PC방비"/>
+                      <Cell col="5" text="FOOD비"/>
+                      <Cell col="6" text="합계금액"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:loginId"/>
+                      <Cell col="1" text="bind:using_day" displaytype="text" edittype="none"/>
+                      <Cell col="2" text="bind:pc_no"/>
+                      <Cell col="3" text="bind:total_time"/>
+                      <Cell col="4" text="bind:pc_fee"/>
+                      <Cell col="5" text="bind:goods_fee"/>
+                      <Cell col="6" text="bind:total_fee"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="useList_seachBtn" taborder="1" text="검색" top="80" width="50" height="50" right="480" onclick="useList_seachBtn"/>
+              <Edit id="edt02" taborder="2" left="184" top="87" width="42" height="37" text="~" border="px none" readonly="true" value="~" textAlign="center" padding="0px 2px 0px 0px"/>
+              <Calendar id="useList_cal1" taborder="3" left="14" top="80" width="150" height="50" onchanged="cbo_ID_useList_cal1_onchanged"/>
+              <Calendar id="useList_cal2" taborder="4" left="254" top="80" width="150" height="50"/>
+            </Layout>
+          </Layouts>
+          <InitValue/>
+        </Div>
+        <Static id="Static01" taborder="1" text="검색조건" left="10" top="-242" width="74" height="16" cssclass="sta_WF_SubTitle"/>
+        <Combo id="cboCDchoice" taborder="2" text="전체" left="66" top="-245" width="88" height="23" value="" index="0" innerdataset="ds_cdChoice" codecolumn="cbo_cdID" datacolumn="cbo_cdName" onitemchanged="Div00_cboCDchoice_onitemchanged"/>
+        <Edit id="edt_Keyword" taborder="3" left="255" top="-245" width="157" height="23" canchange="div_detail_edt_name_canchange" onchanged="cbo_ID_edt_Keyword_onchanged"/>
+        <Button id="btn_Dcode_add" taborder="4" text="추가" left="820" top="-185" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="Div00_btn_Gcode_plus_onclick" visible="false"/>
+        <Button id="btn_Dcode_del" taborder="5" text="삭제" left="914" top="-186" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Gcode_del_onclick" visible="false"/>
+        <Static id="staName" taborder="6" text="운영자" top="40" width="90" height="22" right="1030" font="bold 10pt &quot;맑은 고딕&quot;" onclick="staName_onclick" textAlign="left"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_useList">
+        <ColumnInfo>
+          <Column id="using_start_time" type="DATE" size="256"/>
+          <Column id="pc_no" type="INT" size="256"/>
+          <Column id="total_time" type="INT" size="256"/>
+          <Column id="pc_fee" type="INT" size="256"/>
+          <Column id="goods_fee" type="INT" size="256"/>
+          <Column id="total_fee" type="INT" size="256"/>
+          <Column id="loginId" type="STRING" size="256"/>
+          <Column id="using_day" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_cal">
+        <ColumnInfo>
+          <Column id="useList_cal1" type="STRING" size="256"/>
+          <Column id="useList_cal2" type="STRING" size="256"/>
+          <Column id="loginID" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[this.objApp;
+var useList_cal1;
+var useList_cal2;
+var loginID
+
+this.useList_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	loginID = nexacro.getEnvironmentVariable("gvUserId");
+	trace("아이디~~~"+loginID);
+	trace("useList_onload");
+	this.objApp = nexacro.getApplication();
+	///trace("test1"+test1);
+	//trace("test2"+test2);
+	this.useListOnload();
+	
+};
+
+this.useListOnload= function() 
+{
+	var strSvcId    = "useListOnload";
+	var strSvcUrl   = "useListOnload.do";
+	var inData      = ""; //실제이름 = 받을때 이름
+	var outData     = "ds_useList=ds_useList";
+	var strArg      = "loginID="+loginID;
+	var callBackFnc = "fnCallback";
+
+	//alert(this.ds_Search.saveXML());
+	//alert(this.ds_ResultGroupCD.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						nDataType); // 통신방법 정의 [생략가능]
+};
+
+this.useList_seachBtn = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.useList();
+};
+this.useList = function() 
+{		
+	//trace("useList~");
+    //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "useList";
+	var strSvcUrl   = "useList.do";
+	var inData      = "ds_cal=ds_cal"; //실제이름 = 받을때 이름
+	var outData     = "ds_useList=ds_useList";
+	var strArg      = "loginID="+loginID;
+	var callBackFnc = "fnCallback";
+
+	//alert(this.ds_Search.saveXML());
+	//alert(this.ds_ResultGroupCD.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						nDataType); // 통신방법 정의 [생략가능]
+	
+
+	}
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "useList":
+		    alert(this.ds_useList.getRowCount() + " 건이 조회 되었습니다.");
+		break;
+		case "useListOnload":
+		    alert("기본값 오늘부터 한달전 "+this.ds_useList.getRowCount() + " 건이 조회.");
+		break;
+	}
+};
+var gUseList;
+ this.gUseList = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+  {
+  	//e.row의 인덱스값,그리드에 해당 줄
+ 	
+  	gUseList=this.ds_useList.getColumn(this.ds_useList.rowposition, "gUseList")
+ 	trace("gUseList~~"+gUseList);
+ 	//alert("클릭그룹코드==="+this.ds_ResultGroupCD.getColumn(this.ds_ResultGroupCD.rowposition, "group_code"));
+ 	//alert("cdID클릭 했을때 ======"+cdID);
+	
+//	this.dCodeList();
+  };
+
+this.List_oncellclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{ 	
+	//var using_start_time= this.ds_useList.getColumn(this.ds_useList.rowposition,"using_start_time");
+	var using_day= this.ds_useList.getColumn(this.ds_useList.rowposition,"using_day");
+	var listRow=this.ds_useList.rowposition;
+	trace("using_day : " + using_day);
+	trace("listRow : " + listRow);
+		//this.title=this.dsList.getColumn(listRow,"title");
+		//this.contents=this.dsList.getColumn(listRow,"contents");
+	
+	this.useList_popUp();
+	
+};
+
+this.useList_popUp=function(){
+
+	var objChildFrame =new ChildFrame();
+	objChildFrame.init("PayInfo"
+						,0
+						,0
+						,750
+						,400
+						,null
+						,null
+						, "user_charge::PayInfo.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+    objChildFrame.set_openalign("center middle");
+    objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+	var loginId = this.ds_useList.getColumn(this.ds_useList.rowposition,"loginId");
+	var using_day = this.ds_useList.getColumn(this.ds_useList.rowposition,"using_day");
+	//trace("=================================================> " + No + " : " + this.dsList.getColumn(this.dsList.rowposition,"No"));
+	//trace(this.dsList.saveXML());
+	trace("loginId-_- "+loginId);
+	trace("using_day-_-"+using_day);
+	var objParam={param1:loginId
+				 ,param2:this.objParam
+				 ,param3:using_day};
+
+	trace("objParam~ "+objParam);
+	objChildFrame.showModal(this.getOwnerFrame()
+                          , objParam
+                          , this
+                          , "PayInfo");
+};
+this.cbo_ID_useList_cal1_onchanged = function(obj:nexacro.Calendar,e:nexacro.ChangeEventInfo)
+{
+	
+};
+]]></Script>
+    <InitValue>
+      <Combo id="cboCDchoice" innerdataset="ds_cdChoice" datacolumn="cbo_cdName" codecolumn="cbo_cdID"/>
+    </InitValue>
+    <Bind>
+      <BindItem id="item0" compid="cbo_ID.form.useList_cal1" propid="value" datasetid="ds_cal" columnid="useList_cal1"/>
+      <BindItem id="item1" compid="cbo_ID.form.useList_cal2" propid="value" datasetid="ds_cal" columnid="useList_cal2"/>
+    </Bind>
+  </Form>
+</FDL>

@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="crudtest" width="1280" height="720" titletext="New Form">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Grid id="grd00" taborder="0" left="32" top="40" width="418" height="180" binddataset="dstest">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="82"/>
+                <Column size="80"/>
+                <Column size="251"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="번호"/>
+                <Cell col="1" text="작성자"/>
+                <Cell col="2" text="내용"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:no"/>
+                <Cell col="1" text="bind:id"/>
+                <Cell col="2" text="bind:con"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btn00" taborder="1" text="조회" left="473" top="40" width="97" height="30" onclick="btn00_onclick"/>
+        <Button id="btn01" taborder="2" text="삭제" left="473" top="80" width="97" height="31" onclick="btn01_onclick"/>
+        <Button id="btn02" taborder="3" text="수정" left="473" top="121" width="97" height="31" onclick="btn02_onclick"/>
+        <Button id="btn03" taborder="4" text="추가" left="473" top="162" width="97" height="31" onclick="btn03_onclick"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsss">
+        <ColumnInfo>
+          <Column id="no" type="STRING" size="256"/>
+          <Column id="id" type="STRING" size="256"/>
+          <Column id="con" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[
+var strSvcId    = "";
+var strSvcUrl   = "";
+var inData      = "";
+var outData     = "";
+
+//조회
+this.btn00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	strSvcId    = "testselect";
+	strSvcUrl   = "selectcrud.do";
+	inData      = "dstest=dstest";
+	outData     = "dstest=dstest";
+	this.fntest();
+};
+
+//삭제
+this.btn01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	//this.dstest.deleteRow(this.grd00.currentrow);
+	nexacro.Application.dstest.deleteRow(this.grd00.currentrow);
+	strSvcId    = "testdelete";
+	strSvcUrl   = "updatecrud.do";
+	inData      = "dstest=dstest:u";
+	outData     = "";
+	this.fntest();
+};
+
+//추가
+this.btn03_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	//this.dstest.addRow();
+	nexacro.Application.dstest.addRow();
+	var objChildFrame = new ChildFrame();
+	objChildFrame.init("chf_popup2"
+	                  , 0
+					  , 0
+					  , 400
+					  , 350
+					  , null
+					  , null
+					  , "sample::writetest.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+	objChildFrame.set_openalign("center middle");
+	objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.showModal();
+};
+
+
+this.btn04_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+// 	if(this.edt00.value == null){
+// 		alert("번호를 입력해 주세요.");
+// 		return;
+// 	}
+// 	if(this.edt01.value == null){
+// 		alert("작성자를 입력해 주세요.");
+// 		return;
+// 	}
+// 	if(this.edt02.value == null){
+// 		alert("내용을 입력해 주세요.");
+// 		return;
+// 	}
+// 	strSvcId    = "testinsert";
+// 	strSvcUrl   = "updatecrud.do";
+// 	inData      = "dstest=dstest:u";
+// 	outData     = "";
+// 	this.fntest();
+};
+
+this.btn02_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+// 	strSvcId    = "testupdate";
+// 	strSvcUrl   = "updatecrud.do";
+// 	inData      = "dstest=dstest:u";
+// 	outData     = "";
+// 	this.fntest();
+	var objChildFrame = new ChildFrame();
+	objChildFrame.init("chf_popup1"
+	                  , 0
+					  , 0
+					  , 400
+					  , 350
+					  , null
+					  , null
+					  , "sample::updatetest.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+	objChildFrame.set_openalign("center middle");
+	objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.showModal();
+};
+
+this.fntest = function() 
+{	
+    //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	//alert("edId : " + this.dsSearch.getColumn("USER_ID") + " edPw : " + this.dsSearch.getColumn("USER_PASSWORD"));
+	//alert(this.dsSearch.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( 		strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+								
+								
+}	
+ 
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	trace(svcID);
+	
+	if(svcID == "testdelete"){
+		alert("삭제성공");
+	}
+	if(svcID == "testinsert"){
+		alert("추가성공");
+	}
+	if(svcID == "testupdate"){
+		alert("수정성공");
+	}
+};]]></Script>
+  </Form>
+</FDL>

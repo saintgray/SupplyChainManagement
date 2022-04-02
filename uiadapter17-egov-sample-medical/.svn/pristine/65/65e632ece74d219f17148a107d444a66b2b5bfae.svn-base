@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="cdList" width="430" height="300" titletext="New Form" onload="cdList_onload" visible="true">
+    <Layouts>
+      <Layout height="300" mobileorientation="landscape" width="430">
+        <Static id="Static01" taborder="0" text="검색조건" left="10" top="-242" width="74" height="16" cssclass="sta_WF_SubTitle"/>
+        <Combo id="cboCDchoice" taborder="1" text="전체" left="66" top="-245" width="88" height="23" value="" index="0" innerdataset="ds_cdChoice" codecolumn="cbo_cdID" datacolumn="cbo_cdName" onitemchanged="Div00_cboCDchoice_onitemchanged"/>
+        <Edit id="edt_Keyword" taborder="2" left="255" top="-245" width="157" height="23" canchange="div_detail_edt_name_canchange" onchanged="cbo_ID_edt_Keyword_onchanged"/>
+        <Button id="btn_Dcode_add" taborder="3" text="추가" left="820" top="-185" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="Div00_btn_Gcode_plus_onclick" visible="false"/>
+        <Button id="btn_Dcode_del" taborder="4" text="삭제" left="914" top="-186" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Gcode_del_onclick" visible="false"/>
+        <Static id="Static00" taborder="5" text="검색조건" left="51" top="25" width="74" height="30" cssclass="sta_WF_SubTitle" font="10pt/normal &quot;Arial&quot;"/>
+        <Combo id="cboCDchoice00" taborder="6" text="전체" left="137" top="22" width="88" height="33" value="" index="0" innerdataset="ds_cdChoice" codecolumn="cbo_cdID" datacolumn="cbo_cdName" onitemchanged="Div00_cboCDchoice_onitemchanged"/>
+        <Grid id="grd00" taborder="7" left="48" top="13" width="343" height="224" binddataset="ds_child">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="111"/>
+                <Column size="115"/>
+                <Column size="115"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="상품평"/>
+                <Cell col="1" text="가격"/>
+                <Cell col="2" text="수량"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:goods_name"/>
+                <Cell col="1" text="bind:sale_p"/>
+                <Cell col="2" text="bind:sale_q" displaytype="mask" edittype="mask" maskeditformat="#,###"/>
+              </Band>
+              <Band id="summary">
+                <Cell colspan="2" text="expr:&quot;총 &quot;+dataset.getRowCount()+&quot;개 메뉴&quot;"/>
+                <Cell col="2" text="expr:dataset.getSum(&quot;sale_p&quot;)" displaytype="number"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btn_payment" taborder="8" text="결제" left="48" top="250" width="120" height="31" onclick="btn_order_onclick"/>
+        <Button id="btn_cancel" taborder="9" text="취소" left="271" top="250" width="120" height="31" onclick="btn_cancel_onclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName       ComcodeList.xfdl
+*  @Creator       이미혜
+*  @CreateDate    2019.09.19
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version       1.0
+*  @Outline       
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date                Modifier            Description
+*******************************************************************************
+*  2019.09.11           이미혜                최초 생성(그룹코드 CRUD작성)
+*******************************************************************************
+*  2019.09.20         이미혜                상세코드CRUD작성
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+
+
+/************************************************************************************************
+ * User 함수 영역
+ ************************************************************************************************/
+//그룹코드 리스트
+this.cdList_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	
+};
+]]></Script>
+    <Objects/>
+    <InitValue>
+      <Combo id="cboCDchoice" innerdataset="ds_cdChoice" datacolumn="cbo_cdName" codecolumn="cbo_cdID"/>
+      <Combo id="cboCDchoice00" innerdataset="ds_cdChoice" datacolumn="cbo_cdName" codecolumn="cbo_cdID"/>
+    </InitValue>
+    <Bind>
+      <BindItem id="item0" compid="cboCDchoice00" propid="value" datasetid="ds_Search" columnid="searchkey"/>
+    </Bind>
+  </Form>
+</FDL>

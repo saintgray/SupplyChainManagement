@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_sample_LargeDataDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_sample_SampleDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_sample_UserDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/user_Login_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/user_Register_cf_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/user_using_cf.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/common_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_testDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/cop_Mng_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_sample_AdminDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/user_Mng_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_ProjectDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/admin_room_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_QnA_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_sample_BoardDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_sample_NoticeDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_sample_PersonListDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/notice_Mng_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_sample_OrderDAO_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/EgovSample_Sample_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/nexacro_Notice_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/admin_list_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/manager_usermng_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/GoodsMgr_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/use_List_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/use_payInfo_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/example/ibatis/admin_statistics_SQL.xml"/>
+</sqlMapConfig>

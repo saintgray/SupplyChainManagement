@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="project">
+<!--프로젝트 List  -->
+<select id="project.ProjectList" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+	SELECT UI.loginID
+		  ,PI.workarea
+		  ,PI.work_type
+		  ,PI.industry_type
+		  ,PI.reg_date
+		  ,PI.receive_to_date
+		  ,UI.name
+		  ,PI.project_name
+		  ,PI.projectId
+		  ,PI.com_name
+		  ,PI.use_yn
+		  ,UI.user_type
+	FROM tb_userinfo UI,tb_project_info PI
+	WHERE UI.loginID = PI.regId
+	<dynamic>
+		<isEqual prepend="AND" property="user_type" compareValue="C">
+					UI.loginID=#loginID#
+		</isEqual>				
+			<isNotNull prepend="AND" property="area">
+					PI.workarea=#area#
+			</isNotNull>
+			<isNotNull prepend="AND" property="work_type">
+					PI.work_type=#work_type#			
+			</isNotNull>
+			<isNotNull prepend="AND" property="industry_type">
+					PI.industry_type=#industry_type#
+			</isNotNull>
+	</dynamic>
+</select>
+
+
+
+<!-- **************************************프로젝트 신규 등록**************************************************-->
+<insert id="project.projectInsert" parameterClass="Map" >
+ 	<selectKey resultClass="String" keyProperty="projectId">
+		  SELECT CONCAT(LPAD(CONCAT(CAST(SUBSTR(IFNULL(MAX(projectId),'0000000000'),1,10) as unsigned) + 1),10,'0'),'_',#loginID#) as projectId
+   			FROM tb_project_info
+   		   WHERE regId like CONCAT('%', #loginID#)
+	</selectKey>   
+	INSERT INTO tb_project_info(projectId
+							   ,project_name
+							   ,workarea
+							   ,workarea_dtl
+							   ,work_type
+							   ,industry_type
+							   ,low
+							   ,middle
+							   ,high
+							   ,special
+							   ,work_fr_date
+							   ,work_to_date
+							   ,receive_fr_date
+							   ,receive_to_date
+							   ,note
+							   ,option_order
+							   ,notice
+							   ,device_yn
+							   ,meal_yn
+							   ,room_yn
+							   ,interview_type
+							   ,regId
+							   ,reg_date
+							   ,use_yn
+							   ,com_name
+							   ,sw
+                      )	VALUES (
+                                #projectId#
+							   ,#project_name#
+							   ,#workarea#
+							   ,#workarea_dtl#
+							   ,#work_type#
+							   ,#industry_type#
+							   ,#low#
+							   ,#middle#
+							   ,#high#
+							   ,#special#
+							   ,#work_fr_date#
+							   ,#work_to_date#
+							   ,#receive_fr_date#
+							   ,#receive_to_date#
+							   ,#note#
+							   ,#option_order#
+							   ,#notice#
+							   ,#device_yn#
+							   ,#meal_yn#
+							   ,#room_yn#
+							   ,#interview_type#
+							   ,#loginID#
+							   ,now()
+							   ,#Y#
+							   ,#com_name#
+							   ,#sw#
+					)		
+</insert>
+
+ 
+ <insert id="project.projectSkillInsert" parameterClass="Map">
+ 	<selectKey resultClass="String" keyProperty="projectId">
+		  SELECT MAX(projectId)
+   			FROM tb_project_info
+   		   WHERE regId like CONCAT('%', #loginID#)
+	</selectKey>  
+		 	INSERT INTO tb_project_skill
+		 		   ( projectId
+		 		    ,skill_code
+		 	 )VALUES(
+		 		     #projectId#
+		 		    ,#skill_code#)
+ </insert>
+
+<update id="project.projectINFOUpdate" parameterClass="Map" >
+	UPDATE tb_project_info
+	   SET project_name = #project_name#
+	   	  ,workarea=#workarea#
+	   	  ,workarea_dtl=#workarea_dtl#
+	   	  ,work_type=#work_type#
+	   	  ,industry_type=#industry_type#
+	   	  ,low=#low#
+	   	  ,middle=#middle#
+	   	  ,high=#high#
+	   	  ,special=#special#
+	   	  ,work_fr_date=#work_fr_date#
+	   	  ,work_to_date=#work_to_date#
+	   	  ,receive_fr_date=#receive_fr_date#
+	   	  ,receive_to_date=#receive_to_date#
+	   	  ,note=#note#
+	   	  ,option_order=#option_order#
+	   	  ,notice=#notice#
+	   	  ,device_yn=#device_yn#
+	   	  ,meal_yn=#meal_yn#
+	   	  ,room_yn=#room_yn#
+	   	  ,interview_type=#interview_type#
+	   	  ,update_date=now()
+	   	  ,com_name=#com_name#
+	   	  ,use_yn=#Y#
+	   	  ,updateId=#loginID#
+	   	  ,sw=#sw#
+	 WHERE projectId=#projectId#  	  
+</update>
+
+
+
+ <delete id="project.projectSkilldelete" parameterClass="Map">
+ 	DELETE FROM tb_project_skill
+ 	 WHERE projectId=#projectId# 
+ </delete>
+
+ <insert id="project.projectSkillUpdate" parameterClass="Map">
+ 	INSERT INTO tb_project_skill
+ 		    (projectId
+ 		    ,skill_code
+ 	)VALUES(
+ 		    #projectId#
+ 		   ,#skill_code#)
+ </insert>
+ 
+<!-- *******************프로젝트 상세정보*********************** -->
+
+<select id="project.projectINFO" parameterClass="String" resultClass="java.util.HashMap" remapResults="true">
+		SELECT
+			   projectId
+			  ,project_name
+			  ,workarea
+			  ,workarea_dtl
+			  ,work_type
+			  ,industry_type
+			  ,low
+			  ,middle
+			  ,high
+			  ,special
+			  ,work_fr_date
+			  ,work_to_date
+			  ,receive_fr_date
+			  ,receive_to_date
+			  ,note
+			  ,device_yn
+			  ,meal_yn
+			  ,room_yn
+			  ,interview_type
+			  ,regId
+			  ,reg_date
+			  ,use_yn
+			  ,com_name
+			  ,option_order 
+			  ,sw
+			  ,notice
+		FROM tb_project_info
+  	   WHERE projectId=#projectId#
+</select>
+ 
+ <select id="project.projectSkill" parameterClass="String" resultClass="java.util.HashMap" remapResults="true">
+ 		SELECT 
+ 			   projectId
+ 			  ,skill_code 
+ 		 FROM tb_project_skill 
+ 		WHERE projectId=#projectId#
+  </select>
+ 
+ <insert id="Prj_aid_insert" parameterClass="Map">
+ 		INSERT INTO tb_aid_info
+ 							  (loginId
+ 							  ,projectId
+ 							  ,aid_date
+ 					  )VALUES(
+ 							  #loginId#
+ 							 ,#projectId#
+ 							 ,now()
+ 							 )
+ 
+ </insert>
+
+
+<!-- 한결추가 -->
+
+<!-- 회사가 등록한 프로젝트 정보list -->
+ <select id="project.CoProjectList" parameterClass="String" resultClass="java.util.HashMap" remapResults="true">
+	SELECT *
+	FROM tb_project_info
+	WHERE regId = #loginID#
+</select>
+
+<!-- 회사가 등록한 프로젝트명, 마감일, 지원자 수 -->
+ <select id="project.CoAppProjectList" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+	select pi.project_name, pi.receive_to_date, count(*) appCount, pi.projectId
+	from tb_aid_info ai, tb_project_info pi
+	where ai.projectId = pi.projectId
+	<dynamic>				
+			<isNotNull prepend="AND" property="loginID">
+					pi.regId=#loginID#
+			</isNotNull>
+			<isNotNull prepend="AND" property="project_keyword">
+					pi.project_name like CONCAT('%',#project_keyword#,'%')
+			</isNotNull>
+			<isNotNull prepend="AND" property="reg_to_date1">
+				<isNotNull property="reg_to_date2">
+					pi.receive_to_date between #reg_to_date1# and #reg_to_date2#
+				</isNotNull>
+			</isNotNull>
+	</dynamic> 
+	group by ai.projectId
+</select>
+ 
+<!-- 일반회원이 지원한 프로젝트list -->
+ <select id="project.AidProjectList" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+	select pi.project_name, pi.com_name, ai.aid_date, pi.projectId
+	FROM tb_aid_info ai, tb_project_info pi
+	where ai.projectId = pi.projectId
+	and ai.loginId=#loginID#
+	<dynamic>				
+			<isNotNull prepend="AND" property="com_keyword">
+					pi.com_name like CONCAT('%',#com_keyword#,'%')
+			</isNotNull>
+			<isNotNull prepend="AND" property="reg_to_date1">
+				<isNotNull property="reg_to_date2">
+					ai.aid_date between #reg_to_date1# and #reg_to_date2#
+				</isNotNull>
+			</isNotNull>
+	</dynamic> 
+</select> 
+
+<!-- 프로젝트 지원자list -->
+ <select id="project.AidUserList" parameterClass="String" resultClass="java.util.HashMap" remapResults="true">
+select  loginId, name, title, workarea, grade, GROUP_CONCAT(skill_code SEPARATOR ',') skill
+from (
+       select  ai.loginId, ui.name, uc.title ,CONCAT(uc.workarea1,' / ',uc.workarea2,' / ',uc.workarea3) workarea, ui.grade, us.skill_code
+         FROM tb_aid_info ai
+         join tb_userInfo ui on ai.loginId = ui.loginID
+         LEFT outer join tb_user_career uc on uc.loginId = ai.loginId 
+         LEFT outer join tb_user_skill us on us.loginId = ai.loginId
+        WHERE ai.projectId=#projectId#
+     ) ll
+group by loginId, name, title, workarea, grade
+</select> 
+
+<!-- 프로젝트 지원취소 list -->
+ <delete id="project.appliCancel" parameterClass="Map">
+ 	DELETE FROM tb_aid_info
+ 	 WHERE projectId=#projectId# 
+ 	 AND loginID=#loginID#
+ </delete>
+
+</sqlMap>

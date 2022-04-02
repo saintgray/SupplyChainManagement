@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="qqqq3" width="1280" height="720" titletext="New Form" font="12px/normal &quot;HY중고딕&quot;">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Grid id="Grid00" taborder="0" left="59" top="68" width="901" height="562"/>
+        <Edit id="Edit00" taborder="1" left="172" top="112" width="148" height="23"/>
+        <Static id="Static01" taborder="2" text="아이디" left="128" top="114" width="44" height="17"/>
+        <Edit id="Edit01" taborder="3" left="172" top="145" width="148" height="23"/>
+        <Static id="Static00" taborder="4" text="회사명" left="128" top="147" width="44" height="17"/>
+        <Edit id="Edit02" taborder="5" left="172" top="178" width="148" height="23"/>
+        <Static id="Static02" taborder="6" text="담당자명" left="116" top="179" width="50" height="20"/>
+        <Static id="Static04" taborder="7" text="생년월일" left="114" top="209" width="52" height="20"/>
+        <Static id="Static05" taborder="8" text="비밀번호" left="376" top="113" width="52" height="17"/>
+        <Edit id="Edit03" taborder="9" left="430" top="111" width="148" height="23"/>
+        <Edit id="Edit04" taborder="10" left="538" top="144" width="148" height="23"/>
+        <Static id="Static07" taborder="11" text="@" left="524" top="147" width="24" height="17"/>
+        <Edit id="Edit05" taborder="12" left="430" top="144" width="88" height="23"/>
+        <Static id="Static06" taborder="13" text="이메일" left="376" top="147" width="52" height="17"/>
+        <Static id="Static14" taborder="14" text="연락처" left="376" top="211" width="52" height="17"/>
+        <Edit id="Edit06" taborder="15" left="492" top="208" width="75" height="23"/>
+        <Edit id="Edit07" taborder="16" left="572" top="208" width="75" height="23"/>
+        <Static id="Static86" taborder="17" text="내역정보" left="116" top="387" width="50" height="17"/>
+        <Edit id="Edit10" taborder="18" left="173" top="384" width="750" height="163"/>
+        <Button id="Button01" taborder="19" text="회원가입" left="463" top="577" width="57" height="23"/>
+        <Button id="Button02" taborder="20" text="취소" left="533" top="577" width="57" height="23"/>
+        <Combo id="Combo00" taborder="21" text="직접입력" left="696" top="147" width="95" height="17" value="" index="-1" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">00</Col>
+                <Col id="datacolumn">naver.com</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">01</Col>
+                <Col id="datacolumn">daum.com</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">02</Col>
+                <Col id="datacolumn">gmail.com</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">03</Col>
+                <Col id="datacolumn">직접입력</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Combo id="Combo01" taborder="22" text="선택" left="420" top="210" width="65" height="20" value="" index="-1" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">00</Col>
+                <Col id="datacolumn">010</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">01</Col>
+                <Col id="datacolumn">016</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">02</Col>
+                <Col id="datacolumn">017</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Calendar id="Calendar00" taborder="23" left="172" top="210" width="150" height="160" type="monthonly"/>
+      </Layout>
+    </Layouts>
+  </Form>
+</FDL>

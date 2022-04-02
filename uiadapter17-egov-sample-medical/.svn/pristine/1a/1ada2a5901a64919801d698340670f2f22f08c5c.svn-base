@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Register_form" width="490" height="470" titletext="Register_form" onload="Register_form_onload">
+    <Layouts>
+      <Layout height="470" mobileorientation="landscape" width="490" screenid="Screen_D">
+        <Div id="register_div" taborder="0" text="0" left="14" top="12" width="461" height="448" border="1px solid darkred">
+          <Layouts>
+            <Layout>
+              <Static id="regi_sta" taborder="0" text="회 원 가 입" left="135" top="4" width="200" height="53" textAlign="center" font="bold 20px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" border="0px none, 0px none, 1px double black"/>
+              <Static id="sta_id" taborder="1" text="ID" left="27" top="86" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_pw1" taborder="2" text="PW" left="27" top="126" width="77" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_pw2" taborder="3" text="PW 확인" left="27" top="166" width="77" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_name" taborder="4" text="이름" left="27" top="206" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_email" taborder="5" text="E-Mail" left="27" top="246" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_phone" taborder="6" text="핸드폰" left="27" top="286" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Button id="btn_register" taborder="7" text="등 록" left="127" top="362" width="100" height="40" font="bold 14px/normal &quot;Gulim&quot;" onclick="register_div_btn_register_onclick"/>
+              <Button id="btn_cencal" taborder="8" text="취 소" left="237" top="362" width="100" height="40" font="bold 14px/normal &quot;Gulim&quot;" onclick="register_div_btn_cencal_onclick"/>
+              <Edit id="edt_id" taborder="9" left="104" top="86" width="115" height="32"/>
+              <Edit id="edt_pw1" taborder="10" left="104" top="126" width="115" height="32" password="true"/>
+              <Edit id="edt_pw2" taborder="11" left="104" top="166" width="115" height="32" password="true"/>
+              <Edit id="edt_name" taborder="12" left="104" top="206" width="115" height="32"/>
+              <Button id="btn02" taborder="13" text="중복확인" left="237" top="85" width="80" height="32" font="bold 14px/normal &quot;Gulim&quot;" onclick="register_div_btn02_onclick"/>
+              <Edit id="edt_name00" taborder="14" left="104" top="246" width="115" height="32"/>
+              <Static id="sta_email2" taborder="15" text="@" left="228" top="246" width="43" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+              <Combo id="cbo00" taborder="16" left="254" top="246" width="100" height="32" innerdataset="ds_email" codecolumn="form_email"/>
+              <Combo id="cbo_phone" taborder="17" left="104" top="286" width="80" height="32" innerdataset="ds_phone" codecolumn="first_num"/>
+              <Static id="sta_phone1" taborder="18" text="-" left="198" top="286" width="43" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+              <Edit id="edt_phone1" taborder="19" left="219" top="286" width="80" height="32" inputtype="number" maxlength="4"/>
+              <Edit id="edt_phone2" taborder="20" left="329" top="286" width="80" height="32" inputtype="number" maxlength="4"/>
+              <Static id="sta_phone00" taborder="21" text="-" left="308" top="286" width="43" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+              <Button id="btn00" taborder="22" text="중복확인" left="367" top="245" width="80" height="32" font="bold 14px/normal &quot;Gulim&quot;" onclick="register_div_btn00_onclick"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_phone">
+        <ColumnInfo>
+          <Column id="first_num" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="first_num">010</Col>
+          </Row>
+          <Row>
+            <Col id="first_num">011</Col>
+          </Row>
+          <Row>
+            <Col id="first_num">016</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_email">
+        <ColumnInfo>
+          <Column id="form_email" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="form_email">naver.com</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">nate.com</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">hanmail.net</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">gmail.com</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">msn.com</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">ruu.kr</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_userinfo">
+        <ColumnInfo>
+          <Column id="id" type="STRING" size="100"/>
+          <Column id="pw" type="STRING" size="100"/>
+          <Column id="name" type="STRING" size="100"/>
+          <Column id="email_name" type="STRING" size="100"/>
+          <Column id="email_form" type="STRING" size="100"/>
+          <Column id="phone_first" type="STRING" size="8"/>
+          <Column id="phone_second" type="STRING" size="16"/>
+          <Column id="phone_end" type="STRING" size="16"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsList"/>
+      <Dataset id="ds_pw">
+        <ColumnInfo>
+          <Column id="pw2" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="register_div.form.cbo00" propid="value" datasetid="ds_userinfo" columnid="email_form"/>
+      <BindItem id="item1" compid="register_div.form.cbo_phone" propid="value" datasetid="ds_userinfo" columnid="phone_first"/>
+      <BindItem id="item2" compid="register_div.form.edt_id" propid="value" datasetid="ds_userinfo" columnid="id"/>
+      <BindItem id="item3" compid="register_div.form.edt_pw1" propid="value" datasetid="ds_userinfo" columnid="pw"/>
+      <BindItem id="item4" compid="register_div.form.edt_name" propid="value" datasetid="ds_userinfo" columnid="name"/>
+      <BindItem id="item5" compid="register_div.form.edt_name00" propid="value" datasetid="ds_userinfo" columnid="email_name"/>
+      <BindItem id="item6" compid="register_div.form.edt_phone1" propid="value" datasetid="ds_userinfo" columnid="phone_second"/>
+      <BindItem id="item7" compid="register_div.form.edt_phone2" propid="value" datasetid="ds_userinfo" columnid="phone_end"/>
+      <BindItem id="item8" compid="register_div.form.edt_pw2" propid="value" datasetid="ds_pw" columnid="pw2"/>
+    </Bind>
+    <Script type="xscript5.1"><![CDATA[this.register_div_btn02_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	// 중복확인_ID
+	var loginYn = nexacro.getEnvironmentVariable("loginYn");
+	
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "id"))){
+		alert("아이디 값이 입력되지 않았습니다.");
+		return ; 
+	}
+	
+	/*
+	if(this.ds_userinfo==null){
+		alert("아이디 값이 입력되지 않았습니다.");
+	}
+	*/
+	
+	if(loginYn == "N") 
+		this.fnCheck_ID();	
+};
+
+this.fnCheck_ID = function() 
+{	
+	var strSvcId    = "check_id";
+	var strSvcUrl   = "check_id.do";
+	var inData      = "ds_userinfo=ds_userinfo";
+	var outData     = "dsList=dsList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId, 	
+						 strSvcUrl, 	
+						 inData, 		
+						 outData, 		 
+						 strArg, 		
+						 callBackFnc, 
+						 nDataType); 				
+};
+//////////////////////////////////////////////
+
+this.register_div_btn00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	// 중복확인_이메일
+	var loginYn = nexacro.getEnvironmentVariable("loginYn");
+	
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "email_name"))){
+		alert("이메일 값이 입력되지 않았습니다.");
+		return ; 
+	}
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "email_form"))){
+		alert("이메일 형식을 선택해주세요.");
+		return ; 
+	}
+	
+	if(loginYn == "N") {
+		this.fnCheck_Email();	
+	}	
+};
+
+this.fnCheck_Email = function() 
+{	
+	var strSvcId    = "check_email";
+	var strSvcUrl   = "check_email.do";
+	var inData      = "ds_userinfo=ds_userinfo";
+	var outData     = "dsList=dsList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	
+						 strSvcUrl , 	
+						 inData , 		
+						 outData , 		
+						 strArg, 		
+						 callBackFnc, 	
+						 nDataType); 				
+};
+
+//////////////////////////////////////////////////////////
+
+
+this.register_div_btn_register_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	// 등록버튼
+	var loginYn = nexacro.getEnvironmentVariable("loginYn");
+	
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "id"))){
+		alert("아이디 값을 입력하고 중복체크를 해주세요.");
+		return ; 
+	}
+	
+	if(check_id == "no"){
+		return ; 
+	}
+	
+	var pw1 = this.ds_userinfo.getColumn(0,"pw");
+	var pw2 = this.ds_pw.getColumn(0, "pw2");
+
+	if(this.gfnIsNull(pw1)){
+		alert("비밀번호를 입력해주세요.");
+		return ; 
+	}
+	
+	if(this.gfnIsNull(pw2)){
+		alert("비밀번호를 재입력해주세요.");
+		return ; 
+	}
+	
+	if(pw1 != pw2){
+		alert("비밀번호의 값이 일치하지 않습니다");
+		return ; 
+	}
+	
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0,"name"))){
+		alert("이름을 입력해주세요.");
+		return ; 
+	}
+	
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "email_name"))){
+		alert("이메일 값이 입력되지 않았습니다.");
+		return ; 
+	}
+	
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "email_form"))){
+		alert("이메일 형식을 선택하고, 중복체크를 해주세요.");
+		return ; 
+	}
+	if(check_email=="no"){
+		return ; 
+	}
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "phone_first"))){
+		alert("휴대폰 번호 앞자리 선택해주세요.");
+		return ; 
+	}
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "phone_second"))){
+		alert("휴대폰 가운데 3~4자리를 입력해주세요.");
+		return ; 
+	}
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "phone_end"))){
+		alert("마지막 4자리를 입력해주세요.");
+		return ; 
+	}
+	if(loginYn == "N") {
+		this.fnRegister();	
+	}
+};
+
+this.fnRegister = function() 
+{	
+	var strSvcId    = "register";
+	var strSvcUrl   = "register.do";
+	var inData      = "ds_userinfo=ds_userinfo";
+	var outData     = "dsList=dsList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	
+						 strSvcUrl , 	
+						 inData , 		
+						 outData , 		
+						 strArg, 		
+						 callBackFnc, 	
+						 nDataType)				 				
+};
+
+this.register_div_btn_cencal_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "check_id":
+		  
+		    //trace(this.dsList.saveXML() );
+		
+			if(!this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+			   alert("이미 사용중인 아이디입니다.");
+			   break;
+			}
+
+			if(this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+				alert("사용가능한 아이디입니다.");
+				check_id = "yes";
+			    break;
+			}
+			
+	}
+	
+	switch(svcID)
+	{
+		case "check_email":
+		
+			if(!this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+			   alert("이미 사용중인 메일 주소입니다.");
+				
+			   break;;
+			}
+
+			if(this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+				alert("사용가능한 메일 주소입니다.");
+				check_email = "yes" ;
+			    break;
+			}
+			
+	}
+	
+	switch(svcID)
+	{
+		case "register":
+		  
+		alert("회원가입이 완료되었습니다.");    
+		
+		this.close();
+	}
+};
+
+this.Register_form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	var check_id = "no" ;
+	var check_email = "no" ;
+};
+]]></Script>
+  </Form>
+</FDL>

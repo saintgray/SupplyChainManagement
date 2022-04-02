@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.epc.dao.ProductListDao">
+	<select id="getListProduct" resultType="kr.happyjob.study.epc.model.SalesModel">
+		select * from tb_sales
+	</select>
+
+
+</mapper>

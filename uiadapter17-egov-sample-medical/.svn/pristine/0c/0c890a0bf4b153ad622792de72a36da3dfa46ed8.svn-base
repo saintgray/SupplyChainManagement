@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="qqqq1" width="850" height="470" titletext="회원정보" onload="form_onload" scrolltype="vertical" scrollbartype="auto auto" border="1px solid lightgray" color="black">
+    <Layouts>
+      <Layout height="470" mobileorientation="landscape" width="850" stepcount="0">
+        <WebBrowser id="WebBrowser00" taborder="0" left="30" top="30" height="370" border="1px solid #bdc2c9" onusernotify="WebBrowser00_onusernotify" width="565"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+    var sURL = this.parent.param1;
+	trace("popup sURL : " + sURL);
+	
+	this.WebBrowser00.set_url(sURL);
+}
+]]></Script>
+    <Objects>
+      <Dataset id="ds_skill">
+        <ColumnInfo>
+          <Column id="id" type="STRING" size="256"/>
+          <Column id="skillid" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_Resultlist">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="password" type="STRING" size="256"/>
+          <Column id="email" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="email_cop" type="STRING" size="256"/>
+          <Column id="sex" type="STRING" size="256"/>
+          <Column id="birthday" type="STRING" size="256"/>
+          <Column id="area" type="STRING" size="256"/>
+          <Column id="tel1" type="STRING" size="256"/>
+          <Column id="tel2" type="STRING" size="256"/>
+          <Column id="tel3" type="STRING" size="256"/>
+          <Column id="workarea1" type="STRING" size="256"/>
+          <Column id="workarea2" type="STRING" size="256"/>
+          <Column id="workarea3" type="STRING" size="256"/>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="salary" type="STRING" size="256"/>
+          <Column id="consult_yn" type="STRING" size="256"/>
+          <Column id="career_year" type="STRING" size="256"/>
+          <Column id="career_mm" type="STRING" size="256"/>
+          <Column id="manager_name" type="STRING" size="256"/>
+          <Column id="singular_facts" type="STRING" size="256"/>
+          <Column id="status" type="STRING" size="256"/>
+          <Column id="regId" type="STRING" size="256"/>
+          <Column id="reg_date" type="STRING" size="256"/>
+          <Column id="updateId" type="STRING" size="256"/>
+          <Column id="update_date" type="STRING" size="256"/>
+          <Column id="grade" type="STRING" size="256"/>
+          <Column id="addtec" type="STRING" size="256"/>
+          <Column id="career_desc" type="STRING" size="256"/>
+          <Column id="si" type="STRING" size="256"/>
+          <Column id="sm" type="STRING" size="256"/>
+          <Column id="solution" type="STRING" size="256"/>
+          <Column id="area_name" type="STRING" size="256"/>
+          <Column id="skill_name" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_list">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="password" type="STRING" size="256"/>
+          <Column id="email" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="email_cop" type="STRING" size="256"/>
+          <Column id="sex" type="STRING" size="256"/>
+          <Column id="birthday" type="STRING" size="256"/>
+          <Column id="area" type="STRING" size="256"/>
+          <Column id="tel1" type="STRING" size="256"/>
+          <Column id="tel2" type="STRING" size="256"/>
+          <Column id="tel3" type="STRING" size="256"/>
+          <Column id="workarea1" type="STRING" size="256"/>
+          <Column id="workarea2" type="STRING" size="256"/>
+          <Column id="workarea3" type="STRING" size="256"/>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="salary" type="STRING" size="256"/>
+          <Column id="consult_yn" type="STRING" size="256"/>
+          <Column id="career_year" type="STRING" size="256"/>
+          <Column id="career_mm" type="STRING" size="256"/>
+          <Column id="manager_name" type="STRING" size="256"/>
+          <Column id="singular_facts" type="STRING" size="256"/>
+          <Column id="status" type="STRING" size="256"/>
+          <Column id="regId" type="STRING" size="256"/>
+          <Column id="reg_date" type="STRING" size="256"/>
+          <Column id="updateId" type="STRING" size="256"/>
+          <Column id="update_date" type="STRING" size="256"/>
+          <Column id="grade" type="STRING" size="256"/>
+          <Column id="addtec" type="STRING" size="256"/>
+          <Column id="career_desc" type="STRING" size="256"/>
+          <Column id="si" type="STRING" size="256"/>
+          <Column id="sm" type="STRING" size="256"/>
+          <Column id="solution" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsskill">
+        <ColumnInfo>
+          <Column id="id" type="STRING" size="256"/>
+          <Column id="skillid" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="industry">
+        <ColumnInfo>
+          <Column id="산업전체" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="산업전체">IT업</Col>
+          </Row>
+          <Row>
+            <Col id="산업전체">서비스업</Col>
+          </Row>
+          <Row>
+            <Col id="산업전체">금융은행업</Col>
+          </Row>
+          <Row>
+            <Col id="산업전체">건설토목업</Col>
+          </Row>
+          <Row>
+            <Col id="산업전체">교육업</Col>
+          </Row>
+          <Row>
+            <Col id="산업전체">의료제약업</Col>
+          </Row>
+          <Row>
+            <Col id="산업전체">미디어통신업</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsSearch">
+        <ColumnInfo>
+          <Column id="area" type="STRING" size="256"/>
+          <Column id="grade" type="STRING" size="256"/>
+          <Column id="loginID" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <InitValue/>
+  </Form>
+</FDL>

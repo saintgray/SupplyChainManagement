@@ -1,0 +1,800 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="frameLogin" width="1040" height="720" titletext="frameLogin" background="" onload="form_onload" onsize="Form_onsize">
+    <Layouts>
+      <Layout height="720" width="1040">
+        <ImageViewer id="img_login" taborder="1" left="0" top="0" image="URL(&quot;theme://images/loginview.png&quot;)" right="0" bottom="0"/>
+        <Div id="divLogin" taborder="0" text="" left="320" top="417" width="500" height="80" background="">
+          <Layouts>
+            <Layout>
+              <Static id="Static00" taborder="4" text="ID" left="128" top="17" width="50" height="20" color="brown"/>
+              <Edit id="edId" taborder="1" left="181" top="9" width="140" height="20" onchanged="divLogin_edId_onchanged"/>
+              <Static id="Static01" taborder="0" text="PW" left="128" top="49" width="50" height="20" color="brown"/>
+              <Edit id="edPw" taborder="2" left="180" top="49" width="140" height="20" onchanged="divLogin_edPw_onchanged" password="true"/>
+              <Button id="btnLogin" taborder="3" text="로 그 인" left="334" top="5" width="85" height="64" onclick="divLogin_btnLogin_onclick" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Static id="login_sta" taborder="2" text="Happy Job PC" left="149" top="170" width="1081" font="bold 46px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" color="#ffffff" bottom="488" textAlign="center"/>
+        <Button id="btn_Reg" taborder="3" text="회원가입" left="567" top="574" width="113" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" onclick="btn_Reg_onclick"/>
+        <Button id="btn_Find" taborder="4" text="아이디 찾기" left="700" top="574" width="113" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" onclick="btn_Find_onclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		frameWork.xfdl 
+*  @Creator 			soojeong
+*  @CreateDate 	2017.01.23
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+*  2017.01.23     	soojeong 	           최초 생성 
+*******************************************************************************
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+
+this.objApp;
+this.objMainframe;
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{	
+	this.objApp = nexacro.getApplication() ;
+	this.objMainframe = this.objApp.mainframe;
+						
+	this.form_onsize();
+};
+/************************************************************************************************
+* TRANSACTION 서비스 호출 처리
+************************************************************************************************/
+
+/************************************************************************************************
+ * CALLBACK 콜백 처리부분
+ ************************************************************************************************/
+
+ /************************************************************************************************
+ * 사용자 FUNCTION 영역
+ ************************************************************************************************/
+/**
+* form onsize 변경시
+* @return 
+* @example
+* @memberOf public
+*/ 
+this.form_onsize = function()
+{		
+	var nLeft = (this.objMainframe.width / 2) - Math.round((this.divLogin.form.getOffsetWidth()) / 2);
+	var nTop = (this.objMainframe.height / 2) - Math.round((this.divLogin.form.getOffsetHeight()) / 2);
+	
+	if(nLeft <= 0)
+	{
+		this.divLogin.form.setOffsetLeft(0);
+	}
+	else
+	{
+		this.divLogin.setOffsetLeft(nLeft);
+		this.divLogin.setOffsetTop(nTop);
+	}
+	this.divLogin.form.edId.setFocus();
+};
+
+/**
+* fnSetSeprateFrame
+* @return 
+* @example
+* @memberOf 
+*/ 
+this.fnSetSeprateFrame = function()
+{
+	this.objApp.gvVFrameSet.set_separatesize("44,0,*,20");
+		
+	//gloval variable 회사세팅
+	nexacro.setEnvironmentVariable("gvUserId", this.objApp.gdsUserInfo.getColumn(0,"userId"));
+	nexacro.setEnvironmentVariable("gvUserNm", this.objApp.gdsUserInfo.getColumn(0,"UserNm"));	
+
+	//topframe argument setting	
+	this.objApp.gvTopFrame.form.fnLoad();
+	this.objApp.gvTopFrame.form.fnSetName();
+	
+	//this.objApp.gvLeftFrame.form.divLeft.form.grdTree.set_binddataset("gdsMenu");	
+	//this.objApp.gvLeftFrame.form.fnSetTreeStatus();
+		
+	//mainform 메인화면 구성 데이터 조회
+	//application.gvWorkFrame.frames["MainForm"].form.fn_selectComposition();	
+}
+/************************************************************************************************
+ * 각 COMPONENT 별 EVENT 영역
+ ************************************************************************************************/
+this.Form_onsize = function(obj:nexacro.Form,e:nexacro.SizeEventInfo)
+{
+	this.form_onsize();
+};
+
+this.divLogin_btnLogin_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+    //trace(nexacro.getEnvironmentVariable("gvRunMode"));
+
+	var loginYn = nexacro.getEnvironmentVariable("loginYn");
+	var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	
+	// alert("loginYn : " +  nexacro.getEnvironmentVariable("loginYn")  + " gvServerUrl : " + gvServerUrl);
+
+	//로컬환경에서 global dataset으로 화면열기
+	//if (nexacro.getEnvironmentVariable("gvRunMode") == "0" || nexacro.getEnvironmentVariable("gvRunMode") == "1") 
+	//{	
+	    
+		//sample화면 메뉴에 추가		
+	//	for (var i=0; i< this.dsSample.rowcount; i++)
+	//	{
+	//		var nRow = this.objApp.gdsMenu.addRow();
+	//		this.objApp.gdsMenu.copyRow(nRow, this.dsSample, i);
+	//	}                				
+		
+	//	this.fnSetSeprateFrame();
+	//}else{	
+		//this.fnLogin();	//서버와통신
+	//}	
+	
+
+	if(this.gfnIsNull(this.dsSearch.getColumn(0,"id"))){
+		alert("아이디 값이 입력되지 않았습니다.");
+		return ; 
+	}
+	
+	if(this.gfnIsNull(this.dsSearch.getColumn(0,"password"))){
+		alert("비밀번호가 입력되지 않았습니다.");
+		return ; 
+	}
+	
+	if(loginYn == "N") {
+		this.fnLogin();	//서버와통신
+	}
+	this.objApp.gvLeftFrame.form.fnGlobalMenuCopy();
+	
+}; 
+
+/**
+ * 로그인 transaction
+ * @param {string} reLoginYn 
+ * @return 
+ * @example
+ * @memberOf 
+ */
+ 
+this.fnLogin = function() 
+{	
+	var strSvcId    = "login";
+	var strSvcUrl   = "login.do";
+	var inData      = "dsSearch=dsSearch";
+	var outData     = "dsList=dsList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	//alert("edId : " + this.dsSearch.getColumn("USER_ID") + " edPw : " + this.dsSearch.getColumn("USER_PASSWORD"));
+	//trace(this.dsSearch.saveXML());
+	
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType);    // 통신방법 정의 [생략가능]
+												
+}
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "login":
+		  
+		    //trace(this.dsList.saveXML() );
+		
+			if( !this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+				var usertype = this.dsList.getColumn(0, "usertype");
+				
+			    //sample화면 메뉴에 추가	
+				if(usertype == "A") {
+					for (var i=0; i< this.dsAdmin.rowcount; i++)
+					{
+						
+						var nRow = this.objApp.gdsMenu.addRow();
+						this.objApp.gdsMenu.copyRow(nRow, this.dsAdmin, i);
+					}    
+                }
+				
+				if(usertype == "C") {
+					for (var i=0; i< this.dsCop.rowcount; i++)
+					{
+						var nRow = this.objApp.gdsMenu.addRow();
+						this.objApp.gdsMenu.copyRow(nRow, this.dsCop, i);
+					}    
+                }				
+
+			
+				
+				this.objApp.gdsUserInfo.setColumn(0,"userId", this.dsList.getColumn(0,"loginID"));
+				this.objApp.gdsUserInfo.setColumn(0,"UserNm", this.dsList.getColumn(0,"userName"));
+				 
+				nexacro.setEnvironmentVariable("gvUserId",this.dsList.getColumn(0,"loginID"));
+				nexacro.setEnvironmentVariable("gvUserNm",this.dsList.getColumn(0,"userName"));
+				nexacro.setEnvironmentVariable("gvUserType",this.dsList.getColumn(0,"user_type"));
+			    nexacro.setEnvironmentVariable("loginYn","Y");
+					
+					
+				//alert("login callabck gvUserId 1 : " +  this.objApp.gdsUserInfo.getColumn(0,"userId")  + "  UserNm : " +  this.objApp.gdsUserInfo.getColumn(0,"UserNm"));
+				//alert("login callabck gvUserId 2 : " +  nexacro.getEnvironmentVariable("gvUserId")  + "userName : " +  nexacro.getEnvironmentVariable("gvUserNm"));
+					
+			    this.fnSetSeprateFrame();
+	            this.objApp.gvLeftFrame.form.fnGlobalMenuCopy();
+					
+			    return;
+			}
+			
+			alert("로그인에 실패하였습니다. ");
+			break;
+			
+// 		case "save":
+// 			this.fnSearch();//재조회
+// 			break;
+	}
+
+};
+
+
+this.btn_Reg_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var objChildFrame = new ChildFrame();
+	objChildFrame.init("regi_popup"
+	                  , 0
+					  , 0
+					  , 400
+					  , 350
+					  , null
+					  , null
+					  , "frame::Register_form.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+	objChildFrame.set_openalign("center middle");
+	objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	
+
+	objChildFrame.showModal(this.getOwnerFrame()
+	                      , null
+						  , this
+						  , "fn_popupCallback");
+};
+
+this.btn_Find_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var objChildFrame = new ChildFrame();
+	objChildFrame.init("find_popup"
+	                  , 0
+					  , 0
+					  , 400
+					  , 350
+					  , null
+					  , null
+					  , "frame::Find_form.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+	objChildFrame.set_openalign("center middle");
+	objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	
+
+	objChildFrame.showModal(this.getOwnerFrame()
+	                      , null
+						  , this
+						  , "fn_popupCallback");
+};
+
+this.fn_popupCallback = function(strPopupID, strReturn)
+{
+	if(strReturn == undefined){
+		return;
+	}
+
+	if(strPopupID == "regi_popup"){
+		this.alert("Return Value: " + strReturn);
+	}
+	
+	if(strPopupID == "find_popup"){
+		this.alert("Return Value: " + strReturn);
+	}
+};
+
+this.divLogin_edPw_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+	
+};
+]]></Script>
+    <Objects>
+      <Dataset id="dsSearch">
+        <ColumnInfo>
+          <Column id="id" type="STRING" size="256"/>
+          <Column id="password" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="id"/>
+            <Col id="password"/>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsList"/>
+      <Dataset id="dsMember">
+        <ColumnInfo>
+          <Column id="level" type="STRING" size="256"/>
+          <Column id="groupId" type="STRING" size="256"/>
+          <Column id="menuId" type="STRING" size="256"/>
+          <Column id="menuNm" type="STRING" size="256"/>
+          <Column id="menuUrl" type="STRING" size="256"/>
+          <Column id="sortNo" type="STRING" size="256"/>
+          <Column id="upMenuId" type="STRING" size="256"/>
+          <Column id="useYn" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000005</Col>
+            <Col id="menuId">SA00000005</Col>
+            <Col id="menuNm">프로젝트</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000005</Col>
+            <Col id="menuId">SA00000006</Col>
+            <Col id="menuNm">목록</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000005</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000007</Col>
+            <Col id="menuId">SA00000007</Col>
+            <Col id="menuNm">자료실</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="menuNm">Q&amp;A</Col>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000007</Col>
+            <Col id="menuId">SA0000008</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000007</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="menuNm">자유게시판</Col>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000007</Col>
+            <Col id="menuId">SA0000009</Col>
+            <Col id="menuUrl">pattern::pattern02-excel.xfdl</Col>
+            <Col id="sortNo">2</Col>
+            <Col id="upMenuId">SA00000007</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000007</Col>
+            <Col id="menuId">SA0000010</Col>
+            <Col id="menuNm">자료실</Col>
+            <Col id="sortNo">3</Col>
+            <Col id="upMenuId">SA00000007</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="menuUrl">pattern::pattern03-file.xfdl</Col>
+          </Row>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000011</Col>
+            <Col id="menuId">SA00000011</Col>
+            <Col id="menuNm">My Page</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000011</Col>
+            <Col id="menuId">SA00000012</Col>
+            <Col id="menuNm">My Info</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000011</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000011</Col>
+            <Col id="menuId">SA00000013</Col>
+            <Col id="menuNm">쪽지</Col>
+            <Col id="menuUrl">pattern::pattern02-excel.xfdl</Col>
+            <Col id="sortNo">2</Col>
+            <Col id="upMenuId">SA00000011</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000011</Col>
+            <Col id="menuId">SA00000014</Col>
+            <Col id="menuNm">지원현황</Col>
+            <Col id="menuUrl">pattern::pattern03-file.xfdl</Col>
+            <Col id="sortNo">3</Col>
+            <Col id="upMenuId">SA00000011</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsAdmin">
+        <ColumnInfo>
+          <Column id="level" type="STRING" size="256"/>
+          <Column id="groupId" type="STRING" size="256"/>
+          <Column id="menuId" type="STRING" size="256"/>
+          <Column id="menuNm" type="STRING" size="256"/>
+          <Column id="menuUrl" type="STRING" size="256"/>
+          <Column id="sortNo" type="STRING" size="256"/>
+          <Column id="upMenuId" type="STRING" size="256"/>
+          <Column id="useYn" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000010</Col>
+            <Col id="menuId">SA00000010</Col>
+            <Col id="menuNm">개인정보</Col>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000010</Col>
+            <Col id="menuId">SA00000011</Col>
+            <Col id="menuNm">회원가입</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000010</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000020</Col>
+            <Col id="menuId">SA00000020</Col>
+            <Col id="menuNm">주문및조회</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000020</Col>
+            <Col id="menuId">SA00000021</Col>
+            <Col id="menuNm">FOOD주문</Col>
+            <Col id="menuUrl">pattern::pattern02-excel.xfdl</Col>
+            <Col id="sortNo">2</Col>
+            <Col id="upMenuId">SA00000020</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000020</Col>
+            <Col id="menuId">SA00000022</Col>
+            <Col id="menuNm">이용금액 조회</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000020</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000030</Col>
+            <Col id="menuId">SA00000030</Col>
+            <Col id="menuNm">커뮤니티</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000030</Col>
+            <Col id="menuId">SA00000031</Col>
+            <Col id="menuNm">자유게시판</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">2</Col>
+            <Col id="upMenuId">SA00000030</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000100</Col>
+            <Col id="menuId">SA00000100</Col>
+            <Col id="menuNm">관리자페이지로이동</Col>
+            <Col id="menuUrl">./admin_main/admin_main/</Col>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsCop">
+        <ColumnInfo>
+          <Column id="level" type="STRING" size="256"/>
+          <Column id="groupId" type="STRING" size="256"/>
+          <Column id="menuId" type="STRING" size="256"/>
+          <Column id="menuNm" type="STRING" size="256"/>
+          <Column id="menuUrl" type="STRING" size="256"/>
+          <Column id="sortNo" type="STRING" size="256"/>
+          <Column id="upMenuId" type="STRING" size="256"/>
+          <Column id="useYn" type="STRING" size="256"/>
+          <Column id="Column0" type="STRING" size="256"/>
+          <Column id="Column1" type="STRING" size="256"/>
+          <Column id="Column2" type="STRING" size="256"/>
+          <Column id="Column3" type="STRING" size="256"/>
+          <Column id="Column4" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000010</Col>
+            <Col id="menuId">SA00000010</Col>
+            <Col id="menuNm">개인정보</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="Column0">개인정보</Col>
+            <Col id="Column2">0</Col>
+            <Col id="Column3">SA00000001</Col>
+            <Col id="Column4">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000010</Col>
+            <Col id="menuId">SA00000010</Col>
+            <Col id="menuNm">개인정보</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="Column0">회원가입</Col>
+            <Col id="Column1">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="Column2">1</Col>
+            <Col id="Column3">SA00000010</Col>
+            <Col id="Column4">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000010</Col>
+            <Col id="menuId">SA00000011</Col>
+            <Col id="menuNm">회원가입</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000010</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="Column0">주문및조회</Col>
+            <Col id="Column2">0</Col>
+            <Col id="Column3">SA00000001</Col>
+            <Col id="Column4">Y</Col>
+          </Row>
+          <Row>
+            <Col id="menuNm">주문및조회</Col>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000020</Col>
+            <Col id="menuId">SA00000020</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="Column0">FOOD주문</Col>
+            <Col id="Column1">pattern::pattern02-excel.xfdl</Col>
+            <Col id="Column2">2</Col>
+            <Col id="Column3">SA00000020</Col>
+            <Col id="Column4">Y</Col>
+          </Row>
+          <Row>
+            <Col id="menuNm">FOOD주문</Col>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000020</Col>
+            <Col id="menuId">SA00000021</Col>
+            <Col id="menuUrl">pattern::pattern02-excel.xfdl</Col>
+            <Col id="sortNo">2</Col>
+            <Col id="upMenuId">SA00000020</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="Column0">이용금액 조회</Col>
+            <Col id="Column2">0</Col>
+            <Col id="Column3">SA00000020</Col>
+            <Col id="Column4">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000020</Col>
+            <Col id="menuId">SA00000022</Col>
+            <Col id="menuNm">이용금액 조회</Col>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000020</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="menuUrl"/>
+            <Col id="Column0">커뮤니티</Col>
+            <Col id="Column1">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="Column2">1</Col>
+            <Col id="Column3">SA00000001</Col>
+            <Col id="Column4">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000030</Col>
+            <Col id="menuId">SA00000030</Col>
+            <Col id="menuNm">커뮤니티</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="Column0">자유게시판</Col>
+            <Col id="Column1">pattern::pattern02-excel.xfdl</Col>
+            <Col id="Column2">2</Col>
+            <Col id="Column3">SA00000030</Col>
+            <Col id="Column4">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000030</Col>
+            <Col id="menuId">SA00000031</Col>
+            <Col id="menuNm">자유게시판</Col>
+            <Col id="menuUrl">pattern::pattern02-excel.xfdl</Col>
+            <Col id="sortNo">2</Col>
+            <Col id="upMenuId">SA00000030</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsSample">
+        <ColumnInfo>
+          <Column id="level" type="STRING" size="256"/>
+          <Column id="groupId" type="STRING" size="256"/>
+          <Column id="menuId" type="STRING" size="256"/>
+          <Column id="menuNm" type="STRING" size="256"/>
+          <Column id="menuUrl" type="STRING" size="256"/>
+          <Column id="sortNo" type="STRING" size="256"/>
+          <Column id="upMenuId" type="STRING" size="256"/>
+          <Column id="useYn" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000005</Col>
+            <Col id="menuId">SA00000005</Col>
+            <Col id="menuNm">샘플</Col>
+            <Col id="menuUrl"/>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000001</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000005</Col>
+            <Col id="menuId">SA00000012</Col>
+            <Col id="menuNm">조회/입력/수정/삭제 예제</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000005</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000005</Col>
+            <Col id="menuId">SA00000013</Col>
+            <Col id="menuNm">엑셀 처리 예제</Col>
+            <Col id="menuUrl">pattern::pattern02-excel.xfdl</Col>
+            <Col id="sortNo">2</Col>
+            <Col id="upMenuId">SA00000005</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="menuNm">파일 예제</Col>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000005</Col>
+            <Col id="menuId">SA00000014</Col>
+            <Col id="menuUrl">pattern::pattern03-file.xfdl</Col>
+            <Col id="sortNo">3</Col>
+            <Col id="upMenuId">SA00000005</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="menuNm">대용량 분할전송</Col>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000005</Col>
+            <Col id="menuId">SA00000015</Col>
+            <Col id="menuUrl">pattern::pattern04-file.xfdl</Col>
+            <Col id="sortNo">4</Col>
+            <Col id="upMenuId">SA00000005</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">0</Col>
+            <Col id="groupId">SA00000006</Col>
+            <Col id="menuId">SA00000006</Col>
+            <Col id="menuNm">추가메뉴2</Col>
+            <Col id="sortNo">0</Col>
+            <Col id="upMenuId">SA00000006</Col>
+            <Col id="useYn">Y</Col>
+            <Col id="menuUrl"/>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000006</Col>
+            <Col id="menuId">SA0000007</Col>
+            <Col id="menuNm">조회/입력/수정/삭제 예제2</Col>
+            <Col id="menuUrl">pattern::pattern01-transaction.xfdl</Col>
+            <Col id="sortNo">1</Col>
+            <Col id="upMenuId">SA00000006</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000006</Col>
+            <Col id="menuId">SA0000008</Col>
+            <Col id="menuNm">엑셀 처리 예제2</Col>
+            <Col id="menuUrl">pattern::pattern02-excel.xfdl</Col>
+            <Col id="sortNo">2</Col>
+            <Col id="upMenuId">SA00000006</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000006</Col>
+            <Col id="menuId">SA0000009</Col>
+            <Col id="menuNm">파일 예제2</Col>
+            <Col id="menuUrl">pattern::pattern03-file.xfdl</Col>
+            <Col id="sortNo">3</Col>
+            <Col id="upMenuId">SA00000006</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+          <Row>
+            <Col id="level">1</Col>
+            <Col id="groupId">SA00000006</Col>
+            <Col id="menuId">SA00000010</Col>
+            <Col id="menuNm">대용량 분할전송2</Col>
+            <Col id="menuUrl">pattern::pattern04-file.xfdl</Col>
+            <Col id="sortNo">4</Col>
+            <Col id="upMenuId">SA00000006</Col>
+            <Col id="useYn">Y</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="divLogin.form.edId" propid="value" datasetid="dsSearch" columnid="id"/>
+      <BindItem id="item1" compid="divLogin.form.edPw" propid="value" datasetid="dsSearch" columnid="password"/>
+    </Bind>
+  </Form>
+</FDL>

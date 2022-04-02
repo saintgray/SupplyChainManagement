@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.dailyOrderHistoryDao">
+	
+	
+	<select id="listdailyOrderHistory" resultType="kr.happyjob.study.scm.model.dailyOrderHistoryModel">
+		SELECT    pur.pur_id AS pur_id
+				, pur.purdate AS purdate
+				, user.name AS name
+				, sal.sales_nm AS sales_nm
+				, (select sum(st_cnt) from tb_stock st where st.sales_id=(select sa.sales_id from tb_sales sa)) AS price_sum
+				, sal.price AS price
+				, purinfo.pur_cnt AS pur_cnt
+				, (sal.price*purinfo.pur_cnt) AS price_cnt
+				, purinfo.returnYN AS returnYN
+				, purinfo.wanted_date AS wanted_date
+				, pur.depositYN AS depositYN
+		
+		FROM 		 tb_purchase pur 
+				join tb_userinfo user 
+				join tb_purchaseinfo purinfo 
+				join tb_sales sal 
+			
+		ON		 pur.pur_id=purinfo.pur_id AND user.loginID=pur.loginID
+		<where>
+		
+				<choose>
+					<when test="returnsearch == 'a'.toString()">
+						and returnYN='Y'
+					</when>
+					<when test="returnsearch == 'b'.toString()">
+						and returnYN='N'
+					</when>
+				</choose>
+				
+				<if test="!selectsearch.equals('')">
+					<choose>
+					<when test="selectsearch == '0'.toString()">
+					<![CDATA[
+						and (pur.purdate >=
+						
+							#{datesearch1}
+							and
+							pur.purdate <=
+								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+							)
+						
+							
+						]]>		
+					</when>
+					<when test="selectsearch == '1'.toString()">
+					<![CDATA[
+						and (pur.purdate >=
+							#{datesearch1}
+							and
+							pur.purdate <=
+								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+							)
+						
+						
+						]]>
+					</when>
+				</choose>
+				
+				</if>
+				
+				
+				<!-- (SELECT
+							   distinct DATE_FORMAT(purdate, '%Y-%m-%d ')
+							FROM tb_purchase where purdate like CONCAT('%', #{datesearch1}, '%')
+							)
+							and
+							(SELECT
+							   distinct DATE_FORMAT(purdate, '%Y-%m-%d ')
+							FROM tb_purchase where purdate like CONCAT('%', #{datesearch2}, '%')
+							) -->
+				
+				
+				
+				
+				
+		</where>
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	
+	
+	
+	
+
+	<select id="total" resultType="int">
+		SELECT count(pur_id)
+		  FROM tb_purchase 
+	</select>
+
+
+
+
+
+</mapper>

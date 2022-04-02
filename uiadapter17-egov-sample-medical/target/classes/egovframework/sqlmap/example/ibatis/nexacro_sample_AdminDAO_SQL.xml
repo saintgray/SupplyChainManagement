@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Admin">
+
+	<typeAlias alias="nexacroGCD" type="com.nexacro.sample.vo.GroupCDVO" />
+	<typeAlias alias="nexacroDCDVO" type="com.nexacro.sample.vo.DetailCDVO" />
+
+
+	<resultMap id="GruopcodeMap" class="java.util.HashMap">
+		<result property="group_code" column="group_code" />
+		<result property="group_name" column="group_name" />
+		<result property="note" column="note" nullValue='0' />
+		<result property="use_yn" column="use_yn" />
+		<result property="regId" column="regId" nullValue='admin' />
+		<result property="updateId" column="updateId" />
+		<result property="reg_date" column="reg_date" />
+		<result property="update_date" column="update_date" />
+	</resultMap>
+
+
+	<!--VO반환타입 -->
+	<resultMap id="detailCDVO" class="nexacroDCDVO">
+		<result property="detail_code" column="detail_code" />
+		<result property="detail_name" column="detail_name" />
+		<result property="use_yn" column="use_yn" nullValue='Y' />
+	</resultMap>
+
+	<!--그룹코드 리스트 query -->
+	<select id="nexacroAdmin.selectMapList" parameterClass="Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		SELECT LL.group_code, LL.group_name, LL.note, LL.guse_yn, LL.regId,
+		LL.reg_date
+		FROM (
+		SELECT G.group_code AS group_code
+		   	,G.group_name AS group_name
+			,G.note AS note
+			,G.use_yn AS guse_yn
+			,G.regId AS regId
+			,G.updateId AS updateId
+			,G.reg_date AS reg_date
+			,G.update_date AS update_date
+			,D.detail_code
+			,D.detail_name
+			,D.use_yn AS use_yn
+		FROM tb_group_code G,tb_detail_code D
+		<dynamic>
+			<isNotNull property="searchword">
+				<isNotEqual property="searchkey" compareValue="00">
+					<isEqual prepend="WHERE" property="searchkey" compareValue="01">
+						G.group_code = #searchword#
+					</isEqual>
+					<isEqual prepend="WHERE" property="searchkey" compareValue="02">
+						G.group_name = #searchword#
+					</isEqual>
+					<isEqual prepend="WHERE" property="searchkey" compareValue="03">
+						D.detail_code = #searchword#
+					</isEqual>
+					<isEqual prepend="WHERE" property="searchkey" compareValue="04">
+						D.detail_name = #searchword#
+					</isEqual>
+				</isNotEqual>
+			</isNotNull>
+		</dynamic>
+		) LL
+		GROUP BY LL.group_code, LL.group_name, LL.note, LL.guse_yn, LL.regId,
+		LL.reg_date
+		ORDER BY LL.group_code, LL.group_name, LL.note, LL.guse_yn, LL.regId,
+		LL.reg_date
+	</select> <!-- nexacroAdmin.selectMapList -->
+
+	<!--그룹코드 insert,Update,Delete query -->
+	<insert id="nexacroAdmin.GcdInsertMap" parameterClass="Map">
+	INSERT INTO tb_group_code(
+							  group_code
+						   	 ,group_name
+							 ,reg_date
+					 )VALUES(
+							  #group_code#
+							 ,#group_name#
+							 ,#reg_date#
+							 );
+	</insert>
+	
+	<update id="nexacroAdmin.GcdUpdateMap" parameterClass="Map">
+		UPDATE tb_group_code
+			 SET group_code=#group_code#
+				,group_name=#group_name#
+				,update_date=#now#
+			where group_code=#group_code#	
+	</update>
+	
+	<delete id="nexacroAdmin.GcdDeleteMap" parameterClass="Map">
+		DELETE FROM tb_group_code
+	 		where group_code=#group_code#
+	</delete>
+
+
+<!--**************************************상세코드*****************************************************  -->
+	<select id="nexacroAdmin.DcdListVO" parameterClass="String" resultMap="detailCDVO">
+		SELECT detail_code
+			   ,detail_name
+			   ,use_yn
+	    FROM tb_detail_code
+	    WHERE group_code = #group_code#	
+	</select>
+
+	<!--그룹코드 insert,Update,Delete query -->
+
+	<insert id="nexacroAdmin.DcdInsertMap" parameterClass="Map">
+		INSERT INTO tb_detail_code(group_code
+								  ,detail_code
+								  ,detail_name
+								  ,use_yn)
+							VALUES(
+			 					   #group_code#
+						   		  ,#detail_code#
+								  ,#detail_name#
+								  ,#use_yn#	
+			    				   );
+	</insert>
+	
+	<update id="nexacroAdmin.DcdUpdateMap" parameterClass="Map">
+		UPDATE tb_detail_code
+			 SET detail_name=#detail_name#
+		  WHERE detail_code=#detail_code#
+	</update>
+		
+	<delete id="nexacroAdmin.DcdDeleteMap" parameterClass="Map">
+		DELETE FROM tb_detail_code
+					WHERE detail_code=#detail_code#
+				
+	</delete>
+
+
+	
+	
+
+
+</sqlMap>

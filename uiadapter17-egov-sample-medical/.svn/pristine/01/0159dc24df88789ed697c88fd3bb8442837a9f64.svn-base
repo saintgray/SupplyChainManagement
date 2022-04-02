@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="cop">
+
+ 	<select id="cop.iddupchk" parameterClass="Map" resultClass="int">
+            SELECT count(*) As cnt
+            FROM tb_userinfo  
+            WHERE loginID = #id#
+              AND user_type = 'C'
+    </select>
+    
+    <insert id="copjoin.copReg" parameterClass="Map">
+       		insert into tb_userinfo(
+       			loginID
+       			,password
+       			,user_type
+       			,name
+       			,email
+       			,email_cop
+       			,manager_name
+       			,birthday
+       			,tel1
+       			,tel2
+       			,tel3
+       			,singular_facts
+       			,status
+       			,regId
+       			,reg_date
+       		) values(
+       			#id#
+       			,#password#
+       			,'C'
+       			,#cop_name#
+       			,#email#
+       			,#email_cop#
+       			,#manager_name#
+       			,#birthday#
+       			,#tel1#
+       			,#tel2#
+       			,#tel3#
+       			,#career#
+       			,#status#
+       			,#loginID#
+       			,now()
+       		)
+    </insert>
+    
+    <update id="cop.copupdate" parameterClass="Map">
+       		update tb_userinfo
+       			 set
+       			 	 password=#password#
+       			 	,email=#email#
+       			 	,email_cop=#email_cop#
+       			 	,manager_name=#manager_name#
+       			 	,tel1=#tel1#
+       			 	,tel2=#tel2#
+       			 	,tel3=#tel3#
+       			 	,status=#status#
+       			 	,updateId=#loginID#
+       			 	,update_date = now()
+       			 	,singular_facts=#career#
+       		  WHERE loginID=#id#
+    </update>
+      	
+
+   <!--*********************************기업회원 상세정보 불러오기*******************************-->    
+       <select id="cop.readINFO" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+       	 SELECT UI.loginID AS id
+			   ,UI.password
+			   ,UI.name AS cop_name
+			   ,UI.email 
+			   ,UI.email_cop
+			   ,UI.sex 
+			   ,UI.birthday
+			   ,UI.area
+			   ,UI.tel1 
+			   ,UI.tel2 
+			   ,UI.tel3
+			   ,UI.salary
+         	   ,UI.grade
+			   ,UI.consult_yn
+		       ,UI.career_year
+		       ,UI.career_mm
+		       ,UI.manager_name
+		       ,UI.singular_facts AS career
+		       ,UI.status
+		       ,UC.title
+		       ,UC.workarea1
+		       ,UC.workarea2
+		       ,UC.workarea3
+		       ,UC.addtec
+		       ,UC.career_desc
+		       ,UC.si
+		       ,UC.sm
+		       ,UC.solution
+		       ,UC.file_name
+		       ,UC.file_path
+		       ,UC.file_size
+           FROM tb_userinfo UI LEFT OUTER JOIN tb_user_career UC ON UI.loginID = UC.loginId
+	      WHERE UI.loginID = #userID# 
+	        AND UI.user_type = #userType#   
+     
+       </select>
+       
+    
+</sqlMap>

@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Find_form" width="580" height="300" titletext="New Form">
+    <Layouts>
+      <Layout height="300" mobileorientation="landscape" width="580">
+        <Div id="div_findid" taborder="0" left="16" top="16" width="544" height="274" border="2px solid black">
+          <Layouts>
+            <Layout>
+              <Static id="sta_findid" taborder="0" text="아이디 찾기" left="132" top="12" width="296" height="56" font="bold 18px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="center"/>
+              <Static id="sta_id_info" taborder="1" text="* 비밀번호 문의는 카운터에서 하시기 바랍니다." left="122" top="206" width="324" height="46" font="bold 14px/normal &quot;Gulim&quot;" textAlign="center"/>
+              <Static id="sta_phone" taborder="2" text="핸드폰" left="42" top="116" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Combo id="cbo_phone" taborder="3" left="113" top="116" width="80" height="32" innerdataset="ds_phone" codecolumn="first_num"/>
+              <Edit id="edt_phone1" taborder="4" left="225" top="116" width="80" height="32" inputtype="number" maxlength="4"/>
+              <Static id="sta_phone00" taborder="5" text="-" left="312" top="116" width="43" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+              <Edit id="edt_phone00" taborder="6" left="333" top="116" width="80" height="32" inputtype="number" maxlength="4"/>
+              <Button id="btn_find_id" taborder="7" text="찾 기" left="441" top="116" width="62" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" onclick="div_findid_btn_find_id_onclick"/>
+              <Button id="btn_find_cencal" taborder="8" text="닫 기" left="242" top="172" width="76" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" onclick="div_findid_btn_find_cencal_onclick"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Static id="sta_phone1" taborder="1" text="-" left="221" top="134" width="43" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_phone">
+        <ColumnInfo>
+          <Column id="first_num" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="first_num">010</Col>
+          </Row>
+          <Row>
+            <Col id="first_num">011</Col>
+          </Row>
+          <Row>
+            <Col id="first_num">016</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_phone_form">
+        <ColumnInfo>
+          <Column id="num_first" type="INT" size="256"/>
+          <Column id="num_second" type="INT" size="256"/>
+          <Column id="num_end" type="INT" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsList"/>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="div_findid.form.cbo_phone" propid="value" datasetid="ds_phone_form" columnid="num_first"/>
+      <BindItem id="item1" compid="div_findid.form.edt_phone1" propid="value" datasetid="ds_phone_form" columnid="num_second"/>
+      <BindItem id="item2" compid="div_findid.form.edt_phone00" propid="value" datasetid="ds_phone_form" columnid="num_end"/>
+    </Bind>
+    <Script type="xscript5.1"><![CDATA[this.div_findid_btn_find_id_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var loginYn = nexacro.getEnvironmentVariable("loginYn");
+
+	if(this.gfnIsNull(this.ds_phone_form.getColumn(0, "num_first"))){
+		alert("휴대폰 번호 앞자리 선택해주세요.");
+		return ; 
+	}
+	if(this.gfnIsNull(this.ds_phone_form.getColumn(0, "num_second"))){
+		alert("휴대폰 가운데 3~4자리를 입력해주세요.");
+		return ; 
+	}
+	if(this.gfnIsNull(this.ds_phone_form.getColumn(0, "num_end"))){
+		alert("마지막 4자리를 입력해주세요.");
+		return ; 
+	}
+
+	if(loginYn == "N") {
+		this.fnFind();	
+	}
+};
+
+this.fnFind = function() 
+{	
+	var strSvcId    = "find";
+	var strSvcUrl   = "find.do";
+	var inData      = "ds_phone_form=ds_phone_form";
+	var outData     = "dsList=dsList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	var isAsync   = true;
+	var nDataType = 0;
+	
+	this.gfnTransaction( strSvcId , 	
+						 strSvcUrl , 	
+						 inData , 		
+						 outData , 		
+						 strArg, 		
+						 callBackFnc, 	
+						 nDataType); 		
+};
+
+this.div_findid_btn_find_cencal_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "find":
+		
+			if(this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+			
+			   alert("가입된 ID가 없습니다.");
+			  
+			   break;;
+			}
+
+			if(!this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+			
+				var str = this.dsList.getColumn(0, "id");
+				
+				alert("회원님의 아이디는 " + str + "입니다.");
+				
+			    break;
+			}
+			
+	}
+}]]></Script>
+  </Form>
+</FDL>

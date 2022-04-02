@@ -1,0 +1,23 @@
+package kr.happyjob.study.epc.service;
+
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.happyjob.study.epc.dao.ProductListDao;
+import kr.happyjob.study.epc.model.SalesModel;
+
+@Service
+public class ProductListServiceImpl implements ProductListService{
+
+	@Autowired
+	ProductListDao pdao;
+	
+	public ArrayList<SalesModel> getListProduct() {
+		ArrayList<SalesModel> list = null;
+		list = pdao.getListProduct();
+		return list;
+	}
+	
+}

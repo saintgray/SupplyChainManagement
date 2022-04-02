@@ -1,0 +1,63 @@
+package kr.happyjob.study.epc.controller;
+
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.happyjob.study.epc.model.SalesModel;
+import kr.happyjob.study.epc.service.ProductListService;
+
+@Controller
+@RequestMapping("/epc")
+public class ProductListController {
+
+	@Autowired
+	ProductListService pservice;
+	
+	
+	@RequestMapping(value="/productList", method=RequestMethod.GET)
+	public String pl(Model model) {
+		
+		
+		return "epc/productList";
+	}
+	
+	@RequestMapping("/getProductList")
+	@ResponseBody
+	public ArrayList<SalesModel> gpl() {
+		ArrayList<SalesModel> list = pservice.getListProduct();
+		
+		return list;
+	}
+	
+	@RequestMapping("/getProductDetail")
+	@ResponseBody
+	public SalesModel gpd( @RequestParam int sales_id ) {
+		SalesModel product = pservice.getProductDetail(sales_id);
+		
+		return product;
+	}
+	
+	@RequestMapping("/getSalesTypeList")
+	@ResponseBody
+	public ArrayList<String> gstl() {
+		ArrayList<String> stList = pservice.getSalesTypeList();
+		
+		return stList;
+	}
+	
+	@RequestMapping("/getMfcompList")
+	@ResponseBody
+	public ArrayList<String> gmfcl( @RequestParam String salesType) {
+		ArrayList<String> mfclist = pservice.getMfcompListBySalesType(salesType);
+		
+		return mfclist;
+	}
+	 
+}

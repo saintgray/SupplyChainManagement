@@ -1,0 +1,46 @@
+1.  ERD -> table     포워딩 엔지니어링 
+2. 초기데이터                                 
+
+
+3.  준비된소스를    SVN Commit    내가
+
+https://DESKTOP-496M3PS/svn/scmmar1/
+
+https://DESKTOP-496M3PS/svn/scmmar2/
+
+
+
+
+
+4. SVN      id/paw   설정
+5. 각자   SVN       Check out
+6. 각자   Compile     Server 생성   Server Clean 
+
+
+
+http://localhot/
+
+
+
+
+1. 업무코드       3 ~ 4
+2. 메뉴 확인
+3. 업무 분장
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="usermng">
+
+
+<!--회원 경력및 스킬 정보 입력 sql  -->
+<insert id="usermng.insertUserCareer" parameterClass="MAP">
+	INSERT INTO tb_user_career(loginId
+							  ,title
+							  ,workarea1
+							  ,workarea2
+							  ,workarea3
+							  ,addtec
+							  ,career_desc
+							  ,singular_facts
+							  ,file_name
+							  ,file_path
+							  ,file_size
+							  ,regId
+							  ,reg_date
+							  ,updateId
+							  ,update_date)
+						values(#id#
+							  ,#title#
+							  ,#workarea1#
+							  ,#workarea2#
+							  ,#workarea3#
+							  ,#addtec#
+							  ,#career_desc#
+							  ,#singular_facts#
+							  ,#file_name#
+							  ,#file_path#
+							  ,#file_size#
+							  ,#regId#
+							  ,#reg_date#
+							  ,#updateId#
+							  ,now())
+</insert>
+
+
+<update id="usermng.updateUserCareer" parameterClass="MAP">
+    			UPDATE tb_user_career
+    				SET loginId=#id#
+    				   ,title=#title#
+    				   ,workarea1=#workarea1#
+    				   ,workarea2=#workarea2#
+    				   ,workarea3=#workarea3#
+    				   ,addtec=#addtec#
+    				   ,career_desc=#career_desc#
+    				   ,singular_facts=#singular_facts#
+    				   ,file_name=#file_name#
+    				   ,file_path=#file_path#
+    				   ,file_size=#file_size#
+    				   ,regId=#regId#
+    				   ,reg_date=#reg_date#
+    				   ,updateId=#updateId#
+    				   ,update_date=now()
+    			 WHERE loginID = #id#
+         		  
+</update>
+
+
+
+  	<insert id="usermng.insertpersoninfo" parameterClass="MAP">
+	         insert into tb_userinfo
+             (
+               loginID
+               ,user_type
+               ,password
+               ,name
+               ,email
+               ,email_cop
+               ,sex
+               ,birthday
+               ,area
+               ,tel1
+               ,tel2
+               ,tel3
+               ,salary
+               ,grade
+               ,consult_yn
+               ,career_year
+               ,career_mm
+               ,manager_name
+               ,singular_facts
+               ,status
+               ,regId
+               ,reg_date
+             ) values (
+                #id#
+               ,'D'
+               ,#password# 
+               ,#name#  
+               ,#email#  
+               ,#email_cop# 
+               ,#sex# 
+               ,#birthday#
+               ,#area#
+               ,#tel1#
+               ,#tel2#
+               ,#tel3#
+               ,#salary#
+               ,#grade#
+               ,#consult_yn#
+               ,#career_year#
+               ,#career_mm#
+               ,#manager_name#
+               ,#singular_facts#
+               ,'W'
+               ,#loginID#
+               ,now()
+             ) 
+    </insert>   
+
+      
+ 	<update id="usermng.updatepersoninfo" parameterClass="MAP"> 	
+			update tb_userinfo 
+            set password = #password#	
+	           ,name = #name#	
+	           ,email = #email#	
+			   ,email_cop = #email_cop#	
+			   ,sex	= #sex#
+			   ,birthday = #birthday#	
+			   ,area = #area#	
+			   ,tel1 = #tel1#	
+			   ,tel2 = #tel2#	
+			   ,tel3 = #tel3#	
+			   ,salary = #salary#	
+			   ,grade = #grade#	
+			   ,consult_yn = #consult_yn#	
+			   ,career_year = #career_year#	
+			   ,career_mm = #career_mm#	
+			   ,manager_name = #manager_name#	
+			   ,singular_facts = #singular_facts#	
+			   ,status = #status#		
+			   ,updateId = #loginID#	
+			   ,update_date = now()
+          where loginID = #id#
+            AND user_type = 'D'
+    </update>
+    
+    
+    
+    
+    <delete id="usermng.deletepersonskill" parameterClass="MAP">
+         delete from tb_user_skill 
+         where loginID = #id# 
+    </delete>
+        
+ 	<insert id="usermng.insertpersonskill" parameterClass="MAP">
+         insert into  tb_user_skill(loginID, skill_code) values (#id#, #skillid#) 
+    </insert>        
+        
+ 	<select id="usermng.selectUserPersoncnt" parameterClass="MAP" resultClass="int">        
+        select count(*) AS cnt
+          from tb_userinfo
+         where loginID = #id#
+           and user_type = 'D'        
+    </select>    
+    
+    
+   <!--**************************************사용자 관리*****************************************************  -->
+ 
+	<select id="usermng.UserListMap" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+		SELECT ui.user_type,ui.name,ui.loginID , ui.reg_date , dc.detail_name user_type_name	
+		FROM tb_userinfo ui, tb_detail_code dc  
+		WHERE dc.group_code = 'MBCD'
+		  AND dc.detail_code = ui.user_type	
+		 <dynamic>
+			<isEqual prepend="AND" property="searchType" compareValue="D">
+						ui.user_type = 'D'
+			</isEqual>		
+			<isEqual prepend="AND" property="searchType" compareValue="C">
+						ui.user_type = 'C'
+			</isEqual>				
+			<isEqual prepend="AND" property="searchType" compareValue="A">
+						ui.user_type = 'A'
+			</isEqual>			
+		    <isNotNull prepend="AND" property="searchKeyWord">
+		        ui.name LIKE CONCAT ('%',#searchKeyWord#,'%')
+		    </isNotNull>
+		</dynamic>
+	</select>
+	
+   
+    
+    
+    
+    
+    
+    
+         
+     <!-- USER 상세정보 출력 query  -->    
+         <!-- 상세 회원 정보   -->
+ 	<select id="usermng.readUserInfo" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+	     SELECT UI.loginID AS id
+			   ,UI.password
+			   ,UI.name
+			   ,UI.email
+			   ,UI.email_cop
+			   ,UI.sex
+			   ,UI.birthday
+			   ,UI.area
+			   ,UI.tel1
+			   ,UI.tel2
+			   ,UI.tel3
+			   ,UI.salary
+         	   ,UI.grade
+			   ,UI.consult_yn
+		       ,UI.career_year
+		       ,UI.career_mm
+		       ,UI.manager_name
+		       ,UI.singular_facts
+		       ,UI.status
+		       ,UC.title
+		       ,UC.workarea1
+		       ,UC.workarea2
+		       ,UC.workarea3
+		       ,UC.addtec
+		       ,UC.career_desc
+		       ,UC.si
+		       ,UC.sm
+		       ,UC.solution
+		       ,UC.file_name
+		       ,UC.file_path
+		       ,UC.file_size
+		       FROM tb_userinfo UI LEFT OUTER JOIN tb_user_career UC ON UI.loginID = UC.loginId
+		       WHERE UI.loginID = #loginID# 
+		       AND UI.user_type = #userType#   
+    </select>
+    
+  <!-- 상세 회원의 경력스킬 정보   -->
+  <select id="usermng.readUserCareer" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+  	 	 SELECT US.loginID, US.skill_code as skillid
+           FROM tb_user_skill US
+          WHERE US.loginID = #loginID#
+       ORDER BY US.skill_code;  	 	   
+   </select>    
+         
+</sqlMap>

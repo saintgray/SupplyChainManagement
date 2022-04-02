@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="sample_Form_Popup" width="360" height="284" titletext="New Form" onload="sample_Form_Popup_onload">
+    <Layouts>
+      <Layout height="284" mobileorientation="landscape" width="360">
+        <Grid id="grd00" taborder="0" left="7" top="6" width="343" height="224" binddataset="ds_child">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="111"/>
+                <Column size="115"/>
+                <Column size="115"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="상품평"/>
+                <Cell col="1" text="가격"/>
+                <Cell col="2" text="수량"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:goods_name"/>
+                <Cell col="1" text="bind:sale_p"/>
+                <Cell col="2" text="bind:sale_q" displaytype="mask" edittype="mask" maskeditformat="#,###"/>
+              </Band>
+              <Band id="summary">
+                <Cell colspan="2" text="expr:&quot;총 &quot;+dataset.getRowCount()+&quot;개 메뉴&quot;"/>
+                <Cell col="2" text="expr:dataset.getSum(&quot;sale_p&quot;)" displaytype="number"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btn_order" taborder="1" text="주문하기" left="7" top="243" width="120" height="31" onclick="btn_order_onclick"/>
+        <Button id="btn_cancel" taborder="2" text="취소" left="230" top="243" width="120" height="31" onclick="btn_cancel_onclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		order.xfdl
+*  @Creator 		김준서
+*  @CreateDate 	2020.06.09
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+
+
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+this.sample_Form_Popup_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	var objParam = this.parent.param1;
+	
+	//trace("brfore : " + this.ds_child.saveXML());
+	
+	this.ds_child.copyData(objParam);
+	
+	//trace("after : " + this.ds_child.saveXML());
+	
+	//this.grd00.set_binddataset("ds_child");
+	//this.grd00.createFormat();
+};
+/***********************************************************************************************
+* FORM EVENT 영역(onclick)
+/***********************************************************************************************/
+this.btn_order_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.fn_Order();
+};
+this.btn_cancel_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+
+ /************************************************************************************************
+ * 사용자 FUNCTION 영역
+ ************************************************************************************************/
+	this.fn_Order = function() 
+{	
+    //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "order";
+	var strSvcUrl   = "order.do";
+	var inData      = "ds_child=ds_child";
+	var outData     = "";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	//alert("edId : " + this.dsSearch.getColumn("USER_ID") + " edPw : " + this.dsSearch.getColumn("USER_PASSWORD"));
+	//alert(this.dsSearch.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+								
+								
+};
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "order":
+		    alert("사용자님 주문하신 메뉴가 정상적으로 주문이 되었습니다.");
+			this.close();
+		break;
+		
+	}
+};
+
+]]></Script>
+    <Objects>
+      <Dataset id="ds_result"/>
+      <Dataset id="ds_child" onvaluechanged="fn_cntchanged">
+        <ColumnInfo>
+          <Column id="goods_name" type="STRING" size="256"/>
+          <Column id="sale_p" type="INT" size="256"/>
+          <Column id="sale_q" type="STRING" size="256"/>
+          <Column id="goods_category" type="STRING" size="256"/>
+          <Column id="goods_code" type="STRING" size="256"/>
+          <Column id="id" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>

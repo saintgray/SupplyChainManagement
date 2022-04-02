@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.epc.dao.ProductListDao">
+	<select id="getListProduct" resultType="kr.happyjob.study.epc.model.SalesModel">
+		select * from tb_sales
+	</select>
+	
+	<select id="getProductDetail" resultType="kr.happyjob.study.epc.model.SalesModel">
+		select * from tb_sales where sales_id = #{sales_id}
+	</select>
+	
+	<select id="getSalesTypeList" resultType="string">
+		select distinct(sales_type) FROM tb_sales
+	</select>
+	
+	<select id="getMfcompListBySalesType" resultType="string">
+		select distinct(mfcomp) FROM tb_sales
+		<where> 
+			<if test="(sales_type != null)">
+				sales_type = #{mfcomp}
+			</if>
+		</where>
+	</select>
+
+</mapper>

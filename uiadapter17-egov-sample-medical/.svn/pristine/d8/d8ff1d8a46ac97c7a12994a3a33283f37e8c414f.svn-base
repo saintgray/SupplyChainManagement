@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="GoodsRegist" width="600" height="270" titletext="New Form" onload="GoodsRegist_onload">
+    <Layouts>
+      <Layout height="270" mobileorientation="landscape" width="600">
+        <Edit id="edt_goodsname" taborder="0" left="95" top="62" width="140" height="20"/>
+        <Edit id="edt_price" taborder="1" left="95" top="105" width="140" height="20" inputtype="number"/>
+        <Combo id="cbo_goodsType" taborder="2" text="" left="385" top="63" width="150" height="20" innerdataset="ds_GoodsTypes" codecolumn="detail_code" datacolumn="detail_name" onitemchanged="cbo_goodsType_onitemchanged"/>
+        <Static id="sta00" taborder="3" text="상품명" left="27" top="50" height="42" textAlign="center" width="56"/>
+        <Static id="sta01" taborder="4" text="가격" left="29" top="90" height="42" textAlign="center" width="56"/>
+        <Static id="sta02" taborder="5" text="종류" left="285" top="52" height="42" textAlign="center" width="56"/>
+        <Static id="sta03" taborder="6" text="잔여갯수" left="287" top="94" height="42" textAlign="center" width="56"/>
+        <Spin id="spn_Count" taborder="7" left="385" top="104" width="150" height="20" displaycomma="true"/>
+        <Button id="btn_regist" taborder="8" text="등록" left="227" top="170" width="120" height="50" onclick="btn_regist_onclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[
+this.GoodsRegist_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	var suc = false;
+	suc = this.ds_GoodsTypes.copyData(this.parent.GoodsTypes);
+	trace("copyTypes = " + suc);
+	//this.ds_GoodsTypes.rowposition = 0;
+	this.ds_GoodsInfo.addRow();
+	suc = this.ds_GoodsInfo.setColumn(0,"goods_category",this.ds_GoodsTypes.getColumn(0,1));
+	trace(suc);
+	this.ds_GoodsInfo.set_rowposition(0);
+};
+
+this.fnGoodsValidation = function()
+{
+	if(this.ds_GoodsInfo.getColumn(0, "goods_name") == null)
+	{
+		this.alert("등록할 상품명을 입력해주세요");
+		return false;
+	}
+	if(this.ds_GoodsInfo.getColumn(0, "goods_price") == null)
+	{
+		this.alert("가격을 설정해주세요");
+		return false;
+	}
+	if(this.ds_GoodsInfo.getColumn(0, "reamincnt") == null)
+	{
+		this.alert("재고을 설정해주세요");
+		return false;
+	}
+	
+	return true;
+}
+this.btn_regist_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if(!this.fnGoodsValidation())
+	{
+		//trace("why");
+		for(var i = 0 ; i < this.ds_GoodsInfo.getColCount(); i++)
+		{
+			trace(this.ds_GoodsInfo.getColumn(0,i));
+		}
+		return;
+	}
+	
+
+	var strSvcId    = "insert";
+	var strSvcUrl   = "updateGoodsList.do";
+	var inData      = "ds_GoodsInfo=ds_GoodsInfo";
+	var outData     = "";
+	var strArg      = "updateType=2";
+	var callBackFnc = "fnCallback";
+	var isAsync   	= true;
+	
+	this.gfnTransaction(strSvcId , 		// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						isAsync); 		// 비동기통신 여부 [생략가능]	
+};
+
+this.fnCallback = function(svcID,errorCode,errorMsg)
+{
+	switch(svcID)
+	{
+		case "insert":
+			alert("등록 되었습니다.");
+			this.opener.fn_parent(this.ds_GoodsInfo);
+			//this.opener.fn_parent(this.ds_GoodsInfo);
+			this.close();
+			break;
+	}
+}
+]]></Script>
+    <Objects>
+      <Dataset id="ds_GoodsInfo">
+        <ColumnInfo>
+          <Column id="goods_code" type="STRING" size="256"/>
+          <Column id="goods_category" type="STRING" size="256"/>
+          <Column id="goods_name" type="STRING" size="256"/>
+          <Column id="goods_price" type="INT" size="256"/>
+          <Column id="reamincnt" type="INT" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_GoodsTypes">
+        <ColumnInfo>
+          <Column id="detail_code" type="STRING" size="256"/>
+          <Column id="detail_name" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="edt_goodsname" propid="value" datasetid="ds_GoodsInfo" columnid="goods_name"/>
+      <BindItem id="item1" compid="cbo_goodsType" propid="value" datasetid="ds_GoodsInfo" columnid="goods_category"/>
+      <BindItem id="item2" compid="edt_price" propid="value" datasetid="ds_GoodsInfo" columnid="goods_price"/>
+      <BindItem id="item3" compid="spn_Count" propid="value" datasetid="ds_GoodsInfo" columnid="reamincnt"/>
+    </Bind>
+  </Form>
+</FDL>

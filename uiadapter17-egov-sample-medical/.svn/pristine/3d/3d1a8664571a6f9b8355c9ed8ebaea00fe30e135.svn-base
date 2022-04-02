@@ -1,0 +1,58 @@
+package com.nexacro.sample.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.nexacro.sample.service.OrderService;
+import com.nexacro.uiadapter17.spring.core.annotation.ParamDataSet;
+import com.nexacro.uiadapter17.spring.core.data.NexacroResult;
+
+/**
+ * <pre>
+ * 
+ * @title
+ * @desc Food Order 처리를 한다. 
+ * @package com.nexacro.Login.web
+ * 
+ *          <pre>
+ * @author 김준서
+ * @since 2020. 6. 10.
+ * @version 1.0
+ * @see =================== 변경 내역 ================== 날짜 변경자 내용
+ *      ------------------------------------------------ 2020. 6. 10. 김준서 최초작성
+ */
+@Controller
+public class OrderController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserLogInController.class);
+	
+	
+	@Autowired
+	@Resource(name = "orderService")
+	private OrderService orderService;
+	
+	@RequestMapping(value = "/goodsList.do")
+	public NexacroResult selectMap(@ParamDataSet(name = "ds_foodList", required = false) Map<String, Object> GoodsMap) {
+		List<Map<String, Object>> list = orderService.selectGoodsMap(GoodsMap);
+		NexacroResult result = new NexacroResult();
+		result.addDataSet("ds_foodList",list);
+		return result;
+		
+	}
+	
+	@RequestMapping(value = "/order.do")
+	public NexacroResult order(@ParamDataSet(name = "ds_child", required = false) List<Map<String, Object>> orderMap) {
+		orderService.insertOrderMap(orderMap);
+		NexacroResult result = new NexacroResult();
+		return result;
+	}
+	
+}

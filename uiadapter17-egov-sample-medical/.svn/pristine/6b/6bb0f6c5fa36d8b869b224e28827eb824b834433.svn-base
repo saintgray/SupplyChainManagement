@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="seat_Form" width="360" height="284" titletext="New Form" onload="seat_Form_onload">
+    <Layouts>
+      <Layout height="284" mobileorientation="landscape" width="360">
+        <Button id="btn_set" taborder="0" text="배정" left="7" top="243" width="120" height="31" onclick="btn_set_onclick"/>
+        <Button id="btn_cancel" taborder="1" text="취소" left="220" top="243" width="120" height="31" onclick="btn_cancel_onclick"/>
+        <Static id="sta00" taborder="2" text="배정" left="135" top="12" width="211" height="56" font="20px/normal &quot;Gulim&quot;"/>
+        <Grid id="grd00" taborder="3" left="13" top="64" width="335" height="170" binddataset="pcUser">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="151"/>
+                <Column size="185"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="loginID"/>
+                <Cell col="1" text="name"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:loginID"/>
+                <Cell col="1" text="bind:name"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[
+
+this.seat_Form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	//pc_no, usable_yn, loginID, user
+	var data = this.parent
+	this.pc_no.setColumn( 0, "pc_no", data.pc_no)
+
+	var strSvcId = "getAvailable";
+	var strSvcUrl = "getAvailable.do";
+	var inData = "";
+	var outData = "pcUser=pcUser";
+	var strArg = "";
+	var callBackFnc = "fnCallback";
+	var nDataType = 0;
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	if(svcID == "setSeat") {
+		
+		this.close();
+		this.parent.main_onload();
+	}
+};
+
+this.btn_set_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	
+	var loginID = this.pcUser.getColumn(this.pcUser.rowposition,"loginID");
+	var pc_no = this.pc_no.getColumn(0,"pc_no");
+	
+	
+	this.pc_send.setColumn( 0, "pc_no", pc_no);
+	this.pc_send.setColumn( 0, "loginID", loginID);
+
+	/*
+	var obj = {
+		"id" : id,
+		"pc_no" : pc_no
+	}
+	*/
+
+	var strSvcId = "setSeat";
+	var strSvcUrl = "pcsetSeat.do";
+	var inData = "pc_send=pc_send";
+	var outData = "";
+	var strArg = "";
+	var callBackFnc = "fnCallback";
+	var nDataType = 0;
+	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+
+};
+
+this.btn_cancel_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+]]></Script>
+    <Objects>
+      <Dataset id="pcUser">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="pc_no">
+        <ColumnInfo>
+          <Column id="pc_no" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="pc_send">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="pc_no" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>

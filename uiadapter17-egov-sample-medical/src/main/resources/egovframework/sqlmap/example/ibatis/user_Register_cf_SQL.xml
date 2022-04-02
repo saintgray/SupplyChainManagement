@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="regi">
+
+    <typeAlias alias="loginVO" type="com.nexacro.sample.vo.LoginVO"/>
+
+<!-- Sample resultObject -->
+    <resultMap id="regi" class="loginVO">
+        <result property="id" column="LOGINID" />
+        <result property="usertype" column="USER_TYPE" />
+        <result property="userName" column="NAME" />
+    </resultMap>
+
+ 	<select id="regi.check_id" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+            SELECT loginID AS id
+	               ,user_type AS usertype
+	               ,name AS  userName
+            FROM tb_userinfo  
+            WHERE loginID = #id#  
+    </select>
+    
+    <select id="regi.check_email" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+            SELECT loginID AS id
+	               ,user_type AS usertype
+	               ,name AS  userName
+            FROM tb_userinfo  
+            WHERE email_name = #email_name#
+            AND email_form = #email_form#
+    </select>
+
+    <select id="regi.find" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+            SELECT loginID AS id
+	               ,user_type AS usertype
+	               ,name AS  userName
+            FROM tb_userinfo  
+            WHERE phone_first = #num_first#
+            AND phone_second = #num_second#
+            AND phone_end = #num_end#
+    </select>
+
+	<insert id="regi.insertUserData" parameterClass="MAP"> 
+			INSERT INTO tb_userinfo
+ 			(loginID, 
+ 			 name, 
+ 			 user_type, 
+ 			 password, 
+ 			 email_name,
+ 			 email_form,
+ 			 phone_first,
+ 			 phone_second,
+ 			 phone_end,
+ 			 use_yn)
+             VALUES (#id#,
+             		 #name#,
+             		 'C',
+             		 #pw#,
+             		 #email_name#,
+             		 #email_form#,
+             		 #phone_first#,
+             		 #phone_second#,
+             		 #phone_end#,
+             		 'n'            		 
+             ) 
+	</insert>
+    <update id="regi.modify" parameterClass="MAP"> 
+    		UPDATE tb_userinfo
+    		SET name = #name#,
+	<isNotNull property="pw2">
+    			password = #pw2#,
+	</isNotNull>
+    			email_name = #email_name#,
+    			email_form = #email_form#,
+    			phone_first = #phone_first#,
+    			phone_second = #phone_second#,
+    			phone_end = #phone_end#
+    			
+    		WHERE loginID = #id#
+    </update>
+    <delete id="regi.delete" parameterClass="MAP">
+    		DELETE FROM tb_userinfo
+    		WHERE loginID = #id#
+    </delete>
+</sqlMap>

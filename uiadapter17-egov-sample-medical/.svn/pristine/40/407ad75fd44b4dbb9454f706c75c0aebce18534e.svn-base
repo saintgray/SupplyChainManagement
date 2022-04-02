@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Order">
+
+	<!--상품 리스트 query -->
+	<select id="Order.selectGoodsMapList" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+		select * from tb_goods
+	</select>
+	
+	<select id="Order.checkSaleCnt" resultClass="int">
+		select count(*) from 
+	    	(select count(*) FROM tb_sales
+	    		 group by sales_code) 
+	    	as cnt
+	</select>
+	
+	<insert id="Order.insertOrderMap"  parameterClass="Map">
+		insert into tb_sales(
+			sales_code,
+			goods_code,
+			sale_q,
+			sale_p,
+			sale_totp,
+			sales_date,
+			sales_status,
+			loginID
+		)values (
+			#sales_code#,
+			#goods_code#,
+			#sale_q#,
+			#sale_p#,
+			#sale_totp#,
+			now(),
+			's',
+			#loginID#
+		)
+	</insert>
+
+	<update id="Order.updateGoodsCnt" parameterClass="Map">
+		update tb_goods set reamincnt = reamincnt - #sale_q# where goods_name = #goods_name# 
+	</update>
+	
+</sqlMap>

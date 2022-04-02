@@ -1,0 +1,10 @@
+package kr.happyjob.study.epc.service;
+
+import java.util.ArrayList;
+
+import kr.happyjob.study.epc.model.SalesModel;
+
+public interface ProductListService {
+
+	abstract ArrayList<SalesModel> getListProduct();
+}

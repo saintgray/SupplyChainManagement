@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="NoticeDetail" width="1280" height="720" titletext="New Form" onload="NoticeDetail_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Grid id="grd00" taborder="0" left="13" top="13" width="772" height="490"/>
+        <Edit id="nt_title" taborder="1" left="70" top="30" width="690" height="35" onchanged="edt00_onchanged"/>
+        <Static id="sta00" taborder="2" text="제목" left="37" top="30" width="31" height="30"/>
+        <TextArea id="nt_note" taborder="3" left="37" top="110" width="723" height="323"/>
+        <Button id="nt_close" taborder="4" text="닫기" left="369" top="448" width="101" height="41" onclick="nt_close_onclick"/>
+        <Static id="sta01" taborder="5" text="내용" left="39" top="80" width="63" height="30" onclick="sta01_onclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[var title=this.parent.param1;
+var wno=this.parent.param2;
+var loginID=nexacro.getEnvironmentVariable("gvUserId");
+var UserType=nexacro.getEnvironmentVariable("gvUserType");
+
+this.NoticeDetail_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.objApp = nexacro.getApplication();
+	this.NoticeDetail();
+};
+
+this.NoticeDetail=function()
+{
+		var strSvcId    = "NoticeDetail";
+		var strSvcUrl   = "noticeDetail.do";
+		var inData      = "";
+		var outData     = "ds_Notice=ds_Notice";
+		var strArg      = "wno="+wno;
+		var callBackFnc = "fnCallback";
+	 
+		
+		//생략가능
+		var isAsync   = true;
+		var nDataType = 0;	
+		
+		this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+									strSvcUrl , 	// trabsaction을 요청할 주소
+									inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+									outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+									strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+									callBackFnc, 	// transaction의 결과를 받을 Function 이름
+									nDataType); // 통신방법 정의 [생략가능]
+}
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "NoticeDetail":			
+			break;
+
+	}
+		
+};
+this.nt_close_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+
+this.nt_title.set_readonly(true);
+this.nt_note.set_readonly(true);]]></Script>
+    <Objects>
+      <Dataset id="ds_Notice">
+        <ColumnInfo>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="reg_date" type="DATETIME" size="256"/>
+          <Column id="regId" type="STRING" size="256"/>
+          <Column id="wno" type="STRING" size="256"/>
+          <Column id="note" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="nt_title" propid="value" datasetid="ds_Notice" columnid="title"/>
+      <BindItem id="item1" compid="nt_note" propid="value" datasetid="ds_Notice" columnid="note"/>
+    </Bind>
+  </Form>
+</FDL>

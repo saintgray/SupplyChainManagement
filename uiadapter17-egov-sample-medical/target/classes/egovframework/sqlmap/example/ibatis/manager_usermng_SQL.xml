@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="manager">
+
+ 	<select id="manager.selectUserListMap" parameterClass="MAP" resultClass="java.util.HashMap" 
+ 	remapResults="true">
+ 		
+ 		SELECT
+ 			loginID
+	        ,name
+	        ,concat(email_name,'@',email_form) as email
+	        ,user_type AS usertype
+            ,concat(phone_first,'-',phone_second,'-',phone_end) as user_tel
+            ,phone_first
+            ,phone_second
+            ,phone_end
+            ,email_name
+            ,email_form
+            FROM tb_userinfo 
+			WHERE 1=1
+			<isNotNull property="sname">
+				AND name LIKE CONCAT('%',#sname#,'%')
+			</isNotNull>
+			ORDER BY name
+	</select>
+	
+	<update id="manager.modifyMap" parameterClass="MAP">
+		update tb_userinfo set 
+		loginID = #loginID#
+		, name = #name#
+		, email_name = #email_name#
+		, email_form = #email_form#
+		,phone_first = #phone_first#
+		,phone_second = #phone_second#
+		,phone_end = #phone_end# 
+		where loginID = #loginID#
+		
+	</update>
+      
+</sqlMap>

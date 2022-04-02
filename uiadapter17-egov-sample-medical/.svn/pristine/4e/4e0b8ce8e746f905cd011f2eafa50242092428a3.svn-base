@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="goodsMgr">
+
+<!--음식정보 List  -->
+<select id="goodsMgr.selectGoodsInfo" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+	SELECT 
+		g.goods_code,
+		g.goods_name,
+		g.goods_category,
+		g.goods_price,
+		g.reamincnt
+	FROM tb_goods g
+	<dynamic>
+	WHERE 1 = 1
+		<isNotNull prepend="AND" property="goods_category">	
+			g.goods_category = #goods_category#
+		</isNotNull>		
+			<isNotEqual prepend="AND" property="goods_code" compareValue="A">
+				<isNotNull property="goods_code">
+					g.goods_code = #goods_code#
+				</isNotNull>
+		</isNotEqual>
+
+	</dynamic>
+	
+</select>
+<!-- 콤보박스(음식류)  -->
+
+<select id="goodsMgr.initGoodsCbo" resultClass="java.util.HashMap" remapResults="true">
+	SELECT 
+		detail_code,
+		detail_name
+	FROM
+		tb_detail_code
+	WHERE
+		group_code = "Goods"
+</select> 
+
+<select id="goodsMgr.initGoodsDetailCbo" parameterClass="String" resultClass="java.util.HashMap" remapResults="true">
+	SELECT 
+		goods_code,
+		goods_name
+	FROM
+		tb_goods
+	WHERE
+		goods_code LIKE concat('%', #detail_code#, '%') 
+</select> 
+
+<update id="goodsMgr.goodsListUpdate" parameterClass="Map">
+	UPDATE tb_goods g
+	SET
+		g.goods_name = #goods_name#,
+		g.goods_category = #goods_category#,
+		g.goods_price = #goods_price#,
+		g.reamincnt = #reamincnt#
+	WHERE
+		g.goods_code = #goods_code#
+</update>
+
+<delete id="goodsMgr.goodsListDelete" parameterClass="Map">
+	DELETE
+	FROM tb_goods
+	WHERE
+		goods_code = #goods_code#
+</delete>
+
+<insert id="goodsMgr.goodsListInsert" parameterClass="Map">
+	<selectKey resultClass="String" keyProperty="after_goods_code">
+		  SELECT CONCAT(#goods_category#,LPAD(cast((cast(SUBSTR(ifnull(max(goods_code),''),3) as unsigned) + 1) as char(3)),3,'0'))  As after_goods_code     
+			from tb_goods
+      	  WHERE
+          SUBSTR(goods_code, 1, 1) = #goods_category#
+	</selectKey>  
+	INSERT INTO tb_goods(
+		goods_code, 
+		goods_name, 
+		goods_category, 
+		goods_price,
+		reamincnt
+	)
+	VALUE(
+		#after_goods_code#,
+		#goods_name#,
+		#goods_category#,
+		#goods_price#,
+		#reamincnt#
+	)
+</insert>
+
+    
+</sqlMap>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="notice">
+
+   <select id="notice.msgSelect" parameterClass="Map" resultClass="java.util.HashMap" >
+ 	
+	   SELECT 
+	         u.name as name, 
+		     date_format(n.rs_date,'%Y%m%d') as rsdate, 
+		     n.wno 
+	     FROM tb_note n join tb_userinfo u on n.loginId = u.loginId 
+        where 1 = 1 
+        <dynamic>
+          <isNotNull prepend="AND" property="name">
+               u.name LIKE concat('%', #name#, '%') 
+          </isNotNull>
+          
+          <isNotNull prepend="AND" property="rs_date1">
+               n.rs_date <![CDATA[>]]> STR_TO_DATE(#rs_date1#, '%Y%m%d')  
+          </isNotNull>          
+          
+          <isNotNull prepend="AND" property="rs_date2">
+               n.rs_date <![CDATA[<]]> STR_TO_DATE(#rs_date2#, '%Y%m%d')  
+          </isNotNull>               
+          
+		  <isEqual prepend="AND" property="type" compareValue="1">
+			   n.rcv_loginId = #loginId#
+		  </isEqual>          
+          
+		  <isEqual prepend="AND" property="type" compareValue="2">
+			   n.loginId = #loginId#
+		  </isEqual>              
+		</dynamic>
+
+   </select>
+   
+   
+   
+   
+   <select id="notice.notedetailinfo" parameterClass="Map" resultClass="java.util.HashMap" >
+ 	
+	   SELECT n.wno
+	         , ( select u.name from tb_userinfo u where u.loginId = n.loginId ) as sendname 
+		     , ( select u.name from tb_userinfo u where u.loginId = n.rcv_loginId ) as recvname
+		     , n.note
+		     , n.loginId as sendId
+		     , n.rcv_loginId as recvId
+	     FROM tb_note n  
+        where n.wno = #wno#
+
+   </select>
+   
+   <insert id="notice.sendNote" parameterClass="Map">
+       <selectKey resultClass="String" keyProperty="wcno">
+       		SELECT ifNull(max(wno), 0)+1 
+       		  FROM tb_note
+       </selectKey>
+       INSERT INTO tb_note(type,
+       					  loginId,
+       					  wno,
+       					  note,
+       					  rs_date,
+       					  rcv_loginId
+       				) VALUES (
+       					  '1'
+       					 , #sendId#
+       					 , #wcno#
+       					 , #note#
+       					 , now()
+       					 , #recvId#
+       				)
+   </insert>   
+
+</sqlMap>
+     
+  

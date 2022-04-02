@@ -1,0 +1,1081 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="ProjectDetail" width="1110" height="1590" titletext="프로젝트 상세" onload="ProjectDetail_onload">
+    <Layouts>
+      <Layout height="1590" mobileorientation="landscape" width="1110">
+        <Div id="Div00" taborder="0" text="Div00" left="0" top="11" width="1090" height="1559">
+          <Layouts>
+            <Layout>
+              <Static id="Static00" taborder="1" text="프로젝트 상세 정보" left="13" top="9" width="200" height="40" onclick="Div00_Static00_onclick" font="20px/normal &quot;Verdana&quot;"/>
+              <Static id="Static01" taborder="7" text="프로젝트명" left="513" top="58" width="80" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static12" taborder="22" text="근무기간" left="34" top="755" width="103" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Calendar id="cal_work_fr_date" taborder="12" left="114" top="764" width="150" height="31"/>
+              <Static id="Static21" taborder="23" text="전문기술" left="13" top="239" width="70" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static22" taborder="24" text="Language" left="98" top="244" width="70" height="31" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;" color="#ef0000"/>
+              <CheckBox id="chk_lag_as400" taborder="25" left="98" top="280" width="20" height="20" text="" onclick="Div00_chk_lag_as400_onclick"/>
+              <Static id="Static23" taborder="26" text="AS400" left="123" top="268" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_lag_c" taborder="27" left="98" top="310" width="20" height="20"/>
+              <Static id="Static24" taborder="28" text="C" left="123" top="298" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_lag_cpp" taborder="29" left="98" top="339" width="20" height="20"/>
+              <Static id="Static25" taborder="30" text="C++" left="123" top="327" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_lag_cobol" taborder="31" left="98" top="368" width="20" height="20"/>
+              <Static id="Static26" taborder="32" text="COBOL" left="123" top="356" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static27" taborder="33" text="VB" left="123" top="475" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static28" taborder="34" text="JAVA" left="123" top="446" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static29" taborder="35" text="Power Buulder" left="123" top="417" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static30" taborder="36" text="Delphi" left="123" top="387" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_lag_dp" taborder="37" left="98" top="399" width="20" height="20"/>
+              <CheckBox id="chk_lag_pd" taborder="38" left="98" top="429" width="20" height="20"/>
+              <CheckBox id="chk_lag_java" taborder="39" left="98" top="458" width="20" height="20"/>
+              <CheckBox id="chk_lag_vb" taborder="40" left="98" top="487" width="20" height="20" onclick="Div00_chk_lag_vb_onclick"/>
+              <Static id="Static31" taborder="41" text="R" left="123" top="628" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_lag_r" taborder="42" left="98" top="640" width="20" height="20"/>
+              <CheckBox id="chk_lag_python" taborder="43" left="98" top="611" width="20" height="20"/>
+              <Static id="Static32" taborder="44" text="Python" left="123" top="599" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_lag_danet" taborder="45" left="98" top="582" width="20" height="20"/>
+              <Static id="Static33" taborder="46" text=".net" left="123" top="570" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_lag_cc" taborder="47" left="98" top="552" width="20" height="20"/>
+              <Static id="Static34" taborder="48" text="C#" left="123" top="540" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static35" taborder="49" text="VC" left="123" top="509" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_lag_vc" taborder="50" left="98" top="521" width="20" height="20"/>
+              <Static id="Static36" taborder="51" text="WEB" left="256" top="245" width="70" height="31" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;" color="#ef0000"/>
+              <CheckBox id="chk_web_asp" taborder="52" left="256" top="281" width="20" height="20"/>
+              <Static id="Static37" taborder="53" text="ASP" left="281" top="269" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_web_jsp" taborder="54" left="256" top="311" width="20" height="20"/>
+              <Static id="Static38" taborder="55" text="JSP" left="281" top="299" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_web_php" taborder="56" left="256" top="340" width="20" height="20"/>
+              <Static id="Static39" taborder="57" text="PHP" left="281" top="328" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_web_xml" taborder="58" left="256" top="369" width="20" height="20"/>
+              <Static id="Static40" taborder="59" text="XML" left="281" top="357" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_web_dhtml" taborder="60" left="256" top="400" width="20" height="20"/>
+              <Static id="Static41" taborder="61" text="DHTML" left="281" top="388" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_web_mp" taborder="62" left="256" top="430" width="20" height="20"/>
+              <Static id="Static42" taborder="63" text="miPlatform" left="281" top="418" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_web_xp" taborder="64" left="256" top="459" width="20" height="20"/>
+              <Static id="Static43" taborder="65" text="xPlatform" left="281" top="447" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_web_nc" taborder="66" left="256" top="488" width="20" height="20"/>
+              <Static id="Static44" taborder="67" text="Nexocro" left="281" top="476" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static45" taborder="68" text="FrmeWork" left="256" top="544" width="70" height="31" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;" color="#ef0000"/>
+              <CheckBox id="chk_FW_spring" taborder="69" left="256" top="580" width="20" height="20"/>
+              <Static id="Static46" taborder="70" text="Spring" left="281" top="568" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_FW_eg" taborder="71" left="256" top="610" width="20" height="20"/>
+              <Static id="Static47" taborder="72" text="eGOV" left="281" top="598" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_FW_st" taborder="73" left="256" top="639" width="20" height="20"/>
+              <Static id="Static48" taborder="74" text="Struts" left="281" top="627" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static49" taborder="75" text="OS" left="398" top="243" width="70" height="31" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;" color="#ef0000"/>
+              <CheckBox id="chk_os_unix" taborder="76" left="398" top="279" width="20" height="20"/>
+              <Static id="Static50" taborder="77" text="UNIX" left="423" top="267" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_os_lnux" taborder="78" left="398" top="309" width="20" height="20"/>
+              <Static id="Static51" taborder="79" text="LINUX" left="423" top="297" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_os_mac" taborder="80" left="398" top="338" width="20" height="20"/>
+              <Static id="Static52" taborder="81" text="MAC" left="423" top="326" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_os_mvc" taborder="82" left="398" top="367" width="20" height="20"/>
+              <Static id="Static53" taborder="83" text="MVC" left="423" top="355" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_os_sol" taborder="84" left="398" top="398" width="20" height="20"/>
+              <Static id="Static54" taborder="85" text="SOLARIS" left="423" top="386" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_os_win" taborder="86" left="398" top="428" width="20" height="20"/>
+              <Static id="Static55" taborder="87" text="WINDOWS" left="423" top="416" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_os_wins" taborder="88" left="398" top="457" width="20" height="20"/>
+              <Static id="Static56" taborder="89" text="WINDOWS SERVER" left="423" top="445" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static57" taborder="90" text="jQuery" left="426" top="567" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_FW_jq" taborder="91" left="401" top="579" width="20" height="20"/>
+              <Static id="Static61" taborder="92" text="DB" left="592" top="243" width="70" height="31" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;" color="#ef0000"/>
+              <CheckBox id="chk_db_ac" taborder="93" left="592" top="279" width="20" height="20"/>
+              <Static id="Static62" taborder="94" text="Access" left="617" top="267" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_db_db2" taborder="95" left="592" top="309" width="20" height="20"/>
+              <Static id="Static63" taborder="96" text="DB2" left="617" top="297" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_db_informix" taborder="97" left="592" top="338" width="20" height="20"/>
+              <Static id="Static64" taborder="98" text="Informix" left="617" top="326" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_db_orcl" taborder="99" left="592" top="367" width="20" height="20"/>
+              <Static id="Static65" taborder="100" text="ORACLE" left="617" top="355" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_db_mssql" taborder="101" left="592" top="398" width="20" height="20"/>
+              <Static id="Static66" taborder="102" text="MS SQL" left="617" top="386" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_db_mysql" taborder="103" left="592" top="428" width="20" height="20"/>
+              <CheckBox id="chk_db_sybase" taborder="104" left="592" top="457" width="20" height="20"/>
+              <Static id="Static67" taborder="105" text="MYSQL" left="617" top="416" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static68" taborder="106" text="Sybase" left="617" top="445" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static69" taborder="107" text="Network" left="788" top="242" width="70" height="31" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;" color="#ef0000"/>
+              <CheckBox id="chk_ntw_CRouter" taborder="108" left="788" top="278" width="20" height="20"/>
+              <Static id="Static70" taborder="109" text="Cisco Router" left="813" top="266" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_ntw_CSW" taborder="110" left="788" top="308" width="20" height="20"/>
+              <Static id="Static71" taborder="111" text="Cisco S/W" left="813" top="296" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_ntw_CORBA" taborder="112" left="788" top="337" width="20" height="20"/>
+              <Static id="Static72" taborder="113" text="CORBA" left="813" top="325" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_ntw_LAN" taborder="114" left="788" top="366" width="20" height="20"/>
+              <Static id="Static73" taborder="115" text="LAN" left="813" top="354" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_ntw_iot" taborder="116" left="788" top="397" width="20" height="20"/>
+              <Static id="Static74" taborder="117" text="iot" left="813" top="385" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static77" taborder="118" text="WebServer/WAS" left="596" top="546" width="159" height="31" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;" color="#ef0000"/>
+              <Static id="Static78" taborder="119" text="Tomcat" left="621" top="570" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_wsv_Tomc" taborder="120" left="596" top="582" width="20" height="20"/>
+              <CheckBox id="chk_wsv_JEUS" taborder="121" left="596" top="612" width="20" height="20"/>
+              <Static id="Static79" taborder="122" text="JEUS" left="621" top="600" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_wsv_WebSph" taborder="123" left="596" top="641" width="20" height="20"/>
+              <Static id="Static80" taborder="124" text="WebSphere" left="621" top="629" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static81" taborder="125" text="IIS" left="811" top="570" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_wsv_IIS" taborder="126" left="786" top="582" width="20" height="20"/>
+              <CheckBox id="chk_wsv_JBoss" taborder="127" left="786" top="612" width="20" height="20"/>
+              <Static id="Static82" taborder="128" text="JBoss" left="811" top="600" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static83" taborder="129" text="WebLogic" left="621" top="658" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_wsv_WebLogic" taborder="130" left="596" top="670" width="20" height="20"/>
+              <Static id="Static85" taborder="131" text="상세설명" left="13" top="804" width="70" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Button id="btn_prj_Insert" taborder="21" text="저장" left="392" top="1455" width="110" height="40" font="11pt &quot;Arial&quot;" onclick="Div00_btn_prj_Insert_onclick"/>
+              <Button id="btn_useEng_Cencel" taborder="132" text="취소" left="527" top="1455" width="110" height="40" font="11pt &quot;Arial&quot;"/>
+              <CheckBox id="chk_db_Maria" taborder="133" left="592" top="488" width="20" height="20"/>
+              <Static id="Static88" taborder="134" text="MariaDB" left="617" top="476" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="chk_db_Tibero" taborder="135" left="592" top="517" width="20" height="20"/>
+              <Static id="Static89" taborder="136" text="Tibero" left="617" top="505" width="170" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Edit id="edt_titel" taborder="2" left="621" top="64" width="457" height="35" autoselect="false" autoskip="false" onchanged="Div00_edt_titel_onchanged"/>
+              <Combo id="cbo_area" taborder="3" text="" left="108" top="130" width="133" height="30" value="" index="-1" innerdataset="ds_ProjcetInfo" codecolumn="workarea"/>
+              <Static id="Static02" taborder="137" text="지역" left="33" top="125" width="112" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static03" taborder="138" text="직무" left="437" top="125" width="112" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Combo id="cbo_work" taborder="4" text="직무선택" left="502" top="130" width="133" height="30" value="" index="-1" innerdataset="ds_ProjcetInfo" codecolumn="work_type" onitemchanged="Div00_cbo_work_onitemchanged"/>
+              <Static id="Static04" taborder="139" text="산업" left="817" top="125" width="112" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Combo id="cbo_industry" taborder="5" text="산업선택" left="882" top="130" width="133" height="30" value="" index="-1" innerdataset="ds_ProjcetInfo" codecolumn="industry_type" datacolumn="interview_type"/>
+              <Static id="Static05" taborder="140" text="구분" left="33" top="179" width="112" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Combo id="cbo_SW" taborder="6" text="선택" left="107" top="184" width="133" height="30" value="" index="-1"/>
+              <Static id="Static06" taborder="141" text="기술등급" left="32" top="701" width="103" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Edit id="edt_low" taborder="8" left="178" top="704" width="115" height="35"/>
+              <Static id="Static07" taborder="142" text="초급" left="146" top="703" width="103" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static08" taborder="143" text="명" left="298" top="701" width="103" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Edit id="edt_middle" taborder="9" left="377" top="704" width="115" height="35"/>
+              <Static id="Static09" taborder="144" text="중급" left="345" top="703" width="103" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static10" taborder="145" text="명" left="497" top="701" width="103" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Edit id="edt_high" taborder="10" left="604" top="703" width="115" height="35"/>
+              <Static id="Static11" taborder="146" text="고급" left="572" top="702" width="103" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static75" taborder="147" text="명" left="724" top="700" width="103" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Edit id="edt_special" taborder="11" left="807" top="702" width="115" height="35"/>
+              <Static id="Static76" taborder="148" text="특급" left="775" top="701" width="103" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static84" taborder="149" text="명" left="927" top="699" width="103" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Calendar id="cal_work_to_date" taborder="13" left="293" top="764" width="161" height="30"/>
+              <Static id="Static90" taborder="150" text="~" left="272" top="754" width="24" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static91" taborder="151" text="접수기간" left="536" top="755" width="103" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static93" taborder="152" text="필수/   우대사항" left="13" top="968" width="124" height="53" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static86" taborder="153" text="특이사항" left="14" top="1133" width="70" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static87" taborder="154" text="근무장소" left="32" top="1296" width="78" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Edit id="edt_Career02" taborder="16" left="217" top="1301" width="390" height="30"/>
+              <Static id="Static94" taborder="155" text="구/읍/면" left="612" top="1296" width="78" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Button id="btn_support" taborder="156" text="지원하기" left="930" top="1499" width="106" height="40" onclick="Div00_btn_support_onclick" font="11pt &quot;Arial&quot;" visible="false"/>
+              <Static id="Static13" taborder="157" text="장비지원" left="41" top="1328" width="78" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Radio id="rdo_device_yn" taborder="17" left="107" top="1323" width="280" height="50" onitemchanged="Div00_Radio00_onitemchanged" columncount="3" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn" value=",">
+                <Dataset id="innerdataset">
+                  <ColumnInfo>
+                    <Column id="codecolumn" size="256"/>
+                    <Column id="datacolumn" size="256"/>
+                  </ColumnInfo>
+                  <Rows>
+                    <Row>
+                      <Col id="datacolumn">지원</Col>
+                      <Col id="codecolumn">1</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">미지원</Col>
+                      <Col id="codecolumn">2</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">추후협의</Col>
+                      <Col id="codecolumn">3</Col>
+                    </Row>
+                  </Rows>
+                </Dataset>
+              </Radio>
+              <Radio id="Radio01" taborder="18" left="746" top="1323" width="280" height="50" onitemchanged="Div00_Radio00_onitemchanged" columncount="3" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+                <Dataset id="innerdataset">
+                  <ColumnInfo>
+                    <Column id="codecolumn" size="256"/>
+                    <Column id="datacolumn" size="256"/>
+                  </ColumnInfo>
+                  <Rows>
+                    <Row>
+                      <Col id="datacolumn">지원</Col>
+                      <Col id="codecolumn">1</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">미지원</Col>
+                      <Col id="codecolumn">2</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">추후협의</Col>
+                      <Col id="codecolumn">3</Col>
+                    </Row>
+                  </Rows>
+                </Dataset>
+              </Radio>
+              <Static id="Static14" taborder="158" text="식사제공" left="683" top="1328" width="78" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static15" taborder="159" text="숙박제공" left="42" top="1358" width="78" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <Radio id="Radio02" taborder="19" left="108" top="1353" width="280" height="50" onitemchanged="Div00_Radio00_onitemchanged" columncount="3" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+                <Dataset id="innerdataset">
+                  <ColumnInfo>
+                    <Column id="codecolumn" size="256"/>
+                    <Column id="datacolumn" size="256"/>
+                  </ColumnInfo>
+                  <Rows>
+                    <Row>
+                      <Col id="datacolumn">지원</Col>
+                      <Col id="codecolumn">1</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">미지원</Col>
+                      <Col id="codecolumn">2</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">추후협의</Col>
+                      <Col id="codecolumn">3</Col>
+                    </Row>
+                  </Rows>
+                </Dataset>
+              </Radio>
+              <Static id="Static16" taborder="160" text="면접형태" left="42" top="1389" width="78" height="41" onclick="Div00_Static01_onclick" font="14px/normal &quot;Helvetica&quot;"/>
+              <CheckBox id="CheckBox00" taborder="161" text="전화면접" left="109" top="1397" width="111" height="25"/>
+              <CheckBox id="CheckBox01" taborder="20" text="직접면접" left="234" top="1397" width="111" height="25"/>
+              <Calendar id="cal_receive_fr_date" taborder="14" left="619" top="765" width="150" height="31"/>
+              <Static id="Static19" taborder="162" text="~" left="777" top="755" width="24" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Static id="Static20" taborder="163" text="회사명" left="23" top="58" width="80" height="41" onclick="Div00_Static01_onclick" font="16px/normal &quot;Helvetica&quot;"/>
+              <Edit id="edt_comNM" left="111" top="64" width="367" height="35" autoselect="false" autoskip="false" onchanged="Div00_edt_titel_onchanged" taborder="0"/>
+              <Combo id="cbo_area00" taborder="164" text="" left="104" top="1301" width="103" height="30" value="" index="-1" innerdataset="ds_ProjcetInfo" codecolumn="workarea"/>
+              <Calendar id="cal00" taborder="15" left="803" top="765" width="150" height="31"/>
+              <TextArea id="edt_note" taborder="165" left="143" top="806" width="931" height="156"/>
+              <TextArea id="edt_option_order" taborder="166" left="143" top="971" width="931" height="156"/>
+              <TextArea id="edt_notice" taborder="167" left="143" top="1141" width="931" height="156"/>
+            </Layout>
+          </Layouts>
+          <InitValue/>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		ComcodeList.xfdl
+*  @Creator 		이미혜
+*  @CreateDate 	2019.09.26
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+*  2019.09.26        	이미혜 	            최초 생성(프로젝트상세관리)
+*******************************************************************************
+*  
+*/
+
+var project_name=this.parent.param1;
+var projectId=this.parent.param2;
+var loginID=nexacro.getEnvironmentVariable("gvUserId");
+var UserType=nexacro.getEnvironmentVariable("gvUserType");
+
+this.ProjectDetail_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.objApp = nexacro.getApplication();
+	
+	this.gfnCommCdCombo('areaCD',this.Div00.form.cbo_area);
+	
+	this.gfnCommCdCombo('areaCD',this.Div00.form.cbo_area00);
+	
+	this.gfnCommCdCombo('industryCD',this.Div00.form.cbo_industry);
+
+	this.gfnCommCdCombo('JOBCD',this.Div00.form.cbo_work);
+
+	this.gfnCommCdCombo('SWCD',this.Div00.form.cbo_SW);
+	
+	
+	
+
+	if (projectId != null){
+		if (UserType=='D'){
+			this.Div00.form.btn_support.set_visible(true);
+			//지원하기 해야함
+		}
+		this.ProjectDetail();
+		
+	}
+
+	
+};
+
+this.ProjectDetail=function(){
+	//var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+		var strSvcId    = "ProjectDetail";
+		var strSvcUrl   = "ProjectDetail.do";
+		var inData      = "";
+		var outData     = "ds_ProjcetInfo=ds_ProjcetInfo ds_project_skill=ds_project_skill";
+		var strArg      = "projectId="+projectId;
+		var callBackFnc = "fnCallback";
+	 
+		
+		//alert(nexacro.getEnvironmentVariable("gvUserId"));	
+		//trace(this.ds_project_skill.saveXML());
+		//alert(this.ds_ResultGroupCD.saveXML());
+		
+		//생략가능
+		var isAsync   = true;
+		var nDataType = 0;	
+		
+		this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+									strSvcUrl , 	// trabsaction을 요청할 주소
+									inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+									outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+									strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+									callBackFnc, 	// transaction의 결과를 받을 Function 이름
+									nDataType); // 통신방법 정의 [생략가능]
+			
+
+};
+
+
+this.projectInsert=function(){
+		//var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+		var strSvcId    = "ProjcetInsert";
+		var strSvcUrl   = "ProjectInfoInsert.do";
+		var inData      = "ds_ProjcetInfo=ds_ProjcetInfo ds_project_skill=ds_project_skill:U";
+		var outData     = "";
+		var strArg      = "loginID="+nexacro.getEnvironmentVariable("gvUserId");
+		var callBackFnc = "fnCallback";
+	 
+		
+		//trace(nexacro.getEnvironmentVariable("gvUserId"));	
+		//trace(this.ds_ProjcetInfo.saveXML());
+		//trace(this.ds_project_skill.saveXML());
+		
+		//생략가능
+		var isAsync   = true;
+		var nDataType = 0;	
+		
+		this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+									strSvcUrl , 	// trabsaction을 요청할 주소
+									inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+									outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+									strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+									callBackFnc, 	// transaction의 결과를 받을 Function 이름
+									nDataType); // 통신방법 정의 [생략가능]
+			
+
+};
+
+
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "ProjcetInsert":
+			trace("errorCode : " + errorCode);
+			
+			if(errorCode == 0) {
+			   //this.opener.fn_return();
+			   this.close();
+			   }
+			
+			break;
+		case "ProjectDetail":
+			this.fn_ReadCheckbox();
+			break;
+	}
+		
+};
+
+//save button
+this.Div00_btn_prj_Insert_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+
+
+	if (this.confirm("저장하시겠습니까?"))
+	{	
+		if(this.Div00.form.edt_comNM.value==null){
+			alert("회사명을 입력하세요.");
+			this.Div00.form.edt_comNM.set_cursor(auto);
+		}else if(this.Div00.form.edt_titel.value==null){
+			alert("프로젝트명을 입력하세요.");
+			this.Div00.form.edt_titel.tabstop;
+			this.Div00.form.edt_comNM.set_cursor(auto);
+		}
+	
+	    this.fn_checkbox();
+	    this.projectInsert();		
+	}
+	
+};
+
+this.fn_checkbox = function()
+{
+	var rowid = 0;	
+		
+ 	if(this.Div00.form.chk_lag_as400.value) { 		
+	   rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "as400");
+ 	}
+ 
+     if(this.Div00.form.chk_lag_c.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "c");
+ 	}
+ 	
+     if(this.Div00.form.chk_lag_cpp.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "cpp");
+ 	}
+ 	
+     if(this.Div00.form.chk_lag_cobol.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "cobol");
+ 	}
+ 	
+     if(this.Div00.form.chk_lag_dp.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "dp");
+ 	}
+
+     if(this.Div00.form.chk_lag_pd.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid,"projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "pb");
+ 	}
+ 	
+     if(this.Div00.form.chk_lag_java.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "java");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_lag_vb.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "vb");
+ 	}
+ 	
+     if(this.Div00.form.chk_lag_vc.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "vc");
+ 	}
+ 
+     if(this.Div00.form.chk_lag_cc.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "cc");
+ 	}
+ 
+     if(this.Div00.form.chk_lag_danet.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "datnet");
+ 	}
+ 
+     if(this.Div00.form.chk_lag_python.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "python");
+ 	}
+ 	
+     if(this.Div00.form.chk_lag_r.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "r");
+ 	}
+ 	
+     if(this.Div00.form.chk_web_asp.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "asp");
+ 	}
+ 	
+     if(this.Div00.form.chk_web_jsp.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "jsp");
+ 	}
+ 	
+     if(this.Div00.form.chk_web_php.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "php");
+ 	}
+ 	
+     if(this.Div00.form.chk_web_xml.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+	   this.ds_project_skill.setColumn(rowid, "skill_code", "xml");
+ 	}
+ 
+     if(this.Div00.form.chk_web_dhtml.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "dhtml");
+ 	}
+ 
+     if(this.Div00.form.chk_web_mp.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "mp");
+ 	}
+ 	
+     if(this.Div00.form.chk_web_xp.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "xp");
+ 	}
+ 	
+     if(this.Div00.form.chk_web_nc.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "nc");
+ 	}
+ 	
+
+     if(this.Div00.form.chk_os_unix.value) {
+       rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "unix");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_os_lnux.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "linux");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_os_mac.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "mac");
+ 	}
+ 
+ 
+     if(this.Div00.form.chk_os_mvc.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "mvc");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_os_sol.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "sol");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_os_win.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "win");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_os_wins.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "wins");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_FW_spring.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "spring");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_FW_eg.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "eg");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_FW_st.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "st");
+ 	}
+ 	
+
+     if(this.Div00.form.chk_FW_jq.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "jq");
+	}
+ 	
+ 
+     if(this.Div00.form.chk_db_ac.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "ac");
+ 	}
+	
+ 
+     if(this.Div00.form.chk_db_db2.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "db2");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_db_informix.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "informix");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_db_orcl.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "oracle");
+ 	}
+ 	
+     if(this.Div00.form.chk_db_mssql.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "mssql");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_db_mysql.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "mysql");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_db_sybase.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "sybase");
+	}
+ 	
+ 
+     if(this.Div00.form.chk_db_Maria.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "mariadb");
+ 	}
+ 	
+     if(this.Div00.form.chk_db_Tibero.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "tibero");
+ 	}
+ 	
+     if(this.Div00.form.chk_ntw_CRouter.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "cr");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_ntw_CSW.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "cs");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_ntw_CORBA.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "cobra");
+ 	}
+ 	
+     if(this.Div00.form.chk_ntw_LAN.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "lan");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_ntw_iot.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "iot");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_wsv_Tomc.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "tomcat");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_wsv_JEUS.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "jeus");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_wsv_WebSph.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "websphere");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_wsv_WebLogic.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "weblogic");
+ 	}
+ 	
+ 
+    if(this.Div00.form.chk_wsv_IIS.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId",this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "iis");
+ 	}
+ 	
+ 
+     if(this.Div00.form.chk_wsv_JBoss.value) {
+        rowid = this.ds_project_skill.addRow();	   
+ 	   this.ds_project_skill.setColumn(rowid, "projectId", this.projectId);
+ 	   this.ds_project_skill.setColumn(rowid, "skill_code", "jboss");
+ 	}
+
+	
+	
+	
+};
+	
+this.fn_ReadCheckbox=function(){
+
+		this.Div00.form.chk_lag_as400.value = false;
+		this.Div00.form.chk_lag_c.value = false;
+		this.Div00.form.chk_lag_cpp.value = false;
+		this.Div00.form.chk_lag_cobol.value = false;
+		this.Div00.form.chk_lag_dp.value = false;
+		this.Div00.form.chk_lag_pd.value = false;
+		this.Div00.form.chk_lag_java.value = false;
+		this.Div00.form.chk_lag_vb.value = false;
+		this.Div00.form.chk_lag_vc.value= false;
+		this.Div00.form.chk_lag_cc.value = false;
+		this.Div00.form.chk_lag_danet.value = false;
+		this.Div00.form.chk_lag_python.value = false;
+		this.Div00.form.chk_lag_r.value = false;
+		this.Div00.form.chk_web_asp.value = false;
+		this.Div00.form.chk_web_jsp.value = false;
+		this.Div00.form.chk_web_php.value = false;
+		this.Div00.form.chk_web_xml.value = false;
+		this.Div00.form.chk_web_dhtml.value = false;
+		this.Div00.form.chk_web_mp.value = false;
+		this.Div00.form.chk_web_xp.value = false;
+		this.Div00.form.chk_web_nc.value = false;
+		this.Div00.form.chk_os_unix.value = false;
+		this.Div00.form.chk_os_lnux.value = false;
+		this.Div00.form.chk_os_mac.value = false;
+		this.Div00.form.chk_os_mvc.value = false;
+		this.Div00.form.chk_os_sol.value = false;
+		this.Div00.form.chk_os_win.value= false;
+		this.Div00.form.chk_os_wins.value= false;
+		this.Div00.form.chk_FW_spring.value= false;
+		this.Div00.form.chk_FW_eg.value= false;
+		this.Div00.form.chk_FW_st.value= false;
+		this.Div00.form.chk_FW_jq.value= false;
+		this.Div00.form.chk_db_ac.value= false;
+		this.Div00.form.chk_db_db2.value= false;
+		this.Div00.form.chk_db_informix.value= false;
+		this.Div00.form.chk_db_orcl.value= false;
+		this.Div00.form.chk_ntw_CRouter.value= false;
+		this.Div00.form.chk_ntw_CSW.value= false;
+		this.Div00.form.chk_ntw_CORBA.value= false;
+		this.Div00.form.chk_ntw_LAN.value= false;
+		this.Div00.form.chk_ntw_iot.value= false;
+		this.Div00.form.chk_wsv_Tomc.value= false;
+		this.Div00.form.chk_wsv_JEUS.value= false;
+		this.Div00.form.chk_wsv_WebSph.value= false;
+		this.Div00.form.chk_wsv_WebLogic.value= false;
+		this.Div00.form.chk_wsv_IIS.value= false;
+		this.Div00.form.chk_wsv_JBoss.value= false;
+
+	for(var i=0;i<this.ds_project_skill.getRowCount();i++) {
+		
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "as400") {
+			//trace("as400"+this.Div00.form.chk_lag_as400.value);
+		   this.Div00.form.chk_lag_as400.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "c") {
+		   this.Div00.form.chk_lag_c.set_value(true);
+	    }		
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "cpp") {
+		   this.Div00.form.chk_lag_cpp.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "cobol") {
+		   this.Div00.form.chk_lag_cobol.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "dp") {
+		   this.Div00.form.chk_lag_dp.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "pb") {
+		   this.Div00.form.chk_lag_pd.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "java") {
+		   this.Div00.form.chk_lag_java.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "vb") {
+		   this.Div00.form.chk_lag_vb.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "vc") {
+		   this.Div00.form.chk_lag_vc.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "cc") {
+		   this.Div00.form.chk_lag_cc.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "datnet") {
+		   this.Div00.form.chk_lag_danet.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "python") {
+		   this.Div00.form.chk_lag_python.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "r") {
+		   this.Div00.form.chk_lag_r.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "asp") {
+		   this.Div00.form.chk_web_asp.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "jsp") {
+		   this.Div00.form.chk_web_jsp.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "php") {
+		   this.Div00.form.chk_web_php.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "xml") {
+		   this.Div00.form.chk_web_xml.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "dhtml") {
+		   this.Div00.form.chk_web_dhtml.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "mp") {
+		   this.Div00.form.chk_web_mp.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "xp") {
+		   this.Div00.form.chk_web_xp.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "nc") {
+		   this.Div00.form.chk_web_nc.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "unix") {
+		   this.Div00.form.chk_os_unix.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "linux") {
+		   this.Div00.form.chk_os_lnux.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "mac") {
+		   this.Div00.form.chk_os_mac.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "mvc") {
+		   this.Div00.form.chk_os_mvc.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "sol") {
+		   this.Div00.form.chk_os_sol.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "win") {
+		   this.Div00.form.chk_os_win.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "wins") {
+		   this.Div00.form.chk_os_wins.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "spiring") {
+		   this.Div00.form.chk_FW_spring.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "eg") {
+		   this.Div00.form.chk_FW_eg.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "st") {
+		   this.Div00.form.chk_FW_st.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "jq") {
+		   this.Div00.form.chk_FW_jq.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "ac") {
+		   this.Div00.form.chk_db_ac.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "db2") {
+		   this.Div00.form.chk_db_db2.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "informix") {
+		   this.Div00.form.chk_db_informix.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "oracle") {
+		   this.Div00.form.chk_db_orcl.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "mssql") {
+		   this.Div00.form.chk_db_mssql.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "mysql") {
+		   this.Div00.form.chk_db_mysql.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "sybase") {
+		   this.Div00.form.chk_db_sybase.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "mariadb") {
+		   this.Div00.form.chk_db_Maria.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "tibero") {
+		   this.Div00.form.chk_db_Tibero.set_value(true);
+	    }	
+		if(this.ds_project_skill.getColumn(i, "skill_code") == "cr") {
+		   this.Div00.form.chk_ntw_CRouter.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "cs") {
+		   this.Div00.form.chk_ntw_CSW.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "cobra") {
+		   this.Div00.form.chk_ntw_CORBA.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "lan") {
+		   this.Div00.form.chk_ntw_LAN.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "iot") {
+		   this.Div00.form.chk_ntw_iot.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "tomcat") {
+		   this.Div00.form.chk_wsv_Tomc.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "jeus") {
+		   this.Div00.form.chk_wsv_JEUS.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "websphere") {
+		   this.Div00.form.chk_wsv_WebSph.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "weblogic") {
+		   this.Div00.form.chk_wsv_WebLogic.set_value(true);
+	    }	
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "iis") {
+		   this.Div00.form.chk_wsv_IIS.set_value(true);
+	    }
+			if(this.ds_project_skill.getColumn(i, "skill_code") == "jboss") {
+		   this.Div00.form.chk_wsv_JBoss.set_value(true);
+	    }
+	
+	}
+
+};
+
+
+//지원하기
+this.Div00_btn_support_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+		
+		var strSvcId    = "Project_aid";
+		var strSvcUrl   = "Project_aid.do";
+		var inData      = "";
+		var outData     = "";
+		var strArg      = "loginID="+loginID + " projectId="+projectId;
+		var callBackFnc = "fnCallback";
+	
+	
+		//생략가능
+		var isAsync   = true;
+		var nDataType = 0;	
+		
+		this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+									strSvcUrl , 	// trabsaction을 요청할 주소
+									inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+									outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+									strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+									callBackFnc, 	// transaction의 결과를 받을 Function 이름
+									nDataType); // 통신방법 정의 [생략가능]
+	
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_ProjcetInfo">
+        <ColumnInfo>
+          <Column id="projectId" type="STRING" size="256"/>
+          <Column id="project_name" type="STRING" size="256"/>
+          <Column id="low" type="INT" size="256"/>
+          <Column id="middle" type="INT" size="256"/>
+          <Column id="high" type="INT" size="256"/>
+          <Column id="special" type="INT" size="256"/>
+          <Column id="work_fr_date" type="STRING" size="256"/>
+          <Column id="work_to_date" type="STRING" size="256"/>
+          <Column id="receive_fr_date" type="STRING" size="256"/>
+          <Column id="receive_to_date" type="STRING" size="256"/>
+          <Column id="note" type="STRING" size="256"/>
+          <Column id="option_order" type="STRING" size="256"/>
+          <Column id="notice" type="STRING" size="256"/>
+          <Column id="workarea" type="STRING" size="256"/>
+          <Column id="workarea_dtl" type="STRING" size="256"/>
+          <Column id="device_yn" type="STRING" size="256"/>
+          <Column id="meal_yn" type="STRING" size="256"/>
+          <Column id="room_yn" type="STRING" size="256"/>
+          <Column id="interview_type" type="STRING" size="256"/>
+          <Column id="work_type" type="STRING" size="256"/>
+          <Column id="industry_type" type="STRING" size="256"/>
+          <Column id="regId" type="STRING" size="256"/>
+          <Column id="reg_date" type="DATE" size="256"/>
+          <Column id="updateId" type="STRING" size="256"/>
+          <Column id="update_date" type="DATE" size="256"/>
+          <Column id="com_name" type="STRING" size="256"/>
+          <Column id="sw" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_project_skill">
+        <ColumnInfo>
+          <Column id="projectId" type="STRING" size="256"/>
+          <Column id="skill_code" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_userInfo">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="user_Type" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_aid">
+        <ColumnInfo>
+          <Column id="loginId" type="STRING" size="256"/>
+          <Column id="projectId" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="Div00.form.cbo_area" propid="value" datasetid="ds_ProjcetInfo" columnid="workarea"/>
+      <BindItem id="item1" compid="Div00.form.cbo_work" propid="value" datasetid="ds_ProjcetInfo" columnid="work_type"/>
+      <BindItem id="item2" compid="Div00.form.cbo_industry" propid="value" datasetid="ds_ProjcetInfo" columnid="industry_type"/>
+      <BindItem id="item4" compid="Div00.form.cbo_SW" propid="value" datasetid="ds_ProjcetInfo" columnid="sw"/>
+      <BindItem id="item5" compid="Div00.form.edt_low" propid="value" datasetid="ds_ProjcetInfo" columnid="low"/>
+      <BindItem id="item6" compid="Div00.form.edt_middle" propid="value" datasetid="ds_ProjcetInfo" columnid="middle"/>
+      <BindItem id="item7" compid="Div00.form.edt_high" propid="value" datasetid="ds_ProjcetInfo" columnid="high"/>
+      <BindItem id="item8" compid="Div00.form.edt_special" propid="value" datasetid="ds_ProjcetInfo" columnid="special"/>
+      <BindItem id="item9" compid="Div00.form.cal_work_fr_date" propid="value" datasetid="ds_ProjcetInfo" columnid="work_fr_date"/>
+      <BindItem id="item10" compid="Div00.form.cal_work_to_date" propid="value" datasetid="ds_ProjcetInfo" columnid="work_to_date"/>
+      <BindItem id="item11" compid="Div00.form.cal_receive_fr_date" propid="value" datasetid="ds_ProjcetInfo" columnid="receive_fr_date"/>
+      <BindItem id="item3" compid="Div00.form.edt_titel" propid="value" datasetid="ds_ProjcetInfo" columnid="project_name"/>
+      <BindItem id="item17" compid="Div00.form.edt_Career02" propid="value" datasetid="ds_ProjcetInfo" columnid="workarea_dtl"/>
+      <BindItem id="item18" compid="Div00.form.rdo_device_yn" propid="value" datasetid="ds_ProjcetInfo" columnid="device_yn"/>
+      <BindItem id="item19" compid="Div00.form.edt_comNM" propid="value" datasetid="ds_ProjcetInfo" columnid="com_name"/>
+      <BindItem id="item20" compid="Div00.form.Radio02" propid="value" datasetid="ds_ProjcetInfo" columnid="room_yn"/>
+      <BindItem id="item21" compid="Div00.form.Radio01" propid="value" datasetid="ds_ProjcetInfo" columnid="meal_yn"/>
+      <BindItem id="item22" compid="Div00.form.CheckBox01" propid="value" datasetid="ds_ProjcetInfo" columnid="interview_type"/>
+      <BindItem id="item16" compid="Div00.form.cbo_area00" propid="value" datasetid="ds_ProjcetInfo" columnid="workarea"/>
+      <BindItem id="item12" compid="Div00.form.cal00" propid="value" datasetid="ds_ProjcetInfo" columnid="receive_to_date"/>
+      <BindItem id="item13" compid="Div00.form.edt_note" propid="value" datasetid="ds_ProjcetInfo" columnid="note"/>
+      <BindItem id="item14" compid="Div00.form.edt_option_order" propid="value" datasetid="ds_ProjcetInfo" columnid="option_order"/>
+      <BindItem id="item15" compid="Div00.form.edt_notice" propid="value" datasetid="ds_ProjcetInfo" columnid="notice"/>
+    </Bind>
+  </Form>
+</FDL>

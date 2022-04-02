@@ -1,0 +1,200 @@
+package com.nexacro.sample.web;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.nexacro.sample.service.GoodsMgrService;
+import com.nexacro.sample.service.NoticeService;
+import com.nexacro.sample.vo.GoodsMgrVO;
+import com.nexacro.uiadapter17.spring.core.NexacroException;
+import com.nexacro.uiadapter17.spring.core.annotation.ParamDataSet;
+import com.nexacro.uiadapter17.spring.core.annotation.ParamVariable;
+import com.nexacro.uiadapter17.spring.core.data.DataSetRowTypeAccessor;
+import com.nexacro.uiadapter17.spring.core.data.NexacroResult;
+
+/**
+ * <pre>
+ * 
+ * @title
+ * @desc 관리자 공통코드 처리. - Controller Login Class
+ * @package com.nexacro.sample.web
+ * 
+ *          <pre>
+ * @author 김기현
+ * @since 2020. 06.09.
+ * @version 1.0
+ * 
+ * 
+ */
+@Controller
+public class GoodsMgrController {
+	private static final Logger logger = LoggerFactory.getLogger(GoodsMgrController.class);
+
+	@Autowired
+	@Resource(name = "goodsMgrService")
+	private GoodsMgrService goodsMgrService;
+
+	@Resource
+	private Validator validator;
+	// 유효성 검사?
+
+	@InitBinder
+	public void initBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(this.validator);
+	};
+	
+	@RequestMapping(value="/selectGoodsInfoList.do")
+	public NexacroResult GoodsList(@ParamDataSet(name = "ds_Search", required = false) Map<String, Object> searchMap){
+		
+		logger.info("aaa = " + searchMap);
+		List<Map<String,Object>> goodsList = goodsMgrService.GoodsList(searchMap);
+
+		
+		
+		NexacroResult result = new NexacroResult();
+		
+		result.addDataSet("ds_GoodsInfo" , goodsList);
+		return result;
+		
+	};
+	
+	@RequestMapping(value="/initGoodsCbo.do")
+	public NexacroResult initCbo()
+	{		
+		//Map<String,Object> all = new HashMap<>();
+		//all.put("goods_category", "분류 선택");
+		List<Map<String,Object>> categoryList = goodsMgrService.initGoodsCbo();
+		//categoryList.add(all);
+		//categoryList.addAll(goodsMgrService.initGoodsCbo());
+		NexacroResult result = new NexacroResult();
+		
+		logger.info("InitGoodsCbo = " + categoryList);
+		result.addDataSet("ds_GoodsTypes", categoryList);
+		
+		return result;
+	};
+	
+	@RequestMapping(value="/initGoodsDetailCbo.do")
+	public NexacroResult initGoodsDetailCbo(@ParamVariable(name="goods_category",required=false) String goods_category){
+		
+		/*List<Map<String,Object>> goodsCboDetail = goodsMgrService.initGoodsDetailCbo(goods_category);
+		
+		System.out.println("SearchGoodsDetail" + goods_category);
+		
+		NexacroResult result = new NexacroResult();
+		result.addDataSet("ds_GoodsCbo",goodsCboDetail);*/
+		Map<String,Object> all = new HashMap<>();
+		all.put("goods_code", "A");
+		all.put("goods_name", "전체");
+		List<Map<String,Object>> categoryList = new ArrayList<>();//= goodsMgrService.initGoodsCbo();
+		categoryList.add(all);
+		categoryList.addAll(goodsMgrService.initGoodsDetailCbo(goods_category));
+		NexacroResult result = new NexacroResult();
+		
+		logger.info("abcd = " + categoryList);
+		result.addDataSet("ds_GoodsCbo", categoryList);
+		
+		return result;		
+	};
+	
+	@RequestMapping(value="/updateGoodsList.do")
+	public NexacroResult GoodsListUpdate(@ParamDataSet(name = "ds_GoodsInfo", required = false) 
+	Map<String, Object> updateMap, @ParamVariable(name="updateType",required=false) int updateType)
+	{
+		//int dataRowType = Integer.parseInt(String.valueOf(updateMap.get(DataSetRowTypeAccessor.NAME)));
+		
+		//logger.info("uuuu = " + updateMap + " : " + updateMap.size()  + " : " + dataRowType );
+		String retStr = "Init";
+		logger.info("updateMap = " + updateMap + "updateType : " +  updateType);
+		
+		if(updateType == 4)
+		{
+			goodsMgrService.GoodsListUpdate(updateMap);
+			retStr = "수정 완료";
+		}
+		else if(updateType == 8)
+		{
+			goodsMgrService.GoodsListDelete(updateMap);
+			retStr = "삭제 완료";
+		}
+		else if(updateType == 2)
+		{
+			logger.info("updateMap = " + updateMap + "updateType : " +  updateType);
+			goodsMgrService.GoodsListInsert(updateMap);
+			retStr = "등록 완료";
+		}
+		else
+		{
+			
+		}
+//		for(int i = 0; i < updateMap.size(); i++)
+//		{
+//			Map<String, Object> temp = updateMap.get(i);
+//			int dataRowType = Integer.parseInt(String.valueOf(temp.get(DataSetRowTypeAccessor.NAME)));
+//			
+//			
+//			
+//			logger.info("FFFFFF = " + temp + " : " + dataRowType);
+//			
+//			if((int)(temp.get("DataSetRowType")) == 4){//수정
+//				//logger.info("FFFFFF = " + temp.getRowType());
+//				goodsMgrService.GoodsListUpdate(temp);
+//			}  
+//			else if((int)(temp.get("DataSetRowType")) == 0)
+//			{
+//				logger.info("DDDDDDDDDDD = " + temp);
+//				String testCode = temp.get("goods_code").toString().substring(1);
+//				logger.info("TTTTTTT = " + testCode);
+//				//goodsMgrService.GoodsListDelete(temp);
+//			}
+//			else if((int)(temp.get("DataSetRowType")) == 0)
+//			{
+//				        
+//			}			
+//		}
+		NexacroResult result = new NexacroResult();
+		
+		result.addVariable("retStr", retStr);//addDataSet("ds_GoodsCbo", categoryList);
+		
+		return result;
+	}
+	
+	/*@RequestMapping(value="/updateGoodsList.do")
+	public NexacroResult GoodsListUpdate(@ParamDataSet(name = "ds_GoodsInfo", required = false) 
+	List<Map<String, Object>> updateMap)
+	{
+		logger.info("uuuu = " + updateMap);
+		for(int i = 0; i < updateMap.size(); i++)
+		{
+			Map<String, Object> temp = updateMap.get(i);
+			logger.info("FFFFFF = " + temp);
+			if((int)(temp.get("DataSetRowType")) == 2){//수정
+				//logger.info("FFFFFF = " + temp.getRowType());
+				goodsMgrService.GoodsListUpdate(temp);
+			}
+			
+		}
+		NexacroResult result = new NexacroResult();
+		
+		return result;
+	}*/
+	
+	
+}
+
+

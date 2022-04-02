@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="UsrList" width="1000" height="440" titletext="New Form" onload="ProjcetList_onload">
+    <Layouts>
+      <Layout height="440" mobileorientation="landscape" width="1000">
+        <Div id="Div00" taborder="0" text="Div00" left="6" top="30" width="984" height="410">
+          <Layouts>
+            <Layout>
+              <Grid id="copList" taborder="1" left="12" top="119" width="962" height="281" binddataset="ds_CopList" oncellclick="Div00_copList_oncellclick">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="317"/>
+                      <Column size="326"/>
+                      <Column size="316"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="아이디"/>
+                      <Cell col="1" text="기업명"/>
+                      <Cell col="2" text="가입일"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:loginID"/>
+                      <Cell col="1" text="bind:name"/>
+                      <Cell col="2" text="bind:reg_date"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Edit id="edt_MG_serch" taborder="0" left="72" top="27" width="305" height="27" onchanged="edt_MG_serch_onchanged"/>
+              <Static id="Static00" taborder="2" text="회사명" left="4" top="28" width="80" height="23" onclick="Div00_Static00_onclick" font="16px/normal &quot;Verdana&quot;" textAlign="center"/>
+              <Button id="btn_MG_saerch" taborder="3" text="검색" left="891" top="28" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="Div00_btn_MG_saerch_onclick"/>
+              <Button id="btn_copMG_add" taborder="4" text="추가" left="797" top="72" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="Div00_btn_copMG_add_onclick"/>
+              <Button id="btn_copMG_del" taborder="5" text="삭제" left="891" top="71" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="Div00_btn_copMG_del_onclick"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		ComcodeList.xfdl
+*  @Creator 		이미혜
+*  @CreateDate 	2019.09.19
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+*  2019.09.23        	이미혜 	            최초 생성(일반회원지원 프로젝트리스트)
+*******************************************************************************
+*
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+ var UserID=nexacro.getEnvironmentVariable("gvUserId");
+ var UserNAME=nexacro.getEnvironmentVariable("gvUserNm");
+ var comNM;
+ var id;
+
+
+//지원한 프로젝트 회사 정보
+this.ProjcetList_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.objApp = nexacro.getApplication();
+	this.copList();
+};
+
+this.copList=function(){
+	   //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "copList";
+	var strSvcUrl   = "copList.do";
+	var inData      = "";
+	var outData     = "ds_CopList=ds_CopList";
+	var strArg      = "name="+comNM;
+	var callBackFnc = "fnCallback";
+
+	//alert(this.ds_Search.saveXML());
+	//trace(this.ds_UserResultList.saveXML());
+	  
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType); // 통신방법 정의 [생략가능]
+	
+
+								
+};
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "copList":
+           //admtrace(this.ds_CopList.saveXML());
+		break;
+		case "copDel":
+           //admtrace(this.ds_CopList.saveXML());
+		   this.copList();
+		break;
+		
+		
+	}
+	
+
+};	
+this.Div00_btn_MG_saerch_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.copList();
+};
+
+
+this.edt_MG_serch_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+	comNM=e.postvalue;
+};
+
+//add Button
+this.Div00_btn_copMG_add_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+this.pop();
+
+}
+//delete Button
+this.Div00_btn_copMG_del_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	
+	this.ds_CopList.deleteRow(this.ds_CopList.rowposition);
+	this.copDel();
+	
+	
+};
+
+this.copDel=function(){
+	var strSvcId    = "copDel";
+	var strSvcUrl   = "copDel.do";
+	var inData      = "ds_CopList=ds_CopList:u";
+	var outData     = "";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	trace(this.ds_CopList.saveXML());
+	//trace(this.ds_UserResultList.saveXML());
+	  
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType); // 통신방법 정의 [생략가능]
+
+
+
+};
+
+this.Div00_copList_oncellclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+
+	id=this.ds_CopList.getColumn(this.ds_CopList.rowposition,"loginID");
+	//alert(id);
+	this.pop();
+	
+	
+	
+	
+};
+
+this.pop=function(){
+	var objChildFrame = new ChildFrame();
+	objChildFrame.init("copReg"
+						,0
+						,0
+						,1000
+						,600
+						,null
+						,null
+						,"cop::copReg.xfdl");
+	
+	objChildFrame.set_dragmovetype("all");
+	objChildFrame.set_openalign("center middle");
+	objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+	var objParam={param3:id};
+	
+	objChildFrame.showModal(this.getOwnerFrame()
+	                      , objParam
+						  , this
+						  , "fn_popupCallback");
+	
+
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_CopList">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="reg_date" type="DATE" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>

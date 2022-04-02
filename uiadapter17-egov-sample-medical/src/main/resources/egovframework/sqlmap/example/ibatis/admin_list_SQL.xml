@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="pcAdmin">
+
+    <typeAlias alias="PCListVO" type="com.nexacro.sample.vo.PCListVO"/>
+    <typeAlias alias="AdminPayInfoVO" type="com.nexacro.sample.vo.AdminPayInfoVO"/>
+
+<!-- Sample resultObject -->
+    <resultMap id="user" class="PCListVO">
+   		<result property="pc_no" column="pc_no" />
+        <result property="loginID" column="loginID" />
+        <result property="goods_name" column="goods_name" />
+        <result property="sales_code" column="sales_code" />
+        <result property="goods_code" column="goods_code" />
+        <result property="goods_price" column="goods_price" />
+        <result property="usable_yn" column="usable_yn" />
+        <result property="name" column="name" />
+        <result property="phone" column="user_tel" />
+    </resultMap>
+    
+     <resultMap id="pay" class="AdminPayInfoVO">
+     	<result property="loginID" column="loginID" />
+   		<result property="goods_name" column="goods_name" />
+        <result property="goods_price" column="goods_price" />
+        <result property="total_product" column="total_product" />
+        <result property="sales_code" column="sales_code" />
+        <result property="total_Fee" column="total_product" />
+      
+    </resultMap>
+    
+    
+    <select id="pcAdmin.pclist" resultClass="PCListVO">
+ 		<!-- 
+ 		SELECT lo.pc_no 
+ 			,lo.usable_yn 
+ 			,us.single_using_code 
+ 			,us.loginID
+ 			,
+		  CASE WHEN  lo.usable_yn ='y' THEN '미사용'
+		       WHEN lo.usable_yn ='n' THEN 
+		       (
+		       		SELECT loginID from tb_using
+		        				where using_end_time IS NULL 
+		        				and pc_no =lo.pc_no
+		        ) 
+		  END as user 
+		  FROM tb_pcroom_local lo 
+		  LEFT OUTER JOIN tb_using us on lo.pc_no = us.pc_no 
+		  GROUP BY lo.pc_no
+		  ORDER BY CAST(lo.pc_no as unsigned)
+		  -->
+		  
+		  SELECT 
+		  	 pc_no ,user 
+			FROM
+				(SELECT 
+					  lo.pc_no as pc_no
+					  ,us.loginID  as user
+				  FROM tb_pcroom_local lo  INNER JOIN tb_using us ON lo.pc_no = us.pc_no
+				  WHERE lo.usable_yn = 'n' AND us.use_yn = 'y'   
+				 UNION ALL
+				 SELECT 
+				 	pc_no,"미사용" as user
+				 FROM tb_pcroom_local 
+				WHERE usable_yn = 'y')LL
+  			ORDER BY CAST(pc_no AS unsigned);
+ 	</select>
+ 	
+ 	<select id="pcAdmin.getAvailable" resultClass="PCListVO">
+ 		SELECT 
+ 			loginID ,name
+		FROM tb_userinfo Where use_yn = 'y'
+		AND loginID 
+			NOT IN(
+				SELECT 
+					us.loginID 
+				FROM tb_using us LEFT OUTER JOIN 
+					tb_userinfo info on us.loginID = info.loginID
+				WHERE us.use_yn ='y')
+ 	</select>
+ 	
+ 	<select id="pcAdmin.getMax" resultClass="PCListVO">
+ 		SELECT 
+ 			CAST(MAX(CAST(single_using_code as unsigned))+1 AS CHAR(20))
+ 		FROM tb_using
+ 		
+ 	</select>
+ 	
+	<insert id="pcAdmin.setSeat"> 
+			INSERT INTO tb_using
+ 			(
+ 			  single_using_code,
+ 			  loginID
+ 			 ,using_start_time
+ 			 ,pc_no
+ 			 ,use_yn
+ 			 ,using_day
+ 			) VALUES (
+ 				#single_using_code#
+               ,#loginID#
+               ,now()
+               ,#pc_no#
+               ,'y' 
+               ,now() 		 
+            ) 
+	</insert>
+	
+	<update id="pcAdmin.setPcSeatUse"> 	
+			update tb_pcroom_local 
+				set usable_yn ='n'
+			where pc_no = #pc_no#
+    </update>
+    
+    <select id="pcAdmin.getPerchase" resultClass="AdminPayInfoVO">
+    	SELECT 
+    		sa.loginID
+    		,go.goods_name as goods_name
+    		,go.goods_price as goods_price
+    		,sa.sales_code as sales_code 
+  			,SUM(go.goods_price) as total_product , 
+  			TIMESTAMPDIFF(MINUTE, us.using_start_time,now())*20 as total_Fee 
+  		FROM tb_sales sa 
+  		INNER JOIN tb_goods go on sa.goods_code =go.goods_code
+  		INNER JOIN tb_using us on sa.loginID = us.loginID
+ 		WHERE sa.sales_status ='y' and sa.loginID = #user#
+  		GROUP BY go.goods_name , go.goods_price;
+    </select>
+    
+     <update id="pcAdmin.setUserStatus"> 	
+			update tb_userinfo
+				set use_yn ='n'
+			where loginID = #loginID#
+    </update>
+    
+    <update id="pcAdmin.setPcroomStatus"> 	
+			update tb_pcroom_local 
+				set usable_yn ='y'
+			where pc_no = (
+				select pc_no from tb_using
+				where loginID = #loginID#
+				and use_yn ='y'
+			)
+    </update>
+    
+     <update id="pcAdmin.setPcusingStatus"> 	
+			update tb_using
+				set using_end_time = now()
+				,set total_fee = #total_fee# 
+				set use_yn ='n'
+			where loginID = #loginID#
+			and use_yn ='y'
+    </update>
+    
+      <update id="pcAdmin.setSalesStatus"> 	
+			update tb_sales
+				set sales_status ='y'
+			where loginID = #loginID#
+			and sales_code =#sales_code#
+    </update>
+</sqlMap>

@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="PayInfo" width="1280" height="720" titletext="결제정보" onload="form_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Div id="div00" taborder="0" text="결제 정보" left="50" top="20" width="80" height="30">
+          <Layouts>
+            <Layout/>
+          </Layouts>
+        </Div>
+        <Button id="btn00" taborder="1" text="닫기" left="294" top="329" width="123" height="51" onclick="btn00_onclick"/>
+        <Grid id="grd00" taborder="2" left="40" top="70" width="500" height="250" binddataset="ds_payInfo">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="선택메뉴"/>
+                <Cell col="1" text="상품가격"/>
+                <Cell col="2" text="상품개수"/>
+                <Cell col="3" text="합계"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:goods_name"/>
+                <Cell col="1" text="bind:sale_p"/>
+                <Cell col="2" text="bind:sale_q"/>
+                <Cell col="3" text="bind:sale_totp"/>
+              </Band>
+              <Band id="summary">
+                <Cell/>
+                <Cell col="1"/>
+                <Cell col="2" text="총합계"/>
+                <Cell col="3" text="expr:dataset.getSum(&quot;sale_totp&quot;)"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/***
+*  컨설팅 표준화 작업
+*  @MenuPath    샘플 > transaction
+*  @FileName 	Sample001_transaction.xfdl 
+*  @Creator 	soojeong
+*  @CreateDate 	2017.03.09
+*  @Desction         스크립트 표준 및 주석 표준 정의
+************** 소스 수정 이력 ***********************************************
+*  date          		Modifier                Description
+*******************************************************************************
+*  2019.09.24    		이미혜	           		회원별 상세정보 불러오기
+*******************************************************************************
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+************************************************************************************************/
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload, onbeforeclose)
+/***********************************************************************************************/
+/**
+ * @description 화면 onload시 처리내역(필수)
+*/
+
+var loginId = this.parent.param1;
+//var objParam=this.parent.param2;
+var using_day=this.parent.param3;
+
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+    //trace("======onload");
+	trace("loginId!!"+loginId);
+	trace("using_day!!"+using_day);
+	//trace("objParam~~"+objParam);
+	this.objApp = nexacro.getApplication();
+	
+	//trace("onload : " + this.ds_data.saveXML());	
+						
+	if(	this.parent.param1 != "" && this.parent.param3 != "") {
+		trace("payinfo!!!");
+	    this.payinfo();	
+	}
+						
+						
+};
+	
+this.payinfo = function(){
+
+    //trace("search before : " + this.ds_data.saveXML());
+
+	var strSvcId    = "payinfo";
+	var strSvcUrl   = "payinfo.do";
+	var inData      = "";
+	var outData     = "ds_payInfo=ds_payinfo"; // 오른쪽이 자바
+	var strArg      = "loginId="+this.parent.param1+" "+"using_day="+this.parent.param3;
+	trace("strArg : "+strArg);
+	var callBackFnc = "fnCallback";
+	
+	
+	//trace("this.No : " + this.No + " : " + this.parent.param1);
+ 
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType); // 통신방법 정의 [생략가능]
+								
+								
+};
+	
+
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID,errorCode,errorMsg)
+{
+	// 에러 시 화면 처리 내역
+	if(errorCode != 0)
+	{
+		return;
+	}
+	
+	switch(svcID)
+	{
+		case "payinfo":
+		break;			
+	}
+};
+
+this.btn00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+
+this.edt00_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+	
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_payInfo">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="using_start_time" type="DATE" size="256"/>
+          <Column id="goods_name" type="STRING" size="256"/>
+          <Column id="sale_p" type="INT" size="256"/>
+          <Column id="sale_q" type="INT" size="256"/>
+          <Column id="sale_totp" type="INT" size="256"/>
+          <Column id="sales_date" type="DATE" size="256"/>
+          <Column id="using_day" type="DATE" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>

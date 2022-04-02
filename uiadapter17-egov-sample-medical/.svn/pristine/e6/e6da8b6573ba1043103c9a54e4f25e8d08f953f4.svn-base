@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="notice">
+
+
+   <!--*********************************기업회원 상세정보 불러오기*******************************-->    
+       <select id="notice.list" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+       	 SELECT noti_code as No
+	           ,noti_name	 as title
+	           ,noti_text as contents	 
+	           ,noti_date as regDate
+           FROM tb_noti
+	      WHERE 1 = 1
+		 <dynamic>		 
+		    <isNotNull property="searchKeyword">
+			   <isEqual prepend="AND" property="searchCondition" compareValue="TITLE">
+						noti_name LIKE CONCAT ('%',#searchKeyword#,'%')
+			   </isEqual>		
+			   <isEqual prepend="AND" property="searchCondition" compareValue="CONTENTS">
+						noti_text LIKE CONCAT ('%',#searchKeyword#,'%')
+			   </isEqual>
+		    </isNotNull>
+		</dynamic> 
+	      
+       </select>
+       
+       <select id="notice.selectone" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+       	
+       	 SELECT noti_code as wcno
+	           ,noti_name as title	
+	           ,noti_text as contents	 
+	           ,noti_date as regDate
+           FROM tb_noti
+	      WHERE noti_code = #wcno#
+       	
+       </select>
+       
+       <insert id="notice.insertnotice" parameterClass="Map" >
+ 	        <selectKey resultClass="int" keyProperty="wcno">
+		     SELECT IFNULL(MAX(noti_code),1) + 1 as wcno
+   			   FROM tb_noti
+	        </selectKey>  
+       	    INSERT INTO tb_noti
+       	       (
+       	          noti_code
+       	         ,noti_name
+       	         ,noti_text
+       	         ,noti_date
+       	       ) VALUES (
+       	          #wcno# 
+       	         ,#title#
+       	         ,#contents#
+       	         ,now()
+       	       )
+       	
+       </insert>
+       
+       
+       <update id="notice.updatenotice" parameterClass="Map">
+       		
+       		UPDATE tb_noti set noti_name = #title#, noti_text = #contents# , noti_date = now()
+       	     where noti_code = #wcno# <!-- and userID=loginID -->
+       
+       </update>
+       
+       <delete id="notice.deletelist" parameterClass="string"  >
+       	
+       	delete from tb_noti where noti_code = #wcno# <!-- and userID=loginID -->
+       
+       
+       </delete>
+          
+     
+          
+            
+</sqlMap>

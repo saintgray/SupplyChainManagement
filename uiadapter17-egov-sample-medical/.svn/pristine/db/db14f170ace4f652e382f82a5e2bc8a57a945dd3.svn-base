@@ -1,0 +1,447 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Sample001_transaction" classname="Work" inheritanceid="" titletext="기본샘플(조회,입력,저장,삭제)" left="0" width="1050" top="0" height="818" onload="form_onload">
+    <Layouts>
+      <Layout>
+        <Div id="divSearch" taborder="0" text="" left="0" top="0" width="" height="52" right="0" bottom="">
+          <Layouts>
+            <Layout/>
+          </Layouts>
+        </Div>
+        <Button id="btnAdd" taborder="3" text="추가" left="-2" top="515" width="65" height="29" right="" bottom="" onclick="fnAdd"/>
+        <Button id="btnDel" taborder="1" text="삭제" left="70" top="515" width="65" height="29" right="" bottom="" onclick="fnDel"/>
+        <Button id="btnSave" taborder="2" text="저장" left="142" top="515" width="65" height="29" right="" bottom="" onclick="fnSave"/>
+        <Combo id="cboDetailCd" taborder="4" text="전체" left="14" top="15" width="124" height="23" value="" index="0" onitemchanged="form_onload"/>
+        <Combo id="cbo_workarea1" taborder="5" text="지역전체" left="163" top="18" width="76" height="17" value="" index="-1" onitemchanged="Combo03_onitemchanged" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">00</Col>
+                <Col id="datacolumn">전국</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">01</Col>
+                <Col id="datacolumn">서울</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">02</Col>
+                <Col id="datacolumn">경기</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">인천</Col>
+                <Col id="codecolumn">03</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">04</Col>
+                <Col id="datacolumn">강원</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">05</Col>
+                <Col id="datacolumn">충북</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">06</Col>
+                <Col id="datacolumn">충남</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">07</Col>
+                <Col id="datacolumn">전북</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">08</Col>
+                <Col id="datacolumn">전남</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">경북</Col>
+                <Col id="codecolumn">09</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">경남</Col>
+                <Col id="codecolumn">10</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">제주</Col>
+                <Col id="codecolumn">11</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Combo id="cbo_workarea2" taborder="6" text="지역전체" left="244" top="18" width="76" height="17" value="" index="-1" onitemchanged="Combo03_onitemchanged" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">00</Col>
+                <Col id="datacolumn">전국</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">01</Col>
+                <Col id="datacolumn">서울</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">02</Col>
+                <Col id="datacolumn">경기</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">인천</Col>
+                <Col id="codecolumn">03</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">04</Col>
+                <Col id="datacolumn">강원</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">05</Col>
+                <Col id="datacolumn">충북</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">06</Col>
+                <Col id="datacolumn">충남</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">07</Col>
+                <Col id="datacolumn">전북</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">08</Col>
+                <Col id="datacolumn">전남</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">경북</Col>
+                <Col id="codecolumn">09</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">경남</Col>
+                <Col id="codecolumn">10</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">제주</Col>
+                <Col id="codecolumn">11</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Combo id="cbo_workarea3" taborder="7" text="지역전체" left="324" top="18" width="76" height="17" value="" index="-1" onitemchanged="Combo03_onitemchanged" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">00</Col>
+                <Col id="datacolumn">전국</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">01</Col>
+                <Col id="datacolumn">서울</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">02</Col>
+                <Col id="datacolumn">경기</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">인천</Col>
+                <Col id="codecolumn">03</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">04</Col>
+                <Col id="datacolumn">강원</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">05</Col>
+                <Col id="datacolumn">충북</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">06</Col>
+                <Col id="datacolumn">충남</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">07</Col>
+                <Col id="datacolumn">전북</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">08</Col>
+                <Col id="datacolumn">전남</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">경북</Col>
+                <Col id="codecolumn">09</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">경남</Col>
+                <Col id="codecolumn">10</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">제주</Col>
+                <Col id="codecolumn">11</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Div id="div_combo" taborder="8" left="13" top="60" width="288" height="28">
+          <Layouts>
+            <Layout>
+              <Combo id="cbo_workarea3" taborder="0" text="지역전체" left="188" top="1" width="76" height="17" value="" index="-1" onitemchanged="Combo03_onitemchanged" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+                <Dataset id="innerdataset">
+                  <ColumnInfo>
+                    <Column id="codecolumn" size="256"/>
+                    <Column id="datacolumn" size="256"/>
+                  </ColumnInfo>
+                  <Rows>
+                    <Row>
+                      <Col id="codecolumn">00</Col>
+                      <Col id="datacolumn">전국</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">01</Col>
+                      <Col id="datacolumn">서울</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">02</Col>
+                      <Col id="datacolumn">경기</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">인천</Col>
+                      <Col id="codecolumn">03</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">04</Col>
+                      <Col id="datacolumn">강원</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">05</Col>
+                      <Col id="datacolumn">충북</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">06</Col>
+                      <Col id="datacolumn">충남</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">07</Col>
+                      <Col id="datacolumn">전북</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">08</Col>
+                      <Col id="datacolumn">전남</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">경북</Col>
+                      <Col id="codecolumn">09</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">경남</Col>
+                      <Col id="codecolumn">10</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">제주</Col>
+                      <Col id="codecolumn">11</Col>
+                    </Row>
+                  </Rows>
+                </Dataset>
+              </Combo>
+              <Combo id="cbo_workarea2" taborder="1" text="지역전체" left="108" top="1" width="76" height="17" value="" index="-1" onitemchanged="Combo03_onitemchanged" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+                <Dataset id="innerdataset">
+                  <ColumnInfo>
+                    <Column id="codecolumn" size="256"/>
+                    <Column id="datacolumn" size="256"/>
+                  </ColumnInfo>
+                  <Rows>
+                    <Row>
+                      <Col id="codecolumn">00</Col>
+                      <Col id="datacolumn">전국</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">01</Col>
+                      <Col id="datacolumn">서울</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">02</Col>
+                      <Col id="datacolumn">경기</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">인천</Col>
+                      <Col id="codecolumn">03</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">04</Col>
+                      <Col id="datacolumn">강원</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">05</Col>
+                      <Col id="datacolumn">충북</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">06</Col>
+                      <Col id="datacolumn">충남</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">07</Col>
+                      <Col id="datacolumn">전북</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">08</Col>
+                      <Col id="datacolumn">전남</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">경북</Col>
+                      <Col id="codecolumn">09</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">경남</Col>
+                      <Col id="codecolumn">10</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">제주</Col>
+                      <Col id="codecolumn">11</Col>
+                    </Row>
+                  </Rows>
+                </Dataset>
+              </Combo>
+              <Combo id="cbo_divworkarea" taborder="2" text="지역전체" left="27" top="1" width="76" height="17" value="" index="-1" onitemchanged="Combo03_onitemchanged" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn">
+                <Dataset id="innerdataset">
+                  <ColumnInfo>
+                    <Column id="codecolumn" size="256"/>
+                    <Column id="datacolumn" size="256"/>
+                  </ColumnInfo>
+                  <Rows>
+                    <Row>
+                      <Col id="codecolumn">00</Col>
+                      <Col id="datacolumn">전국</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">01</Col>
+                      <Col id="datacolumn">서울</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">02</Col>
+                      <Col id="datacolumn">경기</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">인천</Col>
+                      <Col id="codecolumn">03</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">04</Col>
+                      <Col id="datacolumn">강원</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">05</Col>
+                      <Col id="datacolumn">충북</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">06</Col>
+                      <Col id="datacolumn">충남</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">07</Col>
+                      <Col id="datacolumn">전북</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">08</Col>
+                      <Col id="datacolumn">전남</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">경북</Col>
+                      <Col id="codecolumn">09</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">경남</Col>
+                      <Col id="codecolumn">10</Col>
+                    </Row>
+                    <Row>
+                      <Col id="datacolumn">제주</Col>
+                      <Col id="codecolumn">11</Col>
+                    </Row>
+                  </Rows>
+                </Dataset>
+              </Combo>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Objects/>
+    <Bind>
+      <BindItem id="item0" compid="cbo_workarea1" propid="value" datasetid="dslist" columnid="workarea1"/>
+      <BindItem id="item1" compid="cbo_workarea2" propid="value" datasetid="dslist" columnid="workarea2"/>
+      <BindItem id="item2" compid="cbo_workarea3" propid="value" datasetid="dslist" columnid="workarea3"/>
+      <BindItem id="item3" compid="div_combo.form.cbo_workarea3" propid="value" datasetid="dslist" columnid="workarea3"/>
+      <BindItem id="item4" compid="div_combo.form.cbo_workarea2" propid="value" datasetid="dslist" columnid="workarea2"/>
+      <BindItem id="item5" compid="div_combo.form.cbo_divworkarea" propid="value" datasetid="dslist" columnid="workarea1"/>
+    </Bind>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath    샘플 > transaction
+*  @FileName 	Sample001_transaction.xfdl 
+*  @Creator 	soojeong
+*  @CreateDate 	2017.03.09
+*  @Desction         스크립트 표준 및 주석 표준 정의
+************** 소스 수정 이력 ***********************************************
+*  date          		Modifier                Description
+*******************************************************************************
+*  2017.03.09     	soojeong 	           최초 생성 
+*  2017.10.17     	kyk       	           주석 정비
+*******************************************************************************
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+************************************************************************************************/
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload, onbeforeclose)
+/***********************************************************************************************/
+/**
+ * @description 화면 onload시 처리내역(필수)
+*/
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.gfnCommCdCombo('TELCD',this.cboDetailCd);
+	
+	this.gfnCommCdCombo('areaCD',this.cbo_workarea1);
+	
+	this.gfnCommCdCombo('areaCD',this.cbo_workarea2);
+	
+	this.gfnCommCdCombo('areaCD',this.cbo_workarea3);
+	
+	this.gfnCommCdCombo('areaCD',this.div_combo.form.cbo_divworkarea);  
+};
+
+
+/************************************************************************************************
+ * CALLBACK 콜백 처리부분(Transaction, Popup)
+ ************************************************************************************************/
+
+
+/************************************************************************************************
+* CRUD 및 TRANSACTION 서비스 호출 처리
+************************************************************************************************/
+
+
+
+
+/************************************************************************************************
+* 사용자 FUNCTION 영역
+************************************************************************************************/
+
+
+/************************************************************************************************
+ * 각 COMPONENT 별 EVENT 영역
+************************************************************************************************/
+
+this.cboDetailCd_onitemchanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	
+};
+]]></Script>
+  </Form>
+</FDL>

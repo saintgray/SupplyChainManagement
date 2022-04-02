@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="manager" width="650" height="340" titletext="New Form">
+    <Layouts>
+      <Layout height="340" mobileorientation="landscape" width="650">
+        <Static id="sta00" taborder="0" text="이름" left="59" top="40" width="31" height="20"/>
+        <Edit id="edt00" taborder="1" left="133" top="35" width="214" height="30" onchanged="edt00_onchanged"/>
+        <Button id="btn_search" taborder="2" text="검색" left="420" top="35" width="90" height="30" onclick="btn_search_onclick"/>
+        <Grid id="grd00" taborder="3" left="24" top="94" width="600" height="200" binddataset="ds_userinfo" oncellclick="grd00_oncellclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="144"/>
+                <Column size="141"/>
+                <Column size="144"/>
+                <Column size="171"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="아이디"/>
+                <Cell col="1" text="이름"/>
+                <Cell col="2" text="메일주소"/>
+                <Cell col="3" text="전화번호"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:loginID"/>
+                <Cell col="1" text="bind:name"/>
+                <Cell col="2" text="bind:email"/>
+                <Cell col="3" text="bind:user_tel"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btn01" taborder="4" text="등록" left="566" top="57" width="54" height="26"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[
+
+
+this.btn_search_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.SearchList();
+};
+
+
+this.SearchList = function() 
+{		
+    //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "searchList";
+	var strSvcUrl   = "userlist.do";
+	var inData      = "ds_search=ds_search"; //실제이름 = 받을때 이름
+	var outData     = "ds_userinfo=ds_userinfo";
+	var strArg      = "" ;
+	var callBackFnc = "fnCallback";
+
+
+	//alert(this.ds_ResultGroupCD.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+								
+								
+}	
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "searchList":
+		    trace(this.ds_userinfo.saveXML());
+		
+		
+		    alert(this.ds_userinfo.getRowCount() + " 건이 조회 되었습니다.");
+		    break;
+		
+	}
+};
+
+
+//팝업창 가즈아ㅏㅏ
+
+
+this.grd00_oncellclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	var objChildFrame = new ChildFrame();
+	objChildFrame.init("manager_Popup"
+	                  , 0
+					  , 0
+					  , 400
+					  , 300
+					  , null
+					  , null
+					  , "admin_manager::manager_Popup.xfdl");
+
+	objChildFrame.set_openalign("center middle");
+	objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_dragmovetype("all");
+//	objChildFrame.set_resizable(false);
+//	objChildFrame.set_showstatusbar(false);
+ 	for(var i=0; i<this.ds_userinfo.rowcount; i++){
+ 		//this.ds_userinfo.setColumn(i,"loginID",nexacro.getEnvironmentVariable("gvUserId"));
+ 	}
+	var objParam = { param1:this.ds_userinfo
+ 				    };
+				   
+	objChildFrame.showModal( this.getOwnerFrame()
+	                       , objParam
+						   , this
+						   , "fn_popupCallback");
+};
+
+this.fn_popupCallback = function(popid, strReturn){
+	if(popid=="manager_Popup"){
+		this.SearchList();
+	}	
+}]]></Script>
+    <Objects>
+      <Dataset id="ds_userinfo">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="20"/>
+          <Column id="name" type="STRING" size="20"/>
+          <Column id="email" type="STRING" size="30"/>
+          <Column id="user_tel" type="STRING" size="20"/>
+          <Column id="usertype" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="loginID">1212</Col>
+            <Col id="name">황기현</Col>
+            <Col id="email">aaa@bbb.com</Col>
+            <Col id="user_tel">010-2372-3441</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_search">
+        <ColumnInfo>
+          <Column id="sname" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="edt00" propid="value" datasetid="ds_search" columnid="sname"/>
+    </Bind>
+  </Form>
+</FDL>

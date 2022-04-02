@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="ListForm" width="730" height="380" titletext="공지사항" onload="form_onload" scrolltype="vertical" scrollbartype="auto auto">
+    <Layouts>
+      <Layout height="380" mobileorientation="landscape" width="730">
+        <Static id="titlepop" taborder="0" text="제목" left="70" top="48" height="30" right="630"/>
+        <Edit id="show_title" taborder="1" left="110" top="53" width="287" height="25" onchanged="show_title_onchanged"/>
+        <Static id="contentspop" taborder="2" text="내용" left="70" top="109" width="58" height="37"/>
+        <TextArea id="show_contents" taborder="3" left="69" top="146" width="617" height="152" onchanged="show_contents_onchanged"/>
+        <Button id="btn_save" taborder="4" text="저장" left="138" top="325" width="75" height="31" onclick="btn_save_onclick"/>
+        <Button id="btn_cancel" taborder="5" text="취소" left="310" top="325" width="67" height="31" onclick="btn_cancel_onclick"/>
+        <Button id="btn00" taborder="6" text="삭제" left="461" top="325" width="69" height="31" onclick="btn00_onclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath    샘플 > transaction
+*  @FileName 	Sample001_transaction.xfdl 
+*  @Creator 	soojeong
+*  @CreateDate 	2017.03.09
+*  @Desction         스크립트 표준 및 주석 표준 정의
+************** 소스 수정 이력 ***********************************************
+*  date          		Modifier                Description
+*******************************************************************************
+*  2019.09.24    		이미혜	           		회원별 상세정보 불러오기
+*******************************************************************************
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+************************************************************************************************/
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload, onbeforeclose)
+/***********************************************************************************************/
+/**
+ * @description 화면 onload시 처리내역(필수)
+*/
+
+var wcno = this.parent.param1;
+var objParam=this.parent.param2;
+var no = wcno;
+var userType = nexacro.getEnvironmentVariable("gvUserType");
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+    //trace("======onload");
+
+	this.objApp = nexacro.getApplication();
+	
+	//trace("onload : " + this.ds_data.saveXML());	
+						
+	if(	this.parent.param1 != "") {
+	    this.noticeinfo();	
+	}else if (this.parent.param1==""){
+		this.btn00.set_enable("false");
+	}else if(userType =="C"){
+		this.btn_save.set_enable("false");
+	}
+						
+						
+};
+	
+this.noticeinfo = function(){
+
+    //trace("search before : " + this.ds_data.saveXML());
+
+	var strSvcId    = "noticeinfo";
+	var strSvcUrl   = "selectnoticedetail.do";
+	var inData      = "";
+	var outData     = "ds_data=ds_data";
+	var strArg      = "wcno="+this.parent.param1;
+	var callBackFnc = "fnCallback";
+	
+	
+	trace("this.No : " + this.No + " : " + this.parent.param1);
+ 
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType); // 통신방법 정의 [생략가능]
+								
+								
+};
+	
+
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID,errorCode,errorMsg)
+{
+	// 에러 시 화면 처리 내역
+	if(errorCode != 0)
+	{
+		return;
+	}
+	
+	switch(svcID)
+	{
+		case "search":
+			//trace(this.dsSearch.saveXML());
+			break;
+		case "noticeinfo":
+			//trace(this.ds_data.saveXML());
+			break;			
+		case "savelinfo":
+			// 저장 되었습니다.
+			this.gfnAlert("msg.save.success");	
+			this.opener.fnSearch();
+			this.close();
+			break;
+			
+		case "deletenotice":
+			// 삭제되었습니다
+			alert("삭제가 완료되였습니다.")
+			this.close();
+			this.opener.fnSearch();
+			break;
+	}
+};
+
+
+//취소버튼
+this.btn_cancel_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+	//스크롤을 올려줘야 함
+};
+
+
+//저장버튼
+this.btn_save_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if (this.confirm("저장하시겠습니까?"))
+	{
+			
+			var strSvcId    = "savelinfo";
+			var strSvcUrl   = "savenoticedetail.do";
+			var inData      = "ds_data=ds_data";
+			var outData     = "";
+			var strArg      = "";
+			var callBackFnc = "fnCallback";
+			
+			
+			//생략가능
+			var isAsync   = true;
+			var nDataType = 0;	
+			
+			this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+										strSvcUrl , 	// trabsaction을 요청할 주소
+										inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+										outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+										strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+										callBackFnc, 	// transaction의 결과를 받을 Function 이름
+										nDataType); // 통신방법 정의 [생략가능]
+
+
+
+		
+	}
+};
+
+
+
+//팝업창에서 삭제 테스트
+
+this.btn00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if (this.confirm("삭제 하시겠습니까?"))
+	{
+			
+			var strSvcId    = "deletenotice";
+			var strSvcUrl   = "deletenotice.do";
+			var inData      = "ds_data=ds_data";
+			var outData     = "";
+			var strArg      = "no="+wcno;
+			var callBackFnc = "fnCallback";
+			
+			
+			//생략가능
+			var isAsync   = true;
+			var nDataType = 0;	
+			
+			this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+										strSvcUrl , 	// trabsaction을 요청할 주소
+										inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+										outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+										strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+										callBackFnc, 	// transaction의 결과를 받을 Function 이름
+										nDataType); // 통신방법 정의 [생략가능]
+
+
+
+		
+	}
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_data">
+        <ColumnInfo>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="contents" type="STRING" size="256"/>
+          <Column id="No" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <InitValue/>
+    <Bind>
+      <BindItem id="item0" compid="show_title" propid="value" datasetid="ds_data" columnid="title"/>
+      <BindItem id="item1" compid="show_contents" propid="value" datasetid="ds_data" columnid="contents"/>
+    </Bind>
+  </Form>
+</FDL>

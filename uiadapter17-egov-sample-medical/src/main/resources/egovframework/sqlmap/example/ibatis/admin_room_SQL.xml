@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="room">
+
+    <typeAlias alias="RoomVO" type="com.nexacro.sample.vo.RoomVO"/>
+
+<!-- Sample resultObject -->
+    <resultMap id="user" class="RoomVO">
+   		<result property="bd_code" column="bd_code" />
+        <result property="bd_name" column="bd_name" />
+        <result property="bd_date" column="bd_date" />
+        <result property="userId" column="userId" />
+        <result property="loginID" column="loginID" />
+    </resultMap>
+    
+ 	<select id="room.selectRoomList" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+             SELECT
+	                bd_code,bd_name, bd_date, bd_text, userId
+            FROM tb_board
+            <dynamic>
+			<isNotNull property="SearchKeyword">
+				<isNotEqual property="SearchKey" compareValue="00">
+					<isEqual prepend="WHERE" property="SearchKey" compareValue="01">
+						bd_name = #SearchKeyword# 
+						<isNotNull prepend="AND" property="SearchStartDate">
+							<isNotNull  property="SearchEndDate">
+							 bd_date BETWEEN #SearchStartDate# AND #SearchEndDate#
+							</isNotNull>
+						</isNotNull>
+					</isEqual>
+					<isEqual prepend="WHERE" property="SearchKey" compareValue="02">
+						bd_text = #SearchKeyword#
+						<isNotNull prepend="AND" property="SearchStartDate">
+							<isNotNull  property="SearchEndDate">
+							 bd_date BETWEEN #SearchStartDate# AND #SearchEndDate#
+							</isNotNull>
+						</isNotNull>
+					</isEqual>
+					<isEqual prepend="WHERE" property="SearchKey" compareValue="03">
+						userId = #SearchKeyword#
+						<isNotNull prepend="AND" property="SearchStartDate">
+							<isNotNull  property="SearchEndDate">
+							 bd_date BETWEEN #SearchStartDate# AND #SearchEndDate#
+							</isNotNull>
+						</isNotNull>
+					</isEqual>
+				</isNotEqual>
+				<isEqual property="SearchKey" compareValue="00">
+					<isNotNull prepend="WHERE" property="SearchStartDate">
+					<isNotNull  property="SearchEndDate">
+					 	bd_date BETWEEN #SearchStartDate# AND #SearchEndDate#+1
+					</isNotNull>
+				</isNotNull>
+				</isEqual>
+			</isNotNull>
+		</dynamic>  
+         
+    </select>
+    
+    <select id="room.viewMorqueInfo" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+             SELECT
+	                bd_name, bd_date, bd_text, userId
+            FROM tb_board
+            WHERE bd_name=#bd_name# 
+    </select>
+      
+    <insert id="room.insertMorque" parameterClass="MAP">
+    	<selectKey resultClass="String" keyProperty="bd_code">
+		  select CONCAT('b_',LPAD(cast((cast(SUBSTR(ifnull(max(bd_code),'b_00000'),3) as unsigned) + 1) as char(5)),5,'0'))         
+			from tb_board
+		</selectKey>  
+    	INSERT INTO tb_board (bd_code,bd_name,bd_text,userId,bd_date)
+    		values(#bd_code#,#bd_name#,#bd_text#,#userId#,now());
+    
+    </insert>  
+    
+    <update id="room.updateMorque" parameterClass="MAP">
+    	update tb_board
+    		SET bd_name=#bd_name#, bd_text=#bd_text#, bd_date=#bd_date#
+    			where bd_code=#bd_code#
+    </update>
+     
+     <delete id="room.deleteMorque" parameterClass="MAP">
+     	DELETE FROM tb_board
+     		WHERE bd_code=#bd_code#
+     </delete> 
+    
+</sqlMap>

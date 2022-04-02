@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="cdList" width="1010" height="840" titletext="New Form" onload="cdList_onload" visible="true">
+    <Layouts>
+      <Layout height="840" mobileorientation="landscape" width="1010">
+        <ImageViewer id="img_image" taborder="0" left="48" top="26" height="184" border="1px solid #bdc2c9" stretch="fixaspectratio" width="132" onclick="fn_click" image="URL(&quot;theme://images/btn_WF_Hdec_O.png&quot;)"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[
+this.fn_click = function(obj:nexacro.ImageViewer,e:nexacro.ClickEventInfo)
+{
+	var sURL = "www.daum.net";
+	this.browser(sURL);
+	//this.WebBrowser00.set_url(sURL);
+};
+
+this.browser = function(sURL)
+{
+	var nW = 860;
+	var nH = 650;
+  
+	var objApp = nexacro.getApplication();
+	var nLeft = (objApp.mainframe.width  / 2) - Math.round(nW / 2);
+	var nTop  = (objApp.mainframe.height / 2) - Math.round(nH / 2) ;		
+
+	nLeft = system.clientToScreenX(this, nLeft);
+	nTop  = system.clientToScreenY(this, nTop);
+
+	var sOpenStyle = "dragmovetype=all"
+//				   + " openalign='center middle'"
+				   + " resizable=true"
+				   + " titletext=Modeless"
+				   + " showtitlebar=true"
+				   + " showstatusbar=false";
+				   
+	alert("sURL : " + sURL);			   
+				   
+	var objParam = {param1:sURL};
+				  
+	nexacro.open("chf_popup3"
+			   , "admin::PersonList2.xfdl"
+			   , this.getOwnerFrame()
+			   , objParam
+			   , sOpenStyle
+			   , nLeft
+			   , nTop
+			   , nW
+			   , nH
+			   , this);
+};]]></Script>
+    <Objects/>
+    <InitValue/>
+  </Form>
+</FDL>

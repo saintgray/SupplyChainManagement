@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.study.scm.user.dao.UserInfoDao">
+
+
+
+
+	<select id="getUserInfo" resultType="kr.happyjob.study.scm.user.model.UserDetail">
+		SELECT
+				loginID,
+				password,
+				user_Type,
+				client,
+				name,
+				phone,
+				zipCode,
+				address,
+				dtAddress,
+				email
+		FROM
+			tb_userinfo
+		WHERE 
+			loginID=#{arg0}
+	</select>
+	
+	
+	
+	<select id="getUserList" parameterType="kr.happyjob.study.scm.user.model.PageInfo" resultType="kr.happyjob.study.scm.user.model.User">
+		
+		SELECT
+			loginID,
+			user_Type,
+			client,
+			name,
+			phone
+			
+		FROM
+			tb_userinfo
+		<where>
+			<if test='"N".equals(showall)'>
+				AND deletedYN='N'
+			</if>
+			<if test="keyword != null">
+				
+				<if test='!"all".equals(searchType)'>
+					AND 
+					<if test='"comp_nm".equals(searchType)'>user_Type='C' AND client </if>
+					<if test='"emp_nm".equals(searchType)'>user_Type!='C' AND name </if>
+					<if test='"user_nm".equals(searchType)'>user_Type='C' AND name </if>
+					<if test='"task".equals(searchType)'>
+						user_Type!='C'
+						AND
+						(SELECT CASE
+							WHEN (user_Type ='A') THEN  'SCM관리자' 
+							WHEN (user_Type='B') THEN '배송담당자'
+							WHEN (user_Type='D') THEN '구매담당자'
+							WHEN (user_Type='E') THEN '임원'
+							END
+						)
+					</if>
+					LIKE CONCAT('%',#{keyword},'%')
+				</if>
+				
+				<if test='"all".equals(searchType)'>
+					AND (
+							client LIKE CONCAT('%',#{keyword},'%')
+							OR
+							loginID LIKE CONCAT('%',#{keyword},'%')
+							OR
+							name LIKE CONCAT('%',#{keyword},'%')
+							OR
+							phone LIKE CONCAT('%',#{keyword},'%')							
+						)
+				</if>
+				
+			</if>
+			
+		</where>
+		limit #{firstIndex}, #{rowsPerPage}
+		
+		
+		
+	
+	
+	</select>
+	
+	<select id="getTotalCount" parameterType="kr.happyjob.study.scm.user.model.PageInfo"  resultType="Integer">
+		
+		SELECT
+			COUNT(1)
+		FROM
+			tb_userinfo
+		<where>
+			<if test='"N".equals(showall)'>
+				AND deletedYN='N'
+			</if>
+			<if test="keyword != null">
+				<if test='!"all".equals(searchType)'>
+					AND 
+					<if test='"comp_nm".equals(searchType)'>user_Type='C' AND client </if>
+					<if test='"emp_nm".equals(searchType)'>user_Type!='C' AND name </if>
+					<if test='"user_nm".equals(searchType)'>user_Type='C' AND name </if>
+					<if test='"task".equals(searchType)'>
+						user_Type!='C'
+						AND
+						(SELECT CASE
+							WHEN (user_Type ='A') THEN  'SCM관리자' 
+							WHEN (user_Type='B') THEN '배송담당자'
+							WHEN (user_Type='D') THEN '구매담당자'
+							WHEN (user_Type='E') THEN '임원'
+							END
+						)
+					</if>
+					
+					
+					LIKE CONCAT('%',#{keyword},'%')
+				</if>
+				
+				<if test='"all".equals(searchType)'>
+					AND (
+							client LIKE CONCAT('%',#{keyword},'%')
+							OR
+							loginID LIKE CONCAT('%',#{keyword},'%')
+							OR
+							name LIKE CONCAT('%',#{keyword},'%')
+							OR
+							phone LIKE CONCAT('%',#{keyword},'%')							
+						)
+				</if>
+			</if>
+		</where>
+	
+	
+	
+	</select>
+	 
+	<insert id="insertUser" parameterType="kr.happyjob.study.scm.user.model.UserRegData">
+		INSERT
+		INTO
+			tb_userinfo(
+						loginID,
+						password,
+						user_Type,
+						client,
+						name,
+						phone,
+						zipCode,
+						address,
+						dtAddress,
+						email
+						)
+		VALUES(
+				#{loginID},
+				#{password},
+				#{user_Type},
+				#{client},
+				#{name},
+				#{phone},
+				#{zipCode},
+				#{address},
+				#{dtAddress},
+				#{email}
+				)
+	
+	</insert>
+	
+	<update id="updateUser" parameterType="kr.happyjob.study.scm.user.model.UserRegData">
+		UPDATE
+			tb_userinfo
+		SET
+			user_Type=#{user_Type},
+			client=#{client},
+			name=#{name},
+			phone=#{phone},
+			zipCode=#{zipCode},
+			address=#{address},
+			dtAddress=#{dtAddress},
+			email=#{email}
+		WHERE
+			loginID=#{loginID}
+			
+	
+	
+	</update>
+	
+	<update id="deleteUser">
+		UPDATE
+			tb_userinfo
+		SET
+			deletedYN = 'Y'
+		WHERE
+			loginID=#{arg0}
+	</update>
+
+</mapper>
+
+
+

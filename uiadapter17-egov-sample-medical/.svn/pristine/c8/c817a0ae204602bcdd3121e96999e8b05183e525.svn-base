@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="admin_main" width="1280" height="720" titletext="New Form" onload="main_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Grid id="grd00" taborder="0" left="130" top="100" width="390" height="360" binddataset="pc_room" oncellclick="grd00_oncellclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="208"/>
+                <Column size="180"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="pc_no"/>
+                <Cell col="1" text="loginID"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:pc_no"/>
+                <Cell col="1" text="bind:user"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="sta00" taborder="1" text="DIGITAL PC방" left="300" top="10" width="283" height="52" onclick="sta00_onclick" color="black" font="20px/normal &quot;Gulim&quot;"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[
+this.main_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	var strSvcId = "pcroomlist";
+	var strSvcUrl = "pcroomlist.do";
+	var inData = "";
+	var outData = "pc_room=pc_room";
+	var strArg = "";
+	var callBackFnc = "fnCallback";
+	var nDataType = 0;
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+};
+
+
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	
+};
+
+
+this.sta00_onclick = function(obj:nexacro.Static,e:nexacro.ClickEventInfo)
+{
+	
+};
+
+this.grd00_oncellclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+
+	var popUp = "";
+	var width = 360;
+	var height = 284;
+	
+	//alert(this.pc_room.getColumn(this.pc_room.rowposition,"user"));
+	
+	if(this.pc_room.getColumn(this.pc_room.rowposition,"user")=="미사용") {
+		popUp = "admin_main::order_Form_Popup.xfdl";
+		//popUp = "admin_main::ComcodeList.xfdl";
+	} else {
+	   	popUp="admin_main::main_Form_Popup.xfdl";
+	}
+	
+	
+	var objChildFrame = new ChildFrame();
+	objChildFrame.init("main_Popup"
+	                  , 0
+					  , 0
+					  , width
+					  , height
+					  , null
+					  , null
+					  , 
+					 popUp);
+
+				objChildFrame.set_openalign("center middle");
+				objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+				objChildFrame.set_dragmovetype("all");
+				
+				
+				var objParam = { 
+					pc_no:this.pc_room.getColumn(this.pc_room.rowposition,"pc_no"),
+					usable_yn :this.pc_room.getColumn(this.pc_room.rowposition,"usable_yn"),
+					loginID : this.pc_room.getColumn(this.pc_room.rowposition,"loginID"),
+					user : this.pc_room.getColumn(this.pc_room.rowposition,"user")
+				};
+							   
+				objChildFrame.showModal(this.getOwnerFrame()
+									   , objParam
+									   , this
+									   , "fn_popupCallback");		
+};
+
+this.fn_popupCallback = function(strPopupID, strReturn)
+{
+    if(strReturn == undefined){
+        return;
+    }
+
+    if(strPopupID == "main_Popup"){
+		alert("11");
+    }
+};
+]]></Script>
+    <Objects>
+      <Dataset id="pc_room">
+        <ColumnInfo>
+          <Column id="pc_no" type="STRING" size="256"/>
+          <Column id="user" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>

@@ -1,0 +1,238 @@
+package com.nexacro.sample.web;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.nexacro.sample.service.AdminService;
+import com.nexacro.sample.service.NoticeService;
+import com.nexacro.uiadapter17.spring.core.annotation.ParamDataSet;
+import com.nexacro.uiadapter17.spring.core.annotation.ParamVariable;
+import com.nexacro.uiadapter17.spring.core.data.NexacroResult;
+
+/**
+ * <pre>
+ * 
+ * @title
+ * @desc 관리자 공통코드 처리. - Controller Login Class
+ * @package com.nexacro.sample.web
+ * 
+ *          <pre>
+ * @author 이미혜
+ * @since 2019. 10.5.
+ * @version 1.0
+ * 
+ * 
+ */
+
+
+@Controller
+public class NoticeController {
+
+	private static final Logger logger = LoggerFactory.getLogger(NoticeController.class);
+
+	@Autowired
+	@Resource(name = "noticeService")
+	private NoticeService noticeService;
+
+	@Resource
+	private Validator validator;
+	// 유효성 검사?
+
+	@InitBinder
+	public void initBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(this.validator);
+	};
+	  
+	
+	@RequestMapping(value="/selectnoticelist.do")
+	public NexacroResult selectnoticelist(@ParamDataSet(name = "dsSearch", required = false) Map<String, String> searchMap){
+		List<Map<String,String>> list=noticeService.list(searchMap);
+		
+		//System.out.println(searchMap.toString());
+		
+		NexacroResult result=new NexacroResult();
+		result.addDataSet("dsList",list);
+		return result;
+			
+		
+	};
+	
+	   @RequestMapping(value="/selectnoticedetail.do")
+	   public NexacroResult selectnoticedetail(@ParamVariable(name="wcno",required=false) String wcno){
+	      
+	      Map<String, String> viewinfo= new HashMap<>();
+	      viewinfo.put("wcno", wcno);
+	      
+	      Map<String, String> dsSearch=noticeService.view(viewinfo);
+	      NexacroResult result = new NexacroResult();
+	      result.addDataSet("ds_data",dsSearch);
+	      
+	      return result;
+	
+	   };
+	   
+	   @RequestMapping(value="/deletenotice.do")
+	   public NexacroResult deletenotice(@ParamVariable(name = "no", required = false)String wcno ){
+		   
+		   System.out.println("돌아가는지"+wcno);
+
+		
+//		   System.out.println(wcno+"wno값");
+		   
+		   if(wcno!=null) {
+				  // update		
+			   System.out.println("지울 no값 찍어보기"+wcno);
+			      noticeService.deletenotice(wcno);  
+ 
+		   } 
+	      
+	      NexacroResult result = new NexacroResult();
+	      
+	      return result;
+	   
+	   };
+	   
+	   
+	   
+	   
+	
+	   @RequestMapping(value="/savenoticedetail.do")
+	   public NexacroResult savenoticedetail(@ParamDataSet(name = "ds_data", required = false) Map<String, Object>dataMap){
+	      
+		   System.out.println(dataMap+"dataNMap값");
+
+		   Object wcno =  dataMap.get("wcno");
+//		   System.out.println(wcno+"wno값");
+		   
+		   if(wcno!=null) {
+				  // update			   
+			      noticeService.updatenotice(dataMap);  
+ 
+		   } else {
+				  // insert 
+			      noticeService.insertnotice(dataMap); 
+		   }
+	      
+	      NexacroResult result = new NexacroResult();
+	      
+	      return result;
+	
+	   };	   
+	   
+	   
+	   
+	   
+/*	   @RequestMapping(value="/deletenoticelist.do")
+		public NexacroResult deletenoticelist(@ParamDataSet(name = "dsList", required = false) Map<String, String> searchMap){
+			List<Map<String,String>> list=noticeService.list(searchMap);
+			
+			//System.out.println(searchMap.toString());
+			
+			NexacroResult result=new NexacroResult();
+			return result;
+				
+			
+		};*/
+	   
+	   
+	   
+	   
+	   
+	   
+	
+//	@RequestMapping(value="/selectnoticedetail.do")
+//		public NexacroResult selectnoticedetail(@ParamDataSet(name="ds_showview",required=false)Map<String, String> searchMap){
+//		Map<String,String> dsSearch=noticeService.view(searchMap);
+//		
+//		//System.out.println(searchMap.toString());
+//		
+//		
+//		NexacroResult result=new NexacroResult();
+//		result.addDataSet("ds_showview",dsSearch);
+//		return result;	
+//	
+//		
+//	};
+	
+		
+		
+		@RequestMapping(value="MSGList.do")
+		public NexacroResult MSGlist(@ParamDataSet(name="ds_MsgSearch", required = false) Map<String, String> msg) {
+			System.out.println(msg);		
+			List<Map<String,String>> MSGlist =noticeService.MSGlist(msg);
+			
+			NexacroResult result=new NexacroResult();
+			result.addDataSet("ds_list", MSGlist);
+			System.out.println("========================> " + MSGlist.toString());
+			
+			
+			
+			return result;
+		};
+		
+		@RequestMapping(value="notedetailinfo.do")
+		public NexacroResult notedetailinfo(@ParamVariable(name="wno") String wno) {
+			System.out.println(wno);		
+			Map<String,String> notedetailinfo = noticeService.notedetailinfo(wno);
+			
+			NexacroResult result=new NexacroResult();
+			result.addDataSet("ds_data", notedetailinfo);
+			System.out.println("========================> " + notedetailinfo.toString());
+			
+			
+			
+			return result;
+		};	
+		
+		@RequestMapping(value="resendNote.do")
+		public NexacroResult resendNote(@ParamDataSet(name = "ds_senddata", required = false) Map<String, String> Sendnote) {
+			
+			System.out.println("==========================> " + Sendnote.toString());
+			
+			noticeService.sendNote(Sendnote);
+			
+			NexacroResult result=new NexacroResult();
+			
+			return result;
+		}
+		
+		//공지사항 목록 불러오기
+		@RequestMapping(value = "/noticeList.do")
+		public NexacroResult noticeList() {
+			System.out.println("공지사항 불러오기 test");
+		
+			List<Map<String, String>> noticeList = noticeService.NoticeList();		
+			NexacroResult result = new NexacroResult();
+			result.addDataSet("ds_Notice", noticeList);
+			return result;
+
+		};
+		
+		//공지사항 상세보기
+		@RequestMapping(value = "/noticeDetail.do")
+		public NexacroResult ProjectDetail(@ParamVariable(name = "wno", required = false) String wno) {
+			System.out.println("공지사항 상세보기 test 글번호 : " + wno);
+		
+			Map<String, String> noticeDetail = noticeService.NoticeDetail(wno);		
+			NexacroResult result = new NexacroResult();
+			result.addDataSet("ds_Notice", noticeDetail);
+			return result;
+
+		};
+				
+		
+		
+}

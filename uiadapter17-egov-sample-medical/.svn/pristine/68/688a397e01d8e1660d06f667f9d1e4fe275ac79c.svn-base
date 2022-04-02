@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="payinfo">
+	<select id="payinfo.payinfo" parameterClass="Map" remapResults="true" resultClass="java.util.HashMap">
+		select
+			g.goods_name goods_name
+			,s.sale_p sale_p
+			,s.sale_q sale_q
+			,s.sale_totp sale_totp
+			,s.sales_date sales_date
+			,s.loginID loginID 
+		FROM 
+			tb_goods g
+			,tb_sales s
+		where
+			g.goods_code=s.goods_code
+			and s.loginID = #loginId#
+			and s.sales_date = #using_day# 
+	</select>
+</sqlMap>

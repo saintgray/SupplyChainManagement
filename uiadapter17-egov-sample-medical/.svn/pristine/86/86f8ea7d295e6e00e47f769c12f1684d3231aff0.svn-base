@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="copPJList" width="1000" height="770" titletext="New Form" onload="ProjcetList_onload">
+    <Layouts>
+      <Layout height="770" mobileorientation="landscape" width="1000">
+        <Div id="Div00" taborder="0" text="Div00" left="6" top="30" width="984" height="410">
+          <Layouts>
+            <Layout>
+              <Grid id="proList" taborder="1" left="11" top="80" width="962" height="210" binddataset="ds_ProList" oncellclick="proList_onclick">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="526"/>
+                      <Column size="228"/>
+                      <Column size="205"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="프로젝트명"/>
+                      <Cell col="1" text="마감일자" displaytype="text" edittype="text"/>
+                      <Cell col="2" text="지원자수"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:project_name" textAlign="center"/>
+                      <Cell col="1" text="bind:receive_to_date" displaytype="date" edittype="date"/>
+                      <Cell col="2" text="bind:appCount" textAlign="center"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Edit id="edt_MG_serch" taborder="0" left="102" top="27" width="267" height="27" onchanged="edt_MG_serch_onchanged"/>
+              <Static id="Static00" taborder="2" text="프로젝트명" left="14" top="31" width="80" height="23" onclick="Div00_Static00_onclick" font="16px/normal &quot;Verdana&quot;" textAlign="center"/>
+              <Calendar id="cal_reg_sDate1" taborder="3" left="479" top="29" width="145" height="25" onchanged="cal_reg_sDate_onchanged"/>
+              <Calendar id="cal_reg_eDate" taborder="4" left="644" top="29" width="140" height="25" onchanged="cal_reg_eDate_onchanged"/>
+              <Button id="btn_PJ_saerch" taborder="5" text="검색" left="878" top="28" width="73" height="26" font="18px/normal &quot;Verdana&quot;" onclick="btn_PJ_Search_onclick"/>
+              <Static id="Static02" taborder="6" text="-" left="620" top="33" width="20" height="14" onclick="Div00_Static00_onclick" font="16px/normal &quot;Verdana&quot;" textAlign="center"/>
+              <Static id="Static01" taborder="7" text="마감일자" left="394" top="26" width="90" height="26" onclick="Div00_Static00_onclick" font="16px/normal &quot;Verdana&quot;" textAlign="center"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Grid id="pro_applicant" taborder="1" left="17" top="345" width="961" height="182" binddataset="ds_AidUserList" oncellclick="pro_applicant_onclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="144"/>
+                <Column size="268"/>
+                <Column size="236"/>
+                <Column size="94"/>
+                <Column size="216"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="성명"/>
+                <Cell col="1" text="제목"/>
+                <Cell col="2" text="희망지역"/>
+                <Cell col="3" text="등급"/>
+                <Cell col="4" text="전문기술"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:name" textAlign="center"/>
+                <Cell col="1" text="bind:title" textAlign="center"/>
+                <Cell col="2" text="bind:workarea" textAlign="center"/>
+                <Cell col="3" text="bind:grade" textAlign="center"/>
+                <Cell col="4" text="bind:skill" textAlign="center"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		ComcodeList.xfdl
+*  @Creator 		이미혜
+*  @CreateDate 	2019.09.19
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+*  2019.09.23        	이미혜 	            최초 생성(일반회원지원 프로젝트리스트)
+*******************************************************************************
+*
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+var project_name;
+var projectId;
+var userType;
+var project_keyword;
+var reg_to_date1;
+var reg_to_date2;
+var userID=nexacro.getEnvironmentVariable("gvUserId"); 
+userType=nexacro.getEnvironmentVariable("gvUserType");
+var UserNAME=nexacro.getEnvironmentVariable("gvUserNm");
+
+//회사가 등록한 프로젝트 목록
+this.ProjcetList_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.objApp = nexacro.getApplication();
+	this.co_ProList();
+	this.pro_applicant.set_visible(false);
+};
+
+//회사가 등록한 프로젝트명, 마감일, 지원자수 데이터 가져오기
+this.co_ProList = function() 
+{		
+	var strSvcId    = "co_ProList";
+	var strSvcUrl   = "cop_appli_ProList.do";
+	var inData      = "ds_Search=ds_Search";
+	var outData     = "ds_ProList=ds_ProList";
+	var strArg      = "loginID="+userID;
+	var callBackFnc = "fnCallback";
+
+	trace(userID);
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+											
+}
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "co_ProList":
+		break;
+		
+		case "proUserList":
+		break;
+		
+		}
+};
+
+///검색 
+this.btn_PJ_Search_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.co_ProList();
+};
+
+//프로젝트 클릭시 지원자 목록 => visible:true
+this.proList_onclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	this.pro_applicant.set_visible(true);
+	
+	project_name = this.ds_ProList.getColumn(this.ds_ProList.rowposition,"project_name");
+	projectId = this.ds_ProList.getColumn(this.ds_ProList.rowposition,"projectId");
+	trace("zzzzzzzzzzzzzzzzzzzzz",project_name);
+	trace(projectId,"zzzzzzzzzzzzzzzzzzzzz");
+	this.proUserList();
+};
+
+this.proUserList=function()
+{
+	var strSvcId = "proUserList";
+	var strSvcUrl = "proUserList.do";
+	var inData = "";
+	var outData = "ds_AidUserList=ds_AidUserList";
+	var strArg = "projectId="+projectId;
+	var callBackFnc = "fnCallback";
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+}
+
+//지원자 클릭시 지원자 정보 팝업으로
+this.pro_applicant_onclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	var objChildFrame =new ChildFrame();
+	objChildFrame.init("PersonRegPup"
+						,0
+						,0
+						,1000
+						,600
+						,null
+						,null
+						, "cop::PersonRegPup.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+    objChildFrame.set_openalign("center middle");
+    objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+	var objParam={param1:this.ds_AidUserList.getColumn(this.ds_AidUserList.rowposition,"loginId")
+				 ,param2:this.ds_AidUserList.getColumn(this.ds_AidUserList.rowposition,"user_type")};
+
+	
+	objChildFrame.showModal(this.getOwnerFrame()
+                          , objParam
+                          , this
+                          , "qqqq1");
+};
+
+//검색할 키워드
+this.edt_MG_serch_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+	project_keyword=e.postvalue;
+};
+
+this.cal_reg_sDate_onchanged = function(obj:nexacro.Calendar,e:nexacro.ChangeEventInfo)
+{
+	reg_to_date1=e.postvalue;
+};
+
+this.cal_reg_eDate_onchanged = function(obj:nexacro.Calendar,e:nexacro.ChangeEventInfo)
+{
+	reg_to_date2=e.postvalue;
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_ProList">
+        <ColumnInfo>
+          <Column id="CHK" type="STRING" size="256"/>
+          <Column id="regId" type="STRING" size="256"/>
+          <Column id="project_name" type="STRING" size="256"/>
+          <Column id="area" type="STRING" size="256"/>
+          <Column id="work_type" type="STRING" size="256"/>
+          <Column id="industry_type" type="STRING" size="256"/>
+          <Column id="reg_date" type="DATE" size="256"/>
+          <Column id="receive_to_date" type="DATE" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="com_name" type="STRING" size="256"/>
+          <Column id="ues_yn" type="STRING" size="256"/>
+          <Column id="workarea" type="STRING" size="256"/>
+          <Column id="appCount" type="INT" size="256"/>
+          <Column id="projectId" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_AidUserList">
+        <ColumnInfo>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="workarea" type="STRING" size="256"/>
+          <Column id="grade" type="STRING" size="256"/>
+          <Column id="skill" type="STRING" size="256"/>
+          <Column id="loginId" type="STRING" size="256"/>
+          <Column id="userType" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_Search">
+        <ColumnInfo>
+          <Column id="project_keyword" type="STRING" size="256"/>
+          <Column id="reg_to_date1" type="STRING" size="256"/>
+          <Column id="reg_to_date2" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="Div00.form.edt_MG_serch" propid="value" datasetid="ds_Search" columnid="project_keyword"/>
+      <BindItem id="item1" compid="Div00.form.cal_reg_sDate1" propid="value" datasetid="ds_Search" columnid="reg_to_date1"/>
+      <BindItem id="item2" compid="Div00.form.cal_reg_sDate2" propid="value" datasetid="ds_Search" columnid="reg_to_date2"/>
+    </Bind>
+  </Form>
+</FDL>

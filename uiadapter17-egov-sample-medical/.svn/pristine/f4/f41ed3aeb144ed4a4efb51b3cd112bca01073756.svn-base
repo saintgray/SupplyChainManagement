@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="UsrList" width="1010" height="890" titletext="New Form" onload="UsrList_onload">
+    <Layouts>
+      <Layout height="890" mobileorientation="landscape" width="1010">
+        <Div id="Div00" taborder="0" text="Div00" left="6" top="10" width="1004" height="870">
+          <Layouts>
+            <Layout>
+              <Grid id="UseList" taborder="1" left="13" top="80" width="971" height="740" binddataset="ds_UserResultList" oncellclick="UseList_oncellclick">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="102"/>
+                      <Column size="150"/>
+                      <Column size="232"/>
+                      <Column size="241"/>
+                      <Column size="243"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell colspan="2" text="회원유형"/>
+                      <Cell col="2" text="회원 명"/>
+                      <Cell col="3" text="아이디"/>
+                      <Cell col="4" text="가입일자"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:user_type" textAlign="center"/>
+                      <Cell col="1" text="bind:user_type_name" textAlign="center"/>
+                      <Cell col="2" text="bind:name" textAlign="center"/>
+                      <Cell col="3" text="bind:loginID" textAlign="center"/>
+                      <Cell col="4" text="bind:reg_date" displaytype="date" edittype="date" calendardateformat="yyyy-MM-dd " textAlign="center"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Static id="Static01" taborder="1" text="이름" left="10" top="38" width="74" height="16" cssclass="sta_WF_SubTitle"/>
+        <Combo id="cbo_UserType" taborder="2" text="전체" left="506" top="35" width="124" height="23" value="all" index="0" innerdataset="ds_userType" codecolumn="uType" datacolumn="uTypeName" onitemchanged="cbo_UserType_onitemchanged"/>
+        <Edit id="edt_UserKeyword" taborder="3" left="55" top="35" width="275" height="23" onchanged="edt_UserKeyword_onchanged"/>
+        <Button id="btn_UserSearch" taborder="4" text="검색" top="29" width="89" height="34" right="20" onclick="btn_UserSearch_onclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		ComcodeList.xfdl
+*  @Creator 		이미혜
+*  @CreateDate 	2019.09.22
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+*  2019.09.22        	이미혜 	            최초 생성(사용자관리)
+*******************************************************************************
+*  
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+var searchKeyWord;
+var searchType;
+var userID;
+var userType;
+
+this.UsrList_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.objApp = nexacro.getApplication();
+	this.cbo_UserType.set_displaynulltext("전체")
+	this.UserList();	
+};
+
+/**
+ * @description 화면 닫힐때 변경사항 체크(입력 화면에서 변경되는 Dataset 체크 필요, 선택)
+ * @return {boolean} false(화면 닫음) / true(화면 닫지 않음)
+*/
+
+
+this.UserList=function(){
+	   //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "UserList";
+	var strSvcUrl   = "Userlist.do";
+	var inData      = "UserSearch=UserSearch";
+	var outData     = "ds_UserResultList=ds_UserResultList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	//alert(this.ds_Search.saveXML());
+	//trace(this.ds_UserResultList.saveXML());
+	  
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType); // 통신방법 정의 [생략가능]
+	
+
+								
+};
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "UserList":
+           //trace(this.ds_UserResultList.saveXML());
+		break;
+		
+	}
+};	
+
+
+//Edit에 검색할 키워드 받아오기
+this.edt_UserKeyword_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+	this.searchKeyWord=e.postvalue;
+		
+};
+//회원타입 선택
+this.cbo_UserType_onitemchanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	this.searchtext=e.posttext;
+	this.searchType=e.postvalue;
+};
+
+
+//검색버튼 클릭시 해당 
+this.btn_UserSearch_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.UserList();
+};
+
+
+//해당 회원 클릭시 팝업 오픈
+this.UseList_oncellclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	var listRow=this.ds_UserResultList.rowposition;
+	//this.user=this.ds_UserResultList.getColumn(listRow,"name");
+	this.userID=this.ds_UserResultList.getColumn(listRow,"loginID");
+	this.userType=this.ds_UserResultList.getColumn(listRow,"user_type");
+	//alert("클릭한 회원은==="+this.userType);
+	
+	if(this.userType=="D"){
+			this.userPopUp();
+	   }else if(this.userType=="C"){			
+			this.comPopUp();
+	   }else if(this.userType=="A"){
+			this.alert("관리자를 클릭하였습니다.");
+	   };
+};
+
+
+this.userPopUp=function(){
+	var objChildFrame =new ChildFrame();
+	objChildFrame.init("PersonForm"
+						,0
+						,0
+						,850
+						,600
+						,null
+						,null
+						, "admin::PersonRegPup.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+    objChildFrame.set_openalign("center middle");
+    objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+	var objParam={param1:this.userID
+				 ,param2:this.userType
+				 ,param3:this.objParam};
+
+	
+	objChildFrame.showModal(this.getOwnerFrame()
+                          , objParam
+                          , this
+                          , "UserList");
+};
+
+
+
+this.comPopUp=function(){
+	var objChildFrame =new ChildFrame();
+	objChildFrame.init("CopForm"
+						,0
+						,0
+						,891
+						,520
+						,null
+						,null
+						,"cop::copReg.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+    objChildFrame.set_openalign("center middle");
+    objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+	var objParam={param1:this.userID
+				 ,param2:this.userType};
+
+	
+	objChildFrame.showModal(this.getOwnerFrame()
+                          , objParam
+                          , this
+                          , "fn_comPopUp");
+						  
+};
+
+
+
+
+
+
+
+
+
+
+
+]]></Script>
+    <InitValue>
+      <Combo id="cbo_UserType" innerdataset="ds_cdChoice" datacolumn="cbo_cdName" codecolumn="cbo_cdID"/>
+    </InitValue>
+    <Bind>
+      <BindItem id="item0" compid="cbo_UserType" propid="value" datasetid="UserSearch" columnid="searchType"/>
+      <BindItem id="item1" compid="edt_UserKeyword" propid="value" datasetid="UserSearch" columnid="searchKeyWord"/>
+    </Bind>
+    <Objects>
+      <Dataset id="ds_userType">
+        <ColumnInfo>
+          <Column id="uType" type="STRING" size="256"/>
+          <Column id="uTypeName" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="uType">all</Col>
+            <Col id="uTypeName">전체</Col>
+          </Row>
+          <Row>
+            <Col id="uType">D</Col>
+            <Col id="uTypeName">일반회원</Col>
+          </Row>
+          <Row>
+            <Col id="uType">C</Col>
+            <Col id="uTypeName">기업회원</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="UserSearch">
+        <ColumnInfo>
+          <Column id="searchType" type="STRING" size="256"/>
+          <Column id="searchKeyWord" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_UserResultList">
+        <ColumnInfo>
+          <Column id="user_type" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="reg_date" type="DATE" size="256"/>
+          <Column id="user_type_name" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>

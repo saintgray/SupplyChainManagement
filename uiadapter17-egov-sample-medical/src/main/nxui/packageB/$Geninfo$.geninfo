@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <GenInfo version="1.1">
+    <Rule>
+      <ENV rule_version="1.05"/>
+      <ADL rule_version="1.14"/>
+      <FDL rule_version="1.04"/>
+      <XCSS rule_version="1.03"/>
+      <Script rule_version="1.02"/>
+    </Rule>
+    <Info project="E:\egov\workspace\uiadapter17-egov-sample-medical\src\main\nxui\packageB\" generated="C:\Users\13\Documents\nexacro\17\outputs\packageB\">
+      <File url="environment.xml" checksum="20190923161332" errormsg=""/>
+      <File url="typedefinition.xml" checksum="20200611145642" errormsg=""/>
+      <File url="appvariables.xml" checksum="20190923161320" errormsg=""/>
+      <File url="_resource_\_theme_\default\theme.xcss" checksum="20190923161332" errormsg=""/>
+      <File url="packageB.xadl" checksum="20190923161332" errormsg=""/>
+    </Info>
+  </GenInfo>
+</root>

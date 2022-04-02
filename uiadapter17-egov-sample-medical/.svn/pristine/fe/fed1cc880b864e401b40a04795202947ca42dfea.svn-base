@@ -1,0 +1,412 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Form" width="900" titletext="기업회원가입" onload="form_onload" height="530" scrollbartype="default default">
+    <Layouts>
+      <Layout height="530" mobileorientation="landscape" width="900" stepcount="0">
+        <Static id="Static26" taborder="0" text="WEB" left="-130" top="594" width="40" height="15" color="red"/>
+        <CheckBox id="CheckBox17" taborder="1" text="CheckBox00" left="-130" top="619" width="20" height="16"/>
+        <CheckBox id="CheckBox18" taborder="2" text="CheckBox00" left="-130" top="635" width="20" height="16"/>
+        <CheckBox id="CheckBox19" taborder="3" text="CheckBox00" left="-130" top="651" width="20" height="16"/>
+        <CheckBox id="CheckBox20" taborder="4" text="CheckBox00" left="-130" top="666" width="20" height="16"/>
+        <CheckBox id="CheckBox21" taborder="5" text="CheckBox00" left="-130" top="682" width="20" height="16"/>
+        <CheckBox id="CheckBox22" taborder="6" text="CheckBox00" left="-130" top="698" width="20" height="16"/>
+        <CheckBox id="CheckBox23" taborder="7" text="CheckBox00" left="-130" top="714" width="20" height="16"/>
+        <CheckBox id="CheckBox24" taborder="8" text="CheckBox00" left="-130" top="730" width="20" height="16"/>
+        <Static id="Static56" taborder="9" text="FrameWork" left="-150" top="866" width="470" height="14" color="red" onclick="Static56_onclick"/>
+        <CheckBox id="CheckBox32" taborder="10" text="CheckBox00" left="-130" top="777" width="20" height="16"/>
+        <CheckBox id="CheckBox33" taborder="11" text="CheckBox00" left="-130" top="793" width="20" height="16"/>
+        <CheckBox id="CheckBox34" taborder="12" text="CheckBox00" left="-130" top="809" width="20" height="16"/>
+        <Static id="Static00" taborder="13" text="기업회원가입" left="23" top="33" width="159" height="35" font="bold 15pt/normal &quot;Arial&quot;" onclick="Static00_onclick" textAlign="center" color="red"/>
+        <Static id="Static01" taborder="14" text="아이디" left="52" top="121" width="40" height="17" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <Edit id="edt_Id" taborder="15" left="113" top="118" width="118" height="23" onchanged="edt_Id_onchanged"/>
+        <Static id="Static02" taborder="16" text="담당자명" left="39" top="225" width="53" height="20" onclick="Static02_onclick" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <Edit id="edt_Name" taborder="17" left="113" top="221" width="118" height="23"/>
+        <Static id="Static03" taborder="18" text="회사명" left="52" top="170" width="40" height="20" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <Static id="Static04" taborder="19" text="생년월일" left="40" top="278" width="52" height="20" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <Static id="Static05" taborder="20" text="비밀번호" left="366" top="121" width="52" height="17" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <Edit id="edt_Pwd" taborder="21" left="444" top="118" width="118" height="23" password="true"/>
+        <Static id="Static06" taborder="22" text="이메일" left="366" top="168" width="42" height="20" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <Edit id="edt_Email_Id" taborder="23" left="444" top="169" width="88" height="23" onchanged="edt_email_onchanged"/>
+        <Static id="Static07" taborder="24" text="@" left="542" top="172" width="18" height="17" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <Edit id="edt_Email_Addr" taborder="25" left="562" top="169" width="124" height="23" onchanged="edt_email_cop_onchanged" text="66666666666666666666"/>
+        <Combo id="cbo_EmailAddr" taborder="26" text="" left="697" top="168" width="95" height="23" value="" index="-1" onitemchanged="fn_choemailaddr_itemchange" type="filterlike" visible="true"/>
+        <Button id="btn_Reg" taborder="27" text="회원가입" left="408" top="492" width="64" height="23" onclick="btn_reg_onclick" font="bold 12px/normal &quot;Gulim&quot;" borderRadius="4px"/>
+        <Button id="btn_Cancel" taborder="28" text="취 소" left="488" top="492" width="57" height="23" font="bold 10pt &quot;Arial&quot;" borderRadius="4px" onclick="btn_Cancel_onclick"/>
+        <Edit id="edt_CopName" taborder="29" left="113" top="169" width="118" height="23" onchanged="edt_CopName_onchanged"/>
+        <Static id="Static08" taborder="30" text="내역정보" left="40" top="318" width="52" height="20" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <TextArea id="txt_Career" taborder="31" left="113" top="318" width="747" height="141" onchanged="txt_Career_onchanged"/>
+        <Button id="btn_IdChk" taborder="32" text="확인" left="242" top="118" width="42" height="23" onclick="btn_IdChk_onclick" font="bold 12px/normal &quot;Gulim&quot;" borderRadius="4px"/>
+        <Static id="Static14" taborder="33" text="연락처" left="368" top="278" width="39" height="17" font="bold 12px/normal &quot;Gulim&quot;"/>
+        <Combo id="cbo_Tel1" taborder="34" left="444" top="272" width="58" height="23" value="" index="-1" onitemchanged="cbo_Tel1_onitemchanged"/>
+        <Edit id="edt_Tel2" taborder="35" left="524" top="272" width="75" height="23" onchanged="edt_Tel2_onchanged"/>
+        <Edit id="edt_Tel3" taborder="36" left="612" top="272" width="75" height="23" onchanged="edt_Tel3_onchanged"/>
+        <Calendar id="cal_birthday" taborder="37" left="113" top="277" width="119" height="21"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[var userID=this.parent.param1;
+var userType=this.parent.param2;
+
+//alert("넘어온"+userID);
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	if (new String(userID).valueOf() == "undefined") {	
+	    userID = nexacro.getEnvironmentVariable("gvUserId");
+		userType = nexacro.getEnvironmentVariable("gvUserType");
+	}
+    // trace("22222222222222222222222 : " + userID);
+
+	if (!this.gfnIsNull(userID))
+	{	
+	    //trace("22222222222222222222222 : " + userID);
+		this.edt_Id.set_readonly(true);
+		this.btn_IdChk.set_visible(false);
+		this.btn_Reg.set_text("수정");
+		this.Static00.set_text("기업회원정보");
+		this.CopInfo();
+		
+	
+		this.cbo_Tel1.set_displaynulltext("010");
+	}
+	
+	
+	this.gfnCommCdCombo('MAILCD',this.cbo_EmailAddr);	
+	this.gfnCommCdCombo('TELCD',this.cbo_Tel1);	
+	
+	//var objDate = new Date();
+    //var ngetTime = objDate.getTime();
+
+    this.cal_birthday.value = this.fn_today();
+	
+};
+this.btn_IdChk_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+
+
+	var strSvcId    = "iddupchk";
+	var strSvcUrl   = "copidcheck.do";
+	var inData      = "";
+	var outData     = "ds_IdCnt=ds_IdCnt";
+	var strArg      = "id="+this.edt_Id.value;
+	var callBackFnc = "fnCallback";
+
+	//alert("edId : " + this.dsSearch.getColumn("USER_ID") + " edPw : " + this.dsSearch.getColumn("USER_PASSWORD"));
+	
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능] 
+
+
+};
+this.fn_checkId = function(sValue)
+{
+    var sRtn = "N";
+    var sRegExp = "[a-z0-9]{4,15}";
+    var objRegExp = new RegExp(sRegExp, "i"); 
+    var objResult = objRegExp.exec(sValue);
+	
+    if (objResult == null)
+    {
+        sRtn = "N";
+    }
+    else
+    {
+        if ((objResult.index == 0) && (objResult == sValue))
+            sRtn = "Y";
+        else
+            sRtn = "N";
+    }
+
+    return sRtn;
+
+
+};
+
+
+
+this.btn_pwdCheck_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+    var sRtn = fn_checkPassword(this.edt_Pwd.value);
+    
+	if(sRtn ==='Y')
+		// alert("Password correct");	
+		this.pwd_result.set_text("Password correct");
+	else
+		// alert("Password incorrect");		
+		this.pwd_result.set_text("Password incorrect");
+
+};
+
+/*this.CheckBox00_onchanged = function(obj:nexacro.CheckBox,e:nexacro.CheckBoxChangedEventInfo)
+{
+	if(e.postvalue == 1) 
+	{
+		this.edit_password.set_password("false");
+	}
+	else
+	{
+		this.edit_password.set_password("true");
+	}
+	
+};*/
+
+
+
+ function fn_checkPassword(sValue)
+{
+    var sRtn = "N";
+    var sRegExp = "[a-z0-9!@#$%^&*]{8,16}";
+    var objRegExp = new RegExp(sRegExp, "i"); 
+    var objResult = objRegExp.exec(sValue);
+	
+    if (objResult == null)
+    {
+        sRtn = "N";
+    }
+    else
+    {
+        if ((objResult.index == 0) && (objResult == sValue))
+            sRtn = "Y";
+        else
+            sRtn = "N";
+    }
+
+    return sRtn;
+};
+
+
+this.fn_choemailaddr_itemchange = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	   //trace("aaaaaaaaaaaaaaaaaaaaa : " + e.postvalue +  " : " + e.posttext);
+
+	//this.edt_email_cop.value = e.posttext;
+	if(e.postvalue == "03") {
+	  this.dsCop.setColumn(this.dsCop.rowposition,"email_cop", "") ; 	
+	} else {
+	  this.dsCop.setColumn(this.dsCop.rowposition,"email_cop", e.postvalue) ;  
+	}
+	
+};
+this.btn_reg_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.fn_Reg();
+
+
+}; 
+
+/**
+ * 로그인 transaction
+ * @param {string} reLoginYn 
+ * @return 
+ * @example
+ *
+ * @memberOf 
+ */
+this.fn_Reg = function() 
+{	
+    //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "reg";
+	var strSvcUrl   = "copReg.do";
+	var inData      = "dsCop=dsCop:u";
+	var outData     = "";
+	var strArg      = "LoginID="+nexacro.getEnvironmentVariable("gvUserId");
+	var callBackFnc = "fnCallback";
+	
+	//alert("edId : " + this.dsSearch.getColumn("USER_ID") + " edPw : " + this.dsSearch.getColumn("USER_PASSWORD"));
+	//alert(this.dsCop.saveXML());
+	
+	//생략가능
+	var isAsync = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+								
+								
+}	
+ 
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "reg":
+		  	alert("회원가입이 완료되였습니다.");
+			//this.opener.UserList();
+			this.close();
+			break;
+			
+ 		case "iddupchk":
+		    
+		    //trace(this.ds_IdCnt.saveXML());
+			
+ 			idcorrect = this.ds_IdCnt.getColumn(0,"resultYn");
+			
+	        if(idcorrect == "T") {
+			   alert("사용 가능한 아이디 입니다.");
+			} else {
+			   alert("이미 사용중인 아이디 입니다.  \n 다른 아이디를 사용해주세요.");
+			}
+			
+ 			break;
+			
+ 		case "CopInfo":
+				//alert("의 정보 입니다.");
+				trace(this.dsCop.saveXML());
+ 			break;
+	}
+};
+
+this.edt_Id_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+
+    //trace("edt_Id_onchanged : " + this.edt_Id.value + " e.postvalue : " + e.postvalue);
+
+    var ss = this.fn_checkidspell(this.edt_Id.value);
+	
+};
+
+//오늘 날짜 불러오기
+ this.fn_today = function()
+ {
+ 	var day=new Date();
+ 	var today=day.getFullYear().toString();
+ 		today+=(day.getMonth()+1).toString().padLeft(2,"0");
+ 		today+=day.getDate().toString().padLeft(2,"0");
+ 		return today;
+ };
+
+function fn_checkidspell(sValue)
+{
+    var sRtn = "N";
+    var sRegExp = "[a-z0-9!@#$%^&*]{8,16}";
+    var objRegExp = new RegExp(sRegExp, "i"); 
+    var objResult = objRegExp.exec(sValue);
+	
+    if (objResult == null)
+    {
+        sRtn = "N";
+    }
+    else
+    {
+        if ((objResult.index == 0) && (objResult == sValue))
+            sRtn = "Y";
+        else
+            sRtn = "N";
+    }
+
+    return sRtn;
+};
+
+this.CopInfo=function(){
+	if (userType==null)
+	{
+		userType='C';
+	}
+	   //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "CopInfo";
+	var strSvcUrl   = "CopInfo.do";
+	var inData      = "";
+	var outData     = "dsCop=dsCop";
+	var strArg      = "userID="+userID+" userType="+userType;
+	var callBackFnc = "fnCallback";
+
+	//alert(this.ds_Search.saveXML());
+	//trace(this.dsCop.saveXML());
+	  
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType); // 통신방법 정의 [생략가능]
+								
+								
+};
+
+
+
+
+
+
+
+
+this.btn_Cancel_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+]]></Script>
+    <Objects>
+      <Dataset id="dsCop">
+        <ColumnInfo>
+          <Column id="id" type="STRING" size="256"/>
+          <Column id="password" type="STRING" size="256"/>
+          <Column id="cop_name" type="STRING" size="256"/>
+          <Column id="email" type="STRING" size="256"/>
+          <Column id="email_cop" type="STRING" size="256"/>
+          <Column id="tel1" type="STRING" size="256"/>
+          <Column id="tel2" type="STRING" size="256"/>
+          <Column id="tel3" type="STRING" size="256"/>
+          <Column id="manager_name" type="STRING" size="256"/>
+          <Column id="birthday" type="STRING" size="256"/>
+          <Column id="career" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_Id_Upcheck">
+        <ColumnInfo>
+          <Column id="idCnt" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_IdCnt">
+        <ColumnInfo>
+          <Column id="resultYn" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="edt_name" compid="edt_Name" propid="value" datasetid="dsCop" columnid="manager_name"/>
+      <BindItem id="item1" compid="cal_birthday" propid="value" datasetid="dsCop" columnid="birthday"/>
+      <BindItem id="item0" compid="edt_Id" propid="value" datasetid="dsCop" columnid="id"/>
+      <BindItem id="item3" compid="edt_Pwd" propid="value" datasetid="dsCop" columnid="password"/>
+      <BindItem id="item4" compid="edt_CopName" propid="value" datasetid="dsCop" columnid="cop_name"/>
+      <BindItem id="item5" compid="edt_Email_Id" propid="value" datasetid="dsCop" columnid="email"/>
+      <BindItem id="item6" compid="edt_Email_Addr" propid="value" datasetid="dsCop" columnid="email_cop"/>
+      <BindItem id="item2" compid="cbo_Tel1" propid="value" datasetid="dsCop" columnid="tel1"/>
+      <BindItem id="item7" compid="edt_Tel2" propid="value" datasetid="dsCop" columnid="tel2"/>
+      <BindItem id="item8" compid="edt_Tel3" propid="value" datasetid="dsCop" columnid="tel3"/>
+      <BindItem id="item9" compid="txt_Career" propid="value" datasetid="dsCop" columnid="career"/>
+      <BindItem id="item10" compid="cbo_EmailAddr" propid="value" datasetid="dsCop" columnid="email_cop"/>
+    </Bind>
+    <InitValue>
+      <Combo id="cbo_EmailAddr" innerdataset="innerdataset" datacolumn="datacolumn" codecolumn="codecolumn"/>
+    </InitValue>
+  </Form>
+</FDL>

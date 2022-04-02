@@ -1,0 +1,11 @@
+package kr.happyjob.study.epc.dao;
+
+import java.util.ArrayList;
+
+import kr.happyjob.study.epc.model.SalesModel;
+
+public interface ProductListDao {
+
+	
+	abstract ArrayList<SalesModel> getListProduct();
+}

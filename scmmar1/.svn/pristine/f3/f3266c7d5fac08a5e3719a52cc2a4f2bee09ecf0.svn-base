@@ -1,0 +1,26 @@
+package kr.happyjob.study.scm.sales.dao;
+
+import java.util.List;
+
+import kr.happyjob.study.scm.model.FileModel;
+import kr.happyjob.study.scm.sales.model.FileInfo;
+import kr.happyjob.study.scm.sales.model.PageInfo;
+import kr.happyjob.study.scm.sales.model.Sales;
+import kr.happyjob.study.scm.sales.model.SalesDetails;
+import kr.happyjob.study.scm.sales.model.SalesRegData;
+
+public interface SalesManageDao {
+	
+	
+	
+	List<Sales> getSalesList(PageInfo info);
+	int getTotalCount(PageInfo info);
+	int insertSales(SalesRegData sales);
+	int insertFiles(List<FileModel> files) throws Exception;
+	int deleteSales(String idx);
+	int updateSales(String idx);
+	SalesDetails getSalesDetails(String sales_id);
+	List<FileInfo> getFilesBySalesID(String sales_id);
+	
+
+}

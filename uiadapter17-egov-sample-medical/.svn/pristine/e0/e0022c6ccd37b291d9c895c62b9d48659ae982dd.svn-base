@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="ListForm" width="1000" height="650" titletext="공지사항" onload="form_onload" scrolltype="vertical" scrollbartype="auto auto">
+    <Layouts>
+      <Layout height="650" mobileorientation="landscape" width="1000">
+        <WebBrowser id="web00" taborder="0" left="0" top="0" width="1000" height="650"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+    var sURL = this.parent.param1;
+	trace("popup sURL : " + sURL);
+	
+	this.WebBrowser00.set_url(sURL);
+}
+
+]]></Script>
+    <Objects>
+      <Dataset id="ds_data">
+        <ColumnInfo>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="contents" type="STRING" size="256"/>
+          <Column id="No" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <InitValue/>
+  </Form>
+</FDL>

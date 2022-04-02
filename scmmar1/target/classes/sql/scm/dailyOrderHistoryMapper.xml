@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.dailyOrderHistoryDao">
+	
+	
+	<select id="listdailyOrderHistory" resultType="kr.happyjob.study.scm.model.dailyOrderHistoryModel">
+		SELECT    pur.pur_id AS pur_id
+				, pur.purdate AS purdate
+				, user.name AS name
+				, sal.sales_nm AS sales_nm
+				, ll.sumcnt AS price_sum
+				, sal.price AS price
+				, purinfo.pur_cnt AS pur_cnt
+				, (sal.price*purinfo.pur_cnt) AS price_cnt
+				, purinfo.returnYN AS returnYN
+				, purinfo.wanted_date AS wanted_date
+				, pur.depositYN AS depositYN
+				, sal.sales_id AS sales_id
+		
+		FROM    tb_purchase pur 
+				inner join tb_userinfo user ON pur.loginID = user.loginID
+				inner join tb_purchaseinfo purinfo ON pur.pur_id = purinfo.pur_id
+				inner join tb_sales sal ON purinfo.sales_id = sal.sales_id
+				left outer join (
+				                   select st.sales_id
+				                        , sum(st_cnt) as sumcnt 
+				                     from tb_stock st 
+				                    where st.sales_id IN (
+				                                            select sa.sales_id 
+				                                              from tb_sales sa				                                              
+				                                         )
+				                   group by st.sales_id
+				                ) ll on ll.sales_id = purinfo.sales_id
+		<where>
+					<choose>
+						<when test="returnsearch == 'a'.toString()">
+							and returnYN='Y'
+						</when>
+						<when test="returnsearch == 'b'.toString()">
+							and returnYN='N'
+						</when>
+					</choose>
+				
+				<if test="!selectsearch.equals('')">
+					<choose>
+					<when test="selectsearch == '0'.toString()">
+					<![CDATA[
+						and (pur.purdate >=
+							#{datesearch1}
+							and
+							pur.purdate <=
+								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+							)
+						]]>		
+					</when>
+					<when test="selectsearch == '1'.toString()">
+					<![CDATA[
+						and (pur.purdate >=
+							#{datesearch1}
+							and
+							pur.purdate <=
+								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+							)
+						]]>
+					</when>
+				</choose>
+				</if>
+		</where>
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<select id="onedailyOrderHistory" resultType="kr.happyjob.study.scm.model.WorkOrderModel">
+	SELECT    pur.pur_id AS pur_id
+				, pur.purdate AS purdate
+				, user.name AS name
+				, sal.sales_nm AS sales_nm
+				, ll.sumcnt AS price_sum
+				, sal.price AS price
+				, purinfo.pur_cnt AS pur_cnt
+				, (sal.price*purinfo.pur_cnt) AS price_cnt
+				, purinfo.returnYN AS returnYN
+				, purinfo.wanted_date AS wanted_date
+				, pur.depositYN AS depositYN
+				, sal.sales_id AS sales_id
+				
+		FROM    tb_purchase pur 
+				inner join tb_userinfo user ON pur.loginID = user.loginID
+				inner join tb_purchaseinfo purinfo ON pur.pur_id = purinfo.pur_id
+				inner join tb_sales sal ON purinfo.sales_id = sal.sales_id
+				left outer join (
+				                   select st.sales_id
+				                        , sum(st_cnt) as sumcnt 
+				                     from tb_stock st 
+				                    where st.sales_id IN (
+				                                            select sa.sales_id 
+				                                              from tb_sales sa				                                              
+				                                         )
+				                   group by st.sales_id
+				                ) ll on ll.sales_id = purinfo.sales_id
+		WHERE 	pur.pur_id = #{pur_id}
+	</select>
+
+	<select id="total" resultType="int">
+		SELECT count(pur_id)
+		  FROM tb_purchase
+		   
+		  
+		  
+	</select>
+	
+	<select id="warehouse" resultType="kr.happyjob.study.scm.model.warehouseModel">
+		SELECT		wh_id AS wh_id
+				,	wh_nm AS wh_nm
+		FROM 		tb_warehouse
+		
+	</select>
+	
+	<select id="whcnt" resultType="kr.happyjob.study.scm.model.warehouseModel">
+		SELECT 		st.st_cnt AS st_cnt
+		FROM 	 	tb_stock st
+			 join tb_sales sa ON sa.sales_id = st.sales_id
+			 join tb_warehouse wh ON wh.wh_id = st.wh_id
+			 join tb_userinfo user on user.loginID = wh.loginID
+	 
+	    WHERE 		sa.sales_id= #{sales_id} AND wh.wh_id = #{wh_id};
+	</select>
+
+
+</mapper>

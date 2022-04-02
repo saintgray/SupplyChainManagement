@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="person">
+
+	<typeAlias alias="personlist" type="com.nexacro.sample.vo.PersonListDTO" />
+
+	<!--VO반환타입 -->
+	<resultMap id="personlistMap" class="personlist">
+	    <result property="name" column="NAME" />
+		<result property="title" column="TITLE" />
+		<result property="area_name" column="AREA_NAME" />
+		<result property="skill_name" column="SKILL_NAME" />
+		<result property="grade" column="GRADE" />
+	</resultMap>
+
+	<select id="person.searchList" parameterClass="personlist"	resultMap="personlistMap">
+		select ui.name AS NAME
+		      ,uc.title AS TITLE
+		      ,CONCAT((select dc.detail_name from tb_detail_code dc where dc.detail_code = uc.workarea1 and dc.group_code = 'areaCD'),'/'
+		             ,(select dc.detail_name from tb_detail_code dc where dc.detail_code = uc.workarea2 and dc.group_code = 'areaCD'),'/'
+		             ,(select dc.detail_name from tb_detail_code dc where dc.detail_code = uc.workarea3 and dc.group_code = 'areaCD')) AS AREA_NAME
+		             ,(
+                         SELECT GROUP_CONCAT( (select dc.detail_name from tb_detail_code dc where dc.detail_code = usl.skill_code and dc.group_code in('LanguageCD','NTCD','OSCD','webCD','WSCD'))  SEPARATOR '/') 
+                           FROM tb_user_skill usl
+                          WHERE usl.loginID = #loginID#
+                          ORDER BY usl.skill_code DESC
+                          LIMIT 0, 3	
+		              ) AS SKILL_NAME	
+		             ,ui.grade AS GRADE             
+		from tb_userinfo ui join tb_user_career uc on ui.loginId  = uc.loginId 		                   
+		where ui.area = #area#
+		  and ui.grade = #grade#
+	</select> 
+	
+</sqlMap>

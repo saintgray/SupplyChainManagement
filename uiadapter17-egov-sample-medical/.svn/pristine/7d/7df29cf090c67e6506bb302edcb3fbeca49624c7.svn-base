@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="MorgueList" width="1000" height="720" titletext="New Form" onload="form_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1000">
+        <Div id="cbo_ID" taborder="0" left="2" top="2" width="968" height="558" text="">
+          <Layouts>
+            <Layout>
+              <Combo id="cboFileCategory" taborder="0" left="40" top="32" width="93" height="32" innerdataset="ds_Category" codecolumn="category_id" datacolumn="category_nm" onitemchanged="cbo_ID_cboFileCategory_onitemchanged" text="전체" value="00" index="0" font="14px/normal &quot;Gulim&quot;" color="#0c0c0c"/>
+              <Edit id="edt_inputKeyword" taborder="1" left="143" top="32" width="235" height="32" onchanged="cbo_ID_edt_inputKeyword_onchanged" canchange="div_detail_edt_name_canchange" text="SearchKeyword"/>
+              <Static id="static1" taborder="2" text="작성일" left="394" top="27" width="54" height="42" font="normal 12pt/normal &quot;Arial&quot;"/>
+              <Calendar id="cal00" taborder="3" left="448" top="32" width="128" height="32" innerdataset="ds_Search" backgroundcolumn="SearchStartDate" bordercolumn="SearchStartDate" datecolumn="SearchStartDate" onchanged="cbo_ID_cal00_onchanged"/>
+              <Calendar id="cal01" taborder="4" left="594" top="33" width="128" height="31" onchanged="cbo_ID_cal01_onchanged" innerdataset="ds_Search" backgroundcolumn="SearchEndDate" bordercolumn="SearchEndDate" datecolumn="SearchEndDate"/>
+              <Button id="btn_search" taborder="5" text="검색" left="739" top="34" width="57" height="28" font="normal 700 12pt/normal &quot;Arial&quot;" onclick="btn_search"/>
+              <Grid id="file_list" taborder="6" left="32" top="78" width="756" height="387" binddataset="ds_fileList" autoenter="key" oncellclick="roomlist_oncellclick">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="48"/>
+                      <Column size="376"/>
+                      <Column size="177"/>
+                      <Column size="149"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="No"/>
+                      <Cell col="1" text="제목"/>
+                      <Cell col="2" text="작성일"/>
+                      <Cell col="3" text="작성자"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:bd_code"/>
+                      <Cell col="1" text="bind:bd_name"/>
+                      <Cell col="2" text="bind:bd_date" displaytype="date"/>
+                      <Cell col="3" text="bind:userId"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="btn_write" taborder="7" text="글작성" left="675" top="488" width="118" height="30" font="normal 14pt/normal &quot;Arial&quot;" onclick="btn_write"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+자료실
+이선화
+
+
+**/
+
+// 게시판 화면 진입
+
+var searchID;
+var searchkey;
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+ 	this.cbo_ID.form.cboFileCategory.set_displaynulltext("전체");
+ 	this.objApp = nexacro.getApplication();
+// 	this.roomlist();
+	this.roomlist();
+
+};
+
+//search Button
+this.btn_search = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+		this.roomlist();
+};
+//게시물 조회
+this.roomlist = function() 
+{		
+	var strSvcId    = "roomlist";
+	var strSvcUrl   = "morgueList.do";
+	var inData      = "ds_Search=ds_Search";
+	var outData     = "ds_fileList=ds_fileList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	//alert(this.ds_Search.saveXML());
+	//alert(this.ds_ResultGroupCD.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						nDataType);			 // 통신방법 정의 [생략가능]
+								
+								
+}	
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+			// 에러 시 화면 처리 내역
+	if(errorCode != 0)
+	{
+		return;
+	}
+	
+	switch(svcID)
+	{
+	
+		case "roomlist":
+		   trace(this.ds_fileList.saveXML());
+		break;
+		
+		case "delSave":
+			alert("삭제가 완료되였습니다.")
+			this.roomlist();
+		break;	
+			
+		case "save":
+			// 저장 되었습니다.
+			this.gfnAlert("msg.save.success");	
+			break;
+	}
+};
+
+
+//게시물 보기 
+this.roomlist_oncellclick = function(){
+	var wno = this.ds_fileList.getColumn(this.ds_fileList.rowposition,"wno");
+	var rNo = this.ds_fileList.rowposition;
+
+    trace(" wno =========================> " + wno);
+
+	var objChildFrame =new ChildFrame();
+	objChildFrame.init("FileForm"
+						,0
+						,0
+						,850
+						,600
+						,null
+						,null
+						, "user_board::MorqueView.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+    objChildFrame.set_openalign("center middle");
+    objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+// 	var objParam={param1:wno
+// 				 ,param2:this.reg_date
+// 				 ,param3:this.regId
+// 				 ,param4:this.objParam};
+var code = this.ds_fileList.getColumn(rNo,"bd_code");
+var title = this.ds_fileList.getColumn(rNo,"bd_name");
+var text = this.ds_fileList.getColumn(rNo,"bd_text");
+var userId = this.ds_fileList.getColumn(rNo,"userId");
+
+var objParam={param1:code
+				 ,param2:title
+				 ,param3:text
+				 ,param4:userId
+				 };
+
+	
+	objChildFrame.showModal(this.getOwnerFrame()
+                          , objParam
+                          , this
+                          , "fn_popupCallback");
+};
+
+
+//write Button
+this.btn_write = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+	this.MorqueWrite();
+	
+	trace("================ : btn_write " );
+};
+
+//게시물 작성
+this.MorqueWrite = function() 
+{		
+	var wno = "";
+	trace("================ : MorqueWrite " );
+	
+	var objChildFrame =new ChildFrame();
+	objChildFrame.init("FileForm"
+						,0
+						,0
+						,850
+						,600
+						,null
+						,null
+						,"user_board::MorqueView.xfdl");
+	
+	objChildFrame.set_dragmovetype("all");
+    objChildFrame.set_openalign("center middle");
+    objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+	var objParam={param1:wno
+				 ,param3:this.objParam};
+	
+	objChildFrame.showModal(this.getOwnerFrame()
+                         , objParam
+                         , this
+                         , "MorqueList");					
+};
+
+
+this.cbo_ID_cboFileCategory_onitemchanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	searchID=e.postvalue;
+};
+
+this.cbo_ID_edt_inputKeyword_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+	searchkey=e.postvalue;
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "login":
+		  
+		    //trace(this.dsList.saveXML() );
+		
+			if( !this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+				var usertype = this.dsList.getColumn(0, "usertype");
+				
+			    //sample화면 메뉴에 추가	
+				if(usertype == "A") {
+					for (var i=0; i< this.dsAdmin.rowcount; i++)
+					{
+						var nRow = this.objApp.gdsMenu.addRow();
+						this.objApp.gdsMenu.copyRow(nRow, this.dsAdmin, i);
+					}    
+                }
+				
+				if(usertype == "C") {
+					for (var i=0; i< this.dsCop.rowcount; i++)
+					{
+						var nRow = this.objApp.gdsMenu.addRow();
+						this.objApp.gdsMenu.copyRow(nRow, this.dsCop, i);
+					}    
+                }				
+
+				if(usertype == "D") {
+					for (var i=0; i< this.dsMember.rowcount; i++)
+					{
+						var nRow = this.objApp.gdsMenu.addRow();
+						this.objApp.gdsMenu.copyRow(nRow, this.dsMember, i);
+					}    
+                }
+				
+				this.objApp.gdsUserInfo.setColumn(0,"userId", this.dsList.getColumn(0,"loginID"));
+				this.objApp.gdsUserInfo.setColumn(0,"UserNm", this.dsList.getColumn(0,"name"));
+				 
+				nexacro.setEnvironmentVariable("gvUserId",this.dsList.getColumn(0,"loginID"));
+				nexacro.setEnvironmentVariable("gvUserNm",this.dsList.getColumn(0,"name"));
+				nexacro.setEnvironmentVariable("gvUserType",this.dsList.getColumn(0,"user_type"));
+			    nexacro.setEnvironmentVariable("loginYn","Y");
+					
+				//alert("login callabck gvUserId 1 : " +  this.objApp.gdsUserInfo.getColumn(0,"userId")  + "  UserNm : " +  this.objApp.gdsUserInfo.getColumn(0,"UserNm"));
+				//alert("login callabck gvUserId 2 : " +  nexacro.getEnvironmentVariable("gvUserId")  + "userName : " +  nexacro.getEnvironmentVariable("gvUserNm"));
+					
+			    this.fnSetSeprateFrame();
+	            this.objApp.gvLeftFrame.form.fnGlobalMenuCopy();
+					
+			    return;
+			}
+			
+			alert("로그인에 실패하였습니다. ");
+			break;
+			
+// 		case "save":
+// 			this.fnSearch();//재조회
+// 			break;
+	}
+};
+
+]]></Script>
+    <Objects>
+      <Dataset id="ds_Category">
+        <ColumnInfo>
+          <Column id="category_id" type="STRING" size="256"/>
+          <Column id="category_nm" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="category_id">00</Col>
+            <Col id="category_nm">전체</Col>
+          </Row>
+          <Row>
+            <Col id="category_id">01</Col>
+            <Col id="category_nm">제목</Col>
+          </Row>
+          <Row>
+            <Col id="category_id">02</Col>
+            <Col id="category_nm">내용</Col>
+          </Row>
+          <Row>
+            <Col id="category_id">03</Col>
+            <Col id="category_nm">작성자</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_Search">
+        <ColumnInfo>
+          <Column id="SearchKeyword" type="STRING" size="256"/>
+          <Column id="SearchKey" type="STRING" size="256"/>
+          <Column id="SearchStartDate" type="STRING" size="256"/>
+          <Column id="SearchEndDate" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="SearchKeyword"/>
+            <Col id="SearchKey">00</Col>
+          </Row>
+          <Row>
+            <Col id="SearchKeyword"/>
+            <Col id="SearchKey">01</Col>
+          </Row>
+          <Row>
+            <Col id="SearchKeyword"/>
+            <Col id="SearchKey">02</Col>
+          </Row>
+          <Row>
+            <Col id="SearchKeyword"/>
+            <Col id="SearchKey">03</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_Date">
+        <ColumnInfo>
+          <Column id="date_start" type="DATE" size="256"/>
+          <Column id="date_end" type="DATE" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_fileList">
+        <ColumnInfo>
+          <Column id="bd_name" type="STRING" size="256"/>
+          <Column id="bd_date" type="DATE" size="256"/>
+          <Column id="userId" type="STRING" size="256"/>
+          <Column id="bd_code" type="STRING" size="256"/>
+          <Column id="bd_text" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_ResultRoomCD"/>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="cbo_ID.form.cboFileCategory" propid="innerdataset" datasetid="ds_Category" columnid=""/>
+      <BindItem id="item1" compid="cbo_ID.form.cboFileCategory" propid="value" datasetid="ds_Search" columnid="SearchKey"/>
+      <BindItem id="item2" compid="cbo_ID.form.edt_inputKeyword" propid="value" datasetid="ds_Search" columnid="SearchKeyword"/>
+      <BindItem id="item3" compid="cbo_ID.form.file_list" propid="binddataset" datasetid="ds_ResultRoomCD" columnid=""/>
+      <BindItem id="item4" compid="cbo_ID.form.cal00" propid="backgroundcolumn" datasetid="ds_Search" columnid="SearchStartDate"/>
+      <BindItem id="item5" compid="cbo_ID.form.cal00" propid="bordercolumn" datasetid="ds_Search" columnid="SearchStartDate"/>
+      <BindItem id="item6" compid="cbo_ID.form.cal00" propid="datecolumn" datasetid="ds_Search" columnid="SearchStartDate"/>
+      <BindItem id="item7" compid="cbo_ID.form.cal00" propid="value" datasetid="ds_Search" columnid="SearchStartDate"/>
+      <BindItem id="item8" compid="cbo_ID.form.cal01" propid="value" datasetid="ds_Search" columnid="SearchEndDate"/>
+    </Bind>
+  </Form>
+</FDL>

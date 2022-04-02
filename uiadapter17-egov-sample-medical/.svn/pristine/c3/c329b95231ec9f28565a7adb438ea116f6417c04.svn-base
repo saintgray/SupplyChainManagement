@@ -1,0 +1,374 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Sample001_transaction" classname="Work" inheritanceid="" titletext="기본샘플(조회,입력,저장,삭제)" left="0" width="870" top="0" height="818" onload="form_onload">
+    <Layouts>
+      <Layout>
+        <Grid id="ListForm" taborder="0" left="15" top="100" height="502" right="50" binddataset="dsList" autofittype="col" no="true" oncelldblclick="List_oncellclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="313"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="제목"/>
+                <Cell col="1" text="작성날짜"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:title" edittype="none"/>
+                <Cell col="1" text="bind:regDate" calendardisplaynulltype="none" displaytype="date"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Div id="divSearch" taborder="1" text="" left="0" top="0" height="85" right="0">
+          <Layouts>
+            <Layout>
+              <Button id="btnSearch" taborder="1" text="검색" top="6" width="89" height="34" right="81" onclick="fnSearch"/>
+              <Edit id="edtKeyword" taborder="0" left="135" top="15" width="157" height="23" onchanged="divSearch_edtKeyword_onchanged"/>
+              <Static id="Static01" taborder="2" text="검색조건" left="10" top="18" width="74" height="16" cssclass="sta_WF_SubTitle" onclick="divSearch_Static01_onclick"/>
+              <Combo id="cboCondition" taborder="3" text="전체" left="66" top="15" width="67" height="23" value="" index="0" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn" onitemchanged="divSearch_cboCondition_onitemchanged">
+                <Dataset id="innerdataset">
+                  <ColumnInfo>
+                    <Column id="codecolumn" size="256"/>
+                    <Column id="datacolumn" size="256"/>
+                  </ColumnInfo>
+                  <Rows>
+                    <Row>
+                      <Col id="codecolumn"/>
+                      <Col id="datacolumn">전체</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">TITLE</Col>
+                      <Col id="datacolumn">제목</Col>
+                    </Row>
+                    <Row>
+                      <Col id="codecolumn">CONTENTS</Col>
+                      <Col id="datacolumn">내용</Col>
+                    </Row>
+                  </Rows>
+                </Dataset>
+              </Combo>
+              <Button id="btnAdd" taborder="4" text="등록" top="44" width="89" height="32" onclick="fnAdd" right="81"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsList" onload="form_onload">
+        <ColumnInfo>
+          <Column id="contents" type="string" size="32"/>
+          <Column id="regDate" type="datetime" size="17"/>
+          <Column id="regId" type="undefined" size="0"/>
+          <Column id="No" type="int" size="4"/>
+          <Column id="title" type="string" size="32"/>
+          <Column id="communityId" type="string" size="32"/>
+          <Column id="note" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsSearch" onload="fnSearch">
+        <ColumnInfo>
+          <Column id="searchCondition" type="STRING" size="100"/>
+          <Column id="searchKeyword" type="STRING" size="100"/>
+          <Column id="fromdate" type="STRING" size="256"/>
+          <Column id="todate" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="searchKeyword"/>
+            <Col id="searchCondition"/>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="divSearch.form.cboCondition" propid="value" datasetid="dsSearch" columnid="searchCondition"/>
+      <BindItem id="item1" compid="divSearch.form.edtKeyword" propid="value" datasetid="dsSearch" columnid="searchKeyword"/>
+    </Bind>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath    샘플 > transaction
+*  @FileName 	NoticeList.xfdl 
+*  @Creator 	soojeong
+*  @CreateDate 	2017.03.09
+*  @Desction         스크립트 표준 및 주석 표준 정의
+************** 소스 수정 이력 ***********************************************
+*  date          		Modifier                Description
+*******************************************************************************
+*  2017.03.09     	soojeong 	           최초 생성 
+*  2020.06.09		김승현					수정
+*******************************************************************************
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+************************************************************************************************/
+var No;
+var title;
+var contents;
+var no;
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload, onbeforeclose)
+/***********************************************************************************************/
+/**
+ * @description 화면 onload시 처리내역(필수)
+*/
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.gfnFormOnLoad(this);
+	trace("trace"+gfnFormOnLoad(this));
+};
+
+/**
+ * @description 화면 닫힐때 변경사항 체크(입력 화면에서 변경되는 Dataset 체크 필요, 선택)
+ * @return {boolean} false(화면 닫음) / true(화면 닫지 않음)
+*/
+this.fnClose = function()
+{
+	if (this.gfnDsIsUpdated(this.dsList)) {
+		return true;
+	}
+	return false;
+};
+
+
+/************************************************************************************************
+ * CALLBACK 콜백 처리부분(Transaction, Popup)
+ ************************************************************************************************/
+/**
+ * @description Transaction CallBack 함수(선택)
+*/
+this.fnCallback = function(svcID,errorCode,errorMsg)
+{
+	// 에러 시 화면 처리 내역
+	if(errorCode != 0)
+	{
+		return;
+	}
+	
+	switch(svcID)
+	{
+		case "search":
+			//trace(this.dsSearch.saveXML());
+			break;
+			
+		case "delSave":
+			alert("삭제가 완료되였습니다.")
+			this.dsList();
+		break;	
+			
+			
+		case "save":
+			// 저장 되었습니다.
+			this.gfnAlert("msg.save.success");	
+			break;
+	}
+};
+
+/************************************************************************************************
+* CRUD 및 TRANSACTION 서비스 호출 처리
+************************************************************************************************/
+/**
+ * @description 조회
+*/
+this.fnSearch = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	
+	
+ 	var strSvcId    = "search";
+	var strSvcUrl   = "selectnoticelist.do";
+	var inData      = "dsSearch=dsSearch";
+	var outData     = "dsList=dsList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	var isAsync   	= true;
+	
+	this.gfnTransaction(strSvcId , 		// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						isAsync); 		// 비동기통신 여부 [생략가능]
+						
+						
+					
+};
+
+
+/**
+ * @description 입력
+*/
+this.fnAdd = function()
+{
+    var parmNo = "";
+	var objChildFrame =new ChildFrame();
+	objChildFrame.init("noticeForm"
+						,0
+						,0
+						,750
+						,400
+						,null
+						,null
+						, "admin::ListPopUp.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+    objChildFrame.set_openalign("center middle");
+    objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+	var No = this.dsList.getColumn(this.dsList.rowposition,"No");
+	//trace("=================================================> " + No + " : " + this.dsList.getColumn(this.dsList.rowposition,"No"));
+	//trace(this.dsList.saveXML());
+	
+	var objParam={param1:parmNo
+				 ,param2:this.objParam};
+
+	
+	objChildFrame.showModal(this.getOwnerFrame()
+                          , objParam
+                          , this
+                          , "NoticeList");
+};
+
+/**
+ * @description 삭제
+*/
+// this.fnDel = function()
+// {	
+// 	if(this.confirm("삭제하시겠습니까?"))
+// 	var delrow = this.dsList.deleteRow(this.dsList.rowposition);
+// 	this.dellist();
+// };
+// 
+// 
+// this.DeleteSave=function(){
+// 	var strSvcId    = "DeleteSave";
+//  	/*var strSvcUrl   = "GruopCDupdateMap.do";*/
+// 	var strSvcUrl	= "deletenoticelist.do";
+//  	/*var inData      = "ds_ResultGroupCD=ds_ResultGroupCD:u";*/
+// 	var inData 		= "dsList=dsList";
+//  	var outData     = "";
+//  	var strArg      = "";
+//  	var callBackFnc = "fnCallback";
+//  
+//  
+//  	var isAsync   = true;
+//  	var nDataType = 0;	
+//  	
+//  	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+//  						 strSvcUrl , 	// trabsaction을 요청할 주소
+//  						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+//  						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+//  						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+//  						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+//  						 nDataType); // 통신방법 정의 [생략가능]
+//  
+//  }
+// 
+
+// 삭제 
+// 
+	this.fnDel = function(){
+		if(this.confirm("삭제하시겠습니까?"))
+		var delrow = this.dsList.deleteRow(this.dsList.rowposition);
+		this.dellist();
+	
+	var strSvcId    = "delete";
+	var strSvcUrl   = "deletenotice.do";
+	var inData      = "dsList=dsList";
+	var outData     = "";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	var isAsync   	= true;
+	
+	this.gfnTransaction(strSvcId , 		// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						isAsync); 		// 비동기통신 여부 [생략가능]
+
+}
+
+
+this.fnSave = function()
+{
+	// 변경사항 체크
+	if (this.gfnDsIsUpdated(this.dsList) == false) {
+		// 변경된 내역이 없습니다.
+		this.gfnAlert("msg.save.nochange");
+		return;
+	}
+
+	var strSvcId = "NoticeList"
+	var strSvcUrl   = "updateSampleDataWithMap.do";
+	var inData      = "input1=dsList:U";
+	var outData     = "";
+	this.gfnTransaction("save", strSvcUrl, inData, outData);
+}
+
+
+//해당 게시글 클릭시 팝업 오픈 
+this.List_oncellclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{ 	
+	var No= this.dsList.getColumn(this.dsList.rowposition,"No");
+	var listRow=this.dsList.rowposition;
+		
+		//this.title=this.dsList.getColumn(listRow,"title");
+		//this.contents=this.dsList.getColumn(listRow,"contents");
+	
+	this.noticepopup();
+	
+};
+
+
+this.noticepopup=function(){
+
+	var objChildFrame =new ChildFrame();
+	objChildFrame.init("noticeForm"
+						,0
+						,0
+						,750
+						,400
+						,null
+						,null
+						, "admin::ListPopUp.xfdl");
+
+	objChildFrame.set_dragmovetype("all");
+    objChildFrame.set_openalign("center middle");
+    objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_autosize(false);
+	
+	var No = this.dsList.getColumn(this.dsList.rowposition,"No");
+	//trace("=================================================> " + No + " : " + this.dsList.getColumn(this.dsList.rowposition,"No"));
+	//trace(this.dsList.saveXML());
+	
+	var objParam={param1:No
+				 ,param2:this.objParam};
+
+	
+	objChildFrame.showModal(this.getOwnerFrame()
+                          , objParam
+                          , this
+                          , "NoticeList");
+};
+
+ 
+
+						 
+
+this.divSearch_cboCondition_onitemchanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	
+};
+]]></Script>
+  </Form>
+</FDL>

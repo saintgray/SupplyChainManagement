@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="statistics">
+
+    <typeAlias alias="StatisticsVO" type="com.nexacro.sample.vo.StatisticsVO"/>
+
+<!-- Sample resultObject -->
+    <resultMap id="statistics" class="com.nexacro.sample.vo.StatisticsVO">
+<result property="stno" />
+<result property="goods_category" />
+<result property="goods_name" />
+<result property="sales_totp" />
+<result property="last_month_sale" />
+<result property="search_month_sale" />
+<result property="inc_dec" />
+<result property="orderCnt" />
+<result property="userCnt" /></resultMap>
+    
+ 	<select id="statistics.statisticsList" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+		select cur.goods_code
+		      ,cur.goods_category
+		      ,cur.goods_name
+		      ,cur.sale_totp
+		      ,ifnull(bf.sale_totp,0) as 'last_month_sale'
+		      ,cur.sale_totp as 'search_month_sale'
+		      ,concat(round(ifnull((ifnull(cur.sale_totp,0) - ifnull(bf.sale_totp,0))/ifnull(bf.sale_totp,0)*100,100),2),'%') as 'inc_dec'
+		from (    
+				select gs.goods_code
+		              ,gs.goods_name
+		              ,gs.goods_category
+		              ,sum(sa.sale_totp) as sale_totp
+		          from tb_sales sa
+		               left outer join tb_goods gs on gs.goods_code = sa.goods_code
+		         where (sales_status like concat('%','y','%') or sales_status like concat('%','f','%')) 
+		         and (sales_date between STR_TO_DATE(#f_date#, '%Y%m%d') and  STR_TO_DATE(#s_date#, '%Y%m%d'))  
+		        group by goods_code, goods_name, goods_category
+		      ) cur
+		      left outer join 
+		      (
+		        select gs.goods_code
+		              ,gs.goods_name
+		              ,gs.goods_category
+		              ,sum(sa.sale_totp) as sale_totp
+		          from tb_sales sa
+		               left outer join tb_goods gs on gs.goods_code = sa.goods_code
+		         where (sales_status like concat('%','y','%') or sales_status like concat('%','f','%')) 
+		         and (sales_date between STR_TO_DATE(CONCAT(DATE_FORMAT(LAST_DAY(NOW() - interval 1 month),'%Y%m'),'01'), '%Y%m%d') and  LAST_DAY(NOW() - interval 1 month)) 
+		         group by goods_code, goods_name, goods_category 
+		      ) bf on cur.goods_code = bf.goods_code
+</select>
+    
+    
+      
+      
+    
+    
+     
+      
+    
+<select id="statistics.statisticsCnt" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+select count(goods_code) as 'orderCnt', count(distinct loginID) as 'userCnt' from tb_sales
+where sales_status like concat('%','y','%') or concat('%','f','%') and sales_date between STR_TO_DATE(#f_date#, '%Y%m%d') and  STR_TO_DATE(#s_date#, '%Y%m%d')
+</select>
+</sqlMap>

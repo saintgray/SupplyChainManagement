@@ -1,0 +1,16 @@
+package kr.happyjob.study.scm.sales.service;
+
+import org.springframework.stereotype.Service;
+
+import kr.happyjob.study.scm.sales.model.PageInfo;
+import kr.happyjob.study.scm.sales.model.SalesDetails;
+
+@Service
+public interface SalesManageService {
+	
+	PageInfo getSalesList(PageInfo info);
+	int deleteSales(String idx);
+	int updateSales(String idx);
+	SalesDetails getSalesDetails(String sales_id);
+
+}

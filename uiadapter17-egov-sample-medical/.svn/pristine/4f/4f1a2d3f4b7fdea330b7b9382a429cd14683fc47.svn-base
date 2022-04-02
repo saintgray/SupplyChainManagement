@@ -1,0 +1,1505 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="qqqq1" width="750" height="1310" titletext="회원정보" onload="form_onload" scrolltype="vertical" scrollbartype="auto auto">
+    <Layouts>
+      <Layout height="1310" mobileorientation="landscape" width="750">
+        <Static id="Static00" taborder="0" text="기본정보" left="16" top="14" width="179" height="30" font="normal 15pt/normal &quot;Arial&quot;"/>
+        <Static id="Static01" taborder="1" text="아이디" left="44" top="72" width="44" height="17"/>
+        <Edit id="edt_id" taborder="2" left="88" top="70" width="148" height="23" onchanged="edt_id_onchanged" autoselect="true" autoskip="true" accessibilityrole="edit"/>
+        <Static id="Static02" taborder="3" text="이름" left="44" top="109" width="44" height="17"/>
+        <Edit id="edt_name" taborder="4" left="88" top="106" width="148" height="23" accessibilityrole="static"/>
+        <Static id="Static03" taborder="5" text="등급" left="44" top="143" width="44" height="17"/>
+        <Combo id="cbo_grade" taborder="6" text="" left="88" top="143" width="82" height="23" value="" index="-1" codecolumn="codecolumn" datacolumn="datacolumn" innerdataset="ds_list"/>
+        <Static id="Static04" taborder="7" text="생년월일" left="30" top="209" width="52" height="20"/>
+        <Static id="Static05" taborder="8" text="비밀번호" left="297" top="72" width="52" height="17"/>
+        <Edit id="edt_password" taborder="9" left="351" top="70" width="148" height="23" onchanged="Edit02_onchanged"/>
+        <Static id="Static06" taborder="10" text="이메일" left="294" top="109" width="52" height="17"/>
+        <Edit id="edt_email" taborder="11" left="348" top="106" width="88" height="23" onchanged="edt_email_onchanged"/>
+        <Static id="Static07" taborder="12" text="@" left="442" top="109" width="24" height="17"/>
+        <Edit id="edt_email_cop" taborder="13" left="456" top="106" width="148" height="23" onchanged="edt_email_cop_onchanged" text="66666666666666666666"/>
+        <Combo id="cbo_email" taborder="14" text="" left="615" top="106" width="95" height="23" value="" index="-1" onitemchanged="fn_choemail_itemchange" codecolumn="email_cop" datacolumn="email_cop" innerdataset="ds_list">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">daum.net</Col>
+                <Col id="datacolumn">daum.net</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">gmail.com</Col>
+                <Col id="datacolumn">gmail.com</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">naver.com</Col>
+                <Col id="datacolumn">naver.com</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Static id="Static08" taborder="15" text="성별" left="601" top="70" width="34" height="17"/>
+        <Combo id="cbo_sex" taborder="16" text="" left="632" top="70" width="70" height="23" value="" index="-1" codecolumn="sex" datacolumn="sex" innerdataset="ds_list"/>
+        <Static id="Static09" taborder="17" text="참여구분" left="294" top="143" width="52" height="17"/>
+        <CheckBox id="chk_SI" taborder="18" left="356" top="143" width="20" height="16"/>
+        <Static id="Static10" taborder="19" text="SI(상주프로젝트)" left="374" top="139" width="92" height="20"/>
+        <Static id="Static11" taborder="20" text="SM(상주프로젝트)" left="374" top="157" width="102" height="20"/>
+        <CheckBox id="chk_SM" taborder="21" left="356" top="161" width="20" height="16"/>
+        <Static id="Static12" taborder="22" text="솔루션개발" left="374" top="175" width="102" height="20"/>
+        <CheckBox id="chk_Solution" taborder="23" left="356" top="179" width="20" height="16"/>
+        <Combo id="cbo_area" taborder="24" text="" left="356" top="210" width="70" height="23" value="" index="-1" onitemchanged="Combo03_onitemchanged" codecolumn="area" datacolumn="area" innerdataset="ds_list">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">02</Col>
+                <Col id="datacolumn">서울</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">031</Col>
+                <Col id="datacolumn">경기</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">인천</Col>
+                <Col id="codecolumn">032</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">042</Col>
+                <Col id="datacolumn">대전</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">044</Col>
+                <Col id="datacolumn">세종</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">051</Col>
+                <Col id="datacolumn">부산</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">052</Col>
+                <Col id="datacolumn">울산</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">053</Col>
+                <Col id="datacolumn">대구</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">062</Col>
+                <Col id="datacolumn">S</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">제주</Col>
+                <Col id="codecolumn">064</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Static id="Static13" taborder="25" text="거주지역" left="294" top="211" width="54" height="15"/>
+        <Static id="Static14" taborder="26" text="연락처" left="452" top="210" width="52" height="17"/>
+        <Combo id="cbo_tel1" taborder="27" text="" left="508" top="208" width="65" height="23" value="" index="-1" codecolumn="tel1" datacolumn="tel1" innerdataset="ds_list">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">010</Col>
+                <Col id="datacolumn">010</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">011</Col>
+                <Col id="datacolumn">011</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">017</Col>
+                <Col id="datacolumn">017</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">019</Col>
+                <Col id="datacolumn">019</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Edit id="edt_tel2" taborder="28" left="578" top="207" width="75" height="23" inputtype="digit"/>
+        <Edit id="edt_tel3" taborder="29" left="658" top="207" width="75" height="23" onchanged="edt_tel3_onchanged" inputtype="digit"/>
+        <Static id="Static15" taborder="30" text="경력정보" left="16" top="249" width="124" height="30" font="normal 15pt/normal &quot;Arial&quot;"/>
+        <Static id="Static16" taborder="31" text="제목" left="22" top="299" width="44" height="17"/>
+        <Edit id="edt_title" taborder="32" left="66" top="296" width="520" height="23" onchanged="Edit07_onchanged"/>
+        <Static id="Static17" taborder="33" text="희망근무" left="9" top="332" width="54" height="15"/>
+        <Static id="Static18" taborder="34" text="희망급여" left="376" top="332" width="54" height="15"/>
+        <Edit id="edt_salary" taborder="35" left="432" top="329" width="148" height="23" inputtype="digit,number"/>
+        <Static id="Static19" taborder="36" text="만원" left="585" top="331" width="36" height="17"/>
+        <Static id="Static20" taborder="37" text="협의가능" left="639" top="329" width="102" height="20"/>
+        <CheckBox id="cbo_consult_yn" taborder="38" text="CheckBox00" left="621" top="333" width="20" height="16"/>
+        <Static id="Static21" taborder="39" text="경력기간" left="376" top="372" width="54" height="15"/>
+        <Combo id="cbo_career_year" taborder="40" text="전체" left="432" top="371" width="54" height="23" value="" index="-1" codecolumn="career_year" datacolumn="career_year" innerdataset="ds_Resultlist">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">0</Col>
+                <Col id="datacolumn">0</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">1</Col>
+                <Col id="datacolumn">1</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">2</Col>
+                <Col id="datacolumn">2</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">3</Col>
+                <Col id="datacolumn">3</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">4</Col>
+                <Col id="datacolumn">4</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">5</Col>
+                <Col id="datacolumn">5</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">6</Col>
+                <Col id="datacolumn">6</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">7</Col>
+                <Col id="datacolumn">7</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">8</Col>
+                <Col id="datacolumn">8</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">9</Col>
+                <Col id="datacolumn">9</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">10</Col>
+                <Col id="datacolumn">10</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">11</Col>
+                <Col id="datacolumn">11</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">12</Col>
+                <Col id="datacolumn">12</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">13</Col>
+                <Col id="datacolumn">13</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">14</Col>
+                <Col id="datacolumn">14</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">15</Col>
+                <Col id="datacolumn">15</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">16</Col>
+                <Col id="datacolumn">16</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">17</Col>
+                <Col id="datacolumn">17</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">18</Col>
+                <Col id="datacolumn">18</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">19</Col>
+                <Col id="datacolumn">19</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">20</Col>
+                <Col id="datacolumn">20</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">21</Col>
+                <Col id="datacolumn">21</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">22</Col>
+                <Col id="datacolumn">22</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">23</Col>
+                <Col id="datacolumn">23</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">24</Col>
+                <Col id="datacolumn">24</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">25</Col>
+                <Col id="datacolumn">25</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Static id="Static22" taborder="41" text="년" left="491" top="371" width="24" height="17"/>
+        <Combo id="cbo_career_month" taborder="42" text="전체" left="513" top="371" width="52" height="23" value="" index="-1" codecolumn="codecolumn" datacolumn="datacolumn" innerdataset="ds_Resultlist"/>
+        <Static id="Static23" taborder="43" text="개월" left="569" top="371" width="29" height="16"/>
+        <Static id="Static24" taborder="44" text="전문기술" left="9" top="414" width="54" height="15"/>
+        <Static id="Static25" taborder="45" text="Language" left="71" top="414" width="64" height="15" color="red"/>
+        <Static id="Static26" taborder="46" text="WEB" left="-205" top="541" width="40" height="15" color="red"/>
+        <Static id="Static27" taborder="47" text="OS" left="285" top="414" width="40" height="15" color="red"/>
+        <CheckBox id="chk_as400" taborder="48" left="70" top="438" width="20" height="16" value="false" onclick="chk_as400_onclick"/>
+        <Static id="Static29" taborder="49" text="C" left="88" top="450" width="15" height="20"/>
+        <CheckBox id="chk_c" taborder="50" left="70" top="454" width="20" height="16" value="false"/>
+        <Static id="Static30" taborder="51" text="C++" left="88" top="466" width="38" height="20"/>
+        <CheckBox id="chk_cpp" taborder="52" left="70" top="470" width="20" height="16"/>
+        <Static id="Static31" taborder="53" text="COBOL" left="88" top="481" width="48" height="20"/>
+        <CheckBox id="chk_cobol" taborder="54" left="70" top="485" width="20" height="16"/>
+        <Static id="Static32" taborder="55" text="Delphi" left="88" top="497" width="47" height="20"/>
+        <CheckBox id="chk_dp" taborder="56" left="70" top="501" width="20" height="16"/>
+        <Static id="Static33" taborder="57" text="Power Builder" left="88" top="513" width="91" height="20"/>
+        <CheckBox id="chk_pb" taborder="58" left="70" top="517" width="20" height="16"/>
+        <Static id="Static34" taborder="59" text="JAVA" left="88" top="529" width="48" height="20"/>
+        <CheckBox id="chk_java" taborder="60" left="70" top="533" width="20" height="16"/>
+        <Static id="Static35" taborder="61" text="VB" left="88" top="545" width="15" height="20"/>
+        <CheckBox id="chk_vb" taborder="62" left="70" top="549" width="20" height="16"/>
+        <Static id="Static36" taborder="63" text="VC" left="88" top="561" width="38" height="20"/>
+        <CheckBox id="chk_vc" taborder="64" left="70" top="565" width="20" height="16"/>
+        <Static id="Static37" taborder="65" text="C#" left="88" top="577" width="48" height="20"/>
+        <CheckBox id="chk_cc" taborder="66" left="70" top="581" width="20" height="16"/>
+        <Static id="Static38" taborder="67" text=".net" left="88" top="593" width="38" height="20"/>
+        <CheckBox id="chk_datnet" taborder="68" left="70" top="597" width="20" height="16"/>
+        <Static id="Static39" taborder="69" text="Python" left="88" top="609" width="45" height="20"/>
+        <CheckBox id="chk_python" taborder="70" left="70" top="613" width="20" height="16"/>
+        <Static id="Static40" taborder="71" text="R" left="88" top="625" width="45" height="20"/>
+        <CheckBox id="chk_r" taborder="72" left="70" top="629" width="20" height="16"/>
+        <Static id="Static41" taborder="73" text="ASP" left="204" top="435" width="48" height="20"/>
+        <CheckBox id="CheckBox17" taborder="74" text="CheckBox00" left="-205" top="566" width="20" height="16"/>
+        <Static id="Static42" taborder="75" text="JSP" left="204" top="451" width="30" height="20"/>
+        <CheckBox id="CheckBox18" taborder="76" text="CheckBox00" left="-205" top="582" width="20" height="16"/>
+        <Static id="Static43" taborder="77" text="PHP" left="204" top="467" width="38" height="20"/>
+        <CheckBox id="CheckBox19" taborder="78" text="CheckBox00" left="-205" top="598" width="20" height="16"/>
+        <Static id="Static44" taborder="79" text="XML" left="204" top="482" width="48" height="20"/>
+        <CheckBox id="CheckBox20" taborder="80" text="CheckBox00" left="-205" top="613" width="20" height="16"/>
+        <Static id="Static45" taborder="81" text="DHTML" left="204" top="498" width="47" height="20"/>
+        <CheckBox id="CheckBox21" taborder="82" text="CheckBox00" left="-205" top="629" width="20" height="16"/>
+        <Static id="Static46" taborder="83" text="miPlatform" left="204" top="514" width="91" height="20"/>
+        <CheckBox id="CheckBox22" taborder="84" text="CheckBox00" left="-205" top="645" width="20" height="16"/>
+        <Static id="Static47" taborder="85" text="xPlatform" left="204" top="530" width="62" height="20"/>
+        <CheckBox id="CheckBox23" taborder="86" text="CheckBox00" left="-205" top="661" width="20" height="16"/>
+        <Static id="Static48" taborder="87" text="Nexacro" left="204" top="546" width="52" height="20"/>
+        <CheckBox id="CheckBox24" taborder="88" text="CheckBox00" left="-205" top="677" width="20" height="16"/>
+        <CheckBox id="chk_unix" taborder="89" left="285" top="439" width="20" height="16"/>
+        <Static id="Static49" taborder="90" text="LINUX" left="303" top="451" width="43" height="20"/>
+        <CheckBox id="chk_linux" taborder="91" left="285" top="455" width="20" height="16"/>
+        <Static id="Static50" taborder="92" text="MAC" left="303" top="467" width="38" height="20"/>
+        <CheckBox id="chk_mac" taborder="93" left="285" top="471" width="20" height="16"/>
+        <Static id="Static51" taborder="94" text="MVC" left="303" top="482" width="48" height="20"/>
+        <CheckBox id="chk_mvc" taborder="95" left="285" top="486" width="20" height="16"/>
+        <Static id="Static52" taborder="96" text="SOLARIS" left="303" top="498" width="61" height="20"/>
+        <CheckBox id="chk_sol" taborder="97" left="285" top="502" width="20" height="16"/>
+        <Static id="Static53" taborder="98" text="WINDOWS" left="303" top="514" width="91" height="20"/>
+        <CheckBox id="chk_win" taborder="99" left="285" top="518" width="20" height="16"/>
+        <Static id="Static54" taborder="100" text="WINDOWS SERVER" left="303" top="530" width="119" height="20"/>
+        <CheckBox id="chk_wins" taborder="101" left="285" top="534" width="20" height="16"/>
+        <Static id="Static55" taborder="102" text="UNIX" left="303" top="436" width="48" height="20"/>
+        <Static id="Static56" taborder="103" text="FrameWork" left="-225" top="813" width="470" height="14" color="red" onclick="Static56_onclick"/>
+        <CheckBox id="CheckBox32" taborder="104" text="CheckBox00" left="-205" top="724" width="20" height="16"/>
+        <Static id="Static57" taborder="105" text="eGov" left="204" top="609" width="45" height="20"/>
+        <CheckBox id="CheckBox33" taborder="106" text="CheckBox00" left="-205" top="740" width="20" height="16"/>
+        <Static id="Static58" taborder="107" text="Struts" left="204" top="625" width="45" height="20"/>
+        <CheckBox id="CheckBox34" taborder="108" text="CheckBox00" left="-205" top="756" width="20" height="16"/>
+        <Static id="Static59" taborder="109" text="Spring" left="204" top="593" width="45" height="20"/>
+        <Static id="Static60" taborder="110" text="jQuery" left="303" top="591" width="45" height="20"/>
+        <CheckBox id="chk_jq" taborder="111" left="285" top="595" width="20" height="16"/>
+        <Static id="Static61" taborder="112" text="DB" left="453" top="414" width="64" height="15" color="red"/>
+        <Static id="Static62" taborder="113" text="Access" left="470" top="434" width="48" height="20"/>
+        <CheckBox id="chk_ac" taborder="114" left="452" top="438" width="20" height="16"/>
+        <Static id="Static63" taborder="115" text="DB2" left="470" top="450" width="29" height="20"/>
+        <CheckBox id="chk_db2" taborder="116" left="452" top="454" width="20" height="16"/>
+        <Static id="Static64" taborder="117" text="Informix" left="470" top="466" width="56" height="20"/>
+        <CheckBox id="chk_informix" taborder="118" left="452" top="470" width="20" height="16"/>
+        <Static id="Static65" taborder="119" text="ORACLE" left="470" top="481" width="56" height="20"/>
+        <CheckBox id="chk_oracle" taborder="120" left="452" top="485" width="20" height="16"/>
+        <Static id="Static66" taborder="121" text="MS SQL" left="470" top="497" width="47" height="20"/>
+        <CheckBox id="chk_mssql" taborder="122" left="452" top="501" width="20" height="16"/>
+        <Static id="Static67" taborder="123" text="MYSQL" left="470" top="513" width="48" height="20"/>
+        <CheckBox id="chk_mysql" taborder="124" left="452" top="517" width="20" height="16"/>
+        <Static id="Static68" taborder="125" text="Sybase" left="470" top="529" width="48" height="20"/>
+        <CheckBox id="chk_sybase" taborder="126" left="452" top="533" width="20" height="16"/>
+        <Static id="Static69" taborder="127" text="MariaDB" left="470" top="545" width="56" height="20"/>
+        <CheckBox id="chk_mariadb" taborder="128" left="452" top="549" width="20" height="16"/>
+        <Static id="Static70" taborder="129" text="Tibero" left="470" top="561" width="38" height="20"/>
+        <CheckBox id="chk_tibero" taborder="130" left="452" top="565" width="20" height="16"/>
+        <Static id="Static71" taborder="131" text="Network" left="549" top="414" width="64" height="15" color="red"/>
+        <Static id="Static72" taborder="132" text="CiscoRouter" left="566" top="434" width="77" height="20"/>
+        <CheckBox id="chk_cr" taborder="133" left="548" top="438" width="20" height="16"/>
+        <Static id="Static73" taborder="134" text="Cisco S/W" left="566" top="450" width="70" height="20"/>
+        <CheckBox id="chk_cs" taborder="135" left="548" top="454" width="20" height="16"/>
+        <Static id="Static74" taborder="136" text="COBRA" left="566" top="466" width="56" height="20"/>
+        <CheckBox id="chk_cobra" taborder="137" left="548" top="470" width="20" height="16"/>
+        <Static id="Static75" taborder="138" text="LAN" left="566" top="481" width="56" height="20"/>
+        <CheckBox id="chk_lan" taborder="139" left="548" top="485" width="20" height="16"/>
+        <Static id="Static77" taborder="140" text="iot" left="566" top="497" width="48" height="20"/>
+        <CheckBox id="chk_iot" taborder="141" left="548" top="501" width="20" height="16"/>
+        <Static id="Static78" taborder="142" text="Webserver / WAS" left="452" top="581" width="106" height="14" color="red"/>
+        <CheckBox id="chk_tomcat" taborder="143" left="452" top="601" width="20" height="16"/>
+        <Static id="Static79" taborder="144" text="JEUS" left="470" top="613" width="45" height="20"/>
+        <CheckBox id="chk_jeus" taborder="145" left="452" top="617" width="20" height="16"/>
+        <Static id="Static80" taborder="146" text="WebSphere" left="470" top="629" width="66" height="20"/>
+        <CheckBox id="chk_websphere" taborder="147" left="452" top="633" width="20" height="16"/>
+        <Static id="Static81" taborder="148" text="Tomcat" left="470" top="597" width="45" height="20"/>
+        <CheckBox id="chk_weblogic" taborder="149" left="548" top="601" width="20" height="16"/>
+        <Static id="Static82" taborder="150" text="IIS" left="566" top="613" width="45" height="20"/>
+        <CheckBox id="chk_iis" taborder="151" left="548" top="617" width="20" height="16"/>
+        <Static id="Static83" taborder="152" text="JBoss" left="566" top="629" width="45" height="20"/>
+        <CheckBox id="chk_jboss" taborder="153" left="548" top="633" width="20" height="16"/>
+        <Static id="Static84" taborder="154" text="WebLogic" left="566" top="597" width="60" height="20"/>
+        <Static id="Static85" taborder="155" text="추가기술" left="9" top="662" width="50" height="17"/>
+        <Edit id="edt_addtec" taborder="156" left="66" top="659" width="514" height="23"/>
+        <Static id="Static86" taborder="157" text="경력내용" left="9" top="689" width="50" height="17"/>
+        <Static id="Static87" taborder="158" text="특이사항" left="9" top="859" width="50" height="17"/>
+        <Button id="btn_reg" taborder="159" text="수정" left="339" top="1039" width="57" height="23" onclick="btn_reg_onclick"/>
+        <Button id="btn_cancel" taborder="160" text="취소" left="409" top="1039" width="57" height="23" onclick="btn_cancel_onclick"/>
+        <CheckBox id="chk_asp" taborder="161" left="185" top="439" width="20" height="16"/>
+        <CheckBox id="chk_jsp" taborder="162" left="185" top="455" width="20" height="16"/>
+        <CheckBox id="chk_php" taborder="163" left="185" top="471" width="20" height="16"/>
+        <CheckBox id="chk_xml" taborder="164" left="185" top="486" width="20" height="16"/>
+        <CheckBox id="chk_dhtml" taborder="165" left="185" top="502" width="20" height="16"/>
+        <CheckBox id="chk_mp" taborder="166" left="185" top="518" width="20" height="16"/>
+        <CheckBox id="chk_xp" taborder="167" left="185" top="534" width="20" height="16"/>
+        <CheckBox id="chk_nc" taborder="168" left="185" top="550" width="20" height="16"/>
+        <CheckBox id="chk_spring" taborder="169" left="185" top="598" width="20" height="16"/>
+        <CheckBox id="chk_eg" taborder="170" left="185" top="614" width="20" height="16"/>
+        <CheckBox id="chk_st" taborder="171" left="185" top="630" width="20" height="16"/>
+        <Combo id="cbo_workarea1" taborder="172" text="지역전체" left="66" top="331" width="76" height="23" value="" index="-1" onitemchanged="Combo03_onitemchanged" codecolumn="workarea1" datacolumn="workarea1" innerdataset="ds_list">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="datacolumn">서울</Col>
+                <Col id="codecolumn">02</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">031</Col>
+                <Col id="datacolumn">경기</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">032</Col>
+                <Col id="datacolumn">인천</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">042</Col>
+                <Col id="datacolumn">대전</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">044</Col>
+                <Col id="datacolumn">세종</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">051</Col>
+                <Col id="datacolumn">부산</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">울산</Col>
+                <Col id="codecolumn">052</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">대구</Col>
+                <Col id="codecolumn">053</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">S</Col>
+                <Col id="codecolumn">062</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">064</Col>
+                <Col id="datacolumn">제주</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Combo id="cbo_workarea2" taborder="173" text="" left="147" top="331" width="76" height="23" value="" index="-1" onitemchanged="Combo03_onitemchanged" codecolumn="workarea2" datacolumn="workarea2" innerdataset="ds_list">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">02</Col>
+                <Col id="datacolumn">서울</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">031</Col>
+                <Col id="datacolumn">경기</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">032</Col>
+                <Col id="datacolumn">인천</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">대전</Col>
+                <Col id="codecolumn">042</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">044</Col>
+                <Col id="datacolumn">세종</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">051</Col>
+                <Col id="datacolumn">부산</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">052</Col>
+                <Col id="datacolumn">울산</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">053</Col>
+                <Col id="datacolumn">대구</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">062</Col>
+                <Col id="datacolumn">S</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">제주</Col>
+                <Col id="codecolumn">064</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Combo id="cbo_workarea3" taborder="174" text="" left="227" top="331" width="76" height="23" value="" index="-1" onitemchanged="Combo03_onitemchanged" datacolumn="workarea3" codecolumn="workarea3" innerdataset="ds_list">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">02</Col>
+                <Col id="datacolumn">서울</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">031</Col>
+                <Col id="datacolumn">경기</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">032</Col>
+                <Col id="datacolumn">인천</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">대전</Col>
+                <Col id="codecolumn">042</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">044</Col>
+                <Col id="datacolumn">세종</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">051</Col>
+                <Col id="datacolumn">부산</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">052</Col>
+                <Col id="datacolumn">울산</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">053</Col>
+                <Col id="datacolumn">대구</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">062</Col>
+                <Col id="datacolumn">S</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">제주</Col>
+                <Col id="codecolumn">064</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <TextArea id="tx_career_desc" taborder="175" left="67" top="689" width="668" height="160"/>
+        <TextArea id="tx_singular_facts" taborder="176" left="66" top="859" width="668" height="160"/>
+        <Static id="Static89" taborder="177" text="WEB" left="185" top="414" width="40" height="15" color="red"/>
+        <Static id="Static90" taborder="178" text="FrameWork" left="185" top="576" width="64" height="15" color="red"/>
+        <Static id="Static28" taborder="179" text="AS400" left="88" top="435" width="48" height="20"/>
+        <Calendar id="cal_birthday" taborder="180" left="88" top="207" width="131" height="23" onchanged="cal_birthday_onchanged"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath    샘플 > transaction
+*  @FileName 	Sample001_transaction.xfdl 
+*  @Creator 	soojeong
+*  @CreateDate 	2017.03.09
+*  @Desction         스크립트 표준 및 주석 표준 정의
+************** 소스 수정 이력 ***********************************************
+*  date          		Modifier                Description
+*******************************************************************************
+*  2019.09.24    		이미혜	           		회원별 상세정보 불러오기
+*******************************************************************************
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+************************************************************************************************/
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload, onbeforeclose)
+/***********************************************************************************************/
+/**
+ * @description 화면 onload시 처리내역(필수)
+*/
+var userID = this.parent.param1;
+var userType = this.parent.param2;
+var objParam=this.parent.param3;
+
+
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{                         
+
+
+  
+	this.objApp = nexacro.getApplication();
+	this.edt_id.set_readonly(true);
+	this.gfnCommCdCombo('SKLCD',this.cbo_grade);
+ 	
+ 	this.gfnCommCdCombo('MAILCD',this.cbo_email);
+ 	
+ 	this.gfnCommCdCombo('SEXCD',this.cbo_sex);
+ 	
+ 	this.gfnCommCdCombo('areaCD',this.cbo_area);
+ 	
+ 	this.gfnCommCdCombo('TELCD',this.cbo_tel1);
+ 	
+ 	this.gfnCommCdCombo('areaCD',this.cbo_workarea1);
+ 	
+ 	this.gfnCommCdCombo('areaCD',this.cbo_workarea2); 
+ 	
+ 	this.gfnCommCdCombo('areaCD',this.cbo_workarea3);
+	
+	
+	
+	this.cbo_grade.set_displaynulltext("초급");
+	this.cbo_career_year.set_displaynulltext("0");
+	this.cbo_career_month.set_displaynulltext("0");
+	this.cbo_tel1.set_displaynulltext("010");
+	this.userinfo();
+	
+	
+};
+
+this.userinfo=function(){
+
+	var strSvcId    = "userinfo";
+	var strSvcUrl   = "userinfo.do";
+	var inData      = "";
+	var outData     = "ds_Resultlist=ds_Resultlist   ds_skill=ds_skill";
+	var strArg      = "loginID="+userID + " userType="+userType;
+	var callBackFnc = "fnCallback";
+	this.ds_Resultlist.setColumn(0,"loginID", nexacro.getEnvironmentVariable("gvUserId"))//gvUserId
+	this.ds_Resultlist.setColumn(1,"name",nexacro.getEnvironmentVariable("ds_Resultlist"))
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType); // 통신방법 정의 [생략가능]
+					
+						
+};
+
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "userinfo":
+		   this.fn_resultcheckbox();
+		break;
+		
+		case "userregpopup":
+			this.fn_checkbox();
+			trace(this.dsskill.saveXML());
+			alert("수정이 완료되였습니다.");
+			trace(this.ds_list.saveXML());
+		break;
+		
+	
+		
+	}
+
+};
+
+
+
+this.fn_resultcheckbox = function()
+{
+	var rowid = 0;
+ 	this.chk_as400.value = false;
+ 	this.chk_c.value = false;
+ 	this.chk_cpp.value = false;
+ 	this.chk_dp.value = false;
+ 	this.chk_java.value = false;
+ 	this.chk_vb.value = false;
+ 	this.chk_vc.value = false;
+ 	this.chk_cc.value = false;
+ 	this.chk_datnet.value = false;
+	this.chk_python.value = false;
+ 	this.chk_r.value = false;
+ 	this.chk_asp.value = false;	
+ 	this.chk_jsp.value = false;
+	this.chk_php.value = false;
+ 	this.chk_xml.value = false;
+	this.chk_dhtml.value = false;
+ 	this.chk_mp.value = false;
+ 	this.chk_xp.value = false;
+ 	this.chk_nc.value = false;
+ 	this.chk_unix.value = false;
+ 	this.chk_linux.value = false;
+ 	this.chk_mac.value = false;
+ 	this.chk_mvc.value = false;
+ 	this.chk_sol.value = false;		
+ 	this.chk_win.value = false;
+	this.chk_wins.value = false;
+ 	this.chk_spring.value = false;
+ 	this.chk_eg.value = false;
+ 	this.chk_st.value = false;
+	this.chk_jq.value = false;
+ 	this.chk_ac.value = false;
+ 	this.chk_db2.value = false;
+ 	this.chk_informix.value = false;
+ 	this.chk_oracle.value = false;
+ 	this.chk_mssql.value = false;
+	this.chk_mysql.value = false;	
+ 	this.chk_sybase.value = false;
+ 	this.chk_mariadb.value = false;
+ 	this.chk_tibero.value = false;
+ 	this.chk_cr.value = false;
+ 	this.chk_cs.value = false;
+ 	this.chk_cobra.value = false;
+	this.chk_lan.value = false;
+ 	this.chk_iot.value = false;
+ 	this.chk_tomcat.value = false;
+ 	this.chk_jeus.value = false;
+ 	this.chk_websphere.value = false;
+ 	this.chk_weblogic.value = false;	
+ 	this.chk_iis.value = false;
+ 	this.chk_jboss.value = false;	
+ 	this.chk_SI.value = false;
+ 	this.chk_SM.value = false;
+ 	this.chk_Solution.value = false;
+	this.cbo_consult_yn.value = false;
+	
+   if(this.ds_Resultlist.getColumn(0, "si") == "SI") {	
+	   this.chk_SI.value = true;
+	}
+	
+   if(this.ds_Resultlist.getColumn(0, "sm") == "SM") {	
+	   this.chk_SM.value = true;
+	}
+	
+   if(this.ds_Resultlist.getColumn(0, "solution") == "Solution") {	
+	   this.chk_Solution.value = true;
+	}
+	
+   if(this.ds_Resultlist.getColumn(0, "consult_yn") == "Y") {	
+	   this.cbo_consult_yn.value = true;
+	}
+	
+	//trace(this.ds_skill.saveXML());
+	for(var i=0;i<this.ds_skill.getRowCount();i++) {
+	
+		if(this.ds_skill.getColumn(i, "skillid") == "as400") {
+		   this.chk_as400.set_value(true);
+	    }
+	
+		if(this.ds_skill.getColumn(i, "skillid") == "c") {
+	 	   this.chk_c.set_value(true);
+	    }
+	
+		if(this.ds_skill.getColumn(i, "skillid") == "cpp") {
+	 	   this.chk_cpp.set_value(true);
+	    }	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "cobol") {
+	 	   this.chk_cobol.set_value(true);
+	    }	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "dp") {
+	 	   this.chk_dp.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "pb") {
+	 	   this.chk_pb.set_value(true);
+	    }
+	
+		if(this.ds_skill.getColumn(i, "skillid") == "java") {
+	 	   this.chk_java.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "vb") {
+	 	   this.chk_vb.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "vc") {
+	 	   this.chk_vc.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "cc") {
+	 	   this.chk_cc.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "datnet") {
+	 	   this.chk_datnet.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "python") {
+	 	   this.chk_python.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "r") {
+	 	   this.chk_r.set_value(true);
+	    }	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "asp") {
+	 	   this.chk_asp.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "jsp") {
+	 	   this.chk_jsp.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "php") {
+	 	   this.chk_php.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "xml") {
+	 	   this.chk_xml.set_value(true);
+	    }	
+	
+		if(this.ds_skill.getColumn(i, "skillid") == "dhtml") {
+	 	   this.chk_dhtml.set_value(true);
+	    }	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "mp") {
+	 	   this.chk_mp.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "xp") {
+	 	   this.chk_xp.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "nc") {
+	 	   this.chk_nc.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "unix") {
+	 	   this.chk_unix.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "linux") {
+	 	   this.chk_linux.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "mac") {
+	 	   this.chk_mac.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "mvc") {
+	 	   this.chk_mvc.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "sol") {
+	 	   this.chk_sol.set_value(true);
+	    }
+				
+		if(this.ds_skill.getColumn(i, "skillid") == "win") {
+	 	   this.chk_win.set_value(true);
+	    }	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "wins") {
+	 	   this.chk_wins.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "spiring") {
+	 	   this.chk_spring.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "eg") {
+	 	   this.chk_eg.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "st") {
+	 	   this.chk_st.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "jq") {
+	 	   this.chk_jq.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "ac") {
+	 	   this.chk_ac.set_value(true);
+	    } 
+
+		if(this.ds_skill.getColumn(i, "skillid") == "db2") {
+	 	   this.chk_db2.set_value(true);
+	    }
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "informix") {
+	 	   this.chk_informix.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "oracle") {
+	 	   this.chk_oracle.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "mssql") {
+	 	   this.chk_mssql.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "mysql") {
+	 	   this.chk_mysql.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "sybase") {
+	 	   this.chk_sybase.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "mariadb") {
+	 	   this.chk_mariadb.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "tibero") {
+	 	   this.chk_tibero.set_value(true);
+	    }	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "cr") {
+	 	   this.chk_cr.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "cs") {
+	 	   this.chk_cs.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "cobra") {
+	 	   this.chk_cobra.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "lan") {
+	 	   this.chk_lan.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "iot") {
+	 	   this.chk_iot.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "tomcat") {
+	 	   this.chk_tomcat.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "jeus") {
+	 	   this.chk_jeus.set_value(true);
+	    } 	
+			
+		if(this.ds_skill.getColumn(i, "skillid") == "websphere") {
+	 	   this.chk_websphere.set_value(true);
+	    } 	
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "weblogic") {
+	 	   this.chk_weblogic.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "iis") {
+	 	   this.chk_iis.set_value(true);
+	    } 
+		
+		if(this.ds_skill.getColumn(i, "skillid") == "jboss") {
+	 	   this.chk_jboss.set_value(true);
+	    } 	
+	
+	};//for
+	//alert("선택한 스킬 수???"+this.ds_skill.getRowCount());
+};//resultCheckbox function END
+
+this.fn_checkbox = function()
+{	
+	
+	var rowid = 0;
+	if(this.chk_as400.value) {
+       rowid = this.dsskill.addRow();
+	   this.alert(this.chk_as400.value);
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "as400");
+	}
+
+    if(this.chk_c.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "c");
+	}
+	
+    if(this.chk_cpp.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "cpp");
+	}
+	
+    if(this.chk_cobol.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "cobol");
+	}
+	
+    if(this.chk_dp.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "dp");
+	}
+	
+    if(this.chk_pb.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "pb");
+	}
+	
+    if(this.chk_java.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "java");
+	}
+	
+
+    if(this.chk_vb.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "vb");
+	}
+	
+    if(this.chk_vc.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "vc");
+	}
+
+    if(this.chk_cc.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "cc");
+	}
+
+    if(this.chk_datnet.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "datnet");
+	}
+
+    if(this.chk_python.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "python");
+	}
+	
+    if(this.chk_r.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "r");
+	}
+	
+    if(this.chk_asp.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "asp");
+	}
+	
+    if(this.chk_jsp.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "jsp");
+	}
+	
+    if(this.chk_php.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "php");
+	}
+	
+    if(this.chk_xml.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "xml");
+	}
+
+    if(this.chk_dhtml.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "dhtml");
+	}
+
+    if(this.chk_mp.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "mp");
+	}
+	
+    if(this.chk_xp.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "xp");
+	}
+	
+    if(this.chk_nc.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "nc");
+	}
+	
+
+    if(this.chk_unix.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "unix");
+	}
+	
+
+    if(this.chk_linux.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "linux");
+	}
+	
+
+    if(this.chk_mac.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "mac");
+	}
+
+
+    if(this.chk_mvc.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "mvc");
+	}
+	
+
+    if(this.chk_sol.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "sol");
+	}
+	
+
+    if(this.chk_win.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "win");
+	}
+	
+
+    if(this.chk_wins.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "wins");
+	}
+	
+
+    if(this.chk_spring.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "spring");
+	}
+	
+
+    if(this.chk_eg.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "eg");
+	}
+	
+
+    if(this.chk_st.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "st");
+	}
+	
+
+    if(this.chk_jq.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "jq");
+	}
+	
+
+    if(this.chk_ac.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "ac");
+	}
+	
+
+    if(this.chk_db2.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "db2");
+	}
+	
+
+    if(this.chk_informix.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "informix");
+	}
+	
+
+    if(this.chk_oracle.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "oracle");
+	}
+	
+    if(this.chk_mssql.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "mssql");
+	}
+	
+
+    if(this.chk_mysql.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "mysql");
+	}
+	
+
+    if(this.chk_sybase.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "sybase");
+	}
+	
+
+    if(this.chk_mariadb.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "mariadb");
+	}
+	
+    if(this.chk_tibero.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "tibero");
+	}
+	
+    if(this.chk_cr.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "cr");
+	}
+	
+
+    if(this.chk_cs.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "cs");
+	}
+	
+
+    if(this.chk_cobra.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "cobra");
+	}
+	
+    if(this.chk_lan.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "lan");
+	}
+	
+
+    if(this.chk_iot.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "iot");
+	}
+	
+
+    if(this.chk_tomcat.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "tomcat");
+	}
+	
+
+    if(this.chk_jeus.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "jeus");
+	}
+	
+
+    if(this.chk_websphere.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "websphere");
+	}
+	
+
+    if(this.chk_weblogic.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "weblogic");
+	}
+	
+
+    if(this.chk_iis.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "iis");
+	}
+	
+
+    if(this.chk_jboss.value) {
+       rowid = this.dsskill.addRow();	   
+	   this.dsskill.setColumn(rowid, "id", this.edt_id.value);
+	   this.dsskill.setColumn(rowid, "skillid", "jboss");
+	}
+	
+    if(this.chk_SI.value) {	   
+	   this.dslist.setColumn(this.dslist.rowposition, "si", "SI");
+	}
+	
+
+    if(this.chk_SM.value) {   
+	   this.dslist.setColumn(this.dslist.rowposition, "sm", "SM");
+	}
+	
+
+    if(this.chk_Solution.value) {  
+	   this.dslist.setColumn(this.dslist.rowposition, "solution", "Solution");
+	}
+	
+    if(this.cbo_consult_yn.value) {  
+	   this.dslist.setColumn(this.dslist.rowposition, "consult_yn", "Y");
+	} else {
+	   this.dslist.setColumn(this.dslist.rowposition, "consult_yn", "N");
+	}
+};//checkBOX function
+
+
+
+
+
+this.btn_reg_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+    trace("LoginID="+nexacro.getEnvironmentVariable("gvUserId"));
+
+	if (this.confirm("수정하시겠습니까?"))
+	{
+			
+			
+			
+			var strSvcId    = "userregpopup";
+			var strSvcUrl   = "userregpopup.do";
+			var inData      = "dslist=ds_list  dsSkill=dsskill:u";
+			var outData     = "";
+			var strArg      = "LoginID="+nexacro.getEnvironmentVariable("gvUserId");
+			var callBackFnc = "fnCallback";
+			
+			
+			//생략가능
+			var isAsync   = true;
+			var nDataType = 0;	
+			
+			this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+										strSvcUrl , 	// trabsaction을 요청할 주소
+										inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+										outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+										strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+										callBackFnc, 	// transaction의 결과를 받을 Function 이름
+										nDataType); // 통신방법 정의 [생략가능]
+
+
+
+		
+	}
+	
+	
+};
+
+
+//취소버튼
+this.btn_cancel_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+	//스크롤을 올려줘야 함
+};
+
+this.cbo_grade_onitemchanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	
+};
+
+this.edt_id_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_skill">
+        <ColumnInfo>
+          <Column id="id" type="STRING" size="256"/>
+          <Column id="skillid" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_Resultlist">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="password" type="STRING" size="256"/>
+          <Column id="email" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="email_cop" type="STRING" size="256"/>
+          <Column id="sex" type="STRING" size="256"/>
+          <Column id="birthday" type="STRING" size="256"/>
+          <Column id="area" type="STRING" size="256"/>
+          <Column id="tel1" type="STRING" size="256"/>
+          <Column id="tel2" type="STRING" size="256"/>
+          <Column id="tel3" type="STRING" size="256"/>
+          <Column id="workarea1" type="STRING" size="256"/>
+          <Column id="workarea2" type="STRING" size="256"/>
+          <Column id="workarea3" type="STRING" size="256"/>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="salary" type="STRING" size="256"/>
+          <Column id="consult_yn" type="STRING" size="256"/>
+          <Column id="career_year" type="STRING" size="256"/>
+          <Column id="career_mm" type="STRING" size="256"/>
+          <Column id="manager_name" type="STRING" size="256"/>
+          <Column id="singular_facts" type="STRING" size="256"/>
+          <Column id="status" type="STRING" size="256"/>
+          <Column id="regId" type="STRING" size="256"/>
+          <Column id="reg_date" type="STRING" size="256"/>
+          <Column id="updateId" type="STRING" size="256"/>
+          <Column id="update_date" type="STRING" size="256"/>
+          <Column id="grade" type="STRING" size="256"/>
+          <Column id="addtec" type="STRING" size="256"/>
+          <Column id="career_desc" type="STRING" size="256"/>
+          <Column id="si" type="STRING" size="256"/>
+          <Column id="sm" type="STRING" size="256"/>
+          <Column id="solution" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_list">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+          <Column id="password" type="STRING" size="256"/>
+          <Column id="email" type="STRING" size="256"/>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="email_cop" type="STRING" size="256"/>
+          <Column id="sex" type="STRING" size="256"/>
+          <Column id="birthday" type="STRING" size="256"/>
+          <Column id="area" type="STRING" size="256"/>
+          <Column id="tel1" type="STRING" size="256"/>
+          <Column id="tel2" type="STRING" size="256"/>
+          <Column id="tel3" type="STRING" size="256"/>
+          <Column id="workarea1" type="STRING" size="256"/>
+          <Column id="workarea2" type="STRING" size="256"/>
+          <Column id="workarea3" type="STRING" size="256"/>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="salary" type="STRING" size="256"/>
+          <Column id="consult_yn" type="STRING" size="256"/>
+          <Column id="career_year" type="STRING" size="256"/>
+          <Column id="career_mm" type="STRING" size="256"/>
+          <Column id="manager_name" type="STRING" size="256"/>
+          <Column id="singular_facts" type="STRING" size="256"/>
+          <Column id="status" type="STRING" size="256"/>
+          <Column id="regId" type="STRING" size="256"/>
+          <Column id="reg_date" type="STRING" size="256"/>
+          <Column id="updateId" type="STRING" size="256"/>
+          <Column id="update_date" type="STRING" size="256"/>
+          <Column id="grade" type="STRING" size="256"/>
+          <Column id="addtec" type="STRING" size="256"/>
+          <Column id="career_desc" type="STRING" size="256"/>
+          <Column id="si" type="STRING" size="256"/>
+          <Column id="sm" type="STRING" size="256"/>
+          <Column id="solution" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsskill">
+        <ColumnInfo>
+          <Column id="id" type="STRING" size="256"/>
+          <Column id="skillid" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsSearch">
+        <ColumnInfo>
+          <Column id="area" type="STRING" size="256"/>
+          <Column id="grade" type="STRING" size="256"/>
+          <Column id="loginID" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="edt_id" propid="value" datasetid="ds_Resultlist" columnid="loginID"/>
+      <BindItem id="item1" compid="edt_password" propid="value" datasetid="ds_Resultlist" columnid="password"/>
+      <BindItem id="item2" compid="edt_name" propid="value" datasetid="ds_Resultlist" columnid="name"/>
+      <BindItem id="item3" compid="edt_email" propid="value" datasetid="ds_Resultlist" columnid="email"/>
+      <BindItem id="item4" compid="edt_email_cop" propid="value" datasetid="ds_Resultlist" columnid="email_cop"/>
+      <BindItem id="item10" compid="edt_tel3" propid="value" datasetid="ds_Resultlist" columnid="tel3"/>
+      <BindItem id="item12" compid="edt_title" propid="value" datasetid="ds_Resultlist" columnid="title"/>
+      <BindItem id="item13" compid="cbo_workarea1" propid="value" datasetid="ds_Resultlist" columnid="workarea1"/>
+      <BindItem id="item14" compid="cbo_workarea2" propid="value" datasetid="ds_Resultlist" columnid="workarea2"/>
+      <BindItem id="item15" compid="cbo_workarea3" propid="value" datasetid="ds_Resultlist" columnid="workarea3"/>
+      <BindItem id="item16" compid="edt_salary" propid="value" datasetid="ds_Resultlist" columnid="salary"/>
+      <BindItem id="item17" compid="cbo_consult_yn" propid="value" datasetid="ds_Resultlist" columnid="consult_yn"/>
+      <BindItem id="item18" compid="cbo_career_year" propid="value" datasetid="ds_Resultlist" columnid="career_year"/>
+      <BindItem id="item19" compid="cbo_career_month" propid="value" datasetid="ds_Resultlist" columnid="career_mm"/>
+      <BindItem id="item20" compid="edt_addtec" propid="value" datasetid="ds_Resultlist" columnid="addtec"/>
+      <BindItem id="item21" compid="tx_career_desc" propid="value" datasetid="ds_Resultlist" columnid="career_desc"/>
+      <BindItem id="item22" compid="tx_singular_facts" propid="value" datasetid="ds_Resultlist" columnid="singular_facts"/>
+      <BindItem id="item9" compid="edt_tel2" propid="value" datasetid="ds_Resultlist" columnid="tel2"/>
+      <BindItem id="item23" compid="cbo_tel1" propid="value" datasetid="ds_list" columnid="tel1"/>
+      <BindItem id="item8" compid="cbo_sex" propid="value" datasetid="ds_Resultlist" columnid="sex"/>
+      <BindItem id="item5" compid="cbo_area" propid="value" datasetid="ds_Resultlist" columnid="area"/>
+      <BindItem id="item7" compid="cbo_grade" propid="innerdataset" datasetid="innerdataset" columnid=""/>
+      <BindItem id="item11" compid="cal_birthday" propid="value" datasetid="ds_Resultlist" columnid="birthday"/>
+      <BindItem id="item24" compid="cbo_email" propid="value" datasetid="ds_list" columnid="email_cop"/>
+      <BindItem id="item6" compid="cbo_grade" propid="value" datasetid="ds_list" columnid="grade"/>
+    </Bind>
+    <InitValue/>
+  </Form>
+</FDL>

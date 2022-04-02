@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.study.scm.sales.dao.SalesManageDao">
+	
+	
+	<!-- 검색 조건에 따른 상품 리스트 가져오기 -->
+	<select id="getSalesList" parameterType="kr.happyjob.study.scm.sales.model.PageInfo" resultType="kr.happyjob.study.scm.sales.model.Sales">
+		SELECT 
+			model_code,
+			model_nm,
+			sales_id,
+			sales_nm,
+			mfcomp,
+			price
+		FROM
+			tb_sales
+		<if test='!"all.equals(searchType)"'>
+			<where>
+				<if test='"sales_nm".equals(searchType)'>
+					AND sales_nm
+				</if>
+				<if test='"model_nm".equals(searchType)'>
+					AND model_nm
+				</if>
+				<if test='"mfcomp".equals(searchType)'>
+					AND mfcomp
+				</if>
+						LIKE CONCAT('%',#{keyword},'%')
+			</where>
+		</if>
+		ORDER BY
+			sales_nm
+		LIMIT #{firstIndex}, #{rowsPerPage}
+	</select>
+	
+	
+	<!-- 검색 조건에 따른 모든 상품의 데이터 개수 반환 -->
+	<select id="getTotalCount" parameterType="kr.happyjob.study.scm.sales.model.PageInfo" resultType="Integer">
+		SELECT 
+			count(1)
+		FROM
+			tb_sales
+		<if test='!"all.equals(searchType)"'>
+			<where>
+				<if test='"sales_nm".equals(searchType)'>
+					AND sales_nm
+				</if>
+				<if test='"model_nm".equals(searchType)'>
+					AND model_nm
+				</if>
+				<if test='"mfcomp".equals(searchType)'>
+					AND mfcomp
+				</if>
+						LIKE CONCAT('%',#{keyword},'%')
+			</where>
+		</if>
+	</select>
+	
+	<!-- get files -->
+	<select id="getFilesBySalesID" resultType="kr.happyjob.study.scm.sales.model.FileInfo">
+	
+		SELECT *
+		FROM
+			tb_sales_file
+		WHERE sales_id=#{arg0}
+		
+		<!-- AND deletedYN='N' -->
+	
+	</select>
+	
+
+
+
+
+</mapper>

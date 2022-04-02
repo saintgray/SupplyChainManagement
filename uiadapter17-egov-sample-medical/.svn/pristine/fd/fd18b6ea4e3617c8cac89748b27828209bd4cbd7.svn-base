@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="useList">
+	<select id="useList.useList" parameterClass="Map"
+		resultClass="java.util.HashMap" remapResults="true">
+		select
+			<!--  left(using_start_time,10) using_start_time-->
+			left(using_day,10) using_day
+ 			,pc_no
+			,TIMESTAMPDIFF(hour,using_start_time,using_end_time) total_time
+			,pc_fee
+			,goods_fee
+			,goods_fee+pc_fee total_fee	
+			,loginId
+		from
+			tb_using
+		<isNotNull property="useList_cal1">
+		where
+			<![CDATA[
+			using_day >= #useList_cal1#
+			and using_day <= #useList_cal2#
+			]]>
+			and loginID=#loginID#
+		</isNotNull>
+		<isNull property="useList_cal1">
+		where
+			loginID=#loginID#
+		</isNull>
+		order by
+			using_day
+	</select> <!-- nexacroAdmin.selectMapList -->
+	
+	<select id="useList.useListOnload" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+		select
+			<!--  left(using_start_time,10) using_start_time-->
+			left(using_day,10) using_day
+ 			,pc_no
+			,TIMESTAMPDIFF(hour,using_start_time,using_end_time) total_time
+			,pc_fee
+			,goods_fee
+			,goods_fee+pc_fee total_fee	
+			,loginId
+		from
+			tb_using
+		where
+			using_day BETWEEN date_add(now(), interval -1 month) and now() 
+			and loginID=#loginID#
+		order by
+			using_day
+	</select>
+</sqlMap>

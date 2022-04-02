@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="sample_Form_Popup" width="360" height="284" titletext="New Form" onload="sample_Form_Popup_onload">
+    <Layouts>
+      <Layout height="284" mobileorientation="landscape" width="360">
+        <Button id="btn_modify" taborder="0" text="수정" left="7" top="243" width="120" height="31" onclick="btn_modify_onclick"/>
+        <Button id="btn_cancel" taborder="1" text="취소" left="230" top="243" width="120" height="31" onclick="btn_cancel_onclick"/>
+        <Static id="sta00" taborder="2" text="아이디" left="14" top="17" width="46" height="26"/>
+        <Static id="sta01" taborder="3" text="이름" left="14" top="77" width="46" height="26"/>
+        <Static id="sta02" taborder="4" text="메일주소" left="14" top="140" width="46" height="26"/>
+        <Static id="sta03" taborder="5" text="전화번호" left="14" top="196" width="46" height="26"/>
+        <TextArea id="txt_id" taborder="6" left="74" top="10" width="166" height="42" readonly="true"/>
+        <TextArea id="txt_name" taborder="7" left="74" top="70" width="166" height="42" readonly="true"/>
+        <TextArea id="txt_email" taborder="8" left="74" top="132" width="96" height="42"/>
+        <TextArea id="txt_tel" taborder="9" left="74" top="188" width="56" height="42"/>
+        <TextArea id="txt_email00" taborder="10" left="214" top="132" width="96" height="42"/>
+        <Static id="sta04" taborder="11" text="@" left="180" top="138" width="24" height="28"/>
+        <TextArea id="txt_tel00" taborder="12" left="156" top="188" width="56" height="42"/>
+        <TextArea id="txt_tel01" taborder="13" left="234" top="188" width="56" height="42"/>
+        <Static id="sta05" taborder="14" text="-" left="136" top="192" width="24" height="28"/>
+        <Static id="sta06" taborder="15" text="-" left="216" top="192" width="24" height="28"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		order.xfdl
+*  @Creator 		김준서
+*  @CreateDate 	2020.06.09
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+
+
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+this.sample_Form_Popup_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	var objParam = this.parent.param1;
+	
+	//trace("brfore : " + this.ds_child.saveXML());
+	
+	this.ds_child.copyData(objParam);
+	
+	//trace("after : " + this.ds_child.saveXML());
+	
+	//this.grd00.set_binddataset("ds_child");
+	//this.grd00.createFormat();
+};
+/***********************************************************************************************
+* FORM EVENT 영역(onclick)
+/***********************************************************************************************/
+
+this.btn_cancel_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+
+ /************************************************************************************************
+ * 사용자 FUNCTION 영역
+ ************************************************************************************************/
+this.fn_Modify= function() 
+{	
+    //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "manager";
+	var strSvcUrl   = "usermodify.do";
+	var inData      = "ds_child=ds_child";
+	var outData     = "";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	//alert("edId : " + this.dsSearch.getColumn("USER_ID") + " edPw : " + this.dsSearch.getColumn("USER_PASSWORD"));
+	//alert(this.dsSearch.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+								
+								
+};
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "manager":
+		    alert("수정되었습니다.");
+			this.close();
+		break;
+		
+	}
+};
+
+
+this.btn_modify_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.fn_Modify();
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_child">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="20"/>
+          <Column id="name" type="STRING" size="20"/>
+          <Column id="email_name" type="STRING" size="30"/>
+          <Column id="email_form" type="STRING" size="256"/>
+          <Column id="phone_first" type="STRING" size="256"/>
+          <Column id="phone_second" type="STRING" size="256"/>
+          <Column id="phone_end" type="STRING" size="256"/>
+          <Column id="usertype" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="txt_id" propid="value" datasetid="ds_child" columnid="loginID"/>
+      <BindItem id="item1" compid="txt_name" propid="value" datasetid="ds_child" columnid="name"/>
+      <BindItem id="item3" compid="txt_tel" propid="value" datasetid="ds_child" columnid="phone_first"/>
+      <BindItem id="item4" compid="txt_tel00" propid="value" datasetid="ds_child" columnid="phone_second"/>
+      <BindItem id="item5" compid="txt_tel01" propid="value" datasetid="ds_child" columnid="phone_end"/>
+      <BindItem id="item2" compid="txt_email" propid="value" datasetid="ds_child" columnid="email_name"/>
+      <BindItem id="item6" compid="txt_email00" propid="value" datasetid="ds_child" columnid="email_form"/>
+    </Bind>
+  </Form>
+</FDL>

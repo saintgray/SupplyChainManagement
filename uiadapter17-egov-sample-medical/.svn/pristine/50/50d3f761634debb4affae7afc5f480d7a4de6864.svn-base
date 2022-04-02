@@ -1,0 +1,358 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="order" width="950" height="500" titletext="New Form" onload="order_onload">
+    <Layouts>
+      <Layout height="500" mobileorientation="landscape" width="950">
+        <Combo id="cho_category" taborder="3" text="상품전체" left="32" top="30" width="108" height="30" innerdataset="ds_category" codecolumn="ds_value" datacolumn="ds_choice" index="0" value="A" onitemchanged="cho_category_onitemchanged"/>
+        <Grid id="grd_foodList" taborder="0" left="32" top="72" width="448" height="188" binddataset="ds_foodList" oncellclick="grd_foodList_oncellclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="196"/>
+                <Column size="230"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="41"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="상품명"/>
+                <Cell col="1" text="가격"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:goods_name" textAlign="center" font="bold 12px/normal &quot;Gulim&quot;"/>
+                <Cell col="1" text="bind:goods_price" textAlign="center"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Grid id="grd_selectFood" taborder="1" left="32" top="280" width="538" height="180" visible="false" binddataset="ds_selectFood" oncellclick="fn_ordercancel">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="166"/>
+                <Column size="137"/>
+                <Column size="143"/>
+                <Column size="77"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="상품명"/>
+                <Cell col="1" text="가격"/>
+                <Cell col="2" text="수량"/>
+                <Cell col="3" text="주문취소"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:goods_name" textAlign="center" font="bold 12px/normal &quot;Gulim&quot;"/>
+                <Cell col="1" text="bind:sale_p" displaytype="number" textAlign="center"/>
+                <Cell col="2" text="bind:sale_q" displaytype="mask" edittype="mask" maskeditformat="#,###" textAlign="center"/>
+                <Cell col="3" displaytype="buttoncontrol" edittype="button" text="취소"/>
+              </Band>
+              <Band id="summary">
+                <Cell colspan="2" text="expr:&quot;총 &quot;+dataset.getRowCount()+&quot;개 메뉴&quot;"/>
+                <Cell col="2" colspan="2" text="expr:dataset.getSum(&quot;sale_p&quot;)" displaytype="number"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btn_order" taborder="2" text="주문" left="582" top="420" width="78" height="40" onclick="btn_order_onclick" visible="false"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName 		order.xfdl
+*  @Creator 		김준서
+*  @CreateDate 	2020.06.09
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version 		1.0
+*  @Outline 		
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date          		Modifier            Description
+*******************************************************************************
+*  2020.06.12     		김준서 	           재고 상태에 따라 처리상태 추가
+
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+this.order_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	
+	this.fn_OrderList();
+
+};
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onclick)
+/***********************************************************************************************/
+this.grd_foodList_oncellclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	this.grd_selectFood.set_visible( true );
+	this.btn_order.set_visible( true );
+	var selrow = this.ds_foodList.rowposition;
+	var overlab = false;
+	var name = this.ds_foodList.getColumn(selrow,"goods_name");
+	var reamincnt = this.ds_foodList.getColumn(selrow,"reamincnt");
+	for(i=0; i<this.ds_selectFood.rowcount; i++){
+		var checkName = this.ds_selectFood.getColumn(i,"goods_name");
+		if(name == checkName){
+			overlab = true;
+			break;
+		}
+	}
+	if(overlab == false){
+		if(reamincnt == 0){
+			this.alert(name+"의 재고가 없습니다.");
+			return;
+		}
+		this.ds_selectFood.addRow();
+		this.ds_selectFood.setColumn(this.ds_selectFood.rowposition,"goods_name", this.ds_foodList.getColumn(selrow,"goods_name"));
+		this.ds_selectFood.setColumn(this.ds_selectFood.rowposition,"sale_p", this.ds_foodList.getColumn(selrow,"goods_price"));
+		this.ds_selectFood.setColumn(this.ds_selectFood.rowposition,"goods_category", this.ds_foodList.getColumn(selrow,"goods_category"));
+		this.ds_selectFood.setColumn(this.ds_selectFood.rowposition,"goods_code", this.ds_foodList.getColumn(selrow,"goods_code"));
+		this.ds_selectFood.setColumn(this.ds_selectFood.rowposition,"sale_q","1");
+	}
+	
+	
+};
+
+
+/***********************************************************************************************
+* FORM EVENT 영역(onitemchanged)
+/***********************************************************************************************/
+this.cho_category_onitemchanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	var category=e.postvalue;
+	trace(category);
+	if(category == "A" ) {
+		this.ds_foodList.filter("");
+	}else {
+		this.ds_foodList.filter("goods_category =='"+category+"'");
+	}
+		
+	
+};
+
+
+/************************************************************************************************
+ * 사용자 FUNCTION 영역
+ ************************************************************************************************/
+
+this.fn_ordercancel = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{	
+	if(e.cell == 3) {
+	   this.ds_selectFood.deleteRow(this.ds_selectFood.rowposition);
+	   if(this.ds_selectFood.rowcount == 0) {
+		this.btn_order.set_visible( false );
+		this.grd_selectFood.set_visible( false );
+	   }
+	}
+};
+
+
+this.fn_cntchanged = function(obj:nexacro.NormalDataset,e:nexacro.DSColChangeEventInfo)
+{
+	if(e.columnid == "sale_q"){
+		var price;
+		var cnt;
+		var selrow = e.row;
+		var name = this.ds_selectFood.getColumn(selrow,"goods_name");
+		var findRowNum = this.ds_foodList.findRow("goods_name",name);
+		var findCount = this.ds_foodList.getColumn(findRowNum,"reamincnt");
+		price = this.ds_foodList.getColumn(findRowNum,"goods_price");
+		cnt = this.ds_selectFood.getColumn(selrow,"sale_q");
+  		if(cnt > findCount){
+			this.alert("현재 재고 ( "+findCount+"개 ) 보다 주문수가 많습니다.");
+			this.ds_selectFood.setColumn(selrow,"sale_q",findCount);
+			cnt = findCount;
+  		}
+			this.ds_selectFood.setColumn(selrow,"sale_p",price*cnt);
+		
+	}
+};
+
+	this.fn_OrderList = function() 
+{	
+    //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "order";
+	var strSvcUrl   = "goodsList.do";
+	var inData      = "ds_foodList=ds_foodList";
+	var outData     = "ds_foodList=ds_foodList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	//alert("edId : " + this.dsSearch.getColumn("USER_ID") + " edPw : " + this.dsSearch.getColumn("USER_PASSWORD"));
+	//alert(this.dsSearch.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+								
+								
+};
+
+this.btn_order_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var objChildFrame = new ChildFrame();
+	objChildFrame.init("order_Popup"
+	                  , 0
+					  , 0
+					  , 400
+					  , 300
+					  , null
+					  , null
+					  , "user_food::order_Form_Popup.xfdl");
+
+	objChildFrame.set_openalign("center middle");
+	objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+	objChildFrame.set_dragmovetype("all");
+//	objChildFrame.set_resizable(false);
+//	objChildFrame.set_showstatusbar(false);
+ 	for(var i=0; i<this.ds_selectFood.rowcount; i++){
+ 		this.ds_selectFood.setColumn(i,"loginID",nexacro.getEnvironmentVariable("gvUserId"));
+ 	}
+	var objParam = { param1:this.ds_selectFood
+ 				    };
+				   
+	objChildFrame.showModal( this.getOwnerFrame()
+	                       , objParam
+						   , this
+						   , "fn_popupCallback");	
+};
+
+
+/**************************************************************************************************
+* CallBack Function (서버수신)
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "login":
+		  
+		    //trace(this.dsList.saveXML() );
+		
+			if( !this.gfnIsNull(this.dsList.getColumn(0,"userName"))  ){
+				var usertype = this.dsList.getColumn(0, "usertype");
+				
+			    //sample화면 메뉴에 추가	
+				if(usertype == "A") {
+					for (var i=0; i< this.dsAdmin.rowcount; i++)
+					{
+						var nRow = this.objApp.gdsMenu.addRow();
+						this.objApp.gdsMenu.copyRow(nRow, this.dsAdmin, i);
+					}    
+                }
+				
+				if(usertype == "C") {
+					for (var i=0; i< this.dsCop.rowcount; i++)
+					{
+						var nRow = this.objApp.gdsMenu.addRow();
+						this.objApp.gdsMenu.copyRow(nRow, this.dsCop, i);
+					}    
+                }				
+
+				if(usertype == "D") {
+					for (var i=0; i< this.dsMember.rowcount; i++)
+					{
+						var nRow = this.objApp.gdsMenu.addRow();
+						this.objApp.gdsMenu.copyRow(nRow, this.dsMember, i);
+					}    
+                }
+				
+				this.objApp.gdsUserInfo.setColumn(0,"userId", this.dsList.getColumn(0,"loginID"));
+				this.objApp.gdsUserInfo.setColumn(0,"UserNm", this.dsList.getColumn(0,"name"));
+				 
+				nexacro.setEnvironmentVariable("gvUserId",this.dsList.getColumn(0,"loginID"));
+				nexacro.setEnvironmentVariable("gvUserNm",this.dsList.getColumn(0,"name"));
+				nexacro.setEnvironmentVariable("gvUserType",this.dsList.getColumn(0,"user_type"));
+			    nexacro.setEnvironmentVariable("loginYn","Y");
+					
+				//alert("login callabck gvUserId 1 : " +  this.objApp.gdsUserInfo.getColumn(0,"userId")  + "  UserNm : " +  this.objApp.gdsUserInfo.getColumn(0,"UserNm"));
+				//alert("login callabck gvUserId 2 : " +  nexacro.getEnvironmentVariable("gvUserId")  + "userName : " +  nexacro.getEnvironmentVariable("gvUserNm"));
+					
+			    this.fnSetSeprateFrame();
+	            this.objApp.gvLeftFrame.form.fnGlobalMenuCopy();
+					
+			    return;
+			}
+			
+			alert("로그인에 실패하였습니다. ");
+			break;
+			
+// 		case "save":
+// 			this.fnSearch();//재조회
+// 			break;
+	}
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_category">
+        <ColumnInfo>
+          <Column id="ds_choice" type="STRING" size="256"/>
+          <Column id="ds_value" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="ds_choice">상품전체</Col>
+            <Col id="ds_value">A</Col>
+          </Row>
+          <Row>
+            <Col id="ds_choice">요리류</Col>
+            <Col id="ds_value">c</Col>
+          </Row>
+          <Row>
+            <Col id="ds_choice">라면류</Col>
+            <Col id="ds_value">f</Col>
+          </Row>
+          <Row>
+            <Col id="ds_choice">음료류</Col>
+            <Col id="ds_value">d</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_foodList">
+        <ColumnInfo>
+          <Column id="goods_name" type="STRING" size="256"/>
+          <Column id="goods_price" type="INT" size="256"/>
+          <Column id="reamincnt" type="INT" size="256"/>
+          <Column id="goods_category" type="STRING" size="256"/>
+          <Column id="goods_code" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_selectFood" onvaluechanged="fn_cntchanged">
+        <ColumnInfo>
+          <Column id="goods_name" type="STRING" size="256"/>
+          <Column id="sale_p" type="INT" size="256"/>
+          <Column id="sale_q" type="STRING" size="256"/>
+          <Column id="goods_category" type="STRING" size="256"/>
+          <Column id="goods_code" type="STRING" size="256"/>
+          <Column id="loginID" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="grd_foodList" propid="binddataset" datasetid="ds_foodList" columnid=""/>
+    </Bind>
+  </Form>
+</FDL>

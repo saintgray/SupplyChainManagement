@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+    <typeAlias  alias="commonVO" type="com.nexacro.sample.vo.CommonVO"/>
+
+<!-- Sample resultObject -->
+    <resultMap id="codelist" class="commonVO">
+        <result property="code" column="CODE" />
+        <result property="name" column="NAME" />
+    </resultMap>
+    
+    
+ 	<select id="common.selectcommcdcombo" parameterClass="String" resultMap="codelist">
+             SELECT
+	                detail_code AS CODE
+	               ,detail_name AS NAME
+            FROM tb_detail_code  
+            WHERE group_code = #grdCD#
+    </select>    
+    
+</sqlMap>

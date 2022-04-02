@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="admin_main" width="1280" height="720" titletext="New Form" onload="main_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280"/>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[
+this.main_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	var callBackFnc = "fnCallback";
+	var strSvcId = "pcroomlist";
+	var strSvcUrl = "pcroomlist.do";
+	var inData = "";
+	var outData = "";
+	var strArg = "";
+	var callBackFnc = "fnCallback";
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	alert("11");
+	
+};
+
+]]></Script>
+  </Form>
+</FDL>

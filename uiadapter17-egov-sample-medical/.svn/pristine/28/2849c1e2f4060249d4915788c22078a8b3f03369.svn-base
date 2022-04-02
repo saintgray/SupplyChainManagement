@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="UpdateGoodsPop" width="590" height="270" titletext="New Form" onload="UpdateGoodsPop_onload">
+    <Layouts>
+      <Layout height="270" mobileorientation="landscape" width="590">
+        <Edit id="edt_goodsname" taborder="0" left="92" top="54" width="140" height="20"/>
+        <Edit id="edt_price" taborder="1" left="92" top="97" width="140" height="20" inputmode="normal" inputtype="number"/>
+        <Combo id="cbo_goodsType" taborder="2" text="cbo00" left="382" top="55" width="150" height="20" innerdataset="ds_GoodsTypes" codecolumn="detail_code" datacolumn="detail_name" readonly="true"/>
+        <Static id="sta00" taborder="3" text="상품명" left="20" top="40" height="42" textAlign="center" width="56"/>
+        <Static id="sta01" taborder="4" text="가격" left="22" top="81" height="42" textAlign="center" width="56"/>
+        <Static id="sta02" taborder="5" text="종류" left="282" top="43" height="42" textAlign="center" width="56"/>
+        <Static id="sta03" taborder="6" text="잔여갯수" left="284" top="86" height="42" textAlign="center" width="56"/>
+        <Spin id="spn_Count" taborder="7" left="382" top="96" width="150" height="20" displaycomma="true"/>
+        <Button id="btn_save" taborder="8" text="수정" left="120" top="156" width="120" height="50" onclick="btn_save_onclick"/>
+        <Button id="btn_delete" taborder="9" text="삭제" left="370" top="156" width="120" height="50" onclick="btn_delete_onclick"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_GoodsInfo">
+        <ColumnInfo>
+          <Column id="goods_code" type="STRING" size="256"/>
+          <Column id="goods_category" type="STRING" size="256"/>
+          <Column id="goods_name" type="STRING" size="256"/>
+          <Column id="goods_price" type="INT" size="256"/>
+          <Column id="reamincnt" type="INT" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_GoodsTypes">
+        <ColumnInfo>
+          <Column id="detail_code" type="STRING" size="256"/>
+          <Column id="detail_name" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[
+this.UpdateGoodsPop_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	var suc = false;
+	suc = this.ds_GoodsInfo.copyRow(0,this.parent.GoodsInfo,this.parent.GoodsRowPosition);
+	trace("copydata = " + suc);
+	suc = this.ds_GoodsTypes.copyData(this.parent.GoodsTypes);
+	trace("copyTypes = " + suc);
+	//this.ds_GoodsInfo.set_updatecontrol(false);
+	/*for(var i = 0 ; i < this.ds_GoodsInfo.rowcount; i++)
+	{
+		Suc = this.ds_GoodsInfo.setRowType(i, Dataset.ROWTYPE_NORMAL);
+	}*/
+
+};
+
+this.btn_save_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+	trace(this.ds_GoodsInfo.rowcount);
+	var suc = false;
+	//suc = this.ds_GoodsInfo.setRowType(0, Dataset.ROWTYPE_UPDATE);
+	trace(this.ds_GoodsInfo.getRowType(0));
+	//this.ds_GoodsInfo.set_rowposition(this.parent.GoodsRowPosition) = 4;
+	var strSvcId    = "update";
+	var strSvcUrl   = "updateGoodsList.do";
+	var inData      = "ds_GoodsInfo=ds_GoodsInfo";
+	var outData     = "";
+	var strArg      = "updateType=4";
+	var callBackFnc = "fnCallback";
+	var isAsync   	= true;
+	
+	this.gfnTransaction(strSvcId , 		// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						isAsync); 		// 비동기통신 여부 [생략가능]		
+};
+
+this.fnCallback = function(svcID,errorCode,errorMsg)
+{
+	switch(svcID)
+	{
+		case "update":
+			alert("수정 되었습니다.");
+			this.opener.fn_parent(this.ds_GoodsInfo);
+			this.close();
+			break;
+		case "delete":
+			alert("삭제 되었습니다.");
+			this.opener.fn_parent(this.ds_GoodsInfo);
+			this.close();
+			break;	
+	}
+}
+this.btn_delete_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var strSvcId    = "delete";
+	var strSvcUrl   = "updateGoodsList.do";
+	var inData      = "ds_GoodsInfo=ds_GoodsInfo";
+	var outData     = "";
+	var strArg      = "updateType=8";
+	var callBackFnc = "fnCallback";
+	var isAsync   	= true;
+	
+	this.gfnTransaction(strSvcId , 		// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						isAsync); 		// 비동기통신 여부 [생략가능]	
+};
+]]></Script>
+    <Bind>
+      <BindItem id="item0" compid="edt_goodsname" propid="value" datasetid="ds_GoodsInfo" columnid="goods_name"/>
+      <BindItem id="item1" compid="cbo_goodsType" propid="value" datasetid="ds_GoodsInfo" columnid="goods_category"/>
+      <BindItem id="item2" compid="spn_Count" propid="value" datasetid="ds_GoodsInfo" columnid="reamincnt"/>
+      <BindItem id="item3" compid="edt_price" propid="value" datasetid="ds_GoodsInfo" columnid="goods_price"/>
+    </Bind>
+  </Form>
+</FDL>

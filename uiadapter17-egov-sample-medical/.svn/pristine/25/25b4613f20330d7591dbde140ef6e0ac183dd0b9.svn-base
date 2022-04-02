@@ -1,0 +1,144 @@
+package com.nexacro.sample.web;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.nexacro.sample.service.CopJoinService;
+import com.nexacro.sample.vo.CommonVO;
+import com.nexacro.sample.vo.LoginVO;
+import com.nexacro.sample.vo.SampleVO;
+import com.nexacro.uiadapter17.spring.core.NexacroException;
+import com.nexacro.uiadapter17.spring.core.annotation.ParamDataSet;
+import com.nexacro.uiadapter17.spring.core.annotation.ParamVariable;
+import com.nexacro.uiadapter17.spring.core.data.DataSetRowTypeAccessor;
+import com.nexacro.uiadapter17.spring.core.data.NexacroResult;
+import com.nexacro17.xapi.data.DataSet;
+import com.nexacro17.xapi.data.datatype.PlatformDataType;
+
+@Controller
+public class CopJoinController {
+	private static final Logger logger = LoggerFactory.getLogger(CopJoinController.class);
+	
+	@Autowired
+	@Resource(name = "copjoinService")
+	private CopJoinService copjoinService;
+	
+	@Resource
+	private Validator validator;
+	// 유효성 검사?
+
+	@InitBinder
+	public void initBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(this.validator);
+	}
+	
+
+	
+	
+	@RequestMapping(value = "/copReg.do")
+	// public NexacroResult copReg(@ParamDataSet(name = "dssearch", required =
+	// false) LoginVO searchVo) {
+	public NexacroResult copReg(@ParamDataSet(name = "dsCop", required = false) Map<String, String> Copinfo
+			                , @ParamVariable(name="LoginID") String LoginID) {
+		// 넘겨주는 이름은 dsSearch이고 받는 값은 gdsUser(map)
+		
+		//Map<String,String> Copinfo = new HashMap();
+		
+		//System.out.println("copReg !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + Copinfo.get("id"));
+		
+        //Copinfo.put("id", LoginID);
+		          
+		Copinfo.put("loginID",LoginID);  
+          
+        int cnt = copjoinService.iddupchk(Copinfo);  
+       
+        //System.out.println("cnt : " + cnt);
+        
+		if (cnt == 0){
+			//System.out.println("copReg insert ");
+        	copjoinService.copReg(Copinfo);
+   
+        }
+        if (cnt > 0){
+        	System.out.println("copReg update ");
+        	copjoinService.copupdate(Copinfo);
+ 
+        }
+   
+	
+		
+		//copjoinService.copReg(Copinfo);
+
+		Map<String, String> cop = new HashMap<String, String>();
+
+		NexacroResult result = new NexacroResult();
+
+		result.addDataSet("dsList", cop);
+
+		return result;
+	}
+	
+    @RequestMapping(value = "/copidcheck.do")
+    public NexacroResult copidcheck(@ParamVariable(name="id") String id) {	
+    	
+        NexacroResult resultNr = new NexacroResult();
+        Map<String,String> resulthm= new HashMap();
+        
+        Map<String,String> userinfo = new HashMap();
+        userinfo.put("id", id);
+        	
+		try {
+
+			int cnt = copjoinService.iddupchk(userinfo);
+	           
+	        System.out.println("cnt : " + cnt);
+	        
+	        
+	        if (cnt==0){  
+	        	resulthm.put("resultYn","T");
+	        } else {
+	        	resulthm.put("resultYn","F");
+	        }         
+	        
+		} catch (Exception e){
+			resulthm.put("resultYn","F");      	
+		}
+	
+		resultNr.addDataSet("ds_IdCnt", resulthm);
+	
+		return resultNr;
+	}
+		
+/*******************************************기업회원 정보 조회***************************************/
+    @RequestMapping(value="/CopInfo.do")
+    public NexacroResult copInfo(@ParamVariable(name="userID",required=false)String userID
+    							,@ParamVariable(name="userType",required=false)String userType){
+    	
+    	Map<String,String> info=new HashMap<>();
+    	info.put("userID", userID);
+    	info.put("userType", userType);
+       	
+    	List<Map<String,String>> copINFO=copjoinService.copINFO(info);
+    	NexacroResult result = new NexacroResult();
+		result.addDataSet("dsCop",copINFO);   	
+    	return result;
+    }
+    
+	
+	
+};

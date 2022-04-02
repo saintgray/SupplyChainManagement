@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="using">
+
+    <typeAlias alias="loginVO" type="com.nexacro.sample.vo.LoginVO"/>
+
+<!-- Sample resultObject -->
+    <resultMap id="using" class="loginVO">
+        <result property="id" column="LOGINID" />
+        <result property="usertype" column="USER_TYPE" />
+        <result property="userName" column="NAME" />
+    </resultMap>
+
+ 	<select id="using.food" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+ 		SELECT sale_totp as total
+ 		FROM tb_sales
+ 		WHERE loginID = #userId#
+ 		AND sales_status = 'y'
+    </select>
+    <select id="using.date" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+ 		SELECT DATE_FORMAT(using_start_time, '%d-%H.%i') as start
+ 		FROM tb_using
+ 		WHERE loginID = #userId#
+ 		AND use_yn = 'y'
+ 		<!-- 코드 검색 용도 추후 추가 -->
+    </select>
+    <update id="using.sales_update" parameterClass="MAP"> 
+          UPDATE tb_sales
+          SET sales_status = 'f'
+          WHERE loginID = #userId#
+          AND sales_status = 'y'
+    </update>  
+    
+    <select id="using.search" parameterClass="MAP" resultClass="java.util.HashMap" remapResults="true">
+ 		SELECT *
+ 		FROM tb_using
+ 		WHERE loginID = #userId#
+    </select>
+    <update id="using.re_update" parameterClass="MAP">
+    	UPDATE tb_using
+		SET using_end_time = now(),
+		<isEmpty property="goods_fee">
+    	 	goods_fee = 0,
+    	</isEmpty>
+    	<isNotNull property="goods_fee">
+	    	goods_fee = #goods_fee#, 	
+	    </isNotNull>
+    		pc_fee = #pc_fee#,
+    	<isEmpty property="goods_fee">
+    	 	total_fee = #pc_fee#
+    	</isEmpty>
+    	<isNotNull property="goods_fee">
+	    	total_fee = #pc_fee# + #goods_fee#	
+	    </isNotNull>	
+			WHERE loginID = #userId#
+    </update>
+<!--     <update id="using.finish" parameterClass="MAP">
+    	UPDATE tb_pcroom_local
+		SET usable_yn = 'y'
+		WHERE pc_no = #pc_no#,
+      		  pcroom_code = #pcroom_code#
+    </update> -->
+</sqlMap>

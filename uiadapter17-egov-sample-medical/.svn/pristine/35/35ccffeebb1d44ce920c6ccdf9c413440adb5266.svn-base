@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="GoodsManage" width="1280" height="720" titletext="New Form" onload="GoodsManage_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Div id="div00" taborder="0" text="div00" left="0" top="0" width="1280" height="720">
+          <Layouts>
+            <Layout>
+              <Combo id="cbo_category" taborder="0" text="" left="40" top="20" width="150" height="20" value="" index="0" onitemchanged="CategoryChanged" innerdataset="ds_GoodsTypes" codecolumn="detail_code" datacolumn="detail_name" displaynulltext="분류 선택"/>
+              <Button id="btn_search" taborder="1" text="검색" left="410" top="13" width="120" height="35" onclick="fnSearch"/>
+              <Button id="btn_regist" taborder="2" text="등록" left="560" top="15" width="120" height="35" onclick="div00_btn_regist_onclick"/>
+              <Grid id="grd_result" taborder="3" left="39" top="60" width="654" height="272" binddataset="ds_GoodsInfo" oncellclick="updateGoods">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="48"/>
+                      <Column size="158"/>
+                      <Column size="149"/>
+                      <Column size="111"/>
+                      <Column size="115"/>
+                      <Column size="71"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="번호"/>
+                      <Cell col="1" text="종류"/>
+                      <Cell col="2" text="상품명"/>
+                      <Cell col="3" text="가격"/>
+                      <Cell col="4" text="잔여갯수"/>
+                      <Cell col="5" text="수정"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="expr:currow+1"/>
+                      <Cell col="1" text="bind:goods_category" displaytype="combotext" edittype="none" combodataset="ds_GoodsTypes" combocodecol="detail_code" combodatacol="detail_name"/>
+                      <Cell col="2" text="bind:goods_name" displaytype="normal"/>
+                      <Cell col="3" text="bind:goods_price"/>
+                      <Cell col="4" text="bind:reamincnt"/>
+                      <Cell col="5" displaytype="buttoncontrol" edittype="button" text="수정"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Combo id="cbo_goods" taborder="4" text="" left="230" top="20" width="150" height="20" value="" index="0" innerdataset="ds_GoodsCbo" codecolumn="goods_code" datacolumn="goods_name" displaynulltext="전체" onitemchanged="div00_cbo_goods_onitemchanged"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_GoodsInfo">
+        <ColumnInfo>
+          <Column id="goods_code" type="STRING" size="256"/>
+          <Column id="goods_category" type="STRING" size="256"/>
+          <Column id="goods_name" type="STRING" size="256"/>
+          <Column id="goods_price" type="INT" size="256"/>
+          <Column id="reamincnt" type="INT" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_Search">
+        <ColumnInfo>
+          <Column id="goods_category" type="STRING" size="256"/>
+          <Column id="goods_code" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_GoodsTypes">
+        <ColumnInfo>
+          <Column id="detail_code" type="STRING" size="256"/>
+          <Column id="detail_name" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_GoodsCbo">
+        <ColumnInfo>
+          <Column id="goods_code" type="STRING" size="256"/>
+          <Column id="goods_name" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[
+var bCboInit = false;
+this.GoodsManage_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	
+	this.cboCategoryInit();
+	//this.div00.form.cbo_category.set_index(0);
+	this.div00.form.cbo_category.set_displaynulltext("분류 선택");
+	//this.ds_GoodsTypes.set_rowposition(0);
+	//suc = this.ds_Search.setColumn(0,"goods_category",this.ds_GoodsTypes.getColumn(0,0));
+	//trace(suc);
+	//this.ds_Search.set_rowposition(0);
+	//this.div00.form.cbo_category.updateToDataset();
+};
+
+this.cboCategoryInit = function()
+{
+	/*this.ds_GoodsTypes.addRow();
+	this.ds_GoodsInfo.setColumn(0,"goods_code", "전체");
+	this.ds_GoodsInfo.setColumn(0,"goods_name", "전체");*/
+	
+	var strSvcId    = "initCbo";
+	var strSvcUrl   = "initGoodsCbo.do";
+	var inData      = "";
+	var outData     = "ds_GoodsTypes=ds_GoodsTypes";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	var isAsync   	= true;
+	
+	this.gfnTransaction(strSvcId , 		// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						isAsync); 		// 비동기통신 여부 [생략가능]	
+						
+};
+
+
+this.fnCallback = function(svcID,errorCode,errorMsg)
+{
+	var suc = false;
+	// 에러 시 화면 처리 내역
+	if(errorCode != 0)
+	{
+		return;
+	}
+	
+	switch(svcID)
+	{
+		case "search":
+			//trace(this.dsSearch.saveXML());
+			break;
+		case "initCbo":
+			//trace(this.ds_GoodsTypes.rowposition);
+			//this.ds_GoodsTypes.rowposition = 0;
+			//this.ds_GoodsTypes.set_rowposition(0);
+			suc = this.ds_Search.setColumn(0,"goods_category",this.ds_GoodsTypes.getColumn(0,1));
+			trace(suc);
+			/*for(var i = 0 ; i < this.ds_GoodsTypes.rowcount ; i++)
+			{
+				trace(this.ds_GoodsTypes.getColumn(i,1));
+			}*/
+			
+			this.CategoryChanged(this.div00.form.cbo_category, nexacro.ItemChangeEventInfo);
+			//this.ds_Search.set_rowposition(0);
+			//trace(this.ds_Search.getColumn(1,1));
+			//trace(this.ds_Search.getColumn(0,1));
+			break;	
+		case "goodsCbo":
+			suc = this.ds_Search.setColumn(0,"goods_code","A");
+			trace(suc);		
+			//trace(this.dsSearch.saveXML());
+			break;
+		case "UpdatePop":
+			trace("I'm Here");
+			
+			break;
+		case "RegistPop":
+			trace("I'm Here!!!");
+			
+			break;			
+		/*case "delSave":
+			alert("삭제가 완료되였습니다.")
+			this.dsList();
+		break;	
+			
+			
+		case "save":
+			// 저장 되었습니다.
+			this.gfnAlert("msg.save.success");	
+			break;*/
+	}
+};
+
+/************************************************************************************************
+* CRUD 및 TRANSACTION 서비스 호출 처리
+************************************************************************************************/
+/**
+ * @description 조회
+*/
+this.fnSearch = function()//obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+	if(this.ds_Search.getCount() < 1)
+	{
+		alert("검색상품을 선택해주세요");
+		return false;
+	}
+ 	var strSvcId    = "search";
+	var strSvcUrl   = "selectGoodsInfoList.do";
+	var inData      = "ds_Search=ds_Search";
+	var outData     = "ds_GoodsInfo=ds_GoodsInfo";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	var isAsync   	= true;
+	
+	this.gfnTransaction(strSvcId , 		// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						isAsync); 		// 비동기통신 여부 [생략가능]						
+					
+};
+
+this.CategoryChanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	//trace(this.ds_Search.getColumn(0,0));
+	//trace(e);
+	if(bCboInit == false)
+	{
+		e.postvalue = "c";
+		bCboInit = true;
+	}
+	var strSvcId    = "goodsCbo";
+	var strSvcUrl   = "initGoodsDetailCbo.do";
+	var inData      = "";
+	var outData     = "ds_GoodsCbo=ds_GoodsCbo";
+	var strArg      = "goods_category="+e.postvalue;
+	var callBackFnc = "fnCallback";
+	var isAsync   	= true;
+	
+	this.gfnTransaction(strSvcId , 		// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						isAsync); 		// 비동기통신 여부 [생략가능]	
+						
+	//this.div00.form.ds_GoodsCbo.set_index(0);
+};
+
+
+
+this.updateGoods = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	//obj.getDatasetRow()
+	if(e.cell == 5)
+	{
+		trace("hi");
+		//this.ds_Search.deleteRow(this.ds_Search.rowposition);
+		var objChildFrame = new ChildFrame();
+			objChildFrame.init("UpdatePop"
+							  , 0
+							  , 0
+							  , 600
+							  , 250
+							  , null
+							  , null
+							  , "admin_goods::UpdateGoodsPop.xfdl");
+
+			objChildFrame.set_dragmovetype("all");
+			objChildFrame.set_openalign("center middle");
+			objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+			
+			var objParam = {
+								GoodsRowPosition:this.ds_GoodsInfo.rowposition,
+								GoodsInfo		:this.ds_GoodsInfo,
+								GoodsTypes		:this.ds_GoodsTypes
+							};
+			objChildFrame.showModal(this.getOwnerFrame()
+								  , objParam
+								  , this
+								  , "fnCallback");		
+		
+	}	
+}
+
+this.updateGoods = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	//obj.getDatasetRow()
+	if(e.cell == 5)
+	{
+		trace("hi");
+		//this.ds_Search.deleteRow(this.ds_Search.rowposition);
+		var objChildFrame = new ChildFrame();
+			objChildFrame.init("UpdatePop"
+							  , 0
+							  , 0
+							  , 600
+							  , 250
+							  , null
+							  , null
+							  , "admin_goods::UpdateGoodsPop.xfdl");
+
+			objChildFrame.set_dragmovetype("all");
+			objChildFrame.set_openalign("center middle");
+			objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+			
+			var objParam = {
+								GoodsRowPosition:this.ds_GoodsInfo.rowposition,
+								GoodsInfo		:this.ds_GoodsInfo,
+								GoodsTypes		:this.ds_GoodsTypes
+							};
+			objChildFrame.showModal(this.getOwnerFrame()
+								  , objParam
+								  , this
+								  , "fnCallback");		
+		
+	}	
+}
+
+this.fn_parent = function(pObj)
+{
+	//this.ds_GoodsInfo.copyData(pObj);
+	this.fnSearch();
+};
+
+this.div00_btn_regist_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+		var objChildFrame = new ChildFrame();
+			objChildFrame.init("RegistPop"
+							  , 0
+							  , 0
+							  , 600
+							  , 250
+							  , null
+							  , null
+							  , "admin_goods::GoodsRegist.xfdl");
+
+			objChildFrame.set_dragmovetype("all");
+			objChildFrame.set_openalign("center middle");
+			objChildFrame.set_overlaycolor("RGBA(196,196,196,0.5)")
+			
+			var objParam = {
+								GoodsTypes		: this.ds_GoodsTypes
+							};
+			objChildFrame.showModal(this.getOwnerFrame()
+								  , objParam
+								  , this
+								  , "fnCallback");		
+};
+]]></Script>
+    <Bind>
+      <BindItem id="item0" compid="div00.form.cbo_category" propid="value" datasetid="ds_Search" columnid="goods_category"/>
+      <BindItem id="item1" compid="div00.form.cbo_goods" propid="value" datasetid="ds_Search" columnid="goods_code"/>
+    </Bind>
+  </Form>
+</FDL>

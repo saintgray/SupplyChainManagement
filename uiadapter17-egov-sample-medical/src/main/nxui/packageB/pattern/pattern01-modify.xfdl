@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Modify_form" width="490" height="470" titletext="회원정보수정" onload="Modify_form_onload">
+    <Layouts>
+      <Layout height="470" mobileorientation="landscape" width="490" screenid="Screen_D">
+        <Div id="modify_div" taborder="0" text="0" left="14" top="12" width="461" height="448" border="1px dotted black">
+          <Layouts>
+            <Layout>
+              <Static id="modi_sta" taborder="0" text="회 원 정 보 수 정" left="88" top="17" width="286" height="53" textAlign="center" font="bold 20px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+              <Static id="sta_id" taborder="1" text="ID" left="27" top="86" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_pw1" taborder="2" text="이전 PW" left="27" top="126" width="77" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_pw2" taborder="3" text="변경할 PW" left="27" top="166" width="87" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_name" taborder="4" text="이름" left="27" top="206" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_email" taborder="5" text="E-Mail" left="27" top="246" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Static id="sta_phone" taborder="6" text="핸드폰" left="27" top="286" width="61" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;" textAlign="left"/>
+              <Button id="btn_modify" taborder="7" text="수 정" left="127" top="362" width="100" height="40" font="bold 14px/normal &quot;Gulim&quot;" onclick="modify_div_btn_modify_onclick"/>
+              <Button id="btn_drop" taborder="8" text="탈 퇴" left="237" top="362" width="100" height="40" font="bold 14px/normal &quot;Gulim&quot;" onclick="register_div_btn_cencal_onclick"/>
+              <Edit id="edt_id" taborder="9" left="119" top="86" width="135" height="32" enable="false"/>
+              <Edit id="edt_pw1" taborder="10" left="119" top="126" width="135" height="32" password="true"/>
+              <Edit id="edt_pw2" taborder="11" left="119" top="166" width="135" height="32" password="true"/>
+              <Edit id="edt_name" taborder="12" left="119" top="206" width="135" height="32"/>
+              <Edit id="edt_name00" taborder="13" left="119" top="244" width="115" height="32"/>
+              <Static id="sta_email2" taborder="14" text="@" left="241" top="246" width="43" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+              <Combo id="cbo00" taborder="15" left="264" top="246" width="150" height="32" innerdataset="ds_email" codecolumn="form_email"/>
+              <Combo id="cbo_phone" taborder="16" left="104" top="286" width="80" height="32" innerdataset="ds_phone" codecolumn="first_num"/>
+              <Static id="sta_phone1" taborder="17" text="-" left="198" top="286" width="43" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+              <Edit id="edt_phone1" taborder="18" left="219" top="286" width="80" height="32" inputtype="number" maxlength="4"/>
+              <Edit id="edt_phone2" taborder="19" left="329" top="286" width="80" height="32" inputtype="number" maxlength="4"/>
+              <Static id="sta_phone00" taborder="20" text="-" left="308" top="286" width="43" height="32" font="bold 16px/normal &quot;Gulim&quot;,&quot;Arial Black&quot;"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_phone">
+        <ColumnInfo>
+          <Column id="first_num" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="first_num">010</Col>
+          </Row>
+          <Row>
+            <Col id="first_num">011</Col>
+          </Row>
+          <Row>
+            <Col id="first_num">016</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_email">
+        <ColumnInfo>
+          <Column id="form_email" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="form_email">naver.com</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">nate.com</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">hanmail.net</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">gmail.com</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">msn.com</Col>
+          </Row>
+          <Row>
+            <Col id="form_email">ruu.kr</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_userinfo">
+        <ColumnInfo>
+          <Column id="id" type="STRING" size="100"/>
+          <Column id="pw" type="STRING" size="100"/>
+          <Column id="name" type="STRING" size="100"/>
+          <Column id="email_name" type="STRING" size="100"/>
+          <Column id="email_form" type="STRING" size="100"/>
+          <Column id="phone_first" type="STRING" size="8"/>
+          <Column id="phone_second" type="STRING" size="16"/>
+          <Column id="phone_end" type="STRING" size="16"/>
+          <Column id="pw2" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsList"/>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="modify_div.form.cbo00" propid="value" datasetid="ds_userinfo" columnid="email_form"/>
+      <BindItem id="item1" compid="modify_div.form.cbo_phone" propid="value" datasetid="ds_userinfo" columnid="phone_first"/>
+      <BindItem id="item2" compid="modify_div.form.edt_id" propid="value" datasetid="ds_userinfo" columnid="id"/>
+      <BindItem id="item3" compid="modify_div.form.edt_pw1" propid="value" datasetid="ds_userinfo" columnid="pw"/>
+      <BindItem id="item4" compid="modify_div.form.edt_name" propid="value" datasetid="ds_userinfo" columnid="name"/>
+      <BindItem id="item5" compid="modify_div.form.edt_name00" propid="value" datasetid="ds_userinfo" columnid="email_name"/>
+      <BindItem id="item6" compid="modify_div.form.edt_phone1" propid="value" datasetid="ds_userinfo" columnid="phone_second"/>
+      <BindItem id="item7" compid="modify_div.form.edt_phone2" propid="value" datasetid="ds_userinfo" columnid="phone_end"/>
+      <BindItem id="item8" compid="modify_div.form.edt_pw2" propid="value" datasetid="ds_userinfo" columnid="pw2"/>
+    </Bind>
+    <Script type="xscript5.1"><![CDATA[this.Modify_form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+    this.objApp = nexacro.getApplication();
+	
+	// alert(nexacro.getEnvironmentVariable("gvUserType"));
+
+	this.ds_userinfo.setColumn(0, "id", nexacro.getEnvironmentVariable("gvUserId"));
+	
+	 // var pw_check = nexacro.getEnvironmentVariable("gvPw");
+	
+	this.ds_userinfo.setColumn(0, "name", nexacro.getEnvironmentVariable("gvUserNm"));
+	this.ds_userinfo.setColumn(0, "email_name", nexacro.getEnvironmentVariable("gvEn"));
+	this.ds_userinfo.setColumn(0, "email_form", nexacro.getEnvironmentVariable("gvEf"));
+
+	this.ds_userinfo.setColumn(0, "phone_first", nexacro.getEnvironmentVariable("gvP1"));
+	this.ds_userinfo.setColumn(0, "phone_second", nexacro.getEnvironmentVariable("gvP2"));
+	this.ds_userinfo.setColumn(0, "phone_end", nexacro.getEnvironmentVariable("gvP3"));
+
+};
+
+
+this.modify_div_btn_modify_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if(this.gfnIsNull(this.ds_userinfo.getColumn(0, "pw"))){
+		alert("이전 비밀번호를 입력해주세요.");
+		return ; 
+	}
+	
+	if(this.ds_userinfo.getColumn(0, "pw") == this.ds_userinfo.getColumn(0, "pw2")){
+		alert("바뀐 비밀번호가 이전 비밀번호와 동일합니다.");
+		return ;
+	}
+	
+	this.fnModify_info();	
+};
+
+this.fnModify_info = function(){
+
+	var strSvcId    = "modify_info";
+	var strSvcUrl   = "modify.do";
+	var inData      = "ds_userinfo=ds_userinfo";
+	var outData     = "dsList=dsList" ;
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId, 	
+						 strSvcUrl, 	
+						 inData, 		
+						 outData, 		 
+						 strArg, 		
+						 callBackFnc, 
+						 nDataType); 
+}
+
+
+this.register_div_btn_cencal_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.confirm("정말로 탈퇴하시겠습니까?");
+	
+	var strSvcId    = "delete";
+	var strSvcUrl   = "delete.do";
+	var inData      = "ds_userinfo=ds_userinfo";
+	var outData     = "dsList=dsList";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId, 	
+						 strSvcUrl, 	
+						 inData, 		
+						 outData, 		 
+						 strArg, 		
+						 callBackFnc, 
+						 nDataType); 
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "modify_info":
+		if(!this.gfnIsNull(this.dsList.getColumn(0, "check"))){
+			alert("회원 정보 수정이 완료되었습니다.");    
+		this.go("frame::frameMain.xfdl");
+		}else{
+			alert("심각한 오류가 발생해 작업을 완료하지 못했습니다.");
+		}
+	}
+	
+	switch(svcID)
+	{
+		case "delete":
+		
+		if(!this.gfnIsNull(this.dsList.getColumn(0, "check"))){
+		alert("이용해주셔서 감사합니다."); 
+		
+		this.objApp.gdsUserInfo.setColumn(0,"userId", "");
+		this.objApp.gdsUserInfo.setColumn(0,"UserNm", "");
+				 
+		nexacro.setEnvironmentVariable("gvUserId","");
+		nexacro.setEnvironmentVariable("gvUserNm","");
+		nexacro.setEnvironmentVariable("gvUserType","");
+		nexacro.setEnvironmentVariable("loginYn","N");			
+			
+		this.objApp.Application_onload();
+		
+		}else{
+			alert("오류가 발생해 작업을 완료하지 못했습니다.");
+		}
+	}
+};]]></Script>
+  </Form>
+</FDL>

@@ -1,0 +1,529 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="frameTop" width="1024" height="44" titletext="frameTop" onload="form_onload" scrolltype="none" scrollbartype="none" onsize="form_onsize">
+    <Layouts>
+      <Layout height="44" width="1024">
+        <Static id="staName" taborder="1" text="운영자" top="8" width="90" height="22" right="204" font="bold 10pt &quot;맑은 고딕&quot;" onclick="staName_onclick" textAlign="left"/>
+        <Static id="Static02" taborder="0" text="님 환영합니다." top="8" width="91" height="24" right="98"/>
+        <Button id="btnLogOut" taborder="2" text="로그아웃" left="" top="12" width="60" height="19" right="15" bottom="" onclick="btnLogOut_onclick"/>
+        <Div id="divTopBtn" taborder="3" left="240" right="344" onclick="div_Tab_onclick" top="0" bottom="0" text="">
+          <Layouts>
+            <Layout/>
+          </Layouts>
+        </Div>
+        <Button id="btnPre" taborder="4" top="10" height="20" visible="true" onclick="btnPre_onclick" text="&lt;" right="374" width="20"/>
+        <Button id="btnNex" taborder="5" top="10" height="20" visible="true" onclick="btnNex_onclick" text="&gt;" right="354" width="20"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsMenu"/>
+      <Dataset id="dsList"/>
+      <Dataset id="dsList2"/>
+      <Dataset id="ds_result">
+        <ColumnInfo>
+          <Column id="goods_fee" type="INT" size="256"/>
+          <Column id="using_end_time" type="STRING" size="256"/>
+          <Column id="pc_fee" type="INT" size="256"/>
+          <Column id="userId" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName         frameBottom.xfdl 
+*  @Creator             soojeong
+*  @CreateDate     2017.01.23
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version         1.0
+*  @Outline         
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date                  Modifier            Description
+*******************************************************************************
+*  2017.01.23         soojeong                최초 생성 
+*******************************************************************************
+*/
+
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+this.objApp;
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+     this.objApp = nexacro.getApplication();
+     this.divTopBtn.form.set_scrollbartype("none");
+	 
+	 // 이용시간 시간을 변수 설정
+	 
+	 this.fnSetName();
+};
+/************************************************************************************************
+* TRANSACTION 서비스 호출 처리
+************************************************************************************************/
+
+/************************************************************************************************
+ * CALLBACK 콜백 처리부분
+ ************************************************************************************************/
+ 
+ /************************************************************************************************
+ * 사용자 FUNCTION 영역
+ ************************************************************************************************/
+ /**
+ * 로그인 사용자 세팅 
+ * @return 
+ * @example
+ *
+ * @memberOf 
+ */
+ 
+ 
+this.fnSetName = function()
+{    
+    this.staName.set_text(nexacro.getEnvironmentVariable("gvUserNm"));  
+	//alert(nexacro.getEnvironmentVariable("gvUserNm"));
+	
+}
+
+/**
+ * @description 메세지 콜백
+*/
+this.fnMsgCallback = function (strId, strVal)
+{
+    //trace("strId >> " + strId + "   strVal >> " + strVal);
+	
+    if(strId == "confirm.logout"){
+        //trace("strVal : " + strVal);
+        if(strVal)
+        {
+		
+			this.fn_call_food_charge(); // 음식값 호출
+			this.fn_use_end(); // user_info 의 user_yn -> n 변경 함수
+			
+            //this.objApp.exit();
+			this.objApp.gdsUserInfo.setColumn(0,"userId", "");
+			this.objApp.gdsUserInfo.setColumn(0,"UserNm", "");
+				 
+			nexacro.setEnvironmentVariable("gvUserId","");
+			nexacro.setEnvironmentVariable("gvUserNm","");
+			nexacro.setEnvironmentVariable("gvUserType","");
+			nexacro.setEnvironmentVariable("loginYn","N");			
+			
+			this.objApp.Application_onload();
+        }
+    }
+};
+
+/**
+ * menu tab 버튼 첫번째 index 가져오는 함수
+ * @public
+ * @return 
+ * @example
+ * @memberOf 
+ */
+this.fnGetFirstTabIndex = function ()
+{
+    for(var i=0; i < this.dsMenu.rowcount;i++)
+    {
+        var tabID   = this.dsMenu.getColumn(i, this.objApp.gvMenuColumns.menuId);
+        var tabObj  = this.fnFindObj("btnTop" + tabID);
+        if(0 <= tabObj.left) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/**
+ * menu tab 버튼 첫번째 이동 함수
+ * @public
+ * @return 
+ * @example
+ * @memberOf 
+ */
+this.fnMoveFirst = function (nMoveIdx)
+{
+    var nIndex;
+    var tabID;
+    var tabObj;
+    var btnObj;
+    var tabFirstObj;
+
+    nIndex = this.fnGetFirstTabIndex();
+    if (nIndex < 0) 
+    {
+        return;
+    }
+
+    if (nMoveIdx < 0) 
+    {
+        return;
+    }
+    if (nMoveIdx >= this.dsMenu.rowcount) 
+    {
+        return;
+    }
+
+    tabID = this.dsMenu.getColumn(nIndex, this.objApp.gvMenuColumns.menuId);
+    var tabFirstObj = this.fnFindObj("btnTop" + tabID);
+
+    tabID = this.dsMenu.getColumn(nMoveIdx, this.objApp.gvMenuColumns.menuId);
+    tabObj = this.fnFindObj("btnTop" + tabID);
+
+    var nShiftPos = tabObj.getOffsetLeft() - tabFirstObj.getOffsetLeft();
+
+    for (var i = 0; i < this.dsMenu.rowcount; i++) 
+    {
+        tabID = this.dsMenu.getColumn(i, this.objApp.gvMenuColumns.menuId);
+        tabObj = this.fnFindObj("btnTop" + tabID);
+        tabObj.move(tabObj.getOffsetLeft() - nShiftPos, tabObj.getOffsetTop());
+    }
+}
+
+/**
+ * menu tab 체크 
+ * @public
+ * @param 
+ * @return 
+ * @example
+ * @memberOf 
+ */
+this.fnRedrawTab = function ()
+{
+    var tabObj;
+    var exBtnObj;
+
+    this.fnCheckShowBtnAll();
+    this.fnSetTabSpinBtnShow();
+}
+
+/**
+ * menu tab 모든 버튼 체크 
+ * @public
+ * @param 
+ * @return 
+ * @example
+ * @memberOf 
+ */
+this.fnCheckShowBtnAll = function ()
+{
+    if (this.dsMenu.rowcount == 0) return;
+
+    var tabFirstObj = this.fnFindObj("btnTop" + this.dsMenu.getColumn(0, this.objApp.gvMenuColumns.menuId));
+    var tabLastObj = this.fnFindObj("btnTop" + this.dsMenu.getColumn(this.dsMenu.rowcount - 1, this.objApp.gvMenuColumns.menuId));
+	var nLeft = tabFirstObj.getOffsetLeft();
+    var nRight = tabLastObj.getOffsetRight();
+
+    if (this.divTopBtn.getOffsetWidth() >= (nRight - nLeft)) 
+    {
+        this.fnMoveFirst(0);
+        return;
+    }
+}
+
+/**
+ * mdi spin 버튼 visible 처리
+ * @public
+ * @return 
+ * @example
+ * @memberOf 
+ */
+this.fnSetTabSpinBtnShow = function ()
+{
+    var tabObj;
+    
+    if(this.dsMenu.rowcount == 0) 
+    {        
+        this.btnPre.set_enable(false);
+        this.btnNex.set_enable(false);
+        return;
+    }
+
+    tabObj = this.fnFindObj("btnTop" + this.dsMenu.getColumn(this.dsMenu.rowcount - 1, this.objApp.gvMenuColumns.menuId));
+
+    if(this.divTopBtn.getOffsetWidth() < tabObj.getOffsetRight()) 
+    {
+        this.btnNex.set_enable(true);
+    }
+    else 
+    {
+        this.btnNex.set_enable(false);
+    }
+
+    tabObj = this.fnFindObj("btnTop" + this.dsMenu.getColumn(0, this.objApp.gvMenuColumns.menuId));
+
+    if(tabObj.getOffsetLeft() < 0) 
+    {
+        this.btnPre.set_enable(true);
+    }
+    else 
+    {
+        this.btnPre.set_enable(false);
+    }
+}
+
+/************************************************************************************************
+ * 각 COMPONENT 별 EVENT 영역
+ ************************************************************************************************/
+this.Menu00_onmenuclick = function(obj:nexacro.Menu,e:nexacro.MenuClickEventInfo)
+{
+    this.objApp.gvLeftFrame.form.getMenu(e.id);
+};
+
+this.staLogo_onclick = function(obj:nexacro.Static,e:nexacro.ClickEventInfo)
+{
+    var objApp = nexacro.getApplication() ;    
+
+    objApp.gvVFrameSet1.set_separatesize("32,0,*");
+};
+
+this.btnLogOut_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+    
+	
+    if(system.navigatorname == "nexacro")
+    {        
+        var sMsgId = "confirm.logout";                                    //메세지ID
+        var arrArg = "";                                                //메세지취환될값 배열[생략가능]
+        var sPopId = sMsgId;                                            //메세지팝업ID[생략가능]    *해당화면에서 메시지 중복사용시 구분되는값을 넣어줘야함
+        var sMsgCallback = "fnMsgCallback";                                //메세지콜백[생략가능]         * confirm성 메시지를 사용 시 반드시 필요
+		
+        // 변경된 내역을 저장 하시겠습니까?
+        this.gfnAlert(sMsgId, arrArg, sPopId, sMsgCallback);    
+    }
+    else
+    {
+        window.top.location.reload(true);
+    } 	
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+this.fn_call_food_charge = function(){
+	
+	var strSvcId    = "call_food";
+	var strSvcUrl   = "call_food.do";
+	var inData      = "gdsUserInfo=gdsUserInfo";
+	var outData     = "dsList=dsList dsList2=dsList2";
+	var strArg      = ""; 
+	var callBackFnc = "fnCallback";
+
+	var nDataType = 0;	
+
+	this.gfnTransaction( strSvcId , 	
+						 strSvcUrl , 	
+						 inData , 		
+						 outData , 		
+						 strArg, 	
+						 callBackFnc, 
+						 nDataType);
+						 
+	this.fn_insert(); 			 
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+this.fn_insert = function(){
+
+	var strSvcId    = "result_insert";
+	var strSvcUrl   = "re_insert.do";
+	var inData      = "ds_result=ds_result";
+	var outData     = "";
+	var strArg      = ""; 
+	var callBackFnc = "fnCallback";
+
+	var nDataType = 0;	
+
+	this.gfnTransaction( strSvcId , 	
+						 strSvcUrl , 	
+						 inData , 		
+						 outData , 		
+						 strArg, 	
+						 callBackFnc, 
+						 nDataType);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+ this.fn_use_end = function(){
+ 
+	var strSvcId    = "login_out";
+	var strSvcUrl   = "login_out.do";
+	var inData      = "gdsUserInfo=gdsUserInfo";
+	var outData     = "";
+	var strArg      = ""; 
+	
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	
+						 strSvcUrl , 	
+						 inData , 		
+						 outData , 		
+						 strArg, 	 	
+						 nDataType); 
+ }
+ 
+ this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "call_food":
+		
+		if(!this.gfnIsNull(this.dsList.getColumn(0,"total"))){
+			this.ds_result.setColumn(0, "goods_fee", this.dsList.getColumn(0,"total"))
+			
+			  // this.alert("goods 이용 금액 안내 : " + this.dsList.getColumn(0,"total"));
+		}
+		if(!this.gfnIsNull(this.dsList2.getColumn(0,"start"))){
+			this.ds_result.setColumn(0, "using_end_time", this.dsList2.getColumn(0,"end_date"))
+			this.ds_result.setColumn(0, "pc_fee", this.dsList2.getColumn(0,"charge"))
+			
+			  // this.alert("pc 사용 종료 시간 : " + this.dsList2.getColumn(0,"end_date"));
+			  // this.alert("pc 이용 금액 : " + this.dsList2.getColumn(0,"charge"));
+		}
+		this.ds_result.setColumn(0, "userId", nexacro.getEnvironmentVariable("gvUserId"));
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+this.fnLoad = function ()
+{
+    //alert(this.objApp.gvMenuColumns.toString());
+    this.objApp.gdsMenu.filter(this.objApp.gvMenuColumns.menuLevel + "==0");
+    this.dsMenu.copyData(this.objApp.gdsMenu, true);
+    this.objApp.gdsMenu.filter("");
+	this.fnmain();
+    this.fnSetTopMenu();
+};
+
+this.fnSetTopMenu = function ()
+{
+    var btnObj;
+
+    for (var i = 0; i < this.dsMenu.getRowCount(); i++) 
+    {
+        var strID = this.dsMenu.getColumn(i, this.objApp.gvMenuColumns.menuId);
+        var strName = this.dsMenu.getColumn(i, this.objApp.gvMenuColumns.menuNm);
+        this.fnCreateTopMenu(strID, strName, i);
+    }
+    this.fnRedrawTab();
+
+};
+
+// Top menu creation
+this.fnCreateTopMenu = function (strID, strName, index)
+{
+    // Creating page button
+    var objBtn = new Button();
+    objBtn.init("btnTop" + strID, ((index * 133)), 0, (index * 133) + 133 - (index * 133), 40);
+	this.divTopBtn.removeChild(objBtn.name);
+	//objBtn.    border
+    this.divTopBtn.addChild(objBtn.name, objBtn);
+    objBtn.set_text(strName);
+    objBtn.menuid = strID;
+    //objBtn.set_cssclass("TF_menu");
+
+    objBtn.setEventHandler("onclick", this.Button_onclick, this);
+    objBtn.set_visible(true);
+    objBtn.show();
+};
+
+this.Button_onclick = function (obj:Button, e:ClickEventInfo)
+{
+    this.objApp.gvLeftFrame.form.fnChangeMenu(obj.menuid);
+    this.fnSetActiveBtn(obj.menuid);
+};  
+  
+this.fnSetActiveBtn = function (menuId)
+{
+    var MenuObj;
+
+    for (var i = 0; i < this.dsMenu.getRowCount(); i++) 
+    {
+        MenuObj = this.fnFindObj("btnTop" + this.dsMenu.getColumn(i, this.objApp.gvMenuColumns.menuId));
+        if (menuId == this.dsMenu.getColumn(i, this.objApp.gvMenuColumns.menuId)) 
+        {
+            //MenuObj.set_cssclass("btn_menu_select");
+        }
+        else 
+        {
+            //MenuObj.set_cssclass("btn_menu");
+        }
+    }
+};
+
+this.fnFindObj = function (strId)
+{
+    return this.divTopBtn.form.components[strId];
+};
+
+this.btnPre_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+    this.fnMoveFirst(this.fnGetFirstTabIndex() - 1);
+    this.fnRedrawTab();
+};
+
+this.btnNex_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+    this.fnMoveFirst(this.fnGetFirstTabIndex() + 1);
+    this.fnRedrawTab();
+};
+
+this.form_onsize = function(obj:nexacro.Form,e:nexacro.SizeEventInfo)
+{
+    this.fnRedrawTab();
+};
+
+this.fnmain = function()
+{
+	var objApp = nexacro.getApplication();
+	var gdsOpen = objApp.gdsOpenMenu;		//열린 dataset
+	var gdsMenu = objApp.gdsMenu;
+	var winid = "win0000000000_" + gdsOpen.getRowCount() + "_" + parseInt(Math.random() * 1000);		
+	var strTitle = "Main";	
+	var sPageUrl = "main::Main.xfdl";
+	var sMenuNm = "main";
+	var sGroupId = "0000000000";
+
+	var objNewWin = new ChildFrame;
+	objNewWin.init(winid, 0, 0, objApp.gvWorkFrame.getOffsetWidth() - 0, objApp.gvWorkFrame.getOffsetHeight() - 0);
+	objApp.gvWorkFrame.addChild(winid, objNewWin);
+
+	objNewWin.set_tooltiptext(winid);
+	objNewWin.arguments = [];
+	objNewWin.set_dragmovetype("all");
+	objNewWin.set_showtitlebar(false);
+	objNewWin.set_resizable(true);
+	objNewWin.set_openstatus("maximize");
+	objNewWin.set_titletext( strTitle);
+	objNewWin.set_showcascadetitletext(false);
+	objNewWin.arguments["winKey"] = winid;
+	objNewWin.arguments["menuId"] = "0000000000";
+	objNewWin.arguments["menuNm"] = sMenuNm;
+	objNewWin.arguments["pageUrl"] = sPageUrl;
+	objNewWin.arguments["aArgs"] = "";
+	objNewWin.set_formurl("frame::frameWork.xfdl");
+	objNewWin.show();
+
+	objApp.gvMdiFrame.form.fnAddTab(winid, strTitle);   //mdi tab button add	
+	objApp.gvMdiFrame.form.isActiveFrame(winid);		
+};
+
+
+]]></Script>
+  </Form>
+</FDL>

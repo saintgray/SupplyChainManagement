@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="MorqueView" width="790" height="430" titletext="New Form" onload="form_onload">
+    <Layouts>
+      <Layout height="430" mobileorientation="landscape" width="790">
+        <Div id="div2" taborder="0" left="8" top="15" width="772" height="385" text="">
+          <Layouts>
+            <Layout>
+              <Grid id="room_page" taborder="0" left="47" top="25" width="645" height="320"/>
+              <Div id="room_page_title" taborder="1" text="제목" left="75" top="64" width="110" height="21"/>
+              <Div id="room_page_ctnt" taborder="2" text="내용" left="80" top="93" width="100" height="22">
+                <Layouts>
+                  <Layout/>
+                </Layouts>
+              </Div>
+              <TextArea id="txt00" taborder="3" left="162" top="95" width="394" height="157" onchanged="div2_txt00_onchanged" enable="true"/>
+              <Edit id="edt_title" taborder="4" left="162" top="65" width="394" height="28"/>
+              <Edit id="edt00" taborder="5" left="623" top="35" width="59" height="26" border="0px none"/>
+              <Button id="btn_regist" taborder="6" text="등록하기" left="157" top="273" width="131" height="25" font="normal 14pt/normal &quot;Arial&quot;" onclick="div2_btn_regist_onclick" visible="false"/>
+              <Button id="btn_cancle" taborder="7" text="닫기" left="455" top="273" width="101" height="25" font="normal 14pt/normal &quot;Arial&quot;" onclick="div2_btncancle_onclick"/>
+              <Button id="btn_delete" taborder="8" text="삭제하기" left="302" top="273" width="131" height="25" font="normal 14pt/normal &quot;Arial&quot;" onclick="div2_btn_delete_onclick" visible="false"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[
+
+
+
+
+var code = this.parent.param1;
+var title = this.parent.param2;
+var text = this.parent.param3;
+var userId = this.parent.param4;
+var loginID = nexacro.getEnvironmentVariable("gvUserId");
+//var loginID = "lee";
+
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+
+	this.objApp = nexacro.getApplication();
+	
+	
+	trace(code);
+ 	this.ds_morque.setColumn(0,"bd_name",title);
+ 	this.ds_morque.setColumn(0,"bd_text",text);
+	this.ds_morque.setColumn(0,"bd_code",code);
+	
+	if(code == ""){
+		this.div2.form.btn_regist.set_visible( "true" );
+		this.div2.form.btn_delete.set_visible( "true" );
+		this.div2.form.edt_title.set_enable( "true" );
+		this.div2.form.txt00.set_enable( "true" );
+	}else if(userId != loginID){
+		this.div2.form.edt_title.set_enable( "false" );
+		this.div2.form.txt00.set_enable( "false" );
+	}
+	
+	
+	
+    if(!this.gfnIsNull(wno)) {
+	   this.morqueinfo();
+	}
+	
+};
+
+//등록
+this.morqueinfo=function(){
+
+	var strSvcId    = "morqueinfo";
+	var strSvcUrl   = "morqueinfo.do";
+	var inData      = "ds_morque=ds_morque";
+	var outData     = "ds_morque=ds_morque";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+
+
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						 strSvcUrl , 	// trabsaction을 요청할 주소
+						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						 nDataType); // 통신방법 정의 [생략가능]
+								
+								
+};
+
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "morqueinfo":
+		   
+		break;
+	
+	}
+
+};
+
+
+this.div2_btn_regist_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if (this.confirm("등록하시겠습니까?"))
+	{
+			
+		trace("================ :morquewrite2 " + this.ds_morque.saveXML());
+		//this.ds_morque.setColumn(this.ds_morque.rowposition,"userId",loginID);
+		this.ds_morque.setColumn(this.ds_morque.rowposition,"userId",loginID);
+		trace("===nexacro:"+nexacro.getEnvironmentVariable("gvUserId"))
+			var strSvcId    = "morquewrite";
+			var strSvcUrl   = "morquewrite.do";
+			var inData      = "ds_morque=ds_morque";
+			var outData     = "";
+			var strArg      = "";
+			var callBackFnc = "fnCallback";
+			
+			
+			//생략가능
+			var isAsync   = true;
+			var nDataType = 0;	
+			
+			this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+										strSvcUrl , 	// trabsaction을 요청할 주소
+										inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+										outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+										strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+										callBackFnc, 	// transaction의 결과를 받을 Function 이름
+										nDataType); // 통신방법 정의 [생략가능]
+			
+			
+			this.close();
+}
+
+		
+};
+
+
+this.div2_btncancle_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+
+
+this.div2_btn_delete_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if(this.confirm("삭제하시겠습니까?")){
+	
+		
+		trace("================ :delete " + this.ds_morque.saveXML());
+		
+			var strSvcId    = "Delete";
+			var strSvcUrl   = "morquedelete.do";
+			var inData      = "ds_morque=ds_morque";
+			var outData     = "";
+			var strArg      = "";
+			var callBackFnc = "fnCallback";
+		 
+		 
+			var isAsync   = true;
+			var nDataType = 0;	
+			
+			this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								 strSvcUrl , 	// trabsaction을 요청할 주소
+								 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								 nDataType); // 통신방법 정의 [생략가능]
+		 
+		 }
+			this.close();
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "delete":
+		    alert("해당 게시글이 삭제 되었습니다.");
+			this.close();
+		break;
+	}
+};
+]]></Script>
+    <Objects>
+      <Dataset id="ds_morque">
+        <ColumnInfo>
+          <Column id="bd_name" type="STRING" size="256"/>
+          <Column id="bd_text" type="STRING" size="256"/>
+          <Column id="wno" type="STRING" size="256"/>
+          <Column id="userId" type="STRING" size="256"/>
+          <Column id="bd_code" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_write">
+        <ColumnInfo>
+          <Column id="wno" type="STRING" size="256"/>
+          <Column id="title" type="STRING" size="256"/>
+          <Column id="contents" type="STRING" size="256"/>
+          <Column id="reg_date" type="STRING" size="256"/>
+          <Column id="regId" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_user">
+        <ColumnInfo>
+          <Column id="loginID" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item1" compid="div2.form.txt00" propid="value" datasetid="ds_morque" columnid="bd_text"/>
+      <BindItem id="item2" compid="div2.form.edt00" propid="value" datasetid="ds_morque" columnid="wno"/>
+      <BindItem id="item0" compid="div2.form.edt_title" propid="value" datasetid="ds_morque" columnid="bd_name"/>
+    </Bind>
+  </Form>
+</FDL>

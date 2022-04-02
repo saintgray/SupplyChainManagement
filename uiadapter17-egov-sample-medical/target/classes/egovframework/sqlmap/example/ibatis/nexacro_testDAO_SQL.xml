@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="test">
+
+  
+    
+    <resultMap id="testMap" class="java.util.HashMap">
+        <result property="no" column="NO" />
+        <result property="id" column="ID" />
+        <result property="con" column="CON" />
+    </resultMap>
+    
+     <select id="nexacrotest.testselect" parameterClass="Map" resultMap="testMap">
+          SELECT * FROM CRUDTEST
+    </select>
+    
+    <delete id="nexacrotest.deletetest" parameterClass="Map">     
+            DELETE FROM CRUDTEST WHERE NO= #no#
+    </delete>
+
+     <insert id="nexacrotest.inserttest" parameterClass="Map">
+       
+            INSERT INTO CRUDTEST(
+                NO,
+                ID,
+                CON
+            ) VALUES (
+                #no#,
+                #id#,
+                #con#
+            )
+    </insert>
+    
+    <update id="nexacrotest.updatetest" parameterClass="Map">
+        <![CDATA[
+            UPDATE crudtest 
+            SET NO = #no#
+                , ID = #id#
+                , CON = #con#
+            WHERE NO = #no#
+        ]]>
+    </update>
+</sqlMap>

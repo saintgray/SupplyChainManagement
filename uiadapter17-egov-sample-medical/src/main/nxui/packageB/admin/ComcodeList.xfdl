@@ -1,0 +1,525 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="cdList" width="1010" height="840" titletext="New Form" onload="cdList_onload" visible="true">
+    <Layouts>
+      <Layout height="840" mobileorientation="landscape" width="1010">
+        <Div id="cbo_ID" taborder="0" text="전체" left="6" top="10" width="994" height="440">
+          <Layouts>
+            <Layout>
+              <Grid id="gCodeList" taborder="0" left="4" top="116" width="980" height="304" binddataset="ds_ResultGroupCD" oncellclick="gCodeList" autosizebandtype="body" autoenter="key">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="326"/>
+                      <Column size="326"/>
+                      <Column size="326"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="그룹코드"/>
+                      <Cell col="1" text="그룹코드명"/>
+                      <Cell col="2" text="등록일"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:group_code" displaytype="text" edittype="text"/>
+                      <Cell col="1" text="bind:group_name" edittype="text"/>
+                      <Cell col="2" text="bind:reg_date"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="btn_Gcode_add" taborder="1" text="추가" left="707" top="72" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Gcode_add_onclick"/>
+              <Button id="btn_Gcode_del" taborder="2" text="삭제" left="891" top="71" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Gcode_del_onclick"/>
+              <Static id="Static01" taborder="3" text="검색조건" left="10" top="18" width="74" height="30" cssclass="sta_WF_SubTitle" font="10pt/normal &quot;Arial&quot;"/>
+              <Combo id="cboCDchoice" taborder="4" text="전체" left="96" top="15" width="88" height="33" value="" index="0" innerdataset="ds_cdChoice" codecolumn="cbo_cdID" datacolumn="cbo_cdName" onitemchanged="Div00_cboCDchoice_onitemchanged"/>
+              <Edit id="edt_Keyword" taborder="5" left="285" top="15" width="287" height="33" canchange="div_detail_edt_name_canchange" onchanged="cbo_ID_edt_Keyword_onchanged"/>
+              <Button id="btnSearch" taborder="6" text="조회" top="9" width="89" height="34" right="25" onclick="btnSearch"/>
+              <Button id="btn_Gcode_save" taborder="7" text="저장" left="800" top="72" width="81" height="30" font="18px/normal &quot;Verdana&quot;" onclick="btn_Gcode_save_onclick"/>
+            </Layout>
+          </Layouts>
+          <InitValue>
+            <Combo id="cboCDchoice" innerdataset="ds_cdChoice" datacolumn="cbo_cdName" codecolumn="cbo_cdID"/>
+          </InitValue>
+        </Div>
+        <Static id="Static01" taborder="1" text="검색조건" left="10" top="-242" width="74" height="16" cssclass="sta_WF_SubTitle"/>
+        <Combo id="cboCDchoice" taborder="2" text="전체" left="66" top="-245" width="88" height="23" value="" index="0" innerdataset="ds_cdChoice" codecolumn="cbo_cdID" datacolumn="cbo_cdName" onitemchanged="Div00_cboCDchoice_onitemchanged"/>
+        <Edit id="edt_Keyword" taborder="3" left="255" top="-245" width="157" height="23" canchange="div_detail_edt_name_canchange" onchanged="cbo_ID_edt_Keyword_onchanged"/>
+        <Button id="btn_Dcode_add" taborder="4" text="추가" left="820" top="-185" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="Div00_btn_Gcode_plus_onclick" visible="false"/>
+        <Button id="btn_Dcode_del" taborder="5" text="삭제" left="914" top="-186" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Gcode_del_onclick" visible="false"/>
+        <Div id="div_D" taborder="6" text="전체" left="6" top="450" width="994" height="390">
+          <Layouts>
+            <Layout>
+              <Grid id="dCodeList" taborder="0" left="4" top="46" width="980" height="304" binddataset="ds_ResultDetailCD" autosizebandtype="body" autoenter="key">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="319"/>
+                      <Column size="340"/>
+                      <Column size="319"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="상세코드"/>
+                      <Cell col="1" text="상세코드명"/>
+                      <Cell col="2" text="사용여부"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:detail_code" displaytype="text" edittype="text"/>
+                      <Cell col="1" text="bind:detail_name" displaytype="text" edittype="text"/>
+                      <Cell col="2" text="bind:use_yn" displaytype="combocontrol" edittype="combo" combodataset="ds_UseYn" combocodecol="detail_code" combodatacol="detail_name"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="btn_Dcode_add" taborder="1" text="추가" left="707" top="2" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Dcode_add_onclick"/>
+              <Button id="btn_Dcode_del" taborder="2" text="삭제" left="891" top="1" width="80" height="31" font="18px/normal &quot;Verdana&quot;" onclick="btn_Dcode_del_onclick"/>
+              <Button id="btn_Dcode_save" taborder="3" text="저장" left="800" top="2" width="81" height="30" font="18px/normal &quot;Verdana&quot;" onclick="btn_Dcode_save_onclick"/>
+            </Layout>
+          </Layouts>
+          <InitValue/>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  컨설팅 표준화 작업
+*  @MenuPath 
+*  @FileName       ComcodeList.xfdl
+*  @Creator       이미혜
+*  @CreateDate    2019.09.19
+*  @LastModifier  
+*  @LastModifyDate  
+*  @Version       1.0
+*  @Outline       
+*  @Desction   
+************** 소스 수정 이력 *************************************************
+*    date                Modifier            Description
+*******************************************************************************
+*  2019.09.11           이미혜                최초 생성(그룹코드 CRUD작성)
+*******************************************************************************
+*  2019.09.20         이미혜                상세코드CRUD작성
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+var searchID;
+var searchkey;
+var cdID;
+var addrno;
+var ds_GroupSaveCD;
+var group_code;
+
+/************************************************************************************************
+ * User 함수 영역
+ ************************************************************************************************/
+//그룹코드 리스트
+this.cdList_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.cbo_ID.form.cboCDchoice.set_displaynulltext("전체");
+	this.objApp = nexacro.getApplication();
+	this.cdList();
+};
+//search Button
+this.btnSearch = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+		this.cdList();
+};
+/*****************all List Transaction**********************/
+this.cdList = function() 
+{		
+    //var gvServerUrl = nexacro.getEnvironmentVariable("gvServerUrl");
+	var strSvcId    = "cdList";
+	var strSvcUrl   = "comcodelist.do";
+	var inData      = "ds_Search=ds_Search";
+	var outData     = "ds_ResultGroupCD=ds_GroupCD";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+
+	//alert(this.ds_Search.saveXML());
+	//alert(this.ds_ResultGroupCD.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+						strSvcUrl , 	// trabsaction을 요청할 주소
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+						strArg, 		// 입력값으로 보낼 arguments, strFormData="20120607"
+						callBackFnc, 	// transaction의 결과를 받을 Function 이름
+						nDataType); 	// 통신방법 정의 [생략가능]
+								
+								
+}	
+ 
+ 
+//검색할 키 캆 가져옴
+this.Div00_cboCDchoice_onitemchanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+		searchID=e.postvalue;
+};
+
+//검색할 키워드값 캆 가져옴
+this.cbo_ID_edt_Keyword_onchanged = function(obj:nexacro.Edit,e:nexacro.ChangeEventInfo)
+{
+		searchkey=e.postvalue;
+};
+
+
+
+ 
+ //gruop List add Button
+this.btn_Gcode_add_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+ 	addrno=this.ds_ResultGroupCD.addRow();	
+ 	this.ds_ResultGroupCD.setColumn(addrno,"reg_date",this.fn_today());
+ 	
+};
+
+//오늘 날짜 불러오기
+ this.fn_today = function()
+ {
+ 	var day=new Date();
+ 	var today=day.getFullYear().toString();
+ 		today+=(day.getMonth()+1).toString().padLeft(2,"0");
+ 		today+=day.getDate().toString().padLeft(2,"0");
+ 		return today;
+ };
+ 
+
+
+//gruop List save Button
+this.btn_Gcode_save_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{ 		 
+	this.InsertSave();
+};
+
+
+	
+//gruop List delete Button
+this.btn_Gcode_del_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if(this.confirm("삭제하시겠습니까?")){
+		//alert("클릭:==="+this.ds_ResultGroupCD.rowposition);
+		var delrow=this.ds_ResultGroupCD.deleteRow(this.ds_ResultGroupCD.rowposition)
+		this.DeleteSave();
+
+	};
+	
+	
+};
+
+/*****************add 후 all List Transaction**********************/
+ this.InsertSave=function(){
+	if(this.confirm("저장하시겠습니까?")){
+			var strSvcId    = "InsertSave";
+			var strSvcUrl   = "GruopCDupdateMap.do";
+		var inData      = "ds_ResultGroupCD=ds_ResultGroupCD:u";
+		var outData     = "";
+		var strArg      = "";
+		var callBackFnc = "fnCallback";
+ 
+ 
+		var isAsync   = true;
+		var nDataType = 0;	
+		
+		this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+									strSvcUrl , 	// trabsaction을 요청할 주소
+									inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+									outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+									strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+									callBackFnc, 	// transaction의 결과를 받을 Function 이름
+									nDataType); // 통신방법 정의 [생략가능]
+		
+		
+		};
+	 
+ 	
+ 
+ }
+
+
+this.DeleteSave=function(){
+	var strSvcId    = "DeleteSave";
+ 	var strSvcUrl   = "GruopCDupdateMap.do";
+ 	var inData      = "ds_ResultGroupCD=ds_ResultGroupCD:u";
+ 	var outData     = "";
+ 	var strArg      = "";
+ 	var callBackFnc = "fnCallback";
+ 
+ 
+ 	var isAsync   = true;
+ 	var nDataType = 0;	
+ 	
+ 	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+ 						 strSvcUrl , 	// trabsaction을 요청할 주소
+ 						 inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+ 						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+ 						 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+ 						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+ 						 nDataType); // 통신방법 정의 [생략가능]
+ 
+ }
+/*************************************상세코드*********************************************/
+//onClick send DetailCDList
+  this.gCodeList = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+  {
+  	//e.row의 인덱스값,그리드에 해당 줄
+ 	
+  	group_code=this.ds_ResultGroupCD.getColumn(this.ds_ResultGroupCD.rowposition, "group_code")
+ 	
+ 	//alert("클릭그룹코드==="+this.ds_ResultGroupCD.getColumn(this.ds_ResultGroupCD.rowposition, "group_code"));
+ 	//alert("cdID클릭 했을때 ======"+cdID);
+	
+	this.dCodeList();
+  };
+  
+  
+	this.dCodeList=function(){
+//	alert("클릭하고 넘어온 값========================"+group_code)
+	
+	var strSvcId    = "DcdList";
+	var strSvcUrl   = "detailCDlist.do";
+	var inData      = "";
+	var outData     = "ds_ResultDetailCD=ds_ResultDetailCD";
+	var strArg      = "group_code="+group_code;
+	var callBackFnc = "fnCallback";
+
+	//alert(this.ds_Search.saveXML());
+	//alert(this.ds_ResultGroupCD.saveXML());
+	
+	//생략가능
+	var isAsync   = true;
+	var nDataType = 0;	
+	
+	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+								strSvcUrl , 	// trabsaction을 요청할 주소
+								inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+								outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+								strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+								callBackFnc, 	// transaction의 결과를 받을 Function 이름
+								nDataType); // 통신방법 정의 [생략가능]
+	
+
+	}
+	
+	
+ 
+ 
+
+//DetailCD list add Button
+this.btn_Dcode_add_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var addDrow=this.ds_ResultDetailCD.addRow();
+	//alert("상세코드의 해당 그룹코드값========================"+group_code+"addrowNO===="+addDrow)
+	this.ds_ResultDetailCD.setColumn(addDrow,"group_code",group_code);
+	
+	
+	
+};
+//DetailCD list save Button
+this.btn_Dcode_save_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.DetailSave();
+	
+	
+};
+//DetailCD list delete Button
+this.btn_Dcode_del_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var delDrow=this.ds_ResultDetailCD.deleteRow(this.ds_ResultDetailCD.rowposition);
+	this.DetailDEL();
+};
+
+this.DetailSave=function(){
+	alert("저장하시겠습니까?");
+ 	var strSvcId    = "DetailSave";
+ 	var strSvcUrl   = "DetailCDupdateMap.do";
+ 	var inData      = "ds_ResultDetailCD=ds_ResultDetailCD:u";
+ 	var outData     = "";
+ 	var strArg      = "";
+ 	var callBackFnc = "fnCallback";
+
+ 
+ 	var isAsync   = true;     
+ 	var nDataType = 0;	
+ 	
+ 	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+ 						 strSvcUrl , 	// trabsaction을 요청할 주소
+ 					     inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+ 						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+ 					 	 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+ 						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+ 						 nDataType); // 통신방법 정의 [생략가능]
+}
+
+this.DetailDEL=function(){
+	alert("삭제하시겠습니까?")
+ 	var strSvcId    = "DetailDEL";
+ 	var strSvcUrl   = "DetailCDupdateMap.do";
+ 	var inData      = "ds_ResultDetailCD=ds_ResultDetailCD:u";
+ 	var outData     = "";
+ 	var strArg      = "";
+ 	var callBackFnc = "fnCallback";
+
+ 
+ 	var isAsync   = true;     
+ 	var nDataType = 0;	
+ 	
+ 	this.gfnTransaction( strSvcId , 	// transaction을 구분하기 위한 svc id값
+ 						 strSvcUrl , 	// trabsaction을 요청할 주소
+ 					     inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭
+ 						 outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭
+ 					 	 strArg, 			// 입력갑스로 보낼 arguments, strFormData="20120607"
+ 						 callBackFnc, 	// transaction의 결과를 받을 Function 이름
+ 						 nDataType); // 통신방법 정의 [생략가능]
+
+
+}
+/**************************************************************************************************
+* CallBack Function (서버수신)
+>>>>>>> .r13
+***************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	switch(svcID)
+	{
+		case "cdList":
+		    alert(this.ds_ResultGroupCD.getRowCount() + " 건이 조회 되었습니다.");
+		break;
+		
+		case "InsertSave":
+			alert("저장되였습니다.");
+			this.cdList();
+		break;
+		
+		case "DeleteSave":
+			alert("삭제가 완료되였습니다.")
+			this.cdList();
+		break;
+/*******************상세코드********************************/
+		case "DcdList":
+		//alert(group_code+"의 상세코드 입니다.");		
+		break;
+		
+		case "DetailSave":
+			alert("저장되였습니다.");
+			this.DcdList();
+		break;
+		case "DetailDEL":
+			alert("삭제가 완료되였습니다.")
+			this.DcdList();
+		break;
+	
+		}
+};
+
+]]></Script>
+    <Objects>
+      <Dataset id="ds_GroupSaveCD">
+        <ColumnInfo>
+          <Column id="group_code" type="STRING" size="256"/>
+          <Column id="group_name" type="STRING" size="256"/>
+          <Column id="reg_date" type="DATE" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_cdChoice">
+        <ColumnInfo>
+          <Column id="cbo_cdID" type="STRING" size="256"/>
+          <Column id="cbo_cdName" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="cbo_cdID">00</Col>
+            <Col id="cbo_cdName">전체</Col>
+          </Row>
+          <Row>
+            <Col id="cbo_cdID">01</Col>
+            <Col id="cbo_cdName">그룹코드</Col>
+          </Row>
+          <Row>
+            <Col id="cbo_cdID">02</Col>
+            <Col id="cbo_cdName">그룹코드명</Col>
+          </Row>
+          <Row>
+            <Col id="cbo_cdID">03</Col>
+            <Col id="cbo_cdName">상세코드</Col>
+          </Row>
+          <Row>
+            <Col id="cbo_cdID">04</Col>
+            <Col id="cbo_cdName">상세코드명</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_ResultGroupCD">
+        <ColumnInfo>
+          <Column id="group_code" type="STRING" size="256"/>
+          <Column id="group_name" type="STRING" size="256"/>
+          <Column id="reg_date" type="DATE" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_Search">
+        <ColumnInfo>
+          <Column id="searchkey" type="STRING" size="256"/>
+          <Column id="searchword" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_DetailCD">
+        <ColumnInfo>
+          <Column id="Dcd_ID" type="STRING" size="256"/>
+          <Column id="Dcd_NAME" type="STRING" size="256"/>
+          <Column id="Dcd_use_yn" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_ResultDetailCD">
+        <ColumnInfo>
+          <Column id="detail_code" type="STRING" size="256"/>
+          <Column id="detail_name" type="STRING" size="256"/>
+          <Column id="use_yn" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_UseYn">
+        <ColumnInfo>
+          <Column id="detail_code" type="STRING" size="256"/>
+          <Column id="detail_name" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="detail_code">Y</Col>
+            <Col id="detail_name">사용</Col>
+          </Row>
+          <Row>
+            <Col id="detail_code">N</Col>
+            <Col id="detail_name">미사용</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="cbo_ID.form.cboCDchoice" propid="value" datasetid="ds_Search" columnid="searchkey"/>
+      <BindItem id="item1" compid="cbo_ID.form.edt_Keyword" propid="value" datasetid="ds_Search" columnid="searchword"/>
+    </Bind>
+    <InitValue>
+      <Combo id="cboCDchoice" innerdataset="ds_cdChoice" datacolumn="cbo_cdName" codecolumn="cbo_cdID"/>
+    </InitValue>
+  </Form>
+</FDL>

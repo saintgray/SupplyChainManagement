@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="qna">
+
+	<resultMap id="user" class="java.util.HashMap">
+		<result property="treeitem" column="treeitem" />
+		<result property="title" column="title" />
+		<result property="note" column="note" />
+		<result property="upper_wno" column="upper_wno" />
+		<result property="regid" column="regid" />
+		<result property="reg_date" column="reg_date" />
+		<result property="updateid" column="updateid" />
+		<result property="update_date" column="update_date" />
+		<result property="level" column="level" />
+
+	</resultMap>
+	
+	<!--QnA List -->
+	<select id="qna.QnAList" parameterClass="Map" resultClass="java.util.HashMap"
+		remapResults="true">
+		SELECT qa.WNO,
+		       qa.TITLE,
+		       qa.NOTE,
+		       qa.UPPER_WNO,
+			   qa.REGID,
+			   qa.REG_DATE,
+			   qa.UPDATEID,
+			   qa.UPDATE_DATE,
+			   ui.name AS NAME	
+		 FROM tb_qna qa, tb_userinfo ui	
+		WHERE qa.REGID = ui.loginID
+		<dynamic>
+			<isEqual property="searchkey" compareValue="1">
+					<isNotNull prepend="AND" property="searchword">
+				         qa.TITLE LIKE '%' || #searchword# || '%'
+			        </isNotNull>
+			</isEqual>
+
+			<isEqual property="searchkey" compareValue="2">
+					<isNotNull prepend="AND" property="searchword">
+				         ui.name LIKE '%' || #searchword# || '%'
+			        </isNotNull>
+			</isEqual>
+			
+			<isEqual property="searchkey" compareValue="3">
+					<isNotNull prepend="AND" property="searchword">
+				         qa.NOTE LIKE '%' || #searchword# || '%'
+			        </isNotNull>
+			</isEqual>			
+			
+			<isNotNull prepend="AND" property="fromdate">
+				  qa.REG_DATE <![CDATA[>]]> STR_TO_DATE(#fromdate#,'%Y%m%d')
+			</isNotNull>			
+			
+			<isNotNull prepend="AND" property="todate">
+				  qa.REG_DATE <![CDATA[<]]> STR_TO_DATE(#todate#+1,'%Y%m%d')
+			</isNotNull>	
+		</dynamic>
+
+	</select>
+	
+	  <!--팝업 -->
+ 	<select id="qna.QnApopupInfo" parameterClass="Map" resultClass="java.util.HashMap" remapResults="true">
+	     SELECT wno
+	     		,title
+	     		,note
+	     FROM	tb_qna
+	     WHERE wno=#wno#
+	     
+    </select>
+	
+    <insert id="qna.QnAListInsert" parameterClass="Map" >
+ 	    <selectKey resultClass="Int" keyProperty="wcno">
+	    	  SELECT IFNULL(MAX(wno),0) + 1 as wcno
+       			FROM tb_qna
+	    </selectKey>   
+	    INSERT INTO tb_qna( 
+	                         wno
+	    					,title
+	    					,note
+	    					,upper_wno
+	    					,regid
+	    					,reg_date
+	    ) VALUES (
+	    			 #wcno#
+	    			,#title#
+	    			,#note#
+	    			,0
+	    			,#LoginID#
+	    			,now()
+	    )
+   </insert>   
+   
+   <update id="qna.QnAListUpdate" parameterClass="Map" >
+        UPDATE tb_qna
+           SET title = #title#
+	    	  ,note = #note#  
+	    	  ,updateid = #LoginID#
+			  ,update_date = now()          
+         WHERE WNO = #wno#
+   </update>
+   
+   <delete id="qna.QnAListDelete" parameterClass="Map">
+ 	DELETE FROM tb_qna
+ 	 WHERE WNO=#wno# 
+ </delete>
+   
+</sqlMap>
