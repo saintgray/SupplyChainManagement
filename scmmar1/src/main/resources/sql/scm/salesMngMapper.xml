@@ -57,7 +57,7 @@
 	</select>
 	
 	<!-- get files -->
-	<select id="getFilesBySalesID" resultType="kr.happyjob.study.scm.sales.model.FileInfo">
+	<select id="getFilesBySalesID" resultType="kr.happyjob.study.scm.model.FileModel">
 	
 		SELECT *
 		FROM
