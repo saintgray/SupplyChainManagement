@@ -21,6 +21,7 @@ public class SalesManageController {
 	
 	private SalesManageService smService;
 	
+	
 	public SalesManageController() {
 		
 	}
@@ -29,7 +30,9 @@ public class SalesManageController {
 	public SalesManageController(SalesManageService smService) {
 		
 		this.smService = smService;
+		
 	}
+
 	
 	
 	// 제품 정보 관리 페이지로 이동
@@ -39,7 +42,7 @@ public class SalesManageController {
 		return "scm/sales/salesmngmain";
 	}
 	
-	
+
 	// 상품 리스트 받아오기
 	@PostMapping("/saleslist")
 	public String getSales(Model model, PageInfo info){
@@ -88,7 +91,8 @@ public class SalesManageController {
 		try{
 			
 			if(action.equalsIgnoreCase("REGISTER")){
-				result=smService.insertSales(data,req);
+				// result=smService.insertSales(data,req);
+				result=smService.insertSales(data, req);
 				
 				
 //				Recieve File Test/////////////////////////////////////

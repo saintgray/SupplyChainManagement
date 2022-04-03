@@ -51,20 +51,8 @@
 
 	<!-- 프로퍼티 파일 등록 -->
 	<context:property-placeholder location="/WEB-INF/classes/happyjob.properties"/>
+	
 	<!-- ## MySQL setup ## -->
-	
-<!--  	
-	
-    <bean id="mysqlDataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://13.124.192.119:3306/happylibrary" /> 
-		<property name="username" value="root" />
-		<property name="password" value="hwangkh704!" />
-		<property name="validationQuery" value="select 1" />
-	</bean> 
--->
-
    <bean id="mysqlDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -102,14 +90,15 @@
 			<tx:method name="*" rollback-for="Exception" />
 		</tx:attributes>
 	</tx:advice>
-
+	
 	<aop:config>
-		<aop:pointcut id="txPointcut"
-			expression="execution(* kr.happyjob.study.*.service.*ServiceImpl.*(..))" />
+		<aop:pointcut id="txPointcut" expression="execution(* kr.happyjob.study..service.*ServiceImpl.*(..))" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
 	</aop:config>
 	
-	<!-- 메일보내기 -->
+	
+	
+	<!-- ## Mailing Setup ## -->
 	<bean id="mailSender" class = "org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="smtp.gmail.com" />
 		<property name="port" value="465" />

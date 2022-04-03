@@ -122,8 +122,13 @@ public class NewFileUtil {
                 logger.info("   - serverFilePath : " + serverFilePath);
                 
                 // upload
-                multipartFile.transferTo(orgFile);
-               
+                // SVN 네트워크 드라이브를 사용중이므로 집에서 개발시 오류가 나는 것을 방지
+                // server module 에 설정한 가상 경로 역시 집에서는 적용 해제(또는 삭제) 후 테스트할 것
+                if(orgFile.exists()){
+                	multipartFile.transferTo(orgFile);	
+                }
+                
+            	
                 //디비 등록 용 로직
                 logger.info("   - originalFileName : " + ofileName);
                 logger.info("   - newFileName : " + newFileName);

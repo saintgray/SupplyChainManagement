@@ -108,6 +108,8 @@
 							file_size,
 							sales_id,
 							file_exts
+							<!-- 고의 오류 발생 -->
+							file_no
 						)
 				VALUES
 						<foreach item="file" collection="list" separator=",">
