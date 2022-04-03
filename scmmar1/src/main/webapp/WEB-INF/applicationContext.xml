@@ -51,6 +51,7 @@
 
 	<!-- 프로퍼티 파일 등록 -->
 	<context:property-placeholder location="/WEB-INF/classes/happyjob.properties"/>
+	<context:property-placeholder location="/WEB-INF/classes/log4j.properties"/>
 	
 	<!-- ## MySQL setup ## -->
    <bean id="mysqlDataSource" class="org.apache.commons.dbcp.BasicDataSource"
@@ -61,13 +62,26 @@
 		<property name="password" value="hwangkh704!" />
 		<property name="validationQuery" value="select 1" />
 	</bean> 
+	
+	<!-- ## logger format ## -->
+	<bean id="myLogger"
+		class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="mysqlDataSource" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="sqlPrefix" value="SQL : " />
+			</bean>
+		</property>
+	</bean>
 
 
 	
 			 	
 	<!-- ## Mapper setup ## -->
 	<bean id="mysqlSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="mysqlDataSource" />
+		<!-- <property name="dataSource" ref="mysqlDataSource" />  -->
+		<property name="dataSource" ref="myLogger" />
 		<property name="configLocation" value="/WEB-INF/mybatis-mysql-config.xml" />
 		<property name="typeAliasesPackage" value="kr.happyjob.study" />
 		<!-- property name="mapperLocations" value="classpath*:kr/happy/jobkorea/**/dao/mapper/*Mapper.xml" /-->

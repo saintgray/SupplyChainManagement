@@ -153,7 +153,7 @@ public class SalesManageServiceImpl implements SalesManageService{
 //							예를 들어 상품 등록시에 네트워크 드라이브 경로에 파일을 등록한다고 하자
 //							이 때 발생할 수 있는 예외로는 IOException, FileNotFoundException, 등등 이 있다.
 //							만약 이 insertSales 메소드에서 NewFileUtil.uploadFiles 메소드를 try catch 문으로 처리하여 catch 조건에
-//							발생할 수 있는 위의 예외에 대해서 처리를 해주었다면, 추가된 상품 정보에 대해서는 RollBack 하지 않는다
+//							발생할 수 있는 위의 예외에 대해서 처리를 해주었다면, 이미 DB에 추가된 상품데이터에 대해서는 RollBack 하지 않는다
 //		Unchecked Exception : 위의 상황에서 try - catch 문으로 처리하지 않고 예외를 호출하는 쪽으로 던지는 경우에 해당한다.
 //							    기본적으로 Runtime Exception 이 Unchecked Exception 으로 관리되며, Spring 은 기본적으로 Runtime Exception, 그리고 Error
 //							    에 대해서만 Rollback을 하기 때문에 (= rollbackFor 를 명시하지 않을 시 기본 값은 rollbackFor={RuntimeException.class, Error.class} 라는 뜻이다)

@@ -2,6 +2,8 @@ package kr.happyjob.study.scm.sales.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,8 @@ import kr.happyjob.study.scm.sales.service.SalesManageService;
 @RequestMapping("/scm/")
 public class SalesManageController {
 	
+	private Logger logger=LoggerFactory.getLogger(this.getClass());
+	private final String className=this.getClass().toString();
 	
 	private SalesManageService smService;
 	
@@ -39,6 +43,8 @@ public class SalesManageController {
 	@GetMapping("/productMng.do")
 	public String initSalesMngView(){
 		
+		logger.info("init {}", className);
+		
 		return "scm/sales/salesmngmain";
 	}
 	
@@ -48,6 +54,9 @@ public class SalesManageController {
 	public String getSales(Model model, PageInfo info){
 		
 		try{
+			
+		
+			
 			model.addAttribute("page", smService.getSalesList(info));
 			
 		}catch(Exception e){

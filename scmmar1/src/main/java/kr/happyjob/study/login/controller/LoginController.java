@@ -11,8 +11,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +34,6 @@ import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 public class LoginController {
 
-   // 커밋 테스트 됌 -동철
    
    
    // Set logger
@@ -69,16 +68,16 @@ public class LoginController {
    public String index(Model result, @RequestParam Map<String, String> paramMap, HttpServletRequest request,
          HttpServletResponse response, HttpSession session) throws Exception {
 
-  logger.info("+ Start LoginController.login.do");
-  List<ComnCodUtilModel> listOfcDvsCod = ComnCodUtil.getComnCod("OFC_DVS_COD","M");   // 오피스 구분 코드 (M제외)
-  Collections.reverse(listOfcDvsCod); // 오피스 구분 역순으로
-
-/*  List<LgnInfoModel> cdList = loginService.selectBankList();	//select박스 은행 목록
-  request.setAttribute("cdListobj", cdList);					//select박스 은행 목록
-*/  result.addAttribute("listOfcDvsCod", listOfcDvsCod);   		// 오피스 구분 코드
-  //result.addAttribute("listCtrCod", listCtrCod);            // 국가 코드
-  //result.addAttribute("listPnnCtr", listPnnCtr);            // 전화번호 국가
-      logger.info("+ End LoginController.login.do");
+		  logger.info("+ Start LoginController.login.do");
+		  List<ComnCodUtilModel> listOfcDvsCod = ComnCodUtil.getComnCod("OFC_DVS_COD","M");   // 오피스 구분 코드 (M제외)
+		  Collections.reverse(listOfcDvsCod); // 오피스 구분 역순으로
+		
+		/*  List<LgnInfoModel> cdList = loginService.selectBankList();	//select박스 은행 목록
+		  request.setAttribute("cdListobj", cdList);					//select박스 은행 목록
+		*/  result.addAttribute("listOfcDvsCod", listOfcDvsCod);   		// 오피스 구분 코드
+		  //result.addAttribute("listCtrCod", listCtrCod);            // 국가 코드
+		  //result.addAttribute("listPnnCtr", listPnnCtr);            // 전화번호 국가
+		  logger.info("+ End LoginController.login.do");
 
   return "/login/login";
    }
@@ -112,10 +111,11 @@ public class LoginController {
 	  if (lgnInfoModel != null) {
 	     result = "SUCCESS";
 	     resultMsg = "사용자 로그인 정보가 일치 합니다.";
-	     System.out.println("asdf" + lgnInfoModel.getApproval_cd());
-	     System.out.println("y".equals(lgnInfoModel.getApproval_cd()));
-	     System.out.println("asdf" + lgnInfoModel.getApproval_cd());
-	     System.out.println("n".equals(lgnInfoModel.getApproval_cd()));
+	     
+	     
+	     
+	     
+	     
 	     // 사용자 메뉴 권한 조회
 	     paramMap.put("usr_sst_id", lgnInfoModel.getUsr_sst_id());
 	     paramMap.put("userType",lgnInfoModel.getMem_author());
