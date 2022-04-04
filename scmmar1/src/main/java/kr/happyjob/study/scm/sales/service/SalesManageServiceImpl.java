@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
-
 import kr.happyjob.study.common.comnUtils.NewFileUtil;
 import kr.happyjob.study.scm.model.FileModel;
 import kr.happyjob.study.scm.sales.dao.SalesManageDao;
@@ -96,7 +94,7 @@ public class SalesManageServiceImpl implements SalesManageService{
 	
 	@Override
 	@Transactional
-	public int deleteSales(String idx) {
+	public int deleteSales(String idx) throws Exception {
 		
 		// DAO 할당
 		smDao=sst.getMapper(SalesManageDao.class);
@@ -114,20 +112,15 @@ public class SalesManageServiceImpl implements SalesManageService{
 			
 			int fileDeleteResult=0;
 			
-			try{
-				
-				// 가져온 상품 사진 데이터를 tv_sales_file 에서 모두 지운다
-				fileDeleteResult= smDao.deleteFiles(files);
-				
-				// file_local_path 경로에 있는 파일을 모두 삭제한다
-				NewFileUtil.deleteFiles(files);
-				
-			}catch(Exception e){
-				e.printStackTrace();
-				if(fileDeleteResult!=files.size()){
-					System.out.println("DB 통신 에러 또는 파일 일부가 로컬경로에서 삭제되지 않음");
-				}
+		
+			NewFileUtil.deleteFiles(files);
+			
+		
+			
+			if(fileDeleteResult!=files.size()){
+				System.out.println("DB 통신 에러 또는 파일 일부가 로컬경로에서 삭제되지 않음");
 			}
+			
 		}
 		
 		
@@ -137,9 +130,43 @@ public class SalesManageServiceImpl implements SalesManageService{
 	}
 
 	@Override
-	public int updateSales(SalesRegData data) {
+	@Transactional(rollbackFor={Exception.class})
+	public int updateSales(SalesRegData data,HttpServletRequest req) throws Exception {
 		
-		return 1;
+		smDao=sst.getMapper(SalesManageDao.class);
+		NewFileUtil fUtil=new NewFileUtil(req, rootPath, virtualRootPath, salesItemPath);
+		int updateResult=0;
+		// 상품 정보의 업데이트
+		// 1. 기존에 있던 해당 상품에 대한 파일 정보 데이터를 가져온다
+		// 2. 상품 정보를 업데이트한다(on update=Cascade 설정으로 tb_sales_file 테이블의 해당 상품에 대한 파일 정보들이 전부 삭제된다)
+		// 3. 새로 등록하려는 상품의 파일을 서버에 등록한다
+		// 4. 새 파일 정보를 DB에 등록한다
+		// 5. 1에서 가져온 데이터를 가지고 서버에 있는 해당 사진 파일들을 모두 지운다
+		
+		
+		
+		// 1.
+		List<FileModel> prevFiles=smDao.getFilesBySalesID(data.getSales_id());
+		// 2.
+		updateResult=smDao.updateSales(data);
+		// 3.
+		Map<String, List<FileModel>> updateFilesMap=fUtil.uploadFiles(data.getSales_id());
+		// 4.
+		List<FileModel> updateFiles=updateFilesMap.get("files");
+		smDao.insertFiles(updateFiles);
+		// 5.
+		
+		NewFileUtil.deleteFiles(prevFiles);
+		// 모두 지웠으면 이전 파일들은 DB에서 모두 삭제한다
+		if(prevFiles!=null){
+			smDao.deleteFiles(prevFiles);
+		}
+		
+		
+		
+
+		
+		return updateResult;
 	}
 
 	@Override
@@ -172,45 +199,27 @@ public class SalesManageServiceImpl implements SalesManageService{
 		
 		
 		if(result==1){
-			
-			// OK
-			NewFileUtil fUtil=new NewFileUtil(req, rootPath, virtualRootPath, salesItemPath);
-		
-			
+			List<FileModel> files=null;
 			
 			try{
-				
-				
-				
+				// OK
+				NewFileUtil fUtil=new NewFileUtil(req, rootPath, virtualRootPath, salesItemPath);
+			
+					
 				Map<String, List<FileModel>> filesMap = fUtil.uploadFiles(data.getSales_id());
 				
-				List<FileModel> files= filesMap.get("files");
 				
-				// 상품-파일 테이블 하나에만 추가하면 되므로 별도 로직 필요 없음
+				// 상품-파일 테이블 하나에만 추가하면 되므로 input name 별로 별도 분기 로직이 필요 없음
+				files= filesMap.get("files");
 				
-			
 				sst.getMapper(SalesManageDao.class).insertFiles(files);
-			
-				
-				
-				// 파일 등록 도중 오류 발생시
-				// 정상적으로 등록했던 모든 파일을 지운다
-				// + Transactional 처리로 최초 들어간 상품에 대해서도 rollback 처리
-				NewFileUtil.deleteFiles(files);
 
-					
-				
-				
-				
-				
-				
-				
 			}catch(FileNotFoundException e){
-				
-				e.printStackTrace();
-				
-				
+				// NewFileUtil.deleteFiles(files);
+				// 포기
 			}
+			
+
 		
 		}
 		

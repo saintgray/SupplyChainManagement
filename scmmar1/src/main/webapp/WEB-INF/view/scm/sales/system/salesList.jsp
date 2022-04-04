@@ -31,7 +31,7 @@
 					<tr>
 						<td>${s.model_code}</td>
 						<td>${s.model_nm}</td>
-						<td>${s.sales_id}</td>
+						<td class="sales_id">${s.sales_id}</td>
 						<td>${s.sales_nm}</td>
 						<td>${s.mfcomp}</td>
 						<td>${s.price}</td>

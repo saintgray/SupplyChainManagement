@@ -15,9 +15,9 @@ public interface SalesManageDao {
 	List<Sales> getSalesList(PageInfo info);
 	int getTotalCount(PageInfo info);
 	int insertSales(SalesRegData sales);
-	int insertFiles(List<FileModel> files) throws Exception;
+	int insertFiles(List<FileModel> files);
 	int deleteSales(String idx);
-	int updateSales(String idx);
+	int updateSales(SalesRegData data);
 	SalesDetails getSalesDetails(String sales_id);
 	List<FileModel> getFilesBySalesID(String sales_id);
 	int deleteFiles(List<FileModel> files);

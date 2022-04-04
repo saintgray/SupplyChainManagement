@@ -82,7 +82,8 @@ public class NewFileUtil {
 		
 		
 		// 디렉토리 생성
-		String folder = makeDir();
+		String dateDir = makeDateDir();
+		String uploadFilePath = makeDir(dateDir);
         
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)HttpServletRequest;
 		
@@ -112,8 +113,11 @@ public class NewFileUtil {
                 
                 
                 String newFileName=renameOfFile(ofileName);
-                String localFilePath = folder.concat(File.separator).concat(newFileName);
-                String serverFilePath = virtualRootPath.concat(File.separator).concat(itemFilePath).concat(File.separator).concat(newFileName); // web module에 등록된 가상 디렉토리
+                String localFilePath = uploadFilePath.concat(newFileName);
+                String serverFilePath = (virtualRootPath+File.separator)
+                														.concat(itemFilePath+File.separator)
+				                										.concat(dateDir)
+				                										.concat(newFileName); // web module에 등록된 가상 디렉토리
                 int fileSize = (int)multipartFile.getSize(); // 532
 
                 //파일 실제 업로드 로직
@@ -122,11 +126,8 @@ public class NewFileUtil {
                 logger.info("   - serverFilePath : " + serverFilePath);
                 
                 // upload
-                // SVN 네트워크 드라이브를 사용중이므로 집에서 개발시 오류가 나는 것을 방지
-                // server module 에 설정한 가상 경로 역시 집에서는 적용 해제(또는 삭제) 후 테스트할 것
-                if(orgFile.exists()){
-                	multipartFile.transferTo(orgFile);	
-                }
+            	multipartFile.transferTo(orgFile);	
+                
                 
             	
                 //디비 등록 용 로직
@@ -177,11 +178,16 @@ public class NewFileUtil {
 	 */
 	public static void deleteFiles(List<FileModel> listFileUtilModel) throws Exception {
 		
+		for(FileModel file : listFileUtilModel){
+			
+			System.out.println(file.getFile_local_path());
+		}
+		
 		if (listFileUtilModel != null) {
 			for(FileModel fileUtilModel : listFileUtilModel) {
 				
 				// 원본 파일 삭제
-				String local_path = fileUtilModel.getFile_local_path();
+				String local_path = fileUtilModel.getFile_local_path().replace('/',File.separatorChar);
 				if (local_path != null && !"".equals(local_path)) {
 					File file = new File(local_path);
 					if (file.exists()) file.delete();
@@ -212,18 +218,13 @@ public class NewFileUtil {
 	 * ex) 상품에 관련된 파일들 >> sales 폴더에서 관리
 	 */
     
-    // 2022 04 01 종현 수정
-    // 데이터(파일)들은 날짜별로 관리한다
-	private String makeDir() {
-		
-		
-		// 날짜 폴더 디렉토리 생성
-		String date=formatter.format(new Date());
+    
+	private String makeDir(String dateDir) {
 		
 		
 		
         // 디렉토리 파일 객체 생성
-		String uploadFilePath = rootFilePath.concat(File.separator).concat(itemFilePath).concat(File.separator).concat(date);
+		String uploadFilePath = rootFilePath.concat(File.separator).concat(itemFilePath).concat(File.separator).concat(dateDir);
         File file = new File(uploadFilePath);
 
         // 경로 생성
@@ -231,8 +232,14 @@ public class NewFileUtil {
         	file.mkdirs();
         }
         
-        return uploadFilePath;
+        return uploadFilePath.concat(File.separator);
 	}    
+	
+	// 2022 04 01 종현 수정
+    // 데이터(파일)들은 날짜별로 관리한다
+	private String makeDateDir(){
+		return formatter.format(new Date()).concat(File.separator);
+	}
     
 
 }

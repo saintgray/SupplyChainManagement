@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-   pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
+<jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <style>
-
 	.searchArea{
 		margin-top: 35px;
 	    padding: 50px 0;
@@ -17,74 +17,32 @@
 		display: inline-block;
 		margin: 0 10px;
 	}
-	#salesListArea{
+	#whListArea{
 		margin-bottom:30px;
 	}
-	#salesListArea table, #salesInfoArea table{
+	#whListArea table, #whInfoArea table{
 		margin:0 auto;
+		
 	}
+	
+	
 	#formwrap{
 		margin-top: 50px;
 		margin-bottom:50px;
 		border: 2px solid rgb(190,190,190);
 		padding-left:50px;
-	}
-	
-	#salesInfoArea {
-		display:flex;
-		flex-direction :row;
-		justify-content: space-around;
 		
 	}
-	
-	#salesInfoArea table{
+	#formwrap #formtable{
 		border-collapse: separate;
-		border-spacing: 5px 10px;
+		border-spacing: 10px 10px;
+		margin:10px auto;
 	}
-	#salesImgArea{
-		display: flex;
-		flex-direction: column;
-		position: relative;
-		
-	}
-	#shortImages{
-	    display: flex;
-    	flex-wrap: nowrap;
-		margin-top:10px;
-		height:100px;
-		width: 200px;
-		border: 2px solid rgb(190,190,190);
-		padding: 10px;
-		overflow-x:scroll;
-		white-space: nowrap;
-	}
-	#shortImages img{
-		width:50px;
-		height:50px;
-		margin: 0 5px;
 	
-	}
-	#l_files{
-	    position: absolute;
-   		top: 20px
-	}
-	#salesInfoArea #representPhoto{
-		width:200px;
-		height:200px;
-		margin-top:20px;
-	}
-	#dtInfoArea{
-		height:200px;
-	}
-	#area-left, #area-right{
-		flex: 1 1 auto !important;
-	
-	}
-</style>
-<title>제품 정보 관리</title>
 
-<script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
-<jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
+
+</style>
+<title>창고정보 관리</title>
 </head>
 <body>
 
@@ -116,9 +74,9 @@
                   	<a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a>
                   
                   	<span class="btn_nav bold">기준정보</span> 
-                  	<span class="btn_nav bold">제품 정보 관리</span> 
+                  	<span class="btn_nav bold">창고 정보 관리</span> 
                   
-                  	<a href="${CTX_PATH}/scm/productMng.do" class="btn_set refresh">새로고침</a>
+                  	<a href="${CTX_PATH}/scm/whinfo.do" class="btn_set refresh">새로고침</a>
                 </p>
 				<!-- SearchArea -->
 				<div class="searchArea">
@@ -128,9 +86,8 @@
                            <td width="50" height="25" style="font-size: 100%; text-align:left; padding-right:25px;">
      	                       <select id="searchKey" name="searchKey" style="width: 150px;" v-model="searchKey">
      	                       		<option value="all">전체</option>
-									<option value="sales_nm" >제품명</option>
-									<option value="model_nm" >모델명</option>
-									<option value="mfcomp">제조사</option>
+									<option value="wh_nm" >창고명</option>
+									<option value="wh_loc" >창고 위치</option>
 							   </select>
 							   
 				
@@ -146,22 +103,11 @@
 					</table>
 				</div>
 				
-				<div class="bts mt10">
-					<div class="salesMngBtnArea text-right">
-						<button type="button" class="btn btn-primary" id="btnNewSales">제품 등록</button>
-					</div>
-				</div>
-				
-				
-				<!-- SALES LIST WRAP -->
-				<div id="salesListWrap"></div>
+				<div id="whListArea" class="mt30"></div>
 				
 				
 				
-				
-				<!-- REGISTER // DELETE // UPDATE // INFO FORM -->
-				<form id="salesInfoForm"></form>
-				
+				<form id="whFormArea"></form>
 				
 				
 						        
@@ -178,7 +124,94 @@
 </div>
 
 
-<%@include file="/WEB-INF/view/scm/sales/pageset/salesMngMainPageset.jsp" %>
 </body>
 
+<script>
+	$(document).ready(function(){
+		
+		connectEvent();
+		getWareHouseList();
+	})
+
+	
+	
+	
+	function connectEvent(){
+		
+		$('body').on('click', '.btnMngWareHouseArea button, #whListArea table td',function(){
+			
+			
+			switch($(this).attr('id')){
+				case 'searchBtn':
+					getWareHouseList();
+					return;
+				case undefined:
+					showForm($(this),'INFO');
+					return;
+				
+				case 'btnRegNew':
+					showForm($(this),'NEW');
+					return
+				
+				
+				
+			
+			}	
+			
+			
+			
+			
+			
+		})
+		
+		
+		
+		
+	}
+	
+	
+	function getWareHouseList(selectPage){
+		
+		var param={
+				keyword:$('#keyword').val(),
+				searchType :$('#searchKey').val(),
+				selectPage : (selectPage == null || selectPage == "undefined") ? 1 : selectPage,
+				rowsPerPage : 5
+		}
+		
+		var callback=function(data){
+			fAfterGetList(data,param);
+		}
+		
+		callAjax('${CTX_PATH}/scm/whlist','post','text',true,param,callback)
+		
+	}
+	function fAfterGetList(data,param){
+		
+		$('#whListArea').empty().append(data);
+		
+	}
+	
+	function showForm(dom,act){
+		
+		var param={	action:act, wh_id:''}
+		if(param.action=='INFO'){
+			
+			param.wh_id=$(dom).parent().children('.wh_id').html();
+		}
+		var callback=function(data){
+			fAfterShowForm(data, param);	
+		}
+		
+		callAjax('${CTX_PATH}/scm/whinfo','post','text',true,param,callback)
+		
+	}
+	function fAfterShowForm(data,param){
+		// param에 따른 분기로직 
+		//...
+		//////
+		$('#whFormArea').empty().append(data);
+	}
+
+</script>
 </html>

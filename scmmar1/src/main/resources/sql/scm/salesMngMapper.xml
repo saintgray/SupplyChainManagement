@@ -56,6 +56,22 @@
 		</if>
 	</select>
 	
+	<!-- 해당 상품 상세정보 가져오기 -->
+	<select id="getSalesDetails" resultType="kr.happyjob.study.scm.sales.model.SalesDetails">
+		SELECT
+				model_code,
+				model_nm,
+				sales_id,
+				sales_nm,
+				mfcomp,
+				price,
+				info
+		FROM
+			tb_sales
+		WHERE
+			sales_id=#{arg0}
+	</select>
+	
 	<!-- get files -->
 	<select id="getFilesBySalesID" resultType="kr.happyjob.study.scm.model.FileModel">
 	
@@ -93,6 +109,19 @@
 	
 	</insert>
 	
+	<!-- Update Sales -->
+	<update id="updateSales">
+		UPDATE
+			tb_sales
+		SET
+			model_code=#{model_code},
+			model_nm=#{model_nm},
+			sales_nm=#{sales_nm},
+			mfcomp=#{mfcomp},
+			price=#{price},
+			info=#{info}
+		WHERE sales_id=#{sales_id}
+	</update>
 	
 	
 	<!-- insert Files Data -->
@@ -102,14 +131,14 @@
 			tb_sales_file
 						(
 							file_server_path,
-							file_relative_path,
+							file_local_path,
 							file_new_name,
 							file_ofname,
 							file_size,
 							sales_id,
 							file_exts
 							<!-- 고의 오류 발생 -->
-							file_no
+							<!-- file_no -->
 						)
 				VALUES
 						<foreach item="file" collection="list" separator=",">
@@ -127,17 +156,15 @@
 	</insert>
 	
 	
-	<delete id="delteFiles">
+	<delete id="deleteFiles">
 		DELETE 
 		FROM
 			tb_sales_file
 		WHERE
 			file_no IN
-						<foreach collection="files" separator="," open="(" close=")">
+						<foreach collection="list" separator="," open="(" close=")">
 							#{file_no}
 						</foreach>
-			
-	
 	</delete>
 	
 
