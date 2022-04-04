@@ -14,17 +14,27 @@
 				tw.wh_loc
 		FROM
 			tb_warehouse tw
-		<if test='!"all.equals(searchType)"'>
-			<where>
-				<if test='"wh_nm".equals(searchType)'>
-					AND wh_nm
-				</if>
-				<if test='"wh_loc".equals(searchType)'>
-					AND wh_loc
-				</if>
-					LIKE CONCAT('%',#{keyword},'%')
-			</where>
-		</if>
+		<where>
+			<if test='!"all".equals(searchType)'>
+				
+					<if test='"wh_nm".equals(searchType)'>
+						AND wh_nm
+					</if>
+					<if test='"wh_loc".equals(searchType)'>
+						AND wh_loc
+					</if>
+						LIKE CONCAT('%',#{keyword},'%')
+				
+			</if>
+			<if test='"all".equals(searchType)'>
+				AND (
+						wh_nm LIKE CONCAT('%',#{keyword},'%')
+						OR
+						wh_loc LIKE CONCAT('%',#{keyword},'%')
+					)
+			
+			</if>
+		</where>
 		ORDER BY
 			wh_id
 		LIMIT #{firstIndex}, #{rowsPerPage}
@@ -37,17 +47,27 @@
 			COUNT(1)
 		FROM
 			tb_warehouse tw
-		<if test='!"all.equals(searchType)"'>
-			<where>
-				<if test='"wh_nm".equals(searchType)'>
-					AND wh_nm
-				</if>
-				<if test='"wh_loc".equals(searchType)'>
-					AND wh_loc
-				</if>
-					LIKE CONCAT('%',#{keyword},'%')
-			</where>
-		</if>
+		<where>
+			<if test='!"all.equals(searchType)"'>
+				
+					<if test='"wh_nm".equals(searchType)'>
+						AND wh_nm
+					</if>
+					<if test='"wh_loc".equals(searchType)'>
+						AND wh_loc
+					</if>
+						LIKE CONCAT('%',#{keyword},'%')
+				
+			</if>
+			<if test='"all".equals(searchType)'>
+					AND (
+							wh_nm LIKE CONCAT('%',#{keyword},'%')
+							OR
+							wh_loc LIKE CONCAT('%',#{keyword},'%')
+						)
+				
+			</if>
+		</where>
 	</select>
 	
 	
@@ -55,14 +75,16 @@
 		SELECT
 				tw.wh_id,
 				tw.wh_nm,
-				loginID,
-				(SELECT email FROM tb_userinfo tu WHERE tw.loginID=tu.loginID) AS email,
-				(SELECT phone FROM tb_userinfo tu WHERE tw.loginID=tu.loginID) AS phone,
+				tu.name,
+				tu.email,
+				tu.phone,
 				tw.zipCode,
 				tw.wh_loc,
 				tw.dtAddress
 		FROM
-			tb_warehouse tw
+			tb_warehouse tw JOIN tb_userinfo tu
+		ON
+			tw.loginID=tu.loginID
 		WHERE
 			wh_id=#{arg0}
 	</select>

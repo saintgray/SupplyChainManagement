@@ -1,5 +1,9 @@
 package kr.happyjob.study.scm.warehouse.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,14 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.happyjob.study.scm.user.service.UserInfoService;
 import kr.happyjob.study.scm.warehouse.model.PageInfo;
 import kr.happyjob.study.scm.warehouse.service.WarehouseService;
+import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 @Controller
 @RequestMapping("/scm")
 public class WarehouseController {
 	
 	private WarehouseService whService;
+	private UserInfoService uiService;
 	
 	
 	public WarehouseController() {
@@ -23,10 +30,13 @@ public class WarehouseController {
 	}
 	
 
+	
+
 	@Autowired
-	public WarehouseController(WarehouseService whService) {
-		
+	public WarehouseController(WarehouseService whService, UserInfoService uiService) {
+	
 		this.whService = whService;
+		this.uiService = uiService;
 	}
 
 
@@ -71,5 +81,24 @@ public class WarehouseController {
 		return 0;
 	}
 	
+	/**
+	 * 담당자 selectBox 동적 생성을 담당하는 Method
+	 * @author OJH
+	 * 
+	 */
+	@RequestMapping("/whComcombo.do")
+	@PostMapping
+	@ResponseBody
+	public Map<String,Object> initComcombo(String group_code){
+		
+		List<ComnCodUtilModel> list=uiService.getComnCod(group_code);
+		
+		Map<String, Object> resultMap= new HashMap<String, Object>();
+		
+		resultMap.put("list", list);
+		
+		
+		return resultMap;
+	}
 
 }

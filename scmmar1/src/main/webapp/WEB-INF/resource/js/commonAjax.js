@@ -164,9 +164,10 @@ function callAjaxFileUploadSetFormData(url, method, dataType, async, formData, c
 		}
 	});
 }
-
-
-function comcombo(group_code, combo_name, type, selvalue){
+// 2022-04-04 종현 수정
+// 커스텀 url 을 파라미터로 넘겨 필요한 콤보박스를 만들 수 있도록 변경
+// 상세코드에 대한 파라미터만 필요하다면 파라미터로 넘겨주지 않거나 null 로 보낼 것
+function comcombo(group_code, combo_name, type, selvalue, url){
 	
 	console.log("comcombo Start !!!!!!!!!!!!!! ");
 	
@@ -183,7 +184,7 @@ function comcombo(group_code, combo_name, type, selvalue){
 	
 	$.ajax({ 
 	     type: "POST",  
-	     url: "/commonproc/comcombo.do", 
+	     url: (url==null || url==undefined || url=='')?"/commonproc/comcombo.do":url, 
 	     dataType: "json",  
 	     data : data,
 	     success: function(data)

@@ -151,16 +151,21 @@
 				
 				case 'btnRegNew':
 					showForm($(this),'NEW');
-					return
-				
-				
-				
+					return;
+				case 'close':
+					$('#whFormArea').empty();
+					return;
 			
 			}	
+
+		})
+		
+		// 창고코드 값 (Primary key) 변경 차단
+		$('body').on('keydown','#wh_id',function(e){
 			
-			
-			
-			
+			alert('변경할 수 없는 값입니다');
+			e.preventDefault();
+			$(this).attr('readonly',true);
 			
 		})
 		
@@ -207,10 +212,16 @@
 		
 	}
 	function fAfterShowForm(data,param){
+		
+		$('#whFormArea').empty().css('display','none').append(data);
 		// param에 따른 분기로직 
-		//...
+		if(param.action=='INFO'){
+			comcombo('B','advisor','sel',$('#name').val(),'${CTX_PATH}/scm/whComcombo.do');
+		}
 		//////
-		$('#whFormArea').empty().append(data);
+		
+		$('#whFormArea').css('display','block');
+		
 	}
 
 </script>

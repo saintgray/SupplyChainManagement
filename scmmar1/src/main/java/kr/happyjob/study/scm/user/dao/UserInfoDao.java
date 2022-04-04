@@ -6,6 +6,7 @@ import kr.happyjob.study.scm.user.model.PageInfo;
 import kr.happyjob.study.scm.user.model.User;
 import kr.happyjob.study.scm.user.model.UserDetail;
 import kr.happyjob.study.scm.user.model.UserRegData;
+import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 public interface UserInfoDao {
 
@@ -20,5 +21,7 @@ public interface UserInfoDao {
 	int updateUser(UserRegData data);
 
 	int deleteUser(String userID);
+
+	List<ComnCodUtilModel> getComnCod(String group_code);
 
 }

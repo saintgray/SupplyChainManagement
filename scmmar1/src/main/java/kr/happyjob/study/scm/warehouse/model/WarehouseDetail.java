@@ -4,7 +4,7 @@ public class WarehouseDetail {
 	
 	private String wh_id;
 	private String wh_nm;
-	private String loginID;
+	private String name;
 	private String email;
 	private String phone;
 	private String zipCode;
@@ -15,12 +15,12 @@ public class WarehouseDetail {
 		
 	}
 
-	public WarehouseDetail(String wh_id, String wh_nm, String loginID, String email, String phone, String zipCode,
+	public WarehouseDetail(String wh_id, String wh_nm, String name, String email, String phone, String zipCode,
 			String wh_loc, String dtAddress) {
 		
 		this.wh_id = wh_id;
 		this.wh_nm = wh_nm;
-		this.loginID = loginID;
+		this.name = name;
 		this.email = email;
 		this.phone = phone;
 		this.zipCode = zipCode;
@@ -44,12 +44,12 @@ public class WarehouseDetail {
 		this.wh_nm = wh_nm;
 	}
 
-	public String getLoginID() {
-		return loginID;
+	public String getName() {
+		return name;
 	}
 
-	public void setLoginID(String loginID) {
-		this.loginID = loginID;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getEmail() {
@@ -91,6 +91,9 @@ public class WarehouseDetail {
 	public void setDtAddress(String dtAddress) {
 		this.dtAddress = dtAddress;
 	}
+
+	
+	
 	
 	
 	

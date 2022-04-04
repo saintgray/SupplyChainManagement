@@ -58,6 +58,7 @@
 							END
 						)
 					</if>
+					
 					LIKE CONCAT('%',#{keyword},'%')
 				</if>
 				
@@ -191,6 +192,18 @@
 		WHERE
 			loginID=#{arg0}
 	</update>
+	
+	
+	<select id="getComnCod" resultType="kr.happyjob.study.system.model.ComnCodUtilModel">
+		SELECT
+			tu.name AS dtl_cod,
+			tu.name AS dtl_cod_nm		
+		FROM
+			tb_userinfo tu
+		WHERE
+			tu.user_Type=#{arg0}
+			
+	</select>
 
 </mapper>
 

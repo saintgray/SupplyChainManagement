@@ -80,7 +80,7 @@
 			
 		})
 		$('body').on('mouseleave','#shortImages',function(){
-			$('#representPhoto').attr('src',$($(this).children().children('img')[0]).attr('src'));
+			$('#representPhoto').attr('src',$($(this).children('img')[0]).attr('src'));
 		})
 		
 		// 사진 미리보기 이벤트

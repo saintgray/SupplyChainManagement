@@ -10,6 +10,7 @@ import kr.happyjob.study.scm.user.model.PageInfo;
 import kr.happyjob.study.scm.user.model.User;
 import kr.happyjob.study.scm.user.model.UserDetail;
 import kr.happyjob.study.scm.user.model.UserRegData;
+import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
@@ -66,6 +67,13 @@ public class UserInfoServiceImpl implements UserInfoService {
 	@Override
 	public int getTotalCount(PageInfo info){
 		return sst.getMapper(UserInfoDao.class).getTotalCount(info);
+	}
+
+	@Override
+	// 창고의 담당자는 배송관리자에 한한다.
+	public List<ComnCodUtilModel> getComnCod(String group_code) {
+		
+		return sst.getMapper(UserInfoDao.class).getComnCod(group_code);
 	}
 	
 	
