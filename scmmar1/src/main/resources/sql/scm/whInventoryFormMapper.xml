@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.whInventoryFormDao">
+	
+	
+	<select id="whlist" resultType="kr.happyjob.study.scm.model.whInventoryFormModel">
+		SELECT		wh.wh_id AS wh_id
+				,	wh.wh_nm AS wh_nm
+				,	sal.sales_id AS sales_id
+				,	sal.sales_nm AS sales_nm
+				,	st.st_cnt AS st_cnt
+				,	wh.wh_loc AS wh_loc
+				,	wh.addr AS addr
+		
+		FROM	tb_warehouse wh
+			JOIN tb_stock st ON wh.wh_id = st.wh_id
+			JOIN tb_sales sal ON sal.sales_id = st.sales_id 
+		<where>
+					<choose>
+						<when test="searchgrouptype == '0'.toString()">
+							  and wh.wh_nm Like CONCAT('%', #{searchtext}, '%')
+						</when>
+						<when test="searchgrouptype == '1'.toString()">
+							  and sal.sales_nm Like CONCAT('%', #{searchtext}, '%')
+						</when>
+					</choose>
+		</where>
+	</select>
+	
+	<select id="cnt" resultType="kr.happyjob.study.scm.model.whcntModel">
+	SELECT  dt.sales_id AS sales_id
+            , sa.sales_nm AS sales_nm
+            , dt.in_cnt AS in_cnt
+            , dt.out_cnt AS out_cnt
+      FROM (
+              SELECT ll.sales_id
+                    ,sum(in_cnt) as in_cnt
+                    ,sum(out_cnt) as out_cnt
+               FROM (     
+                      SELECT  dt.sales_id
+                            , dt.dpt_cnt as in_cnt
+                            , 0 as out_cnt
+                      FROM tb_departurehis dt
+                     where dt.dpt_type = '0'
+                       and dt.sales_id = #{sales_id} and dt.wh_id = #{wh_id}
+                    union
+                      SELECT  dt.sales_id
+                            , 0 as in_cnt
+                            , dt.dpt_cnt as out_cnt
+                      FROM tb_departurehis dt
+                     where dt.dpt_type = '1'
+                       and dt.sales_id = #{sales_id} and dt.wh_id = #{wh_id}
+                   ) ll
+              group by ll.sales_id
+            ) dt
+        JOIN tb_sales sa ON sa.sales_id = dt.sales_id
+	</select>
+	
+	
+	
+	
+</mapper>

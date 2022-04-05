@@ -51,7 +51,7 @@
 
 	<!-- 프로퍼티 파일 등록 -->
 	<context:property-placeholder location="/WEB-INF/classes/happyjob.properties"/>
-	<context:property-placeholder location="/WEB-INF/classes/log4j.properties"/>
+	
 	
 	<!-- ## MySQL setup ## -->
    <bean id="mysqlDataSource" class="org.apache.commons.dbcp.BasicDataSource"

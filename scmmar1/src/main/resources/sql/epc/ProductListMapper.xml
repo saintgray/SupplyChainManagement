@@ -3,36 +3,74 @@
 
 <mapper namespace="kr.happyjob.study.epc.dao.ProductListDao">
 	<select id="getListProduct" resultType="kr.happyjob.study.epc.model.SalesModel">
-		select * from tb_sales
+		SELECT 	* 
+			FROM tb_sales
 	</select>
+	
 	
 	<select id="getProductDetail" resultType="kr.happyjob.study.epc.model.SalesModel">
-		select * from tb_sales where sales_id = #{sales_id}
+		SELECT * 
+			FROM tb_sales 
+			WHERE sales_id = #{sales_id}
 	</select>
+	
 	
 	<select id="getSalesTypeList"  parameterType="string" resultType="string">
-		select distinct(sales_type) FROM tb_sales
+		SELECT distinct(sales_type) 
+			FROM tb_sales
 	</select>
+	
 	
 	<select id="getMfcompListBySalesType"  parameterType="hashmap" resultType="string">
-		select distinct(mfcomp) FROM tb_sales
-		<where> 
-			<if test="(salesType != null)">
-				sales_type = #{salesType}
-			</if>
-		</where>
+		SELECT 
+			distinct(mfcomp) 
+			FROM tb_sales
+			<where> 
+				<if test="(salesType != null)">
+					sales_type like #{salesType}
+				</if>
+			</where>
 	</select>
 	
+	
 	<select id="searchProductList"  parameterType="hashmap" resultType="kr.happyjob.study.epc.model.SalesModel">
-		select * FROM tb_sales
-		<where> 
-			<if test="(salesType != null)">
-				sales_type = #{salesType}
-			</if>
-			<if test="(mfcomp != null)">
-				and mfcomp = #{mfcomp}
-			</if>
-		</where>
+		SELECT * FROM tb_sales
+			<where> 
+				price > 0
+				<if test="(salesType != null)">
+					and sales_type like #{salesType}
+				</if>
+				<if test="(mfcomp != null)">
+					and mfcomp like #{mfcomp}
+				</if>
+				<if test="(keyword != null)">
+					and (sales_type like concat('%',#{keyword},'%') or mfcomp like concat('%',#{keyword},'%'))
+				</if>
+			</where>
 	</select>
-
+	
+	
+	<insert id="addProductToCart"  parameterType="hashmap">
+		INSERT INTO tb_basket (loginID, sales_id, pur_cnt, wanteddate, purcYN )
+			VALUES ( #{loginID}, #{sales_id}, #{pur_cnt}, #{wanted_date}, 'N')
+	</insert>
+		
+	
+	<insert id="orderProductPurchase"  parameterType="hashmap">
+		INSERT INTO
+			    tb_purchase (loginID, depositYN)
+		VALUES
+			    (#{loginID}, 'N')
+	</insert>
+	
+	<insert id="orderProductPurchaseinfo"  parameterType="hashmap">
+		<selectKey resultType="int" keyProperty="pur_id" order="BEFORE">
+		    select last_insert_id()
+		</selectKey>
+		INSERT INTO
+		    tb_purchaseinfo (pur_cnt, wanted_date, returnYN, pur_type, pur_id, loginID, sales_id)
+		VALUES
+		    (#{pur_cnt}, #{wanted_date}, 'N', '0', #{pur_id}, #{loginID}, #{sales_id})
+	</insert>
+	
 </mapper>

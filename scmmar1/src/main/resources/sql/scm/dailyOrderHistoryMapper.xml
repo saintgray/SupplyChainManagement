@@ -17,7 +17,7 @@
 				, purinfo.wanted_date AS wanted_date
 				, pur.depositYN AS depositYN
 				, sal.sales_id AS sales_id
-		
+				, user.loginID AS loginID
 		FROM    tb_purchase pur 
 				inner join tb_userinfo user ON pur.loginID = user.loginID
 				inner join tb_purchaseinfo purinfo ON pur.pur_id = purinfo.pur_id
@@ -83,6 +83,7 @@
 				, purinfo.wanted_date AS wanted_date
 				, pur.depositYN AS depositYN
 				, sal.sales_id AS sales_id
+				, user.loginID AS loginID
 				
 		FROM    tb_purchase pur 
 				inner join tb_userinfo user ON pur.loginID = user.loginID
@@ -94,7 +95,7 @@
 				                     from tb_stock st 
 				                    where st.sales_id IN (
 				                                            select sa.sales_id 
-				                                              from tb_sales sa				                                              
+				                                              from tb_sales sa	
 				                                         )
 				                   group by st.sales_id
 				                ) ll on ll.sales_id = purinfo.sales_id
@@ -116,6 +117,13 @@
 		
 	</select>
 	
+	<select id="comp" resultType="kr.happyjob.study.scm.model.CompModel">
+		SELECT		comp_id AS comp_id
+				,	comp_nm AS comp_nm
+		FROM		tb_comp
+	</select>
+	
+	
 	<select id="whcnt" resultType="kr.happyjob.study.scm.model.warehouseModel">
 		SELECT 		st.st_cnt AS st_cnt
 		FROM 	 	tb_stock st
@@ -125,6 +133,43 @@
 	 
 	    WHERE 		sa.sales_id= #{sales_id} AND wh.wh_id = #{wh_id};
 	</select>
-
-
+	
+	
+	<insert id="insertcom2">
+		 INTO tb_orderinfo
+		 		(	
+		 	  		order_cnt
+		 		,	pur_id
+		 		,	loginID
+		 		,	sales_id
+    		    , 	comp_id
+				)
+		VALUES (
+			    	#{com_cnt}
+		        ,	#{pur_id}
+		        , 	#{loginID}
+		        ,	#{sales_id}
+		        , 	#{com_code}
+				)
+	</insert>
+	
+	<insert id="insertcom1">
+		<!-- <selectKey resultType="string" keyProperty="orderid" order="BEFORE">
+            select DISTINCT(select max(orderid) from tb_orderdir)+1 from tb_orderdir
+        </selectKey> -->
+		 INSERT 
+		 INTO tb_orderdir
+		 		(	
+		 			regdate
+		 		,	dir_result
+		 		,	wh_id
+				)
+		VALUES (
+				,	now()
+		        , 	'O'
+		        ,	 #{com_code}	
+				);
+	</insert>
+	
+	
 </mapper>

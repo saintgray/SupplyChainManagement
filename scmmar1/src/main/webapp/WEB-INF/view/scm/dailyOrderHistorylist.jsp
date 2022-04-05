@@ -17,9 +17,9 @@
 											<td>${list.wanted_date}</td>
 											<td>${list.depositYN}</td>
 											<td>
-											<a class="btnType blue" style="cursor: pointer;" onclick="orderhi(${list.pur_id},${list.sales_id })" >
-											<span>지시서 작성</span></a>
-										</td>
+												<a class="btnType blue" onclick="orderhi('${list.pur_id}','${list.sales_id }','${list.loginID }')" >
+												<span style="cursor: pointer;">지시서 작성</span></a>
+											</td>
 										</tr>
 							</c:forEach>
 							

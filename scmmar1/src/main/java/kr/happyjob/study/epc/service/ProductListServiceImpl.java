@@ -47,4 +47,19 @@ public class ProductListServiceImpl implements ProductListService{
 		return slist;
 	}
 	
+	public Integer orderAndCartProduct(HashMap<String, String> params) {
+		String type = params.get("type");
+		Integer result = 0;
+		if("cart".equals(type)) {
+			result = pdao.addProductToCart(params);
+		} else	if("order".equals(type)) {
+			System.out.println(params.toString());
+			result = pdao.orderProductPurchase(params);
+			result = pdao.orderProductPurchaseinfo(params);
+			
+		}
+		
+		return result;
+	}
+	
 }

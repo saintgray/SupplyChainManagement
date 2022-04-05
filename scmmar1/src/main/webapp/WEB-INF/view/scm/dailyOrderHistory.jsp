@@ -18,7 +18,6 @@
 <!-- sweet swal import -->
 <script type="text/javascript">
 
-//그룹코드 페이징 설정
 var pageSize = 10;
 var pageBlockSize = 10;
 var returnsearch = '';	// 반품 목록 조회 검색 조건
@@ -29,15 +28,14 @@ var pur_id = '';
 today = new Date();
 today = today.toISOString().slice(0, 10);
 var sales_id = '';
-
-
+var test = '';
+var loginID='';
 
 // onload list 및 검색조건 함수 불러오기
 $(function(){
 	
 	$('#serchdate2').val(today);
 	init();
-	
 	
 });
 
@@ -121,10 +119,10 @@ function reset(){
 }
 
 // 지시서 작성 radio 모달창 실행
-function orderhi(purid,salesid){
-	pur_id = purid
-	sales_id = salesid
-	
+function orderhi(purid,salesid,login_ID){
+	pur_id = purid;
+	sales_id = salesid;
+	loginID = login_ID;
 	gfModalPop("#layer1");
 	init();
 }
@@ -140,7 +138,7 @@ function layer1btn(){
 	var resultCallback = function(data) {
 
 		console.log(data);
-		
+		//alert(data.onedata.loginID);
 		$("#layer").empty().append(data);
 		gfModalPop("#layer");
 		
@@ -152,24 +150,65 @@ function layer1btn(){
 	
 	
 function whcnt(v){
-	alert(v);
-	alert(sales_id);
+	//alert(v);
+	//alert(sales_id);
 	var param = {
 			sales_id : sales_id
 		,	wh_id : v
 	}
 	var resultCallback = function(data){
 		$("#warehcnt").html(data.whcnt.st_cnt);
+		test = data.whcnt.st_cnt;
 	}
 	
 	callAjax("/scm/whcnd.do", "post", "json", true, param, resultCallback);
 }
 
+// 주문 입력 수가 총 재고수 넘지 못하게 막기
+function t(){
+	var val = $("#warehinput").val();
+	if(val > test){
+		alert("재고가 부족 합니다.");
+		$("#warehinput").val('');			
+		return;
+	}
+}
+//지시서 작성
+function send(f){
+	//배송지시서
+	if(f == 'wa'){
+		
+		
+		alert(f);
 	
-	
-	
-	
-	
+	//발주지시서
+	}else if(f == 'com'){
+		var a = $("#compcnt").val();
+		var b = $("#selcomcnt").val();
+		alert(loginID);
+		var param = {
+				com_cnt : a				// 발주 개수
+			,	com_code : b			// 발주 회사 코드
+			,	sales_id : sales_id		// 제품 코드 
+			,	active : f				// 구분자
+			,	pur_id : pur_id			// 구매 번호
+			,	loginID : loginID		// 구매한 이용자 아이디
+				}
+		var resultCallback = function(data){
+		}
+		
+		callAjax("/scm/sendtotal.do", "post", "json", true, param, resultCallback);
+		
+		
+		
+		
+		
+	//반품지시서	
+	}else{
+		alert("111");
+		
+	}
+}
 	
 	
 </script>
@@ -307,7 +346,7 @@ function whcnt(v){
 				</table>
 				<div class="btn_areaC mt30">
 				    <input type="hidden" name="Action" id="Action" value="">
-					<a class="btnType blue" id="btnSaveGrpCod" name="btn" onclick="layer1btn()"><span>작성</span></a> 
+					<a class="btnType blue" id="btnSaveGrpCod" name="btn" onclick="layer1btn()"><span style="cursor: pointer;">작성</span></a> 
 					<a href=""	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span>취소</span></a>
 				</div>
 			</dd>

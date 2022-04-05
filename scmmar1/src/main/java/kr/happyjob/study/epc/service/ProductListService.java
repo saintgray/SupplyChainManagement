@@ -12,5 +12,7 @@ public interface ProductListService {
 	abstract ArrayList<String> getSalesTypeList();
 	abstract ArrayList<String> getMfcompListBySalesType(String salesType);
 	abstract ArrayList<SalesModel> searchProductList(HashMap<String, String> params);
+	abstract Integer orderAndCartProduct(HashMap<String, String> params);
+	
 	
 }

@@ -74,13 +74,16 @@
 	<select id="getWareHouseInfo" resultType="kr.happyjob.study.scm.warehouse.model.WarehouseDetail">
 		SELECT
 				tw.wh_id,
+				tu.loginID,
 				tw.wh_nm,
 				tu.name,
 				tu.email,
 				tu.phone,
 				tw.zipCode,
 				tw.wh_loc,
+				tw.addr,
 				tw.dtAddress
+				
 		FROM
 			tb_warehouse tw JOIN tb_userinfo tu
 		ON

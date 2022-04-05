@@ -51,9 +51,8 @@
 	    display: flex;
     	flex-wrap: nowrap;
 		margin-top:10px;
-		height:100px;
+		height:80px;
 		width: 200px;
-		border: 2px solid rgb(190,190,190);
 		padding: 10px;
 		overflow-x:scroll;
 		white-space: nowrap;
@@ -63,6 +62,14 @@
 		height:50px;
 		margin: 0 5px;
 	
+	}
+	#formwrap ::-webkit-scrollbar{
+		background-color:white;
+		height:10px;
+	}
+	#formwrap ::-webkit-scrollbar-thumb{
+		background-color:rgb(197,197,197);
+		border-radius:10px;
 	}
 	#l_files{
 	    position: absolute;

@@ -1,6 +1,27 @@
 package kr.happyjob.study.scm.model;
 
 public class WorkOrderModel {
+	
+	private int pur_id;
+	private String purdate;
+	private String name;
+	private String sales_nm;
+	private int price_sum;
+	private int price;
+	private int pur_cnt;
+	private int price_cnt;
+	private String returnYN;
+	private String wanted_date;
+	private String depositYN;
+	private int sales_id;
+	private String loginID;
+	
+	public String getLoginID() {
+		return loginID;
+	}
+	public void setLoginID(String loginID) {
+		this.loginID = loginID;
+	}
 	public int getPur_id() {
 		return pur_id;
 	}
@@ -73,18 +94,7 @@ public class WorkOrderModel {
 	public void setSales_id(int sales_id) {
 		this.sales_id = sales_id;
 	}
-	private int pur_id;
-	private String purdate;
-	private String name;
-	private String sales_nm;
-	private int price_sum;
-	private int price;
-	private int pur_cnt;
-	private int price_cnt;
-	private String returnYN;
-	private String wanted_date;
-	private String depositYN;
-	private int sales_id;
+	
 	
 	
 	

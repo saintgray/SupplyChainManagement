@@ -109,14 +109,17 @@
 	
 	
 	/** 발주내역 한건 조회*/
-	   function fOrderOne(orderid) {
+	   function fOrderOne(orderid, confirmYN) {
 	      
-	      var param = { orderid : orderid };
+	      var param = { 
+	    		         orderid : orderid 
+	    		       ,confirmYN : confirmYN
+	                  };
 	      
 	      var resultCallback = function(data) {
 	         console.log(data);
-	         console.log(fPcmOrderOneResult);
-	         fOrderOneResult(data, currentPage);
+	         console.log(fOrderOneResult);
+	         fOrderOneResult(data);
 	      };
 	      
 	      callAjax("/ged/OrderOne.do", "post", "json", true, param, resultCallback);
@@ -126,17 +129,22 @@
 	   function fOrderOneResult(data) {
 	      
 	      if (data.result == "SUCCESS") {
+	    	  
+	    	 alert(data.resultMsg);
+	    	  
+	    	 fListapplylist();
+	    	  
 	         //var uName = data.uName;         
 	         //var outData = data.outData;
 
 	         
 	         // 모달 팝업
-	         gfModalPop("#layer1");
+	         //gfModalPop("#layer1");
 	         
 	         // 개인 취업정보 이력 조회 데이터 설정
 	         //$("#uName").empty().append(uName);
 	         //$("#outData").empty().append(outData);
-	        // fInitFormGrpCod(data.pcmModel);
+	         //fInitFormGrpCod(data.pcmModel);
 	         
 	      } else {
 	         swal(data.resultMsg);

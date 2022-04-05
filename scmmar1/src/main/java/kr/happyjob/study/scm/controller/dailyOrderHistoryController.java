@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.happyjob.study.scm.model.CompModel;
 import kr.happyjob.study.scm.model.WorkOrderModel;
 import kr.happyjob.study.scm.model.dailyOrderHistoryModel;
 import kr.happyjob.study.scm.model.warehouseModel;
@@ -48,6 +49,7 @@ public class dailyOrderHistoryController {
 	      int total = dailyorderhistoryservice.total(paramMap);
 	      List<dailyOrderHistoryModel> listdailyOrderHistory = dailyorderhistoryservice.listdailyOrderHistory(paramMap);
 	      
+	      
 	      System.out.println("pur_id123 : " + paramMap.get("pur_id"));
 	      
 	      model.addAttribute("total",total);
@@ -73,23 +75,22 @@ public class dailyOrderHistoryController {
 		 }else{
 			 returnjsp = "scm/layer44";
 		 }	 
-		
  		 
  		 List<warehouseModel> warehouse = dailyorderhistoryservice.warehouse();
- 		 
 		 WorkOrderModel onedailyOrderHistory = dailyorderhistoryservice.onedailyOrderHistory(paramMap);
+		 List<CompModel> comp = dailyorderhistoryservice.comp();
 		 
 		 model.addAttribute("onedata",onedailyOrderHistory);
-		 
 		 model.addAttribute("warehouse",warehouse);
+		 model.addAttribute("comp",comp);
 		 
 		 return returnjsp;
 	 }
 	
 	 @RequestMapping("whcnd.do")
 	 @ResponseBody
-	   public Map<String,Object> gouppcodelistvue(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-	         HttpServletResponse response, HttpSession session) throws Exception{
+	 public Map<String,Object> gouppcodelistvue(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+	     HttpServletResponse response, HttpSession session) throws Exception{
 		 
 		 warehouseModel whcnt = dailyorderhistoryservice.whcnt(paramMap);
 		 System.out.println("sales_id : " + paramMap.get("sales_id"));
@@ -105,6 +106,30 @@ public class dailyOrderHistoryController {
 		 
 	 }
 	
+	 @RequestMapping("sendtotal.do")
+	 @ResponseBody
+	 public Map<String,Object> insert(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+		     HttpServletResponse response, HttpSession session) throws Exception{
+		 System.out.println("active : "+paramMap.get("active"));
+		 System.out.println("com_cnt : "+paramMap.get("com_cnt"));
+		 System.out.println("sales_id : "+paramMap.get("sales_id"));
+		 System.out.println("com_code : "+paramMap.get("com_code"));
+		 
+		 String act = (String) paramMap.get("active");
+		 
+		 
+		 if(act.equals("com")){
+			 dailyorderhistoryservice.insertcom1(paramMap);
+			 dailyorderhistoryservice.insertcom2(paramMap);
+		 }
+		 
+		 
+		 Map<String,Object> returnmap = new HashMap<String,Object>();
+		 
+		 
+		 
+	      return returnmap;
+	 }
 	
 	
 	

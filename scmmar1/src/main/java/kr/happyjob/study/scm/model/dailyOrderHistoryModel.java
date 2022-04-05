@@ -14,9 +14,15 @@ public class dailyOrderHistoryModel {
 	private String wanted_date;
 	private String depositYN;
 	private int sales_id;
+	private String loginID;
 	
 	
-	
+	public String getLoginID() {
+		return loginID;
+	}
+	public void setLoginID(String loginID) {
+		this.loginID = loginID;
+	}
 	public int getSales_id() {
 		return sales_id;
 	}

@@ -38,7 +38,6 @@
 				
 				
 				<div style="text-align: left; font-size: 15px; font-weight: bold;">배송정보 입력</div> <br>
-				<form action="">
 					<table class="row">
 					<caption>caption</caption>
 						<tbody>
@@ -61,20 +60,19 @@
 								<td style="text-align: center;">
 									<div id="warehcnt">0</div>
 								</td>
-								<td>
-									<input type="number">
+								<td style="text-align: center">
+									<input type="number" id="warehinput" name="warehinput" onkeyup="t()">
 								</td>
 							</tr>
 							
 						</tbody>
 					</table>
-				</form>
-
+					
 
 				<div class="btn_areaC mt30">
-				    <input type="hidden" name="Action" id="Action" value="">
-					<a class="btnType blue" id="btnSaveGrpCod" name="btn" ><span>작성</span></a> 
-					<a href=""	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span>취소</span></a>
+				    <!-- <input type="hidden" name="Action" id="Action" value="wa"> -->
+					<a class="btnType blue" id="savesa" name="btn" ><span onclick="send('wa')" style="cursor: pointer;">작성</span></a> 
+					<a href=""	class="btnType gray"  id="btnClosewa" name="btn"><span>취소</span></a>
 				</div>
 			</dd>
 		</dl>

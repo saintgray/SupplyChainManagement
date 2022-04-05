@@ -75,7 +75,9 @@
 				
 				<tr>
 					<td colspan="4">
-						<input type="text" value='<c:if test="${not empty info}">${info.info}</c:if>'  name="info" id="dtInfoArea" style="width:100%">
+						<textarea type="text" name="info" id="dtInfoArea" style="width:100%; text-align:left;">
+							<c:if test="${not empty info}">${info.info}</c:if>
+						</textarea>
 					</td>
 				</tr>
 			

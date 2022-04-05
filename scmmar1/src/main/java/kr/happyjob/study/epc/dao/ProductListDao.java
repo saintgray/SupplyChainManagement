@@ -13,6 +13,10 @@ public interface ProductListDao {
 	abstract ArrayList<String> getSalesTypeList();
 	abstract ArrayList<String> getMfcompListBySalesType(HashMap<String, String> salesType);
 	abstract ArrayList<SalesModel> searchProductList(HashMap<String, String> params);
+	abstract Integer addProductToCart(HashMap<String, String> params);
+	abstract Integer orderProductPurchase(HashMap<String, String> params);
+	abstract Integer orderProductPurchaseinfo(HashMap<String, String> params);
+
 	
 	
 }

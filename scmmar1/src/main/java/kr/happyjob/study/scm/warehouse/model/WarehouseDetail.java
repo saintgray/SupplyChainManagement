@@ -3,28 +3,32 @@ package kr.happyjob.study.scm.warehouse.model;
 public class WarehouseDetail {
 	
 	private String wh_id;
+	private String loginID;
 	private String wh_nm;
 	private String name;
 	private String email;
 	private String phone;
 	private String zipCode;
 	private String wh_loc;
+	private String addr;
 	private String dtAddress;
 	
 	public WarehouseDetail() {
 		
 	}
 
-	public WarehouseDetail(String wh_id, String wh_nm, String name, String email, String phone, String zipCode,
-			String wh_loc, String dtAddress) {
+	public WarehouseDetail(String wh_id, String loginID, String wh_nm, String name, String email, String phone,
+			String zipCode, String wh_loc, String addr, String dtAddress) {
 		
 		this.wh_id = wh_id;
+		this.loginID = loginID;
 		this.wh_nm = wh_nm;
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
 		this.zipCode = zipCode;
 		this.wh_loc = wh_loc;
+		this.addr = addr;
 		this.dtAddress = dtAddress;
 	}
 
@@ -34,6 +38,14 @@ public class WarehouseDetail {
 
 	public void setWh_id(String wh_id) {
 		this.wh_id = wh_id;
+	}
+
+	public String getLoginID() {
+		return loginID;
+	}
+
+	public void setLoginID(String loginID) {
+		this.loginID = loginID;
 	}
 
 	public String getWh_nm() {
@@ -84,6 +96,14 @@ public class WarehouseDetail {
 		this.wh_loc = wh_loc;
 	}
 
+	public String getAddr() {
+		return addr;
+	}
+
+	public void setAddr(String addr) {
+		this.addr = addr;
+	}
+
 	public String getDtAddress() {
 		return dtAddress;
 	}
@@ -91,12 +111,13 @@ public class WarehouseDetail {
 	public void setDtAddress(String dtAddress) {
 		this.dtAddress = dtAddress;
 	}
+	
+	
+	
+	
 
 	
-	
-	
-	
-	
-	
+
+
 
 }

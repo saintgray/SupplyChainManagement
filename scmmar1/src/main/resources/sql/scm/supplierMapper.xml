@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.study.scm.supplier.dao.SupplyManageDao">
+
+	<select id="getSuppliers" parameterType="kr.happyjob.study.scm.supplier.model.PageInfo" resultType="kr.happyjob.study.scm.supplier.model.Supplier">
+		SELECT
+			tc.wh_id,
+			tc.wh_nm,
+			tu.loginID,
+			tu.password,
+			tu.name,
+			tc.comp_nm
+		FROM
+			tb_userinfo tu
+		JOIN
+			tb_comp tc
+		ON tc.loginID=tu.loginID
+		
+		
+		<!-- 
+			제품명으로 검색할 시에는 상품 테이블도 조인해야함
+		<where>
+			<if test='!"all".equals(searchType)'>
+				
+					<if test='"comp_nm".equals(searchType)'>
+						AND wh_nm
+					</if>
+					<if test='"sales_nm".equals(searchType)'>
+						AND wh_loc
+					</if>
+						LIKE CONCAT('%',#{keyword},'%')
+				
+			</if>
+			<if test='"all".equals(searchType)'>
+				AND (
+						wh_nm LIKE CONCAT('%',#{keyword},'%')
+						OR
+						wh_loc LIKE CONCAT('%',#{keyword},'%')
+					)
+			
+			</if>
+		</where> -->
+		ORDER BY
+			wh_id
+		LIMIT #{firstIndex}, #{rowsPerPage}
+	</select>
+
+	<select id="getImpSales" resultType="kr.happyjob.study.scm.supplier.model.ImpSales">
+		SELECT
+		FROM
+			tb_sales ts
+		JOIN
+			tb_import ti
+		ON 
+			ts.sales_id=it.sales_id
+		WHERE
+			ti.comp_id=#{arg0}
+	</select>
+
+</mapper>

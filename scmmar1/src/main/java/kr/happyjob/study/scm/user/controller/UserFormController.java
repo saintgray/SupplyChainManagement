@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.happyjob.study.scm.user.model.UserDetail;
 import kr.happyjob.study.scm.user.service.UserInfoService;
 
 @Controller
@@ -39,12 +41,9 @@ public class UserFormController {
 		
 		model.addAttribute("action", action);
 		
-		
-		
-		
-		
 		return "scm/usermng/system/userForm";
 		
 	}
+	
 
 }

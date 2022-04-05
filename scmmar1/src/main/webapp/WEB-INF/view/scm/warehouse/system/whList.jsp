@@ -4,6 +4,9 @@
 
 <div id="whListArea" class="bts">
 
+	<input type="text" class="hidden" value="${page.totalCount}" id="totalCount">
+	<input type="text" class="hidden" value="${page.selectPage}" id="selectPage">
+
 	<div class="text-right btnMngWareHouseArea">
 		<button type="button" class="btn btn-primary" id="btnRegNew">창고 등록</button>
 	</div>

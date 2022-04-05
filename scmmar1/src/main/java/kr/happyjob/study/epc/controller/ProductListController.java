@@ -3,6 +3,8 @@ package kr.happyjob.study.epc.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,10 +69,14 @@ public class ProductListController {
 	
 	@RequestMapping(value="/searchProductList", method=RequestMethod.POST)
 	@ResponseBody
-	public ArrayList<SalesModel> spl( @RequestParam String salesType, @RequestParam String mfcomp) {
+	public ArrayList<SalesModel> spl( 
+					@RequestParam String salesType, 
+					@RequestParam String mfcomp,
+					@RequestParam String keyword) {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("salesType", salesType);
 		params.put("mfcomp", mfcomp);
+		params.put("keyword", keyword);
 		ArrayList<SalesModel> slist = pservice.searchProductList(params);
 		
 		return slist;
@@ -78,17 +84,22 @@ public class ProductListController {
 	
 	@RequestMapping(value="/orderProduct", method=RequestMethod.POST)
 	@ResponseBody
-	public String spl( @RequestParam String saled_id,
-			@RequestParam String order_cnt, @RequestParam String wanted_date) {
-		/*HashMap<String, String> params = new HashMap<>();
-		params.put("salesType", salesType);
-		params.put("mfcomp", mfcomp);
-		ArrayList<SalesModel> slist = pservice.searchProductList(params);*/
-		logger.info(saled_id);
-		logger.info(order_cnt);
-		logger.info(wanted_date);
+	public Integer op( @RequestParam String saled_id,
+			@RequestParam String pur_cnt, 
+			@RequestParam String wanted_date,
+			@RequestParam String type,
+			HttpSession session) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("loginID", (String)session.getAttribute("loginId"));
+		params.put("sales_id", saled_id);
+		params.put("pur_cnt", pur_cnt);
+		params.put("wanted_date", wanted_date);
+		params.put("type", type);
+		Integer result = pservice.orderAndCartProduct(params);
 		
-		return "hi to you";
+		
+		return result;
 	}
 	 
 }
+

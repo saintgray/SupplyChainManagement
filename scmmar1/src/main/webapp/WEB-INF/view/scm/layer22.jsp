@@ -35,12 +35,8 @@
 				<!-- e : 여기에 내용입력 -->
 
 				<div class="btn_areaC mt30">
-				    <input type="hidden" name="Action" id="Action" value="">
-					<a class="btnType blue" id="btnSaveGrpCod" name="btn" onclick="layer1btn()"><span>작성</span></a> 
-					<a href=""	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span>취소</span></a>
+				    <!-- <input type="hidden" name="Action" id="Action" value="wa"> -->
+					<a class="btnType blue" id="savesa" name="btn" ><span onclick="send('11')" style="cursor: pointer;">작성</span></a> 
+					<a href=""	class="btnType gray"  id="btnClosewa" name="btn"><span>취소</span></a>
 				</div>
-			</dd>
-		</dl>
-		<a href="" class="closePop"><span class="hidden">닫기</span></a>
-
 							

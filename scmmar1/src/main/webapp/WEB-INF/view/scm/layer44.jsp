@@ -3,42 +3,48 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>					
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 						   
+
 		<dl>
 			<dt>
 				<strong>발주지시서 작성</strong>
 			</dt>
 			<dd class="content">
-				<!-- s : 여기에 내용입력 -->
-				<table class="row">
+				<div style="text-align: left; font-size: 15px; font-weight: bold;">발주정보 입력</div> <br>
+				<form action="">
+					<table class="row">
 					<caption>caption</caption>
-					<colgroup>
-						<col width="120px">
-						<col width="*">
-						<col width="120px">
-						<col width="*">
-					</colgroup>
-
-					<tbody>
-						<tr>
-							<th scope="row">발주지시서 작성<span class="font_red">*</span></th>
-							<td colspan="3">
-							   <input type="radio" 	name="sel" id="sel1" value='1' style="cursor: pointer;"/>반품지시서
-								&nbsp;&nbsp;&nbsp;&nbsp; 
-								<input type="radio" name="sel" id="sel2" value="2" style="cursor: pointer;"/>배송지시서
-								&nbsp;&nbsp;&nbsp;&nbsp; 
-								<input type="radio" name="sel" id="sel3" value="3" style="cursor: pointer;"/>발주지시서
-							</td>
-						</tr>
-					</tbody>
-				</table>
-
-				<!-- e : 여기에 내용입력 -->
+						<tbody>
+							<tr>
+								<th>창고별 품목</th>
+								<th>주문 개수 입력</th>
+							</tr>
+							
+						
+							<tr>
+								<td style="text-align: center;">
+									<select id="selcomcnt">
+											<option value ="" selected="selected" disabled >::업체를 선택해 주세요::</option>
+										<c:forEach items="${comp}" var="list">
+											<option value="${list.comp_id }">${list.comp_nm }</option>
+										</c:forEach>
+									</select>
+								</td>
+								<td style="text-align: center">
+									<input type="number" id="compcnt">
+								</td>
+								<td id="userID"></td>
+							</tr>
+							
+						</tbody>
+					</table>
+				</form>
 
 				<div class="btn_areaC mt30">
-				    <input type="hidden" name="Action" id="Action" value="">
-					<a class="btnType blue" id="btnSaveGrpCod" name="btn" onclick="layer1btn()"><span>작성</span></a> 
-					<a href=""	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span>취소</span></a>
+				    <!-- <input type="hidden" name="Action" id="Action" value="wa"> -->
+					<a class="btnType blue" id="savesa" name="btn" ><span onclick="send('com')" style="cursor: pointer;">작성</span></a> 
+					<a href=""	class="btnType gray"  id="btnClosewa" name="btn"><span>취소</span></a>
 				</div>
 			</dd>
 		</dl>
-		<a href="" class="closePop"><span class="hidden">닫기</span></a>
+		
+		

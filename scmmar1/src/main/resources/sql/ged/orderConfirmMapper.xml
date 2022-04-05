@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.ged.dao.orderConfirmDao">
+
+	<!-- 발주 목록 조회 -->
+	<select id = "orderConfirmList" resultType = "kr.happyjob.study.ged.model.orderConfirmModel">
+		select 
+		       od.orderid,
+			   c.comp_nm as compNm,  
+			   s.sales_nm as salesNm, 
+			   oi.order_cnt as orderCnt, 
+			   i.unitprice,  
+			   date_format(p.purdate, '%Y-%m-%d') as purdate, 
+			   od.confirmYN
+		from tb_orderinfo oi 
+           inner join tb_comp c 
+		       on        c.comp_id = oi.comp_id 
+		       inner join tb_orderdir od   
+		       on        od.order_id = oi.order_id
+		       inner join tb_sales s 
+		       on        oi.sales_id = s.sales_id 
+		       inner join tb_import i 
+		       on        i.sales_id = s.sales_id and c.comp_id = i.comp_id 
+		       inner join tb_purchase p 
+		       on        p.loginID = oi.loginID and p.pur_id = oi.pur_id
+		<where>
+			<if test ="(salesNm != null) and (!salesNm.equals(''))">
+			    and sales_nm  Like CONCAT('%', #{salesNm}, '%')
+			</if>
+			<if test ="(from_date != null) and (!from_date.equals(''))">
+			    and purdate  <![CDATA[>=]]> STR_TO_DATE(#{from_date}, '%Y-%m-%d')   
+			</if>			
+			<if test ="(to_date != null) and (!to_date.equals(''))">
+			    and purdate  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
+			</if>		
+		</where>
+		 ORDER BY purdate ASC  
+		 LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 발주 목록 총 갯수 조회 -->
+	<select id="orderConfirmCnt" resultType="int">
+	/*kr.happy.study.system.dao.orderConfirmDao.orderConfirmCnt*/
+		SELECT COUNT(*)
+		from tb_orderinfo oi 
+           inner join tb_comp c 
+		       on        c.comp_id = oi.comp_id 
+		       inner join tb_orderdir od   
+		       on        od.order_id = oi.order_id
+		       inner join tb_sales s 
+		       on        oi.sales_id = s.sales_id 
+		       inner join tb_import i 
+		       on        i.sales_id = s.sales_id and c.comp_id = i.comp_id 
+		       inner join tb_purchase p 
+		       on        p.loginID = oi.loginID and p.pur_id = oi.pur_id
+		<where>
+			<if test ="(salesNm != null) and (!salesNm.equals(''))">
+			    and sales_nm  Like CONCAT('%', #{salesNm}, '%')
+			</if>
+			<if test ="(from_date != null) and (!from_date.equals(''))">
+			    and purdate  <![CDATA[>=]]> STR_TO_DATE(#{from_date}, '%Y-%m-%d')   
+			</if>			
+			<if test ="(to_date != null) and (!to_date.equals(''))">
+			    and purdate  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
+			</if>					
+		</where>
+	</select>
+	
+	<!-- 승인 수정 -->
+	<update id="updateorderConfirm">
+		/*kr.happy.study.system.dao.orderConfirmDao.updateorderConfirm*/
+		UPDATE tb_orderdir SET
+				confirmYN = #{confirmYN}
+		WHERE	orderid = #{orderid}
+	</update>	
+     
+</mapper>

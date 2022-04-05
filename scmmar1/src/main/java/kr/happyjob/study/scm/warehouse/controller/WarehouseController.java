@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.chainsaw.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.happyjob.study.scm.user.service.UserInfoService;
 import kr.happyjob.study.scm.warehouse.model.PageInfo;
+import kr.happyjob.study.scm.warehouse.model.WarehouseDetail;
 import kr.happyjob.study.scm.warehouse.service.WarehouseService;
 import kr.happyjob.study.system.model.ComnCodUtilModel;
+import kr.happyjob.study.system.model.PhoneNumberModel;
 
 @Controller
 @RequestMapping("/scm")
@@ -76,9 +79,18 @@ public class WarehouseController {
 	@RequestMapping("/whManage")
 	@PostMapping
 	@ResponseBody
-	public int whManage(){
+	public int whManage(WarehouseDetail regdata, String action, PhoneNumberModel tel, String email_prefix, String email_suffix){
 		
-		return 0;
+		System.out.println(email_prefix);
+		System.out.println(email_suffix);
+		
+		regdata.setPhone(tel.getPhoneNumber());
+		
+		System.out.println(regdata.getPhone());
+		
+		
+		
+		return 1;
 	}
 	
 	/**

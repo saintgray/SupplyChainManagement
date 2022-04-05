@@ -1,5 +1,6 @@
 package kr.happyjob.study.ged.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.happyjob.study.ged.model.orderConfirmModel;
 import kr.happyjob.study.ged.service.orderConfirmService;
+import kr.happyjob.study.system.model.ComnGrpCodModel;
 
 @Controller
 @RequestMapping("/ged/")
@@ -78,14 +81,49 @@ public class oderConfirmController {
 		    
 		    return "ged/orderConfirmList";
 		}
+		
 		@RequestMapping("OrderOne.do")
-		public String orderconfirmsubmit(
+		@ResponseBody
+		public Map<String, Object> orderconfirmsubmit(
 				Model model, @RequestParam Map<String, Object> paramMap, 
 				HttpServletRequest request, HttpServletResponse response, 
 				HttpSession session
 				)throws Exception {
+			
+			logger.info("+ Start " + className + ".orderconfirmsubmit");
+			logger.info("   - paramMap : " + paramMap);
+			
+			String confirmYN = (String) paramMap.get("confirmYN");
+			int orderid = Integer.parseInt((String) paramMap.get("orderid"));
+			
+			String result = "SUCCESS";
+			String resultMsg = "";			  
+			
+			paramMap.put("orderid", orderid);
+			paramMap.put("confirmYN", confirmYN);
+			
+			try{
+				
+				oderConfirmService.updateorderConfirm(paramMap);
+			}catch(Exception e){
+				
+			} 
+			
+            if("Y".equals(confirmYN)) {
+            	resultMsg = "승인 되었습니다";
+            } else {
+            	resultMsg = "반려 되었습니다";
+            }
+  
+			
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("result", result);
+			resultMap.put("resultMsg", resultMsg);		
+			
+			
+			logger.info("+ End " + className + ".orderconfirmsubmit");
 		
-		return "ged/OrderOne";
+		return resultMap;
 		}
 
 }

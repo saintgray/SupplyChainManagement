@@ -45,9 +45,9 @@
                                     <select id="mfcomp">
                                         <option>전체</option>
                                     </select>
-                                    <input type="text" class="inputTxt p15" value="test">
-                                    <a href="" class="btnType blue"><span>검색</span></a>
-                                    <button onclick="testFunc()" id="testBtn">run test</button>
+                                    <input type="text" class="inputTxt p15" id="schKeyword" value="test">
+                                    <a href="" class="btnType blue" name="btn" id="searchProductList"><span>검색</span></a>
+                                    <button onclick="" id="testBtn">run test</button>
                                 </div>
 
 
@@ -109,7 +109,7 @@
                     <dd class="content">
 
                         <div style="text-align: right;">
-                            <span name="sales_id">장비 번호</span> | <span name="sales_type">장비 구분</span>
+                            <span name="sales_id"></span> | <span name="sales_type"></span>
                         </div>
 
                         <table class="row">
@@ -125,7 +125,9 @@
                             <tbody id="tbodyProductDetail">
                                 <form action="" id="formDetail">
                                     <tr>
-                                        <td rowspan="3">이미지</td>
+                                        <td rowspan="3">
+                                            <img id="productDetailImg">이미지
+                                        </td>
                                         <th>모델 번호</th>
                                         <td colspan="1"><input type="text" class="inputTxt p100" name="model_code" /></td>
                                         <th>판매 가격</th>
@@ -155,7 +157,8 @@
                         <div class="btn_areaC mt30">
                             <a href="" class="btnType blue" id="putCartProduct" name="btn"><span>장바구니에 담기</span></a>
                             <a href="" class="btnType blue" id="orderProduct" name="btn"><span>주문</span></a>
-                            <a href="" class="btnType gray" id="btnCloseGrpCod" name="btn"><span>취소</span></a>
+                            <a href="" class="btnType gray" id="closeProductDetail" name="btn"><span>취소</span></a>
+                            <button onclick="testFunc2()" id="testbtn2">run2 test2</button>
                         </div>
                     </dd>
                 </dl>
@@ -172,6 +175,7 @@
                     });
                     linkEventFunc();
                     getSalesTypeList();
+                    getMfcompList();
                 });
 
                 function testFunc() {
@@ -191,15 +195,30 @@
                     });
                 }
 
+
                 function linkEventFunc() {
+                    let aBtn = document.querySelectorAll('a[name="btn"]');
+                    aBtn.forEach((ele) => {
+                        ele.addEventListener('click', (e) => {
+                            e.preventDefault();
+                        });
+                    });
+                    // same code as above line
+                    // $('a[name="btn"]').click(function(e) {
+                    //     e.preventDefault();
+                    // });
+
                     eventProductListRow();
                     eventSelectSalesTypeChange();
-                    eventPutCartBtn();
+                    eventOrderAndCartBtn();
+                    eventSearchBtn();
+                    eventCloseBtn();
                 }
+
 
                 function plmodal(item) {
                     console.log(item);
-                    console.log($('tbody#tbodyProductDetail input[name="model_code"]')); //O
+                    console.log($('tbody#tbodyProductDetail input[name="model_code"]'));
 
                     $('div#popProductDetail span[name="sales_id"]').html(item.sales_id);
                     $('div#popProductDetail span[name="sales_type"]').html(item.sales_type);
@@ -215,7 +234,9 @@
                     $('tbody#tbodyProductDetail input[name="price"]').attr({
                         value: item.price
                     });
-
+                    $('img#productDetailImg').attr({
+                        src: "/serverfile/kakaoRyan.png"
+                    });
                     gfModalPop('#popProductDetail');
                 }
 
@@ -287,8 +308,11 @@
                         document.querySelector('select#mfcomp').removeChild(document.querySelector('select#mfcomp').firstChild);
                     }
 
-                    let sel = document.querySelector('select#sales_type');
+                    const sel = document.querySelector('select#sales_type');
                     let salesType = sel.options[sel.options.selectedIndex].value; //get selected option in select sales_type
+                    if (salesType == '전체') {
+                        salesType = '%';
+                    }
                     $.ajax({
                         url: 'getMfcompList',
                         method: 'POST',
@@ -299,6 +323,7 @@
                             listSelectOptionMfcomp(result);
                         }
                     });
+
                 }
 
                 function listSelectOptionSalesType(list) {
@@ -314,6 +339,10 @@
                 }
 
                 function listSelectOptionMfcomp(list) {
+                    let newOption = '<option>';
+                    newOption += '전체';
+                    newOption += '</option>';
+                    $(newOption).appendTo($('select#mfcomp'));
                     $.each(list, function(index, item) {
                         let newOption = '<option>';
                         newOption += item;
@@ -323,16 +352,31 @@
                     });
                 }
 
+                function eventSearchBtn() {
+                    const btn = document.querySelector('a#searchProductList');
+                    btn.onclick = searchProductList;
+                }
+
                 function searchProductList() {
-                    let salesOpt = document.querySelector('select#sales_type').options;
+                    const salesOpt = document.querySelector('select#sales_type').options;
                     let salesType = salesOpt[salesOpt.selectedIndex].value;
                     let mfcomp = document.querySelector('select#mfcomp').options[document.querySelector('select#mfcomp').options.selectedIndex].value;
+                    const keyword = document.querySelector('input#schKeyword').value;
+
+                    if (mfcomp == '전체') {
+                        mfcomp = '%';
+                    }
+
+                    if (salesType == '전체') {
+                        salesType = '%';
+                    }
 
                     $.ajax({
                         url: 'searchProductList',
                         data: {
                             salesType: salesType,
-                            mfcomp: mfcomp
+                            mfcomp: mfcomp,
+                            keyword: keyword
                         },
                         method: 'POST',
                         success: function(result) {
@@ -342,22 +386,67 @@
 
                 }
 
-                function eventPutCartBtn() {
-                    let btn = document.querySelector('#putCartProduct');
-                    btn.onclick = function() {
-                        $.ajax({
-                            url: 'orderProduct',
-                            method: 'POST',
-                            data: {
-                                saled_id: 'saled_id',
-                                order_cnt: 'order_cnt',
-                                wanted_date: 'wanted_date'
-                            },
-                            success: function(result) {
-                                console.log(result);
-                            }
-                        });
+                function testFunc2(e) {
+
+                    let salesId = $('div#popProductDetail span[name="sales_id"]').html();
+                    let purCnt = document.querySelector('div#popProductDetail input[name="pur_cnt"]').value;
+                    let wantedDate = $('div#popProductDetail input[name="wanted_date"]').val();
+
+                    console.log(salesId);
+                    console.log(purCnt);
+                    console.log(wantedDate);
+                }
+
+                function eventCloseBtn() {
+                    const btn = document.querySelector('a#closeProductDetail');
+                    btn.onclick = gfCloseModal;
+
+                }
+
+
+                function eventOrderAndCartBtn() {
+                    const cartBtn = document.querySelector('a#putCartProduct');
+                    const orderBtn = document.querySelector('a#orderProduct');
+                    cartBtn.onclick = orderAndCart;
+                    orderBtn.onclick = orderAndCart;
+
+                }
+
+
+                function orderAndCart(e) {
+                    const salesId = $('div#popProductDetail span[name="sales_id"]').html();
+                    const purCnt = document.querySelector('div#popProductDetail input[name="pur_cnt"]').value;
+                    const wantedDate = $('div#popProductDetail input[name="wanted_date"]').val();
+                    let type = '';
+
+                    if (!purCnt || !wantedDate) {
+                        alert('수량 또는 날짜를 확인해 주세요.3');
+                        return;
+                    } else {
+                        if (e.currentTarget.id == 'putCartProduct') {
+                            type = 'cart';
+                        } else if (e.currentTarget.id == 'orderProduct') {
+                            type = 'order';
+                        } else {
+                            alert('잘못된 접근입니다.');
+                            return;
+                        }
                     }
+
+                    $.ajax({
+                        url: 'orderProduct',
+                        method: 'POST',
+                        data: {
+                            saled_id: salesId,
+                            pur_cnt: purCnt,
+                            wanted_date: wantedDate,
+                            type: type
+                        },
+                        success: function(result) {
+                            console.log(result);
+                        }
+                    });
+
                 }
             </script>
         </body>
