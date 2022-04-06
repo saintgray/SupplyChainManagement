@@ -4,55 +4,90 @@
 
 	<select id="getSuppliers" parameterType="kr.happyjob.study.scm.supplier.model.PageInfo" resultType="kr.happyjob.study.scm.supplier.model.Supplier">
 		SELECT
-			tc.wh_id,
-			tc.wh_nm,
+			DISTINCT(tc.comp_id),
+			tc.comp_nm,
 			tu.loginID,
 			tu.password,
 			tu.name,
-			tc.comp_nm
-		FROM
-			tb_userinfo tu
-		JOIN
-			tb_comp tc
-		ON tc.loginID=tu.loginID
-		
-		
-		<!-- 
-			제품명으로 검색할 시에는 상품 테이블도 조인해야함
+			tu.phone
+		FROM tb_userinfo tu JOIN tb_comp tc
+								ON tc.loginID=tu.loginID
+						<if test='"sales_nm".equals(searchType) or "all".equals(searchType)'>
+							JOIN tb_import ti
+								ON ti.comp_id=tc.comp_id
+							JOIN tb_sales ts 
+								ON ts.sales_id=ti.sales_id
+						</if>
 		<where>
 			<if test='!"all".equals(searchType)'>
-				
-					<if test='"comp_nm".equals(searchType)'>
-						AND wh_nm
-					</if>
-					<if test='"sales_nm".equals(searchType)'>
-						AND wh_loc
-					</if>
-						LIKE CONCAT('%',#{keyword},'%')
-				
-			</if>
-			<if test='"all".equals(searchType)'>
-				AND (
-						wh_nm LIKE CONCAT('%',#{keyword},'%')
-						OR
-						wh_loc LIKE CONCAT('%',#{keyword},'%')
-					)
+				<if test='"sales_nm".equals(searchType)'>
+					AND ts.sales_nm 
+				</if>
+				<if test='"comp_nm".equals(searchType)'>
+					AND tc.comp_nm
+				</if>
+				LIKE CONCAT('%',#{keyword},'%')
+			</if>		
 			
+			<if test='"all".equals(searchType)'>
+				AND 
+					ts.sales_nm LIKE CONCAT('%',#{keyword},'%')
+					OR
+					tc.comp_nm LIKE CONCAT('%',#{keyword},'%')
 			</if>
-		</where> -->
-		ORDER BY
-			wh_id
+		</where>
+		ORDER BY tc.comp_nm
 		LIMIT #{firstIndex}, #{rowsPerPage}
 	</select>
+	
+	<select id="getTotalCount" parameterType="kr.happyjob.study.scm.supplier.model.PageInfo" resultType="Integer">
+		SELECT
+			COUNT(DISTINCT(tc.comp_id))
+		FROM
+			tb_userinfo tu JOIN tb_comp tc
+								ON tc.loginID=tu.loginID
+						<if test='"sales_nm".equals(searchType) or "all".equals(searchType)'>
+							JOIN tb_import ti 
+								ON ti.comp_id=tc.comp_id
+							JOIN tb_sales ts
+								ON ts.sales_id=ti.sales_id
+						</if>
+		<where>
+			<if test='!"all".equals(searchType)'>
+				<if test='"sales_nm".equals(searchType)'>
+					AND ts.sales_nm 
+				</if>
+				<if test='"comp_nm".equals(searchType)'>
+					AND tc.comp_nm
+				</if>
+				LIKE CONCAT('%',#{keyword},'%')
+			</if>		
+			
+			<if test='"all".equals(searchType)'>
+				AND 
+					ts.sales_nm LIKE CONCAT('%',#{keyword},'%')
+					OR
+					tc.comp_nm LIKE CONCAT('%',#{keyword},'%')
+					
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	
 
 	<select id="getImpSales" resultType="kr.happyjob.study.scm.supplier.model.ImpSales">
 		SELECT
+			ts.sales_id,
+			ts.sales_nm,
+			ti.unitprice
 		FROM
 			tb_sales ts
 		JOIN
 			tb_import ti
 		ON 
-			ts.sales_id=it.sales_id
+			ts.sales_id=ti.sales_id
 		WHERE
 			ti.comp_id=#{arg0}
 	</select>

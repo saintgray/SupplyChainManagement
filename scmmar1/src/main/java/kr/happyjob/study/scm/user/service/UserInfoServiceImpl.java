@@ -71,10 +71,12 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	// 창고의 담당자는 배송관리자에 한한다.
-	public List<ComnCodUtilModel> getComnCod(String group_code) {
+	public List<ComnCodUtilModel> getAdvisorCod(String group_code) {
 		
 		return sst.getMapper(UserInfoDao.class).getComnCod(group_code);
 	}
+
+	
 	
 	
 	

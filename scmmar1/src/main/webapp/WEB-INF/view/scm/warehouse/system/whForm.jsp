@@ -5,6 +5,7 @@
 	<input type="hidden" value="${info.loginID}" id="loginID">
 	<input type="hidden" value="${info.phone}" id="phone">
 	
+	
 	<table id="formtable">
 		<tr>
 			<c:if test="${action eq 'INFO'}">
@@ -18,12 +19,13 @@
 				</td>
 			</c:if>
 			<c:if test="${action eq 'NEW'}">
-				<td colspan="2">
-				
-				</td>
 				<td>창고명</td>
 				<td>
 					<input type="text" class="form-control" name="wh_nm">
+				</td>
+				<td>창고위치</td>
+				<td>
+					<select id="wh_loc" name="wh_loc" class="form-control"></select>
 				</td>
 			</c:if>
 			
@@ -72,7 +74,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>창고위치</td>
+			<td>주소</td>
 			<td colspan="3">
 				<input type="text" class="form-control"  value='<c:if test="${action ne 'NEW'}">${info.addr}</c:if>' id="addr" name='addr'>
 			</td>
@@ -96,9 +98,8 @@
 		</c:if>
 		<c:if test="${action ne 'NEW'}">
 			<button type="button" class="btn btn-primary mx10" id="btnUpdate">저장</button>
+			<button type="button" class="btn btn-danger mx10" id="btnDelete">삭제</button>
 		</c:if>
-		
-		<button type="button" class="btn btn-danger mx10" id="btnDelete">삭제</button>
 		<button type="button" class="btn mx10" id="close">취소</button>
 	</div>
 	

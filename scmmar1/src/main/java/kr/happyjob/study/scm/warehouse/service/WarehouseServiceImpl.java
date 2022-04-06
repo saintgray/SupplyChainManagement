@@ -10,6 +10,7 @@ import kr.happyjob.study.scm.warehouse.dao.WarehouseDao;
 import kr.happyjob.study.scm.warehouse.model.PageInfo;
 import kr.happyjob.study.scm.warehouse.model.Warehouse;
 import kr.happyjob.study.scm.warehouse.model.WarehouseDetail;
+import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 @Service
 public class WarehouseServiceImpl implements WarehouseService{
@@ -67,6 +68,12 @@ public class WarehouseServiceImpl implements WarehouseService{
 	public WarehouseDetail getWareHouseInfo(String idx) {
 	
 		return sst.getMapper(WarehouseDao.class).getWareHouseInfo(idx);
+	}
+
+	@Override
+	public List<ComnCodUtilModel> getLocCod(String group_code) {
+		
+		return sst.getMapper(WarehouseDao.class).getLocComnCod(group_code);
 	}
 	
 	

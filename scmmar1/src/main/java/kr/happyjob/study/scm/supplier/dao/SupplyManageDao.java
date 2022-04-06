@@ -10,6 +10,7 @@ public interface SupplyManageDao {
 	
 	List<Supplier> getSuppliers(PageInfo info);
 	List<ImpSales> getImpSales(String comp_id);
+	int getTotalCount(PageInfo info);
 
 
 }

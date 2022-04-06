@@ -304,17 +304,27 @@
 	function fAfterShowForm(data,param){
 		
 		$('#whFormArea').empty().css('display','none').append(data);
+		
+		
 		// param에 따른 분기로직 
 		var type=null;
+		
+		
 		if(param.action=='INFO'){
 			
 			
 			putPhone($('#phone').val());
 			
+			
 		}else{
 			type='sel';
+			// 창고 위치 선택 를 위한 comcombo 요청
+			comcombo('wareCD','wh_loc',type,null,null);
 		}
+		// 담당자 배정을 위한 comcombo 요청
 		comcombo('B','advisor',type,$('#loginID').val(),'${CTX_PATH}/scm/whComcombo.do');
+		
+		
 		//////
 		
 		$('#whFormArea').css('display','block');

@@ -5,7 +5,7 @@
 
 
 <div id="salesListArea" class="bts">
-
+	<fmt:setLocale value="ko-KR"/>
 	
 
 	<div class="bts mt30">
@@ -34,7 +34,9 @@
 						<td class="sales_id">${s.sales_id}</td>
 						<td>${s.sales_nm}</td>
 						<td>${s.mfcomp}</td>
-						<td>${s.price}</td>
+						<td>
+							<fmt:formatNumber type="currency">${s.price}</fmt:formatNumber>
+						</td>
 					</tr>
 				</c:forEach>
 			</c:if>

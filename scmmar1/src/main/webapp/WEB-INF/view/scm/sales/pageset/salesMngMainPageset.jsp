@@ -13,6 +13,15 @@
 		
 		getSalesList();
 		
+		$('#st-btn').on('click',function(){
+			console.log('up!');
+			$('html').animate({'scrollTop':0},100);
+		})
+		
+		$('#test').on('click',function(){
+			console.log($('#files')[0].files);
+		})
+		
 		
 	})
 	
@@ -74,13 +83,25 @@
 			
 		})
 		
+		// 가격 숫자만 입력
+		$('body').on('keydown','#price',function(e){
+			if(e.crtlKey || e.altKey || e.shiftKey){
+				e.preventDefault();
+			}else{
+				fFilterNumber(e)
+			}
+		})
+		
 		// 상품 사진 토글 이벤트
 		$('body').on('mouseover','#shortImages img',function(){
 			$('#representPhoto').attr('src',$(this).attr('src'));
 			
 		})
 		$('body').on('mouseleave','#shortImages',function(){
-			$('#representPhoto').attr('src',$($(this).children('img')[0]).attr('src'));
+			$('#representPhoto').attr('src',$(
+												$('#shortImages img')[0]
+											).attr('src')
+									 );
 		})
 		
 		// 사진 미리보기 이벤트

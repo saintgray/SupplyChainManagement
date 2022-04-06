@@ -41,7 +41,7 @@
 						<td>${w.email}</td>
 						<td>${w.phone}</td>
 						<td>${w.zipCode}</td>
-						<td>${wh_loc}</td>
+						<td>${w.wh_loc}</td>
 					</tr>
 				</c:forEach>
 			</c:if>

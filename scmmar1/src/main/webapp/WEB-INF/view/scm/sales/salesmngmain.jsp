@@ -8,6 +8,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <style>
 
+	#st-btn{
+		width:51px;
+		height:51px;
+		position: fixed;
+		bottom: 30px;
+	    right: 30px;
+	    cursor: pointer;
+	    background-image: url(/images/mainicons.png);
+	    background-size: 457px 434px;
+	    background-position: -148px -210px;
+	    background-repeat: no-repeat;
+	}
+	
+
+
 	.searchArea{
 		margin-top: 35px;
 	    padding: 50px 0;
@@ -183,6 +198,9 @@
    </div>
 
 </div>
+
+<!-- scroll top btn -->
+<div id="st-btn"></div>
 
 
 <%@include file="/WEB-INF/view/scm/sales/pageset/salesMngMainPageset.jsp" %>

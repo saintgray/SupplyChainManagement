@@ -147,7 +147,12 @@ public class SalesManageServiceImpl implements SalesManageService{
 		
 		// 1.
 		List<FileModel> prevFiles=smDao.getFilesBySalesID(data.getSales_id());
+		for(FileModel file: prevFiles){
+			System.out.println(file.getFile_no());
+		}
 		// 2.
+		// 상품을 등록하기 전 가격으로 넘어온 값의 원화표기와 콤마를 제거한다
+		data.setPrice(data.getPrice().replaceAll("[\\D]", ""));
 		updateResult=smDao.updateSales(data);
 		// 3.
 		Map<String, List<FileModel>> updateFilesMap=fUtil.uploadFiles(data.getSales_id());
@@ -155,10 +160,20 @@ public class SalesManageServiceImpl implements SalesManageService{
 		List<FileModel> updateFiles=updateFilesMap.get("files");
 		smDao.insertFiles(updateFiles);
 		// 5.
+		// 이미지를 새로 등록하지 않았다면(= updateFiles가 null 이라면) 이전 이미지를 그대로 사용하겠다는 말이므로
+		// 지우지 않는다
+		if(updateFiles==null || updateFiles.size()==0){
+			NewFileUtil.deleteFiles(prevFiles);
+		}
 		
-		NewFileUtil.deleteFiles(prevFiles);
 		// 모두 지웠으면 이전 파일들은 DB에서 모두 삭제한다
 		if(prevFiles!=null){
+			////
+			System.out.println("파일이 있습니다.");
+			for(FileModel file: prevFiles){
+				System.out.println(file.getFile_no());
+			}
+			////
 			smDao.deleteFiles(prevFiles);
 		}
 		

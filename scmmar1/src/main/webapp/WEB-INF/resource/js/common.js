@@ -204,7 +204,10 @@ function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc
  */
 function fFilterNumber(event) {
 
+	
+	
 	var code = event.keyCode;
+	
 	
 	// 숫자 허용
 	if (code > 47 && code < 58) return;
@@ -218,7 +221,7 @@ function fFilterNumber(event) {
 	// 주요 특수키 허용
 	if (code === 9 || code === 36 || code === 35 || code === 37
 			|| code === 39 || code === 8 || code === 46) return;
-
+	
 	return event.preventDefault();
 }
 

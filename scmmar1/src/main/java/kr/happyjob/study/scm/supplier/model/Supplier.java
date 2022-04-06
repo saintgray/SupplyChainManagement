@@ -2,8 +2,10 @@ package kr.happyjob.study.scm.supplier.model;
 
 public class Supplier {
 	
+	
+	private String comp_id;
 	private String comp_nm;
-	private String userid;
+	private String loginID;
 	private String password;
 	private String name;
 	private String phone;
@@ -12,13 +14,22 @@ public class Supplier {
 
 	}
 
-	public Supplier(String comp_nm, String userid, String password, String name, String phone) {
-
+	public Supplier(String comp_id, String comp_nm, String loginID, String password, String name, String phone) {
+		
+		this.comp_id = comp_id;
 		this.comp_nm = comp_nm;
-		this.userid = userid;
+		this.loginID = loginID;
 		this.password = password;
 		this.name = name;
 		this.phone = phone;
+	}
+
+	public String getComp_id() {
+		return comp_id;
+	}
+
+	public void setComp_id(String comp_id) {
+		this.comp_id = comp_id;
 	}
 
 	public String getComp_nm() {
@@ -29,12 +40,12 @@ public class Supplier {
 		this.comp_nm = comp_nm;
 	}
 
-	public String getUserid() {
-		return userid;
+	public String getLoginID() {
+		return loginID;
 	}
 
-	public void setUserid(String userid) {
-		this.userid = userid;
+	public void setLoginID(String loginID) {
+		this.loginID = loginID;
 	}
 
 	public String getPassword() {
@@ -60,6 +71,11 @@ public class Supplier {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+	
+	
+	
+	
+	
 	
 	
 	

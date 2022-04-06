@@ -11,17 +11,19 @@
 				(SELECT email FROM tb_userinfo tu WHERE tw.loginID=tu.loginID) AS email,
 				(SELECT phone FROM tb_userinfo tu WHERE tw.loginID=tu.loginID) AS phone,
 				tw.zipCode,
-				tw.wh_loc
+				tdc.detail_name AS wh_loc
 		FROM
-			tb_warehouse tw
-		<where>
+			tb_warehouse tw JOIN tb_detail_code tdc 
+									ON tw.wh_loc=tdc.detail_code
+		WHERE
+			tdc.group_code='WareCD'
 			<if test='!"all".equals(searchType)'>
 				
 					<if test='"wh_nm".equals(searchType)'>
 						AND wh_nm
 					</if>
 					<if test='"wh_loc".equals(searchType)'>
-						AND wh_loc
+						AND tdc.detail_name
 					</if>
 						LIKE CONCAT('%',#{keyword},'%')
 				
@@ -34,7 +36,6 @@
 					)
 			
 			</if>
-		</where>
 		ORDER BY
 			wh_id
 		LIMIT #{firstIndex}, #{rowsPerPage}
@@ -46,15 +47,18 @@
 		SELECT
 			COUNT(1)
 		FROM
-			tb_warehouse tw
-		<where>
+			tb_warehouse tw JOIN tb_detail_code tdc 
+									ON tw.wh_loc=tdc.detail_code
+		WHERE
+			tdc.group_code='WareCD'
 			<if test='!"all.equals(searchType)"'>
 				
 					<if test='"wh_nm".equals(searchType)'>
 						AND wh_nm
 					</if>
 					<if test='"wh_loc".equals(searchType)'>
-						AND wh_loc
+						<!-- AND wh_loc -->
+						AND tdc.detail_name
 					</if>
 						LIKE CONCAT('%',#{keyword},'%')
 				
@@ -63,11 +67,11 @@
 					AND (
 							wh_nm LIKE CONCAT('%',#{keyword},'%')
 							OR
-							wh_loc LIKE CONCAT('%',#{keyword},'%')
+							<!-- wh_loc LIKE CONCAT('%',#{keyword},'%') -->
+							tdc.detail_name LIKE CONCAT('%',#{keyword},'%')
 						)
 				
 			</if>
-		</where>
 	</select>
 	
 	
@@ -91,6 +95,18 @@
 		WHERE
 			wh_id=#{arg0}
 	</select>
+	
+	
+	<!-- <select id="getLocComnCod" resultType="kr.happyjob.study.system.model.ComnCodUtilModel">
+		SELECT
+			wh_loc AS dtl_cod,
+			wh_nm AS dtl_cod_nm
+		FROM
+			tb_warehouse
+		WHERE
+			wh_loc=#{arg0}
+	
+	</select> -->
 		
 	
 	

@@ -188,9 +188,15 @@ public class NewFileUtil {
 				
 				// 원본 파일 삭제
 				String local_path = fileUtilModel.getFile_local_path().replace('/',File.separatorChar);
+				System.out.println(local_path);
 				if (local_path != null && !"".equals(local_path)) {
 					File file = new File(local_path);
-					if (file.exists()) file.delete();
+					if (file.exists()){
+						System.out.println("파일이 있습니다");
+						file.delete();
+					}else{
+						System.out.println("파일이 없습니다");
+					}
 				}
 			}
 		}

@@ -21,7 +21,7 @@ public interface UserInfoService {
 	int updateUser(UserRegData data);
 	int deleteUser(String userID);
 	int getTotalCount(PageInfo info);
-	List<ComnCodUtilModel> getComnCod(String group_code);
+	List<ComnCodUtilModel> getAdvisorCod(String group_code);
 	
 
 }

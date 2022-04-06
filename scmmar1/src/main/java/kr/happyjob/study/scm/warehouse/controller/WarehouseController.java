@@ -3,6 +3,7 @@ package kr.happyjob.study.scm.warehouse.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.chainsaw.Main;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +104,7 @@ public class WarehouseController {
 	@ResponseBody
 	public Map<String,Object> initComcombo(String group_code){
 		
-		List<ComnCodUtilModel> list=uiService.getComnCod(group_code);
+		List<ComnCodUtilModel> list=uiService.getAdvisorCod(group_code);
 		
 		Map<String, Object> resultMap= new HashMap<String, Object>();
 		
@@ -111,6 +112,28 @@ public class WarehouseController {
 		
 		
 		return resultMap;
+	}
+	
+	/**
+	 *  창고 위치 동적 생성을 담당하는 Method
+	 *  @author OJH
+	 */
+	@RequestMapping("/LocCombo.do")
+	@PostMapping
+	@ResponseBody
+	public Map<String,Object> initLocCombo(String group_code){
+		Map<String, Object> resultMap=null;
+		
+		try{
+			List<ComnCodUtilModel> list=whService.getLocCod(group_code);
+			resultMap= new HashMap<String, Object>();
+			resultMap.put("list", list);
+		}catch(Exception e){
+			
+		}
+		
+		return resultMap;
+		
 	}
 
 }

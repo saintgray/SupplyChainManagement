@@ -11,7 +11,7 @@ import kr.happyjob.study.scm.supplier.model.Supplier;
 @Service
 public interface SupplyManageService {
 	
-	List<Supplier> getSuppliers(PageInfo info);
+	PageInfo getSuppliers(PageInfo info);
 	List<ImpSales> getImpSales(String comp_id);
 
 }
