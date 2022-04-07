@@ -11,6 +11,7 @@ $(document).ajaxStop($.unblockUI);
  *   param : data parameter
  *   callback : callback function name
  */
+
 function callAjax(url, method, dataType, async, param, callback) {
 	//console.log('>>>>>>param일떄',param);
 	
@@ -189,7 +190,7 @@ function comcombo(group_code, combo_name, type, selvalue, url){
 	     data : data,
 	     success: function(data)
 	     { 				
-	    	 
+	    	 console.log(JSON.stringify(data));
 		     var json_obj = $.parseJSON(JSON.stringify(data));//parse JSON 
 		     var jsonstr = json_obj.list;
 		     console.log("jsonstr : " + jsonstr);

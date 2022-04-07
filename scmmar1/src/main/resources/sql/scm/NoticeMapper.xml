@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.happyjob.study.scm.dao.NoticeDao">
+<mapper namespace="kr.happyjob.study.notice.dao.ScmNoticeDao">
 
 	<!-- 공지사항 작성 -->
 	<insert id="insertNotice">
 		INSERT INTO tb_notice
-		(notice_no, notice_title, notice_content, notice_regdate, notice_moddate, loginID, notice_hit)
+		(notice_no, notice_title, notice_content, loginID)
 		VALUES(
 		#{notice_no},
 		#{notice_title},
 		#{notice_content},
-		curdate(),
-		curdate(),
-		#{loginID},
-		0 
+		#{loginID}
 		)
 	</insert>
 	
@@ -40,127 +37,125 @@
 	
 	<!-- 파일 조회 -->
 	<select id="selectFile" resultType="kr.happyjob.study.scm.model.FileModel">	
-		SELECT file_no, file_ofname, file_new_name, file_size, notice_no 		
-		FROM tb_file
-		WHERE notice_no = #{notice_no} 		
+		SELECT
+			file_no,
+			file_server_path,
+			file_local_path,
+			file_relative_path,
+			file_new_name,
+			file_ofname,
+			file_size
+		FROM tb_notice_file
+		WHERE ntc_no = #{ntc_no} 		
 	</select>
 		
 	<!-- 공지사항 리스트 -->
-	<select id="selectNoticeList" resultType="kr.happyjob.study.scm.model.NoticeModel">
+	<select id="selectNoticeList" resultType="kr.happyjob.study.notice.model.NoticeModel">
 		SELECT
-		notice_no, notice_title, loginID, notice_regdate, notice_moddate, notice_hit, del_cd
+		ntc_no, ntc_title, loginID, ntc_regdate, ntc_editdate
 		FROM tb_notice
 
 		<where>		
-			and del_cd = "n"
 			<choose>
 				<when test="(oname eq 'title'.toString())">
-					and notice_moddate between #{from_date} and #{to_date}
-					and notice_title Like CONCAT('%', #{sname}, '%')
+					and ntc_regdate between #{from_date} and #{to_date}
+					and ntc_title Like CONCAT('%', #{sname}, '%')
 				</when>
 				<when test="(oname eq 'content'.toString())">
-					and notice_moddate between #{from_date} and
+					and ntc_regdate between #{from_date} and
 					#{to_date}
-					and notice_content LIKE CONCAT('%', #{sname}, '%')
+					and ntc_content LIKE CONCAT('%', #{sname}, '%')
 				</when>
 				<when test="(oname eq 'all'.toString())">	
-					and (notice_moddate between #{from_date} and #{to_date})
-					and ((notice_title Like CONCAT('%', #{sname}, '%'))
-					 or (notice_content LIKE CONCAT('%', #{sname}, '%')))
+					and (ntc_regdate between #{from_date} and #{to_date})
+					and ((ntc_title Like CONCAT('%', #{sname}, '%'))
+					 or (ntc_content LIKE CONCAT('%', #{sname}, '%')))
 					
 				</when>
-			</choose>			
+			</choose>
+			AND ntc_deldate is NULL			
 		</where>
-		ORDER BY notice_moddate DESC, notice_no DESC
+		ORDER BY ntc_regdate DESC
 		LIMIT #{pageIndex}, #{pageSize}
 	</select>
 	
 	<!-- 공지 사항 수 구하기 -->
 	<select id="noticeTotalCnt" resultType="int">
-		SELECT COUNT(*) as total_cnt from
-		(SELECT notice_no,
-		         notice_title,
-		         loginID
+		SELECT COUNT(1)
 		FROM tb_notice
 		<where>
-			and del_cd = "n"
 			<choose>				
 				<when test="(oname eq 'title'.toString())">
-					and notice_moddate between #{from_date} and
+					and ntc_regdate between #{from_date} and
 					#{to_date}
-					and notice_title Like CONCAT('%', #{sname}, '%')
+					and ntc_title Like CONCAT('%', #{sname}, '%')
 				</when>
 				<when test="(oname eq 'content'.toString())">
-					and notice_moddate between #{from_date} and
+					and ntc_regdate between #{from_date} and
 					#{to_date}
-					and notice_content LIKE CONCAT('%', #{sname}, '%')
+					and ntc_content LIKE CONCAT('%', #{sname}, '%')
 				</when>
 				<when test="(oname eq 'all'.toString())">
-					and (notice_moddate between #{from_date} and #{to_date})
-					and ((notice_title Like CONCAT('%', #{sname}, '%'))
-					or (notice_content LIKE CONCAT('%', #{sname}, '%')))
+					and (ntc_regdate between #{from_date} and #{to_date})
+					and ((ntc_title Like CONCAT('%', #{sname}, '%'))
+					or (ntc_content LIKE CONCAT('%', #{sname}, '%')))
 				</when>
 			</choose>
+			AND ntc_deldate is NULL
 		</where>
-		)a
 	</select>
 
 	<!-- 공지사항 상세보기 -->
-	<select id="detailNotice" resultType="kr.happyjob.study.scm.model.NoticeModel">
+	<select id="detailNotice" resultType="kr.happyjob.study.notice.model.NoticeModel">
 		<![CDATA[
-		SELECT notice_no,
+		SELECT ntc_no,
 			   loginID,
-			   notice_title,
-			   notice_regdate,
-			   notice_moddate,
-			   notice_content
+			   ntc_title,
+			   ntc_regdate,
+			   ntc_regdate,
+			   ntc_content
 		FROM   tb_notice
-		WHERE  notice_no = #{notice_no}
+		WHERE  ntc_no = #{ntc_no}
 			]]>
 		<choose>
 			<when test="(oname eq 'title'.toString())">
-				and notice_moddate between #{from_date} and #{to_date}
-				and notice_title Like CONCAT('%', #{sname}, '%')
+				and ntc_editdate between #{from_date} and #{to_date}
+				and ntc_title Like CONCAT('%', #{sname}, '%')
 			</when>
 			<when test="(oname eq 'content'.toString())">
-				and notice_moddate between #{from_date} and #{to_date}
-				and notice_content LIKE CONCAT('%', #{sname}, '%')
+				and ntc_editdate between #{from_date} and #{to_date}
+				and ntc_content LIKE CONCAT('%', #{sname}, '%')
 			</when>
 			<when test="(oname eq 'all'.toString())">
-				and notice_moddate between #{from_date} and #{to_date}
-				and ((notice_title Like CONCAT('%', #{sname}, '%')
-				or (notice_content LIKE CONCAT('%', #{sname}, '%'))
+				and ntc_editdate between #{from_date} and #{to_date}
+				and ((ntc_title Like CONCAT('%', #{sname}, '%')
+				or (ntc_content LIKE CONCAT('%', #{sname}, '%'))
 			</when>
 		</choose>
 	</select>
 
-	<!-- 공지사항 조회수 -->
-	<update id="updateHit">
-		UPDATE tb_notice
-		SET notice_hit = notice_hit+1
-		WHERE notice_no = #{notice_no}
-	</update>
+	
 
 	<!-- 공지사항 수정 -->
 	<update id="updateNotice">
 		UPDATE tb_notice
-		SET notice_title = #{notice_title},
-		notice_content = #{notice_content},
-		notice_moddate = curdate()
-		WHERE notice_no = #{notice_no}
+		SET ntc_title = #{ntc_title},
+		ntc_content = #{ntc_content},
+		ntc_editdate = current_timestamp
+		WHERE ntc_no = #{ntc_no}
 	</update>
 
 	<!-- 공지사항 삭제 -->
 	<update id="deleteNotice">
 		UPDATE tb_notice
-		SET del_cd = "y"
-		WHERE notice_no = #{notice_no};
+		SET ntc_deldate=current_timestamp
+		WHERE ntc_no = #{arg0};
 	</update>
 	
 	<!--  첨부파일 삭제 -->  
 	<delete id="deleteFile">
 		DELETE FROM tb_file 
-		WHERE notice_no = #{notice_no}
+		WHERE ntc_no = #{arg0}
 	</delete> 
 	
 </mapper>

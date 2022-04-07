@@ -1,11 +1,10 @@
-package kr.happyjob.study.scm.dao;
+package kr.happyjob.study.notice.dao;
 
 import java.util.List;
 import java.util.Map;
 
-
-import kr.happyjob.study.scm.model.FileModel;
-import kr.happyjob.study.scm.model.NoticeModel;
+import kr.happyjob.study.notice.model.FileModel;
+import kr.happyjob.study.notice.model.NoticeModel;
 
 public interface ScmNoticeDao {
 
@@ -28,7 +27,7 @@ public interface ScmNoticeDao {
 	public int deleteNotice(Map<String, Object> paramMap) throws Exception;
 	
 	//파일 조회
-	public FileModel selectFile(Map<String, Object> paramMap);
+	public List<FileModel> selectFile(Map<String, Object> paramMap);
 	
 	//파일 삭제
 	public int deleteFile(Map<String, Object> paramMap);

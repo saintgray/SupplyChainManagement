@@ -107,7 +107,6 @@
 	<!-- POST POP UP MODAL -->
 	<div id="daumFindZipCodeArea">
 		<div id="zipFrame" style="position:absolute; z-index:10; display:none;">
-		
 			<img src="/images/admin/comm/btn_close.png" id="btn-close-daum">
 		</div>
 	</div>

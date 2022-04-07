@@ -29,7 +29,7 @@
 		margin:0 auto;
 		
 	}
-	
+
 	#btn-close-daum{
 		position:absolute;
 		right:0;

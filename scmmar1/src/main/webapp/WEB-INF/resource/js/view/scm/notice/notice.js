@@ -3,16 +3,19 @@
 	var noticePageSize = 10; // 화면에 뿌릴 데이터 수 
 	var noticePageBlock = 5; // 블럭으로 잡히는 페이징처리 수
 
-	// onload 이벤트  
+	// onload 이벤트 
 	$(function() {
-		// 자유게시판 리스트 뿌리기 함수 
-		selectNoticeList();
+		// DatePicker
+		fDatePicker();
 
 		// 버튼 이벤트 등록 (저장, 수정, 삭제, 모달창 닫기)
 		fButtonClickEvent();
 		
-		// DatePicker
-		fDatePicker();
+		// 자유게시판 리스트 뿌리기 함수 
+		selectNoticeList();
+
+		
+		
 		
 		
 	});
@@ -34,7 +37,7 @@
 
 	// 버튼 이벤트 등록 - 저장, 수정, 삭제  
 	function fButtonClickEvent() {
-		$('a[name=btn]').click(function(e) {
+		$('.btn_areaC > a, #searchBtn').click(function(e) {
 			e.preventDefault(); // ?? 
 
 			var btnId = $(this).attr('id');
@@ -52,7 +55,6 @@
 				break;
 			case 'btnClose':
 				gfCloseModal(); // 모달닫기 
-				selectNoticeList(); // 첫페이지 다시 로딩 
 				break;
 			case 'btnUpdateNotice':
 				fUpdateNotice(); // 수정하기
@@ -117,21 +119,30 @@
 	// 공지사항 리스트 호출
 	function selectNoticeList(currentPage) {
 
-		currentPage = currentPage || 1; // or		
+		currentPage = currentPage || 1;		
 
-		//alert("지금 현재 페이지를 찍어봅시다. " + currentPage);
+		var sname = $('#sname');
+		var searchKey = document.getElementById("searchKey");
+		var oname = searchKey.options[searchKey.selectedIndex].value;
+		
+		var from_date = $('#from_date');
+		var to_date = $('#to_date');
 
 		var param = {
+			sname : $('#sname').val(),
+			oname : oname,
+			from_date : $('#from_date').val(),
+			to_date : $('#to_date').val(),
 			currentPage : currentPage,
-			pageSize : noticePageSize
+			pageSize : noticePageSize,
+			searchKey:searchKey.value
 		}
 
 		var resultCallback = function(data) { // 데이터를 이 함수로 넘깁시다. 
 			noticeListResult(data, currentPage);
 		}
-
-		callAjax("/scm/noticeList.do", "post", "text", true, param,
-				resultCallback);
+		// console.log(param);
+		callAjax("/scm/noticeList.do", "post", "text", true, param,resultCallback);
 
 	}
 
@@ -159,9 +170,8 @@
 		$("#noticeList").append(data);
 
 		// 리스트의 총 개수를 추출합니다. 
-		//var totalCnt = $data.find("#totalCnt").text();
-		var totalCnt = $("#totalCnt").val(); // qnaRealList() 에서보낸값 
-		//alert("totalCnt 찍어봄!! " + totalCnt);
+		var totalCnt = $("#totalCnt").val(); 
+		
 
 		// * 페이지 네비게이션 생성 (만들어져있는 함수를 사용한다 -common.js)
 		// function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc, exParams)
@@ -171,43 +181,13 @@
 		var pagingnavi = getPaginationHtml(currentPage, totalCnt,
 				noticePageSize, noticePageBlock, 'selectNoticeList', [ list ]);
 
-		console.log("pagingnavi : " + pagingnavi);
-		// 비운다음에 다시 append 
+		
+		 
 		$("#pagingnavi").empty().append(pagingnavi); // 위에꺼를 첨부합니다. 
 
 		// 현재 페이지 설정 
 		$("#currentPage").val(currentPage);
 
-	}
-
-	// 검색 기능
-	function board_search(currentPage) {
-
-		currentPage = currentPage || 1;
-
-		var sname = $('#sname');
-		var searchKey = document.getElementById("searchKey");
-		var oname = searchKey.options[searchKey.selectedIndex].value;
-		
-		var from_date = $('#from_date');
-		var to_date = $('#to_date');
-		
-	
-		var param = {
-			sname : sname.val(),
-			oname : oname,
-			from_date : from_date.val(),
-			to_date : to_date.val(),
-			currentPage : currentPage,
-			pageSize : noticePageSize
-		}
-
-		var resultCallback = function(data) {
-			noticeListResult(data, currentPage);
-		};
-
-		callAjax("/scm/noticeList.do", "post", "text", true, param,
-				resultCallback);
 	}
 
 	// 공지사항 모달창 호출
@@ -226,10 +206,7 @@
 			
 			gfModalPop("#notice");
 			
-			var d= new Date();
-			d = getFormatDate(d);
-			$("#notice_moddate").val(d);
-			$("#notice_moddate").attr("readonly", true);
+			
  
 		} else {
 			// Tranjection type 설정
@@ -244,7 +221,7 @@
 		//alert("공지사항 상세 조회  ");
 
 		var param = {
-			notice_no : notice_no
+			ntc_no : notice_no
 		};
 		var resultCallback2 = function(data) {
 			fdetailResult(data);
@@ -264,8 +241,7 @@
 			gfModalPop("#notice");
 
 			// 모달에 정보 넣기 
-			frealPopModal(data.result, data.result2);
-
+			frealPopModal(data.result, data.files);
 		} else {
 			alert(data.resultMsg);
 		}
@@ -300,16 +276,16 @@
 			$("#loginID").val(object.loginID);
 			$("#loginID").attr("readonly", true); // 작성자 수정불가 
 			
-			$("#notice_moddate").val(object.notice_moddate);
+			$("#notice_moddate").val(object.ntc_regdate);
 			$("#notice_moddate").attr("readonly", true); // 처음 작성된 날짜 수정불가 
 		
-			$("#notice_title").val(object.notice_title);
-			$("#notice_content").val(object.notice_content);
+			$("#notice_title").val(object.ntc_title);
+			$("#notice_content").val(object.ntc_content);
 			
-			$("#notice_no").val(object.notice_no); // 중요한 num 값도 숨겨서 받아온다. 		
+			$("#notice_no").val(object.ntc_no); // 중요한 num 값도 숨겨서 받아온다. 		
 	
-			if(fobject != "NOT") {			          
-				$("#filedown").empty().append("<a href='javascript:filedown("+ fobject.notice_no + ")'>" + fobject.file_ofname + "</a>");				                                 
+			if(fobject.length!=0) {			          
+				$("#filedown").empty().append("<a href='javascript:filedown("+ fobject.ntc_no + ")'>" + fobject.file_ofname + "</a>");				                                 
 			} 									
 
 			$("#btnDeleteNotice").show(); // 삭제버튼 보이기 

@@ -1,24 +1,15 @@
-package kr.happyjob.study.scm.service;
+package kr.happyjob.study.notice.service;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import kr.happyjob.study.common.comnUtils.FileUtilModel;
-import kr.happyjob.study.common.comnUtils.NewFileUtil;
-import kr.happyjob.study.scm.dao.ScmNoticeDao;
-import kr.happyjob.study.scm.model.FileModel;
-import kr.happyjob.study.scm.model.NoticeModel;
+import kr.happyjob.study.notice.dao.ScmNoticeDao;
+import kr.happyjob.study.notice.model.FileModel;
+import kr.happyjob.study.notice.model.NoticeModel;
 
 @Service
 public class ScmNoticeServiceImpl implements ScmNoticeService {
@@ -53,7 +44,7 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 	@Override
 	public List<NoticeModel> noticeList(Map<String, Object> paramMap) throws Exception {
 		
-      List<NoticeModel> noticeList = noticeDao.selectNoticeList(paramMap);
+		List<NoticeModel> noticeList = noticeDao.selectNoticeList(paramMap);
 		
 		
 		return noticeList;
@@ -67,19 +58,19 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 		return totalCnt;
 	}
 	
-	@Transactional 
+
 	@Override
 	public NoticeModel detailNotice(Map<String, Object> paramMap) throws Exception {
 	
 		// 상세정보 가져오기 
 		NoticeModel detailNotice = noticeDao.detailNotice(paramMap);
-		int updateHit = noticeDao.updateHit(paramMap);
 		return detailNotice;
 	}
 	
 	// 파일정보 가져오기
-	public FileModel selectFile(Map<String, Object> paramMap)throws Exception {
-		FileModel selectFile = noticeDao.selectFile(paramMap);
+	@Override
+	public List<FileModel> selectFile(Map<String, Object> paramMap)throws Exception {
+		List<FileModel> selectFile = noticeDao.selectFile(paramMap);
 		return selectFile;
 	}
 

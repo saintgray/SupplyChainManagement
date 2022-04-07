@@ -6,6 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="text/html; charset=UTF-8">
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
+<!-- DAUM Postcode cdn API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 <style>
 	.searchArea{
@@ -31,12 +33,8 @@
 	}
 	#userinfoarea table{
 		border-collapse: separate;
-		border-spacing: 0 10px;
+		border-spacing: 10px 10px;
 		margin: 0 auto;
-		
-	}
-	#userinfoarea table input, #userinfoarea table select{
-		margin:0 10px;
 		
 	}
 	.userInfoBtnArea{
@@ -44,6 +42,15 @@
 	}
 	#sb-userType{
 		margin-left:0 !important;
+	}
+	
+	#btn-close-daum{
+		position:absolute;
+		right:0;
+	    bottom: 0;
+	    z-index: 11;
+	    cursor: pointer;
+		
 	}
 </style>
 
@@ -122,38 +129,18 @@
 						
 						<!-- User Form Area -->
 						<form id="userModalForm"></form>
-						
-						
-						
-						
-						
-						
-						
-						
+
 					</div>
-					
-					
-					
-	
+					<!-- end <div id="content"> -->
 				</li>
 				
 			</ul>
 		</div>
-		
+		<!-- end CONTENT -->
 		
 	
 	</div>
 	
-	
-	
-	
-	
-	<!-- Modal Area -->
-	
-
-
-
-
 </body>
 
 

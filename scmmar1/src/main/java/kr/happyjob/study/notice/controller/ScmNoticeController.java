@@ -1,4 +1,4 @@
-package kr.happyjob.study.scm.controller;
+package kr.happyjob.study.notice.controller;
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -18,13 +18,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 
-
-import kr.happyjob.study.scm.model.FileModel;
-import kr.happyjob.study.scm.model.NoticeModel;
-import kr.happyjob.study.scm.service.ScmNoticeService;
+import kr.happyjob.study.notice.model.FileModel;
+import kr.happyjob.study.notice.model.NoticeModel;
+import kr.happyjob.study.notice.service.ScmNoticeService;
 
 
 @Controller
@@ -42,7 +39,7 @@ public class ScmNoticeController {
 
 	private final static String rootPath = "c://notice/";
 	
-	/* 자유게시판 -초기화면 */
+	
 	@RequestMapping("noticeMgr.do")
 	public String initNotice(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) throws Exception {
@@ -51,13 +48,13 @@ public class ScmNoticeController {
 		logger.info("   - paramMap : " + paramMap);
 		
 		// 로그인해서 리스트를 먼저 뿌린다.
-		model.addAttribute("writer", session.getAttribute("loginId"));
+		// model.addAttribute("writer", session.getAttribute("loginId"));
 		// 작성 초기 단계에서 쓰려고 미리 뿌린다.
 		// System.out.println("writer : " + session.getAttribute("loginId"));
 		
 		logger.info("+ End " + className + ".initNotice");
 		
-		return "scm/notice";
+		return "notice/notice";
 	}
 	
 	
@@ -65,35 +62,32 @@ public class ScmNoticeController {
 	@RequestMapping("noticeList.do")
 	public String noticeList(Model model, @RequestParam Map<String,Object> paramMap, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) throws Exception {
-		
-		    logger.info("+ Start " + className + ".noticeList");
-		    logger.info("   - paramMap : " + paramMap);
-			//System.out.println("param에서 넘어온 값을 찍어봅시다.: " + paramMap);
 			
-			// jsp페이지에서 넘어온 파람 값 정리 (페이징 처리를 위해 필요)
+			// extraction params
 			int currentPage = Integer.parseInt((String)paramMap.get("currentPage")); // 현재페이지 
 			int pageSize = Integer.parseInt((String)paramMap.get("pageSize"));
 			int pageIndex = (currentPage -1)*pageSize;
 			
-			// 사이즈는 int형으로, index는 2개로 만들어서 -> 다시 파람으로 만들어서 보낸다.
+			// put parameters into Map
 			paramMap.put("pageIndex", pageIndex);
 			paramMap.put("pageSize", pageSize);
+			
 		
-			// 서비스 호출
+			// get notice list
 			List<NoticeModel> noticeList = noticeService.noticeList(paramMap);
-			model.addAttribute("noticeList", noticeList);
 			
-			// 목록 숫자 추출하여 보내기 
+			
+			// get notices total 
 			int totalCnt = noticeService.noticeTotalCnt(paramMap);
-			model.addAttribute("totalCnt", totalCnt);
 			
+			
+			// Add attribute
+			model.addAttribute("totalCnt", totalCnt);
+			model.addAttribute("noticeList", noticeList);
 			model.addAttribute("pageSize", pageSize);
 			model.addAttribute("currentPage",currentPage);
 			
-			//System.out.println("자 컨트롤러에서 값을 가지고 jsp로 갑니다~ : " + freeboardlist.size());
-			logger.info("+ End " + className + ".noticeList");
-			
-		return "scm/noticeList";	
+		return "notice/noticeList";	
 	}
 	
 	/* 공지사항 상세 정보 뿌리기 */
@@ -102,9 +96,6 @@ public class ScmNoticeController {
 	public Map<String,Object> detailList(Model model, @RequestParam Map<String,Object> paramMap, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) throws Exception {
 		
-		//System.out.println("상세정보 보기를 위한 param에서 넘어온 값을 찍어봅시다.: " + paramMap);
-		  logger.info("+ Start " + className + ".detailList");
-		  logger.info("   - paramMap : " + paramMap);
 		  
 		String result="";
 		
@@ -113,7 +104,7 @@ public class ScmNoticeController {
 		//List<CommentsVO> comments = null;
 		
 		//파일 1건 조회
-		FileModel selectFile = noticeService.selectFile(paramMap);
+		List<FileModel> files = noticeService.selectFile(paramMap);
 		
 		if(detailNotice != null) {
 			
@@ -124,21 +115,11 @@ public class ScmNoticeController {
 		}
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("result", detailNotice); // 리턴 값 해쉬에 담기 
+		resultMap.put("result", detailNotice); 
 		
-		if(selectFile != null) {
-			resultMap.put("result2", selectFile); // 리턴 값 해쉬에 담기 
-		}else {
-			resultMap.put("result2", "NOT"); // 리턴 값 해쉬에 담기 
-		}
-		//resultMap.put("resultComments", comments);
+		resultMap.put("files", files);
+		
 		resultMap.put("resultMsg", result); // success 용어 담기 
-		
-		System.out.println("결과 글 찍어봅세 " + result);
-		System.out.println("결과 글 찍어봅세 " + detailNotice);
-		System.out.println("결과 글 찍어봅세 " + selectFile);
-		
-		logger.info("+ End " + className + ".detailList");
 		
 		return resultMap;
 	}
@@ -193,29 +174,29 @@ public class ScmNoticeController {
 		return resultMap;
 	}
 	
-	@RequestMapping("fileDown.do")
-	public void downloadBbsAtmtFil(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
-	
-		logger.info("+ Start " + className + ".downloadBbsAtmtFil");
-		logger.info("   - paramMap : " + paramMap);
-		
-		// 첨부파일 조회
-		FileModel selectFile = noticeService.selectFile(paramMap);
-		
-		byte fileByte[] = FileUtils.readFileToByteArray(new File(rootPath+selectFile.getFile_new_name()));
-		
-		response.setContentType("application/octet-stream");
-	    response.setContentLength(fileByte.length);
-	    response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(selectFile.getFile_ofname(),"UTF-8")+"\";");
-	    response.setHeader("Content-Transfer-Encoding", "binary");
-	    response.getOutputStream().write(fileByte);
-	     
-	    response.getOutputStream().flush();
-	    response.getOutputStream().close();
-
-		logger.info("+ End " + className + ".fileDown");
-	}
+//	@RequestMapping("fileDown.do")
+//	public void downloadBbsAtmtFil(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+//			HttpServletResponse response, HttpSession session) throws Exception {
+//	
+//		logger.info("+ Start " + className + ".downloadBbsAtmtFil");
+//		logger.info("   - paramMap : " + paramMap);
+//		
+//		// 첨부파일 조회
+//		FileModel selectFile = noticeService.selectFile(paramMap);
+//		
+//		byte fileByte[] = FileUtils.readFileToByteArray(new File(rootPath+selectFile.getFile_new_name()));
+//		
+//		response.setContentType("application/octet-stream");
+//	    response.setContentLength(fileByte.length);
+//	    response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(selectFile.getFile_ofname(),"UTF-8")+"\";");
+//	    response.setHeader("Content-Transfer-Encoding", "binary");
+//	    response.getOutputStream().write(fileByte);
+//	     
+//	    response.getOutputStream().flush();
+//	    response.getOutputStream().close();
+//
+//		logger.info("+ End " + className + ".fileDown");
+//	}
 	
 	
 	

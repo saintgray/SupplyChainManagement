@@ -582,6 +582,7 @@ function fOpenWinZipCod(id, zcd, adrs, dtlAdrs) {
 					// 우편번호와 주소 정보를 해당 필드에 넣는다.
 					document.getElementById(zcd).value = data.zonecode; //5자리 새우편번호 사용
 					document.getElementById(adrs).value = fullAddr;
+					document.getElementById(dtlAdrs).value='';
 					document.getElementById(dtlAdrs).focus();
 					//document.getElementById('sample2_addressEnglish').value = data.addressEnglish;
 					}else{
@@ -591,6 +592,7 @@ function fOpenWinZipCod(id, zcd, adrs, dtlAdrs) {
 					// iframe을 넣은 element를 안보이게 한다.
 					// (autoClose:false 기능을 이용한다면, 아래 코드를 제거해야 화면에서 사라지지 않는다.)
 					$('#' + id).hide();
+					
 				},
 				width : '100%',
 				height : '100%',

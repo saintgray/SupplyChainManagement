@@ -67,6 +67,15 @@
 				$('.basicinfo-row2').after($(getAdditionalInfoFormForEMP()));
 			}
 		})
+		
+		$('body').on('click','#findZip',function(e){
+			e.preventDefault();
+			fOpenWinZipCod('zipFrame', 'zipCode', 'address', 'dtAddress');
+		})
+		
+		$('body').on('click','#btn-close-daum',function(){
+			closeDaumPostcode('zipFrame');
+		})
 
 	})
 
@@ -140,13 +149,13 @@
 		html += '<span>직원명</span>\r\n';
 		html += '</td>\r\n';
 		html += '<td>\r\n';
-		html += '<input type="text" name="name"\r\n';
+		html += '<input type="text" class="form-control" name="name"\r\n';
 		html += '</td>\r\n';
 		html += '<td>\r\n';
 		html += '<span>담당업무</span>\r\n';
 		html += '</td>\r\n';
 		html += '<td>\r\n'
-		html += '<select>\r\n';
+		html += '<select class="form-control">\r\n';
 		html += '<option value="A">SCM</option>\r\n';
 		html += '<option value="B">배송</option>\r\n';
 		html += '<option value="D">구매</option>\r\n';
@@ -165,13 +174,13 @@
 		html += '<span>회사명</span>\r\n';
 		html += '</td>\r\n';
 		html += '<td>\r\n';
-		html += '<input type="text" name="client"\r\n';
+		html += '<input type="text" class="form-control" name="client"\r\n';
 		html += '</td>\r\n';
 		html += '<td>\r\n';
 		html += '<span>담당자명</span>\r\n';
 		html += '</td>\r\n';
 		html += '<td>\r\n'
-		html += '<input type="text" name="name"\r\n';
+		html += '<input type="text" class="form-control" name="name"\r\n';
 		html += '</td>\r\n';
 		html += '</tr>';
 		return html;

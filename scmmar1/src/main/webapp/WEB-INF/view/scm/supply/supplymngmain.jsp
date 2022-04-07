@@ -26,6 +26,9 @@
 	#supplyListArea table, #impSalesListArea table{
 		margin:0 auto;
 	}
+	#impSalesWrap{
+		margin-bottom:50px;
+	}
 </style>
 </head>
 <body>
