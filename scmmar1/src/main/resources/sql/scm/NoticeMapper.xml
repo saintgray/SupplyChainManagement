@@ -4,15 +4,17 @@
 <mapper namespace="kr.happyjob.study.notice.dao.ScmNoticeDao">
 
 	<!-- 공지사항 작성 -->
-	<insert id="insertNotice">
-		INSERT INTO tb_notice
-		(notice_no, notice_title, notice_content, loginID)
-		VALUES(
-		#{notice_no},
-		#{notice_title},
-		#{notice_content},
-		#{loginID}
-		)
+	<insert id="insertNotice" useGeneratedKeys="true" keyProperty="ntc_no">
+		INSERT INTO tb_notice(
+						ntc_title, 
+						ntc_content, 
+						loginID
+					 	)
+				VALUES(
+				#{ntc_title},
+				#{ntc_content},
+				#{loginID}
+				)
 	</insert>
 	
 	<!--  notice_no +1  -->

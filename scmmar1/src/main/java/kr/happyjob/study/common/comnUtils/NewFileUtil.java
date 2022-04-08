@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -147,16 +145,6 @@ public class NewFileUtil {
                 									fileExtension
             									 );
                 
-//                fileModel.setFile_ofname(ofileName);
-//                fileModel.setFile_new_name(newFileName);
-//                fileModel.setFile_server_path(serverFilePath.replace(File.separatorChar, '/'));
-//                fileModel.setFile_local_path(localFilePath.replace(File.separatorChar,'/'));
-//                fileModel.setFile_exts(fileExtension);
-//                fileModel.setFile_size(fileSize);
-//                fileModel.setForeignKey(foreignKey);
-//                fileModel.setFile_exts(fileExtension);
-                
-                
                 fileModelsPerElement.add(fileModel);
                 
             }
@@ -165,7 +153,6 @@ public class NewFileUtil {
             // Add List<FileModel> to fileModelArray
             // fileModelArray.add(fileModelsPerElement);
         }
-        logger.info("   - uploadFiles() finished ");
         return fileModelListMap;
 	}	
 	

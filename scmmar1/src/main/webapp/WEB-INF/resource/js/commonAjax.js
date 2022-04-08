@@ -65,11 +65,12 @@ function callAjax(url, method, dataType, async, param, callback) {
  *   formName : form name
  *   callback : callback function name
  */
-function callAjaxFileUpload(url, method, dataType, async, formName, callback) {
+function callAjaxFileUpload(url, method, dataType, async, formName, callback){
 	
 	if (method == null || method == "") method = "post";
 	
 	var frm = document.getElementById(formName);
+	console.log(frm);
 	var fileData = null;
 	if(frm == null){
 		fileData = formName;
@@ -77,7 +78,7 @@ function callAjaxFileUpload(url, method, dataType, async, formName, callback) {
 		frm.enctype = 'multipart/form-data';
 		fileData = new FormData(frm);
 	}
-	
+	console.log(fileData);
 	// 익스플로어에서 데이터를 못담는 현상이 발견되어 아래행 삽입 
 	fileData.append("empty", "empty"); 
 	

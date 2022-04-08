@@ -3,13 +3,17 @@ package kr.happyjob.study.notice.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import kr.happyjob.study.common.comnUtils.NewFileUtil;
 import kr.happyjob.study.notice.dao.ScmNoticeDao;
-import kr.happyjob.study.notice.model.FileModel;
 import kr.happyjob.study.notice.model.NoticeModel;
+import kr.happyjob.study.scm.model.FileModel;
 
 @Service
 public class ScmNoticeServiceImpl implements ScmNoticeService {
@@ -21,24 +25,13 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 	//private final static String rootPath = "c://";
 	
 	@Value("${fileUpload.virtualRootPath}")
-	private static String virtualRootPath;
+	private String virtualRootPath;
 	
 	@Value("${fileUpload.rootPath}")
-	private static String rootPath;	
+	private String rootPath;	
 	
 	@Value("${fileUpload.noticePath}")
-	private static String noticePath;		
-	
-/*	// Virtual Root Path for file upload (Web Module)
-	@Value("${fileUpload.virtualRootPath}")
-	private static String virtualRootPath;
-	
-	@Value("${fileUpload.noticePath}")
-	private static String path;*/
-	//private final static String virtualRootPath = "/file";
-	
-
-	//private final static String path = "notice";	
+	private String noticePath;		
 	
 	
 	@Override
@@ -74,58 +67,39 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 		return selectFile;
 	}
 
-//	@Transactional 
-//	@Override
-//	public int insertNotice(Map<String, Object> paramMap, HttpServletRequest request) throws Exception{
-//		int numResult = noticeDao.numPlus();
-//		paramMap.put("notice_no", numResult);
-//		
-//		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
-//		String itemFilePath = noticePath + File.separator; // 파일 구분자(os별로 다르기 때문에 java에서 자동 적용)
-//		NewFileUtil fileUtil = new NewFileUtil(request, rootPath, virtualRootPath, itemFilePath); //request와 파일저장루트, 디렉토리루트 전달
-//		//System.out.println("----"+itemFilePath);
-//		//System.out.println("----"+rootPath);
-//		//System.out.println("----"+virtualRootPath);
-//
-//		
-//		List<FileModel> fileInfo = null;
-//		try {
-//			fileInfo = fileUtil.uploadFiles();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		Iterator<FileModel> iter = fileInfo.iterator();
-//
-//		String file_server_path = "";	
-//		String file_local_path = "";
-//		String file_new_name = "";
-//		String file_ofname = "";
-//		int file_size = 0;
-//		
-//		int resultCnt = noticeDao.insertNotice(paramMap);		
-//		
-//		while(iter.hasNext()) {
-//			FileModel tempFileInfo = (FileModel)iter.next();
-//			file_server_path = tempFileInfo.getFile_server_path();
-//			file_local_path = tempFileInfo.getFile_local_path();
-//			file_new_name = tempFileInfo.getFile_new_name();
-//			file_ofname = tempFileInfo.getFile_ofname();
-//			file_size = tempFileInfo.getFile_size();
-//			
-//			//쿼리 파라미터 값 넣기
-//			paramMap.put("file_server_path", file_server_path);
-//			paramMap.put("file_local_path", file_local_path);
-//			paramMap.put("file_new_name", file_new_name);
-//			paramMap.put("file_ofname", file_ofname);
-//			paramMap.put("file_size", file_size);
-//			
-//			int result = noticeDao.insertNoticeFile(paramMap);			
-//		}
-//
-//		return resultCnt;
-//		
-//	}
-//	
+	@Transactional 
+	@Override
+	public int insertNotice(NoticeModel data, HttpServletRequest request) throws Exception{
+		
+		String loginID=request.getSession().getAttribute("loginId").toString();
+		data.setLoginID(loginID);
+		System.out.println("loginID>>>>"+loginID);
+		
+		
+		int insertNoticeResult=noticeDao.insertNotice(data);
+		
+		List<FileModel> files=null;
+		
+		if(insertNoticeResult>0){
+			NewFileUtil fUtil=new NewFileUtil(request, rootPath, loginID, noticePath);
+			Map<String, List<FileModel>> filesMap= fUtil.uploadFiles(loginID);
+			files=filesMap.get("file");
+			
+			int filesNum=files.size();
+			
+			if(files==null || files.isEmpty()){
+				int insertFilesResult=noticeDao.insertNoticeFile(files);
+				if(filesNum!=insertFilesResult){
+					throw new Exception();
+				}
+			}
+		}
+		
+		
+		return insertNoticeResult;
+		
+	}
+	
 	
 	
 	

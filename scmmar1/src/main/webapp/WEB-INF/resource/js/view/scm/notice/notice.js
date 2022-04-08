@@ -2,9 +2,41 @@
 	// 페이징 설정 
 	var noticePageSize = 10; // 화면에 뿌릴 데이터 수 
 	var noticePageBlock = 5; // 블럭으로 잡히는 페이징처리 수
-
+	
+	
 	// onload 이벤트 
 	$(function() {
+		
+		// init Summernote
+		$('#ntc_content').summernote({
+			toolbar:[	
+			         	['fontNames',['fontname']],
+			         	['font',['bold','underline','Italic','clear']],
+			         	['color', ['forecolor','color']],
+			         	['insert',['picture','link','video']],
+			         	['table', ['table']],
+					    ['para', ['ul', 'ol', 'paragraph']],
+			         	['fontSize','fontsize']
+			        ],
+	    	image:[
+				       ['image','resizeQuarter'],
+				       ['float','floatLeft]']
+			       ],
+	       	fontSizes:['8','9','10','12','14','16','18','20','24','30','36','50'],
+	       	fontNames:['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+			lang: "ko-KR",
+			placeholder: "내용을 입력하세요",
+			width:"500",
+			minWidth:"500",
+			maxWidth:"500",
+			height:"500",
+			minHeight:"300px",
+			maxHeight:"300px",
+			
+		
+	        
+		})
+		
 		// DatePicker
 		fDatePicker();
 
@@ -15,7 +47,8 @@
 		selectNoticeList();
 
 		
-		
+		fileEvent();
+		removePrevFilesEvent();
 		
 		
 	});
@@ -46,15 +79,18 @@
 
 			switch (btnId) {
 			case 'btnSaveNotice':
-				fSaveNotice(); // save 안에 저장,수정
-				//alert("저장버튼 클릭!!!이벤트!!");
+				
+				fSaveNotice();
+				
 				break;
 			case 'btnDeleteNotice':
 				fDeleteNotice(); // 만들자 
 				//alert("삭제버튼 클릭!!!이벤트!!");		
 				break;
 			case 'btnClose':
-				gfCloseModal(); // 모달닫기 
+				if(confirm('작성을 취소하시겠습니까?')){
+					fCloseModal();
+				}
 				break;
 			case 'btnUpdateNotice':
 				fUpdateNotice(); // 수정하기
@@ -62,12 +98,50 @@
 			case 'searchBtn':
 				board_search(); // 검색하기
 				break;
-
-			//case 'commentWrite' : fCommentInsert();   // 댓글--> 답변글로 변경 // 저장 
-			//break;
 			}
 		});
 	}
+	
+	function fileEvent(){
+		$('#file').on('change',function(e){
+			console.log(e.target.files);
+			var files=e.target.files
+			$(files).each(function(index, file){
+				
+				var prevHtml='';
+				prevHtml+='<div>';
+				prevHtml+='<span id='+file.lastModified+'>'+file.name+'</span>';
+				prevHtml+='<img src="/images/treeview/minus.gif" class="remove"/>';
+				prevHtml+='</div>'
+				$('#attrfiles').append(prevHtml);
+			})
+		})
+	}
+	
+	// removefile
+	function removePrevFilesEvent(){
+		$('#attrfiles').on('click','.remove',function(){
+			
+			console.log($(this).siblings('span').attr('id'));
+			var removeTarget=$(this).siblings('span').attr('id');
+			
+			// 실제 input file 태그에 저장된 file 들 중 선택한 id 값(lastModified) 만 제외하고 
+			// dataTransfer 객체에 추가한다.
+			var files=$('#file')[0].files;
+			const dataTransfer=new DataTransfer();
+			Array.from(files)
+				 .filter(file=>file.lastModified != removeTarget)
+				 .forEach(file=>{
+					dataTransfer.items.add(file); 
+				 });
+			// 삭제한 파일을 제외한 FileList 를 가지고 있는 dataTransfer 객체의 list를 input file 태그에 복사한다
+			$('#file')[0].files=dataTransfer.files;
+			
+			// 미리보기에서 제거
+			$(this).parent().remove();
+		})
+	}
+	
 	
 	// DatePicker
  	function fDatePicker(){
@@ -269,6 +343,8 @@
 			$("#btnDeleteNotice").hide(); // 삭제버튼 숨기기
 			$("#btnUpdateNotice").hide();
 			$("#btnSaveNotice").show();
+			
+			$('#r-regdate,#r-writer').hide();
 
 		} else {
 
@@ -276,13 +352,13 @@
 			$("#loginID").val(object.loginID);
 			$("#loginID").attr("readonly", true); // 작성자 수정불가 
 			
-			$("#notice_moddate").val(object.ntc_regdate);
-			$("#notice_moddate").attr("readonly", true); // 처음 작성된 날짜 수정불가 
+			$("#ntc_regdate").val(object.ntc_regdate);
+			$("#ntc_regdate").attr("readonly", true); // 처음 작성된 날짜 수정불가 
 		
-			$("#notice_title").val(object.ntc_title);
-			$("#notice_content").val(object.ntc_content);
+			$("#ntc_title").val(object.ntc_title);
+			$('#ntc_content').summernote('code',object.ntc_content);
 			
-			$("#notice_no").val(object.ntc_no); // 중요한 num 값도 숨겨서 받아온다. 		
+			$("#ntc_no").val(object.ntc_no); // 중요한 num 값도 숨겨서 받아온다. 		
 	
 			if(fobject.length!=0) {			          
 				$("#filedown").empty().append("<a href='javascript:filedown("+ fobject.ntc_no + ")'>" + fobject.file_ofname + "</a>");				                                 
@@ -314,6 +390,9 @@
 
 	// 공지사항 등록(저장) 
 	function fSaveNotice() {
+		
+		// inserted Flag
+		$("#action").val("I");
 
 		//alert("저장 함수 타는지!!!!!?? ");
 		// validation 체크 
@@ -321,18 +400,49 @@
 			return;
 		}
 
-		var resultCallback3 = function(data) {
+		var callback = function(data) {
 			fSaveNoticeResult(data);
 		};
-
-		$("#action").val("I"); // insert
-		var frm = document.getElementById("myNotice");
-		var dataWithFile = new FormData(frm);	
 		
-
-		callAjaxFileUploadSetFormData("/scm/noticeSave.do", "post", "json", true, dataWithFile, resultCallback3);
-
-		// $("#myNotice").serialize() => 직렬화해서 name 값들을 그냥 넘김.
+		var formData=new FormData();
+		formData.append('ntc_title',$('#ntc_title').val());
+		formData.append('ntc_content',$('#ntc_content').summernote('code'));
+		formData.append('action',$('#action').val());
+		formData.append('file',$('#file')[0].files);
+		
+		
+		$.ajax({
+			url : '/scm/noticeSave.do',
+			type : 'post',
+			data : formData,
+			enctype:'multipart/form-data',
+			contentType: false,
+			processData: false,
+			cache : false,
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader("AJAX", "true");
+				$.blockUI({ message: '<h1><img src="/images/admin/comm/busy.gif" /> Just a moment...</h1>', T:99999 });
+			},
+			success : function(data) {
+				callback(data);
+			},
+			error : function(xhr, status, err) {
+				console.log("xhr : " + xhr);
+				console.log("status : " + status);
+				console.log("err : " + err);
+				
+				if (xhr.status == 901) {
+					alert("로그인 정보가 없습니다.\n다시 로그인 해 주시기 바랍니다.");
+					location.replace('/login.do');
+				} else {
+					alert('A system error has occurred.' + err);
+				}
+			},
+			complete: function(data) {
+				$.unblockUI();
+			}
+		});
+		// callAjaxFileUpload("/scm/noticeSave.do", 'post', 'json', true, 'myNotice', callback);
 	}
 
 	// 저장 ,수정, 삭제 콜백 함수 처리 
@@ -342,22 +452,8 @@
 		if ($("#action").val() != "I") {
 			currentPage = $("#currentPage").val();
 		}
-
-		if (data.resultMsg == "SUCCESS") {
-			//alert(data.resultMsg);	// 받은 메세지 출력 
-			alert("저장 되었습니다.");
-		} else if (data.resultMsg == "UPDATE") {
-			alert("수정 되었습니다.");
-		} else if (data.resultMsg == "DELETE") {
-			alert("삭제 되었습니다.");
-		} else {
-			alert(data.resultMsg); //실패시 이거 탄다. 
-			alert("실패 했습니다.");
-		}
-
-		gfCloseModal(); // 모달 닫기
-		selectNoticeList(currentPage); // 목록조회 함수 다시 출력 
-		frealPopModal();// 입력폼 초기화
+		alert('통신성공');
+		fCloseModal();
 	}
 
 	// 공지사항 등록(수정) 
@@ -400,13 +496,12 @@
 		}
 	}
 	
-	/* 	// 검색날짜 기본값 설정 from_date = 3달전 , to_date = 오늘날짜
- 	$(document).ready(function() { 		
- 	  document.getElementById('to_date').value = new Date().toISOString().substring(0, 10);
-	  var from_date = new Date;
-	  from_date.setMonth(from_date.getMonth()-3);
-	  document.getElementById('from_date').value = from_date.toISOString().substring(0, 10);
-	  //searchBtn.click();
-
- 	}) */
+	function fCloseModal(){
+		// 제목, 내용, 파일, 첨부파일 미리보기 전부 지우기
+		$('#ntc_title,#file').val("");
+		$('#ntc_content').summernote('code','');
+		$('#attrfiles').empty();
+		gfCloseModal(); // 모달닫기	
+	}
+	
 	

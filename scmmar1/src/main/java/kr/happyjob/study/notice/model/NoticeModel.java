@@ -2,10 +2,10 @@ package kr.happyjob.study.notice.model;
 
 public class NoticeModel {
 	
+	private int ntc_no;
 	private String loginID;
 	private String ntc_content;
 	private String ntc_moddate;
-	private int ntc_no;
 	private String ntc_regdate;
 	private String ntc_editdate;
 	private String ntc_title;

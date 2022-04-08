@@ -9,6 +9,9 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
 <script src="/js/view/scm/notice/notice.js"></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
+<script src="/js/summernote/summernote.js"></script>
+<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="/js/summernote/summernote.css">
 	<style>
  		input[name=date].datetype{
 			padding:4px 2px 5px 25px; width:95px; border:1px solid #CACACA;
@@ -16,6 +19,29 @@
 			background:url('http://cfile23.uf.tistory.com/image/26100D4F5864C76827F535') no-repeat 2px 2px; background-size:15px
    		 }   
 		textarea.autosize { min-height: 50px; }
+		#ntc-reg-modal{
+			margin:0;
+		}
+		.note-editable.panel-body{
+			overflow-x:scroll;
+		}
+		.bts-noteeditor.note-frame{
+			margin:0 auto;
+		}
+		#attrfiles{
+			display: flex;
+			flex-wrap:wrap;
+			max-width:500px;
+		}
+		#attrfiles .remove{
+			width: 10px;
+		    height: 10px;
+		    margin-left: 3px;
+		    cursor:pointer;
+		}
+		#attrfiles div{
+			margin: 3px 5px;
+		}
 	</style>
 </head>
 <body>
@@ -23,15 +49,12 @@
 <%-- <c:if test="${sessionScope.userType ne 'A'}">
     <c:redirect url="/dashboard/dashboard.do"/>
 </c:if> --%>
-	<form id="myNotice" action="" method="" enctype="multipart/form-data" >
+
 		
 		<input type="hidden" id="currentPage" value="1">
 		<!-- 현재페이지는 처음에 항상 1로 설정하여 넘김  -->
-		<input type="hidden" name="action" id="action" value=""> 
-		<input type="hidden" id="swriter" value="${writer}">
-		<!-- 작성자 session에서 java에서 넘어온값 -->
-		<input type="hidden" name="notice_no" id="notice_no" value=""> 
-		<input type="hidden" name="file_no" id="file_no" value=""> 
+ 
+		 
 	
 		<div id="wrap_area">
 
@@ -126,9 +149,9 @@
 			</div>
 		</div>
 		<!-- end of wrap area -->
-
+	<form id="myNotice">
 		<!-- 모달팝업 -->
-		<div id="notice" class="layerPop layerType2" style="width: 600px;">
+		<div id="notice" class="layerPop layerType2" style="width: auto; min-width: 700px;">
 			
 			<dl>
 				<dt>
@@ -137,32 +160,34 @@
 				
 				<dd class="content bts">
 
-					<table class="row">
+					<table class="row" id="ntc-reg-modal">
 						<caption>caption</caption>
 						<tbody>
-							<tr>
+							<tr id="r-title">
 								<th scope="row">제목 </th>
 								<td colspan="3">
 								<input type="text" class="inputTxt p100 form-control"
-									   name="notice_title" id="notice_title" /></td>
+									   name="ntc_title" id="ntc_title" /></td>
 							</tr>
-							<tr>
+							<tr id="r-writer">
 								<th scope="row">작성자 </th>
 								<td>
 								<input type="text" class="inputTxt p100 form-control" 
 								       name="loginID" id="loginID" /></td>
 							</tr>
-							<tr>
+							<tr id="r-regdate">
 								<th scope="row">작성일 </th>
 								<td>
 								<input type="text" class="inputTxt p100 form-control" 
-								       name="notice_moddate" id="notice_moddate" /></td>
+								       id="ntc_regdate" /></td>
 							</tr>														
-							<tr>
+							<tr id="r-content">
 								<th scope="row">내용</th>
 								<td>
-								<textarea class="autosize form-control" onkeydown="resize(this)" onkeyup="resize(this)"
-								 name="notice_content" id="notice_content"></textarea></td>
+									<textarea class="autosize form-control" onkeydown="resize(this)" onkeyup="resize(this)"
+									 		  id="ntc_content">
+						 		  	</textarea>
+					 		  	</td>
 							</tr>
 							<tr>
 								<th scope="row">파일</th>
@@ -171,14 +196,14 @@
 										<label for="file" class="btn">
 											파일 추가<!-- <button type="button" class="btn">파일 추가</button> -->
 										</label>
-										<input type="file" id="file" name="file" style="display:none;"  multiple/>
+										<input type="file" id="file" name="file" style="display:none;" multiple/>
 									</c:if>
 								</td>
 							</tr>
 							<tr>
 								<th scope="row">첨부 파일 </th>
 								<td>
-								    <div id="filedown"></div>
+								    <div id="attrfiles"></div>
 								</td>
 							</tr>
 						</tbody>
@@ -194,6 +219,12 @@
 			</dl>
 			<a href="" class="closePop"><span class="hidden"></span></a>
 		</div>
+		
+		<input type="hidden" name="action" id="action"> 
+		<%-- <input type="hidden" id="swriter" value="${writer}"> --%>
+		<!-- 작성자 session에서 java에서 넘어온값 -->
+		<input type="hidden" name="ntc_no" id="ntc_no">
 	</form>
+	
 </body>
 </html>

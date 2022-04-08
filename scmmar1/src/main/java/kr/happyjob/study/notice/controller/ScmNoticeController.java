@@ -15,13 +15,17 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import kr.happyjob.study.notice.model.FileModel;
+import kr.happyjob.study.common.comnUtils.NewFileUtil;
+
 import kr.happyjob.study.notice.model.NoticeModel;
 import kr.happyjob.study.notice.service.ScmNoticeService;
+import kr.happyjob.study.scm.model.FileModel;
 
 
 @Controller
@@ -99,11 +103,10 @@ public class ScmNoticeController {
 		  
 		String result="";
 		
-		// 선택된 게시판 1건 조회 
+		// get notice info by ntc_no
 		NoticeModel detailNotice = noticeService.detailNotice(paramMap);
-		//List<CommentsVO> comments = null;
 		
-		//파일 1건 조회
+		// get attch files infos
 		List<FileModel> files = noticeService.selectFile(paramMap);
 		
 		if(detailNotice != null) {
@@ -119,7 +122,7 @@ public class ScmNoticeController {
 		
 		resultMap.put("files", files);
 		
-		resultMap.put("resultMsg", result); // success 용어 담기 
+		resultMap.put("manageResult", result); // success 용어 담기 
 		
 		return resultMap;
 	}
@@ -128,50 +131,42 @@ public class ScmNoticeController {
 	
 	/* 공지사항 등록하기 */
 	@RequestMapping("noticeSave.do")
+	@PostMapping
 	@ResponseBody
-	public Map<String,Object> savaList(Model model, @RequestParam Map<String,Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
-		
-		//System.out.println("저장키를 먹나요~~~~?? : " + paramMap.toString());
-		
-		String action = (String)paramMap.get("action"); // 구분하는 키값 
-		System.out.println("action 값 찍어보기 : " + action);
-		
-		//String content = (String)paramMap.get("commentContent");
-		//System.out.println("아아앙아아아아아아아악 댃글 컨텐트!! " + content);
-		
-		// 사용자 정보 설정하기 
-		// paramMap.put("fst_rgst_sst_id", session.getAttribute("usrSstId"));
-		
-		String resultMsg = "";
-		//String id = (String) session.getAttribute("loginId"); // 아이디 
-		//paramMap.put("writer", id); // session을 통해 아이디 가져옴 
-		
-		// insert 인지, update 수정인지 확인하기 
+	public int savaList(String action, NoticeModel data,HttpServletRequest request) throws Exception {
 		
 		
-//		if("I".equals(action)) {
-//			noticeService.insertNotice(paramMap,request); // 저장 service
-//			resultMsg = "SUCCESS";
-//			
-//		}else if("U".equals(action)) {
-//			noticeService.updateNotice(paramMap,request); // 수정 service
-//			resultMsg = "UPDATE";
-//			
-//		}else if("D".equals(action)) {
-//			noticeService.deleteNotice(paramMap); // 수정 service
-//			resultMsg = "DELETE";
-//			
-//		}else {
-//			resultMsg ="FALSE / 등록에 실패했습니다.";
-//		}
+
+		 
+		// resultMessage
+		int manageResult=0; 
+		
+		try{
+			if("I".equalsIgnoreCase(action)) {
+				 // 저장 service
+				noticeService.insertNotice(data,request);
+
+				
+			}else if("U".equalsIgnoreCase(action)) {
+				// noticeService.updateNotice(paramMap,request); // 수정 service
+
+				
+			}else if("D".equalsIgnoreCase(action)) {
+				// noticeService.deleteNotice(paramMap); // 수정 service
+
+				
+			}
+			
+		}catch(Exception e){
+			manageResult =0;
+			
+		}
 		
 		
-		// 결과 값 전송
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("resultMsg", resultMsg);
 		
-		return resultMap;
+		
+		
+		return manageResult;
 	}
 	
 //	@RequestMapping("fileDown.do")

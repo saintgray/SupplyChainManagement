@@ -23,7 +23,7 @@ $(document).ready(function() {
 		
 		if ($("ul.lnbMenu a.lnbBtn").hasClass("on")) {
 			$("ul.lnbMenu a.lnbBtn").removeClass("on")
-			$("ul.lnbMenu a.lnbBtn").parents("dl").children("dd").slideUp();
+			$("ul.lnbMenu a.lnbBtn").parents("dl").children("dd").slideUp(0);
 		};
 		
 		$(this).parents("dl").children("dd").slideDown();
