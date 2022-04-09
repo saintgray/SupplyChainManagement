@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.happyjob.study.common.comnUtils.NewFileUtil;
 import kr.happyjob.study.notice.dao.ScmNoticeDao;
@@ -57,6 +58,7 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 	
 		// 상세정보 가져오기 
 		NoticeModel detailNotice = noticeDao.detailNotice(paramMap);
+		detailNotice.setFilesInfo(noticeDao.selectFile(paramMap));
 		return detailNotice;
 	}
 	
@@ -66,10 +68,15 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 		List<FileModel> selectFile = noticeDao.selectFile(paramMap);
 		return selectFile;
 	}
-
-	@Transactional 
+	
 	@Override
-	public int insertNotice(NoticeModel data, HttpServletRequest request) throws Exception{
+	public FileModel selectOneFile(String file_no){
+		return noticeDao.selectOneFile(file_no);
+	}
+
+	@Transactional
+	@Override
+	public int insertNotice(NoticeModel data,List<MultipartFile> files, HttpServletRequest request) throws Exception{
 		
 		String loginID=request.getSession().getAttribute("loginId").toString();
 		data.setLoginID(loginID);
@@ -78,17 +85,26 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 		
 		int insertNoticeResult=noticeDao.insertNotice(data);
 		
-		List<FileModel> files=null;
+		List<FileModel> filesInfoList=null;
 		
 		if(insertNoticeResult>0){
-			NewFileUtil fUtil=new NewFileUtil(request, rootPath, loginID, noticePath);
-			Map<String, List<FileModel>> filesMap= fUtil.uploadFiles(loginID);
-			files=filesMap.get("file");
+			NewFileUtil fUtil=new NewFileUtil(request, rootPath, virtualRootPath, noticePath);
+			// Map<String, List<MultipartFile>> filesMap= fUtil.extractFilesMap();
+			
+			filesInfoList=fUtil.uploadFiles(files, String.valueOf(data.getNtc_no()));
 			
 			int filesNum=files.size();
 			
-			if(files==null || files.isEmpty()){
-				int insertFilesResult=noticeDao.insertNoticeFile(files);
+			System.out.println("files size......" + String.valueOf(files.size()));
+			System.out.println(files.isEmpty());
+			if(!files.isEmpty()){
+				
+				System.out.println("DB에 파일 정보를 업로드합니다");
+				System.out.println("filesInfoList size....."+String.valueOf(filesInfoList.size()));
+				int insertFilesResult=noticeDao.insertNoticeFile(filesInfoList);
+				
+				System.out.println("result...");
+				System.out.printf("filesNum : %d  affectedRow : %d\n",filesNum,insertFilesResult);
 				if(filesNum!=insertFilesResult){
 					throw new Exception();
 				}

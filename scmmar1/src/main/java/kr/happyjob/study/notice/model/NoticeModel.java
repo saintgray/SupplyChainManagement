@@ -1,5 +1,11 @@
 package kr.happyjob.study.notice.model;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.happyjob.study.scm.model.FileModel;
+
 public class NoticeModel {
 	
 	private int ntc_no;
@@ -9,12 +15,13 @@ public class NoticeModel {
 	private String ntc_regdate;
 	private String ntc_editdate;
 	private String ntc_title;
+	private List<FileModel> filesInfo;
+	
 	
 	
 	public NoticeModel() {
 	
 	}
-
 
 	
 
@@ -90,6 +97,22 @@ public class NoticeModel {
 	public void setNtc_editdate(String ntc_editdate) {
 		this.ntc_editdate = ntc_editdate;
 	}
+
+
+
+	public List<FileModel> getFilesInfo() {
+		return filesInfo;
+	}
+
+
+
+	public void setFilesInfo(List<FileModel> filesInfo) {
+		this.filesInfo = filesInfo;
+	}
+
+
+
+	
 	
 	
 	

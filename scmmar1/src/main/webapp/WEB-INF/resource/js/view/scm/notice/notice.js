@@ -4,7 +4,7 @@
 	var noticePageBlock = 5; // 블럭으로 잡히는 페이징처리 수
 	
 	
-	// onload 이벤트 
+	// $(document).ready()
 	$(function() {
 		
 		// init Summernote
@@ -31,78 +31,51 @@
 			maxWidth:"500",
 			height:"500",
 			minHeight:"300px",
-			maxHeight:"300px",
-			
-		
-	        
+			maxHeight:"300px",  
 		})
 		
-		// DatePicker
-		fDatePicker();
-
-		// 버튼 이벤트 등록 (저장, 수정, 삭제, 모달창 닫기)
-		fButtonClickEvent();
 		
-		// 자유게시판 리스트 뿌리기 함수 
+		initDatePicker();
+		connectButtonEvent();
+		connectLoadFileEvent();
+		connectRemoveFilesEvent();
+		
 		selectNoticeList();
-
-		
-		fileEvent();
-		removePrevFilesEvent();
-		
 		
 	});
 	
 	function resize(obj) {
 		  obj.style.height = "1px";
 		  obj.style.height = (12+obj.scrollHeight)+"px";
-		}
-	
-	// 날짜 변한 함수  
- 	function getFormatDate(date){
-	    var year = date.getFullYear();              //yyyy
-	    var month = (1 + date.getMonth());          //M
-	    month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
-	    var day = date.getDate();                   //d
-	    day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
-	    return  year + '-' + month + '-' + day;       //'-' 추가하여 yyyy-mm-dd 형태 생성 가능
-	} 
+	}
 
 	// 버튼 이벤트 등록 - 저장, 수정, 삭제  
-	function fButtonClickEvent() {
-		$('.btn_areaC > a, #searchBtn').click(function(e) {
-			e.preventDefault(); // ?? 
-
-			var btnId = $(this).attr('id');
-
-			//alert("btnId : " + btnId);
-
-			switch (btnId) {
+	function connectButtonEvent() {
+		$('.btn_areaC > button, #searchBtn').click(function(e) {
+			
+			e.preventDefault();
+			
+			switch ($(this).attr('id')) {
 			case 'btnSaveNotice':
-				
 				fSaveNotice();
-				
 				break;
 			case 'btnDeleteNotice':
-				fDeleteNotice(); // 만들자 
-				//alert("삭제버튼 클릭!!!이벤트!!");		
+				fDeleteNotice();
 				break;
 			case 'btnClose':
-				if(confirm('작성을 취소하시겠습니까?')){
-					fCloseModal();
-				}
+				fCloseModal();
 				break;
 			case 'btnUpdateNotice':
-				fUpdateNotice(); // 수정하기
+				fUpdateNotice();
 				break;
 			case 'searchBtn':
-				board_search(); // 검색하기
+				selectNoticeList();
 				break;
 			}
 		});
 	}
 	
-	function fileEvent(){
+	function connectLoadFileEvent(){
 		$('#file').on('change',function(e){
 			console.log(e.target.files);
 			var files=e.target.files
@@ -119,7 +92,7 @@
 	}
 	
 	// removefile
-	function removePrevFilesEvent(){
+	function connectRemoveFilesEvent(){
 		$('#attrfiles').on('click','.remove',function(){
 			
 			console.log($(this).siblings('span').attr('id'));
@@ -144,7 +117,7 @@
 	
 	
 	// DatePicker
- 	function fDatePicker(){
+ 	function initDatePicker(){
  	    $.datepicker.setDefaults($.datepicker.regional['ko']); 
  	    $( "#from_date" ).datepicker({
  	         changeMonth: true, 
@@ -297,12 +270,11 @@
 		var param = {
 			ntc_no : notice_no
 		};
-		var resultCallback2 = function(data) {
+		var callback = function(data) {
 			fdetailResult(data);
 		};
 
-		callAjax("/scm/detailNoticeList.do", "post", "json", true, param,
-				resultCallback2);
+		callAjax("/scm/detailNoticeList.do", "post", "json", true, param,callback);
 		//alert("공지사항 상세 조회  22");
 	}
 
@@ -315,67 +287,75 @@
 			gfModalPop("#notice");
 
 			// 모달에 정보 넣기 
-			frealPopModal(data.result, data.files);
+			frealPopModal(data.info);
 		} else {
-			alert(data.resultMsg);
+			alert("오류가 발생했습니다 잠시 후 다시 시도하세요");
 		}
 	}
 
 	// 공지사항 작성 or 공지사항 상세조회,수정 모달창 호출 
-	function frealPopModal(object,fobject) {
+	function frealPopModal(info) {
 
-		if (object == "" || object == null || object == undefined) {
+		if (info == "" || info == null || info == undefined) {
+			
+			// inserted Flag
+			$("#action").val("I");
+
+			
 			var writer = $("#swriter").val();
 
-			$("#loginID").val(writer);
-			$("#loginID").attr("readonly", true);
+			
+			$("#loginID").attr("readonly", true);	
+			$("#ntc_title, #ntc_regdate #file, #loginID").val('');
 
-			$("#write_date").val();
-			$("#notice_title").val("");
-			$("#notice_content").val("");	
-			
-			// 파일 정보 초기화
-			$("#file").val("");
-			
-			// 첨부파일 초기화
-			$("#filedown").empty();
-			
-			$("#btnDeleteNotice").hide(); // 삭제버튼 숨기기
-			$("#btnUpdateNotice").hide();
+			// 삭제, 수정버튼 숨김
+			$("#btnDeleteNotice, #btnUpdateNotice").hide();
+			// 작성일, 작성자 숨김
+			$('#r-regdate,#r-writer').hide();
+			// 첨부파일 미리보기 비움
+			$("#attrfiles").empty();
+			// 등록버튼 활성화
 			$("#btnSaveNotice").show();
 			
-			$('#r-regdate,#r-writer').hide();
+			
 
 		} else {
 
-			//alert("숫자찍어보세 : " + object.wno);// 페이징 처리가 제대로 안되서 
-			$("#loginID").val(object.loginID);
-			$("#loginID").attr("readonly", true); // 작성자 수정불가 
+			//alert("숫자찍어보세 : " + info.wno);// 페이징 처리가 제대로 안되서 
+			$("#loginID").val(info.loginID).attr("readonly", true);
+			$("#ntc_regdate").val(info.ntc_regdate).attr("readonly", true);
+			$("#ntc_title").val(info.ntc_title);
+			$('#ntc_content').summernote('code',info.ntc_content);
 			
-			$("#ntc_regdate").val(object.ntc_regdate);
-			$("#ntc_regdate").attr("readonly", true); // 처음 작성된 날짜 수정불가 
-		
-			$("#ntc_title").val(object.ntc_title);
-			$('#ntc_content').summernote('code',object.ntc_content);
-			
-			$("#ntc_no").val(object.ntc_no); // 중요한 num 값도 숨겨서 받아온다. 		
+			$("#ntc_no").val(info.ntc_no); // 중요한 num 값도 숨겨서 받아온다. 		
 	
-			if(fobject.length!=0) {			          
-				$("#filedown").empty().append("<a href='javascript:filedown("+ fobject.ntc_no + ")'>" + fobject.file_ofname + "</a>");				                                 
-			} 									
-
-			$("#btnDeleteNotice").show(); // 삭제버튼 보이기 
+			if(info.filesInfo.length!=0) {
+				
+				var prevHtml='';
+				$(info.filesInfo).each(function(index,item){
+					
+					prevHtml+='<div>';
+					prevHtml+='<span class="n_files" onclick=filedown('+item.file_no+')>'+item.file_ofname+' ,</span>';
+					prevHtml+='</div>';
+				})
+				$('#attrfiles').append(prevHtml);
+				// $("#attrfiles").empty().append("<a href='javascript:filedown("+ fobject.ntc_no + ")'>" + fobject.file_ofname + "</a>");				                                 
+			} 							
+			
 			$("#btnSaveNotice").hide();
-			$("#btnUpdateNotice").css("display", "");
-
+			$("#btnDeleteNotice, #r-regdate,#r-writer").show();
 		}
 	}
 	
 	// 첨부파일 다운
-	function filedown(notice_no){
+	function filedown(file_no){
  	 	var params = "";
-		params += "<input type='hidden' name='notice_no' value='"+ notice_no +"' />"; 	
-		jQuery("<form action='/scm/fileDown.do' method='post'>"+params+"</form>").appendTo('body').submit().remove(); 			
+		params += "<input type='hidden' name='file_no' value='"+ file_no +"' />";
+		
+		jQuery("<form action='/scm/fileDown.do' method='post'>"+params+"</form>")
+		.appendTo('body')
+		.submit()
+		.remove(); 			
 	}
 	
 	// 팝업내 수정, 저장 validation 
@@ -391,9 +371,7 @@
 	// 공지사항 등록(저장) 
 	function fSaveNotice() {
 		
-		// inserted Flag
-		$("#action").val("I");
-
+	
 		//alert("저장 함수 타는지!!!!!?? ");
 		// validation 체크 
 		if (!(fValidatePopup())) {
@@ -408,7 +386,13 @@
 		formData.append('ntc_title',$('#ntc_title').val());
 		formData.append('ntc_content',$('#ntc_content').summernote('code'));
 		formData.append('action',$('#action').val());
-		formData.append('file',$('#file')[0].files);
+		// append files in FormData
+		$($('#file')[0].files).each(function(index,item){
+			console.log(item);
+			// formData.append('files['+index+']',item);
+			formData.append('files',item);
+		});
+		
 		
 		
 		$.ajax({
@@ -452,8 +436,15 @@
 		if ($("#action").val() != "I") {
 			currentPage = $("#currentPage").val();
 		}
-		alert('통신성공');
-		fCloseModal();
+		
+		if(data==1){
+			$('#action').val('');
+			alert('정상적으로 등록되었습니다');
+			fCloseModal();
+		}else{
+			alert('오류가 발생하였습니다. 잠시 후 다시 시도하세요');
+		}
+		
 	}
 
 	// 공지사항 등록(수정) 
@@ -497,11 +488,17 @@
 	}
 	
 	function fCloseModal(){
-		// 제목, 내용, 파일, 첨부파일 미리보기 전부 지우기
-		$('#ntc_title,#file').val("");
-		$('#ntc_content').summernote('code','');
-		$('#attrfiles').empty();
-		gfCloseModal(); // 모달닫기	
+		
+		var isNewRegForm=$('#action').val()=='I';
+		
+		if((isNewRegForm && confirm('작성을 취소하시겠습니까?')) || !isNewRegForm){
+			// 제목, 내용, 파일, 첨부파일 미리보기 전부 지우기
+			$('#ntc_title,#file').val("");
+			$('#ntc_content').summernote('code','');
+			$('#attrfiles').empty();
+			gfCloseModal(); // 모달닫기
+		}
+		
 	}
 	
 	

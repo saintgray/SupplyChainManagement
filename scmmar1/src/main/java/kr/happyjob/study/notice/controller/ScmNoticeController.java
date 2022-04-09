@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.happyjob.study.common.comnUtils.NewFileUtil;
@@ -40,8 +41,6 @@ public class ScmNoticeController {
 
 	// Get class name for logger
 	private final String className = this.getClass().toString();
-
-	private final static String rootPath = "c://notice/";
 	
 	
 	@RequestMapping("noticeMgr.do")
@@ -97,33 +96,31 @@ public class ScmNoticeController {
 	/* 공지사항 상세 정보 뿌리기 */
 	@RequestMapping("detailNoticeList.do")
 	@ResponseBody
-	public Map<String,Object> detailList(Model model, @RequestParam Map<String,Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
+	public Map<String,Object> detailList(Model model, @RequestParam Map<String,Object> paramMap, HttpServletRequest request){
 		
 		  
 		String result="";
-		
-		// get notice info by ntc_no
-		NoticeModel detailNotice = noticeService.detailNotice(paramMap);
-		
-		// get attch files infos
-		List<FileModel> files = noticeService.selectFile(paramMap);
-		
-		if(detailNotice != null) {
-			
-			result = "SUCCESS";  // 성공시 찍습니다. 
-			
-		}else {
-			result = "FAIL / 불러오기에 실패했습니다.";  // null이면 실패입니다.
-		}
-		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("result", detailNotice); 
+		try{
+			// get notice info by ntc_no
+			NoticeModel detailNotice = noticeService.detailNotice(paramMap);
+			
+			if(detailNotice != null) {
+				
+				result = "SUCCESS";  // 성공시 찍습니다. 
+				
+			}else {
+				result = "삭제되었거나 없는 공지사항입니다";  // null이면 실패입니다.
+			}
+			
+			
+			resultMap.put("info", detailNotice); 
+			resultMap.put("resultMsg", result); // success 용어 담기 
 		
-		resultMap.put("files", files);
-		
-		resultMap.put("manageResult", result); // success 용어 담기 
-		
+		}catch(Exception e){
+			
+		}
+	
 		return resultMap;
 	}
 	
@@ -133,7 +130,7 @@ public class ScmNoticeController {
 	@RequestMapping("noticeSave.do")
 	@PostMapping
 	@ResponseBody
-	public int savaList(String action, NoticeModel data,HttpServletRequest request) throws Exception {
+	public int insertNotice(String action, NoticeModel data,List<MultipartFile> files, HttpServletRequest request) throws Exception {
 		
 		
 
@@ -143,8 +140,11 @@ public class ScmNoticeController {
 		
 		try{
 			if("I".equalsIgnoreCase(action)) {
-				 // 저장 service
-				noticeService.insertNotice(data,request);
+				System.out.println(files);
+				// 저장 service
+				noticeService.insertNotice(data,files,request);
+				
+				
 
 				
 			}else if("U".equalsIgnoreCase(action)) {
@@ -169,29 +169,29 @@ public class ScmNoticeController {
 		return manageResult;
 	}
 	
-//	@RequestMapping("fileDown.do")
-//	public void downloadBbsAtmtFil(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-//			HttpServletResponse response, HttpSession session) throws Exception {
-//	
-//		logger.info("+ Start " + className + ".downloadBbsAtmtFil");
-//		logger.info("   - paramMap : " + paramMap);
-//		
-//		// 첨부파일 조회
-//		FileModel selectFile = noticeService.selectFile(paramMap);
-//		
-//		byte fileByte[] = FileUtils.readFileToByteArray(new File(rootPath+selectFile.getFile_new_name()));
-//		
-//		response.setContentType("application/octet-stream");
-//	    response.setContentLength(fileByte.length);
-//	    response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(selectFile.getFile_ofname(),"UTF-8")+"\";");
-//	    response.setHeader("Content-Transfer-Encoding", "binary");
-//	    response.getOutputStream().write(fileByte);
-//	     
-//	    response.getOutputStream().flush();
-//	    response.getOutputStream().close();
-//
-//		logger.info("+ End " + className + ".fileDown");
-//	}
+	@RequestMapping("fileDown.do")
+	public void downloadBbsAtmtFil(@RequestParam Map<String, Object> paramMap, HttpServletResponse response) throws Exception {
+	
+		logger.info("+ Start " + className + ".downloadBbsAtmtFil");
+		logger.info("   - paramMap : " + paramMap);
+		
+		// 첨부파일 조회
+		FileModel file = noticeService.selectOneFile(paramMap.get("file_no").toString());
+		
+		
+		byte fileByte[] = FileUtils.readFileToByteArray(new File(file.getFile_local_path()));
+		
+		response.setContentType("application/octet-stream");
+	    response.setContentLength(fileByte.length);
+	    response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(file.getFile_ofname(),"UTF-8")+"\";");
+	    response.setHeader("Content-Transfer-Encoding", "binary");
+	    response.getOutputStream().write(fileByte);
+	     
+	    response.getOutputStream().flush();
+	    response.getOutputStream().close();
+
+		logger.info("+ End " + className + ".fileDown");
+	}
 	
 	
 	

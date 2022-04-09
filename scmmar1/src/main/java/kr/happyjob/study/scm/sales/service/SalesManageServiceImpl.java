@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.happyjob.study.common.comnUtils.NewFileUtil;
 import kr.happyjob.study.scm.model.FileModel;
@@ -155,15 +156,12 @@ public class SalesManageServiceImpl implements SalesManageService{
 		data.setPrice(data.getPrice().replaceAll("[\\D]", ""));
 		updateResult=smDao.updateSales(data);
 		// 3.
-		Map<String, List<FileModel>> updateFilesMap=fUtil.uploadFiles(data.getSales_id());
+		Map<String, List<MultipartFile>> updateFilesMap=fUtil.extractFilesMap();
+		List<MultipartFile> files=updateFilesMap.get("files");
+		List<FileModel> updateFiles=fUtil.uploadFiles(files,data.getSales_id());
 		// 4.
-		List<FileModel> updateFiles=updateFilesMap.get("files");
-		smDao.insertFiles(updateFiles);
-		// 5.
-		// 이미지를 새로 등록하지 않았다면(= updateFiles가 null 이라면) 이전 이미지를 그대로 사용하겠다는 말이므로
-		// 지우지 않는다
-		if(updateFiles==null || updateFiles.size()==0){
-			NewFileUtil.deleteFiles(prevFiles);
+		if(!updateFiles.isEmpty()){
+			smDao.insertFiles(updateFiles);
 		}
 		
 		// 모두 지웠으면 이전 파일들은 DB에서 모두 삭제한다
@@ -177,6 +175,13 @@ public class SalesManageServiceImpl implements SalesManageService{
 			smDao.deleteFiles(prevFiles);
 		}
 		
+		
+		// 5.
+		// 이미지를 새로 등록하지 않았다면(= updateFiles가 null 이라면) 이전 이미지를 그대로 사용하겠다는 말이므로
+		// 이전 파일들을 서버에서 지우지 않는다
+		if(updateFiles==null || updateFiles.size()==0){
+			NewFileUtil.deleteFiles(prevFiles);
+		}
 		
 		
 
@@ -214,27 +219,22 @@ public class SalesManageServiceImpl implements SalesManageService{
 		
 		
 		if(result==1){
+			
 			List<FileModel> files=null;
 			
-			try{
-				// OK
-				NewFileUtil fUtil=new NewFileUtil(req, rootPath, virtualRootPath, salesItemPath);
 			
-					
-				Map<String, List<FileModel>> filesMap = fUtil.uploadFiles(data.getSales_id());
+			// OK
+			NewFileUtil fUtil=new NewFileUtil(req, rootPath, virtualRootPath, salesItemPath);
+		
 				
-				
-				// 상품-파일 테이블 하나에만 추가하면 되므로 input name 별로 별도 분기 로직이 필요 없음
-				files= filesMap.get("files");
-				
-				sst.getMapper(SalesManageDao.class).insertFiles(files);
-
-			}catch(FileNotFoundException e){
-				// NewFileUtil.deleteFiles(files);
-				// 포기
-			}
+			Map<String, List<MultipartFile>> filesMap = fUtil.extractFilesMap();
 			
-
+			
+			
+			// 상품-파일 테이블 하나에만 추가하면 되므로 input name 별로 별도 분기 로직이 필요 없음
+			files= fUtil.uploadFiles(filesMap.get("files"), data.getSales_id());
+			
+			sst.getMapper(SalesManageDao.class).insertFiles(files);
 		
 		}
 		

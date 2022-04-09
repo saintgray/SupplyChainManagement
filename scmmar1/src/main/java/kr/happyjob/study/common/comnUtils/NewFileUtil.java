@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -67,7 +68,7 @@ public class NewFileUtil {
 	 * 파일 업로드 
 	 * @return 저장된 파일 메타 정보
 	 */
-	public Map<String, List<FileModel>> uploadFiles(String foreignKey) throws Exception {
+	public Map<String, List<MultipartFile>> extractFilesMap() throws Exception {
 		
 		
 		
@@ -76,13 +77,11 @@ public class NewFileUtil {
 		// Return value
         // List<List<FileModel>> fileModelArray=new LinkedList<List<FileModel>>();
         
-        Map<String, List<FileModel>> fileModelListMap=new HashMap<String, List<FileModel>>();
+//       Map<String, List<FileModel>> fileModelListMap=new HashMap<String, List<FileModel>>();
+		 Map<String, List<MultipartFile>> filesListMap=new HashMap<String, List<MultipartFile>>();
 		
 		
-		// 디렉토리 생성
-		String dateDir = makeDateDir();
-		String uploadFilePath = makeDir(dateDir);
-        
+		
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)HttpServletRequest;
 		
         Iterator<String> elementOfFileInputs = multipartHttpServletRequest.getFileNames();
@@ -96,65 +95,80 @@ public class NewFileUtil {
         	
             
             // input 태그당 등록하려는 파일들 <input type="file" name="file" multiple> 도 고려
-            List<MultipartFile> multipartFiles = multipartHttpServletRequest.getFiles(inputName);
+            List<MultipartFile> files = multipartHttpServletRequest.getFiles(inputName);
             
-            List<FileModel> fileModelsPerElement = new ArrayList<FileModel>();
-            
-        
+//          List<FileModel> fileModelsPerElement = new ArrayList<FileModel>();
+            filesListMap.put(inputName, files);
 
-            for(MultipartFile multipartFile : multipartFiles){
-            	
-            	
-            
-            	String ofileName = multipartFile.getOriginalFilename(); // a.jpg
-                String fileExtension = ofileName.substring(ofileName.lastIndexOf(".")+1); //jpg
-                
-                
-                String newFileName=renameOfFile(ofileName);
-                String localFilePath = uploadFilePath.concat(newFileName);
-                String serverFilePath = (virtualRootPath+File.separator)
-                														.concat(itemFilePath+File.separator)
-				                										.concat(dateDir)
-				                										.concat(newFileName); // web module에 등록된 가상 디렉토리
-                int fileSize = (int)multipartFile.getSize(); // 532
-
-                //파일 실제 업로드 로직
-                File orgFile = new File(localFilePath); // 실제 시스템 디렉토리에 저장
-                logger.info("   - localFilePath : " + localFilePath);
-                logger.info("   - serverFilePath : " + serverFilePath);
-                
-                // upload
-            	multipartFile.transferTo(orgFile);	
-                
-                
-            	
-                //디비 등록 용 로직
-                logger.info("   - originalFileName : " + ofileName);
-                logger.info("   - newFileName : " + newFileName);
-                logger.info("   - fileExtension : " + fileExtension);
-                
-                
-
-                FileModel fileModel=new FileModel(
-                									serverFilePath.replace(File.separatorChar, '/'),
-                									localFilePath.replace(File.separatorChar, '/'), 
-                									newFileName, 
-                									ofileName, 
-                									fileSize, 
-                									foreignKey, 
-                									fileExtension
-            									 );
-                
-                fileModelsPerElement.add(fileModel);
-                
-            }
-            // end of for loop
-            fileModelListMap.put(inputName, fileModelsPerElement);
+//          fileModelListMap.put(inputName, fileModelsPerElement);
             // Add List<FileModel> to fileModelArray
             // fileModelArray.add(fileModelsPerElement);
         }
-        return fileModelListMap;
+        return filesListMap;
 	}	
+	
+	
+	// upload Files and return list of them
+	public List<FileModel> uploadFiles(List<MultipartFile> updateFiles, String foreignKey) throws Exception {
+		
+		// 디렉토리 생성
+		String dateDir = makeDateDir();
+		String uploadFilePath = makeDir(dateDir);
+		
+		// 파일 정보들을 담은 반환 리스트
+		List<FileModel> fileInfoList=null;
+		fileInfoList=new LinkedList<>();
+
+        for(MultipartFile multipartFile : updateFiles){
+        	
+        	
+        
+        	String ofileName = multipartFile.getOriginalFilename();
+            String fileExtension = ofileName.substring(ofileName.lastIndexOf(".")+1);
+            
+            
+            String newFileName=renameOfFile(ofileName);
+            String localFilePath = uploadFilePath.concat(newFileName);
+            String serverFilePath = (virtualRootPath+File.separator)
+            														.concat(itemFilePath+File.separator)
+			                										.concat(dateDir)
+			                										.concat(newFileName); // web module에 등록된 가상 디렉토리
+            int fileSize = (int)multipartFile.getSize(); // 532
+
+            //파일 실제 업로드 로직
+            File orgFile = new File(localFilePath); // 실제 시스템 디렉토리에 저장
+            logger.info("   - localFilePath : " + localFilePath);
+            logger.info("   - serverFilePath : " + serverFilePath);
+            
+            // upload
+        	multipartFile.transferTo(orgFile);	
+            
+            
+        	
+            //디비 등록 용 로직
+            logger.info("   - originalFileName : " + ofileName);
+            logger.info("   - newFileName : " + newFileName);
+            logger.info("   - fileExtension : " + fileExtension);
+            
+            
+
+            FileModel fileModel=new FileModel(
+            									serverFilePath.replace(File.separatorChar, '/'),
+            									localFilePath.replace(File.separatorChar, '/'), 
+            									newFileName, 
+            									ofileName, 
+            									fileSize, 
+            									foreignKey, 
+            									fileExtension
+        									 );
+            
+            fileInfoList.add(fileModel);
+            
+        }
+        // end of for loop
+
+		return fileInfoList;
+	}
 	
 	/**
 	 * 파일 삭제
@@ -233,6 +247,8 @@ public class NewFileUtil {
 	private String makeDateDir(){
 		return formatter.format(new Date()).concat(File.separator);
 	}
+
+
     
 
 }

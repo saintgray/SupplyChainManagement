@@ -17,27 +17,31 @@
 				)
 	</insert>
 	
-	<!--  notice_no +1  -->
-	<select id="numPlus" resultType="int">
-		SELECT (IFNULL(MAX(notice_no),0) +1) as notice_no 
-		FROM tb_notice
-	</select>
-	
 	<!-- 파일 테이블에 제품 내용 등록 -->
 	<insert id="insertNoticeFile">
-		INSERT INTO tb_file
-		(file_server_path, file_local_path, file_new_name , file_ofname , file_size , notice_no)
-		VALUES(
-		#{file_server_path},
-		#{file_local_path},
-		#{file_new_name},
-		#{file_ofname},
-		#{file_size},
-		#{notice_no}
+		INSERT INTO tb_notice_file
+		(
+			file_server_path, 
+			file_local_path, 
+			file_new_name, 
+			file_ofname, 
+			file_size, 
+			ntc_no
 		)
+		VALUES
+		<foreach item="f" collection="list" separator=",">
+		(
+			#{f.file_server_path},
+			#{f.file_local_path},
+			#{f.file_new_name},
+			#{f.file_ofname},
+			#{f.file_size},
+			#{f.foreignKey}
+		)
+		</foreach>
 	</insert>
 	
-	<!-- 파일 조회 -->
+	<!-- 파일 리스트 조회 -->
 	<select id="selectFile" resultType="kr.happyjob.study.scm.model.FileModel">	
 		SELECT
 			file_no,
@@ -46,10 +50,24 @@
 			file_relative_path,
 			file_new_name,
 			file_ofname,
-			file_size
+			file_size,
+			ntc_no AS foreignKey
 		FROM tb_notice_file
 		WHERE ntc_no = #{ntc_no} 		
 	</select>
+	
+	<!-- 특정 파일 조회 -->
+	<select id="selectOneFile" resultType="kr.happyjob.study.scm.model.FileModel">
+		SELECT
+			file_server_path,
+			file_relative_path,
+			file_local_path,
+			file_ofname,
+			file_size
+		FROM tb_notice_file
+		WHERE file_no=#{arg0}
+	</select>
+	
 		
 	<!-- 공지사항 리스트 -->
 	<select id="selectNoticeList" resultType="kr.happyjob.study.notice.model.NoticeModel">
@@ -57,25 +75,26 @@
 		ntc_no, ntc_title, loginID, ntc_regdate, ntc_editdate
 		FROM tb_notice
 
-		<where>		
-			<choose>
+		<where>
+			<choose>				
 				<when test="(oname eq 'title'.toString())">
-					and ntc_regdate between #{from_date} and #{to_date}
+					and ntc_regdate between #{from_date} and date_add(#{to_date}, interval 1 day)
 					and ntc_title Like CONCAT('%', #{sname}, '%')
 				</when>
 				<when test="(oname eq 'content'.toString())">
-					and ntc_regdate between #{from_date} and
-					#{to_date}
+					and ntc_regdate between #{from_date} and date_add(#{to_date}, interval 1 day)
 					and ntc_content LIKE CONCAT('%', #{sname}, '%')
 				</when>
-				<when test="(oname eq 'all'.toString())">	
-					and (ntc_regdate between #{from_date} and #{to_date})
-					and ((ntc_title Like CONCAT('%', #{sname}, '%'))
-					 or (ntc_content LIKE CONCAT('%', #{sname}, '%')))
-					
+				<when test="(oname eq 'all'.toString())">
+					and (ntc_regdate between #{from_date} and date_add(#{to_date}, interval 1 day))
+					and (
+							(ntc_title Like CONCAT('%', #{sname}, '%'))
+							OR 	
+							(ntc_content LIKE CONCAT('%', #{sname}, '%'))
+						)
 				</when>
 			</choose>
-			AND ntc_deldate is NULL			
+			AND ntc_deldate is NULL
 		</where>
 		ORDER BY ntc_regdate DESC
 		LIMIT #{pageIndex}, #{pageSize}
@@ -88,19 +107,20 @@
 		<where>
 			<choose>				
 				<when test="(oname eq 'title'.toString())">
-					and ntc_regdate between #{from_date} and
-					#{to_date}
+					and ntc_regdate between #{from_date} and date_add(#{to_date}, interval 1 day)
 					and ntc_title Like CONCAT('%', #{sname}, '%')
 				</when>
 				<when test="(oname eq 'content'.toString())">
-					and ntc_regdate between #{from_date} and
-					#{to_date}
+					and ntc_regdate between #{from_date} and date_add(#{to_date}, interval 1 day)
 					and ntc_content LIKE CONCAT('%', #{sname}, '%')
 				</when>
 				<when test="(oname eq 'all'.toString())">
-					and (ntc_regdate between #{from_date} and #{to_date})
-					and ((ntc_title Like CONCAT('%', #{sname}, '%'))
-					or (ntc_content LIKE CONCAT('%', #{sname}, '%')))
+					and (ntc_regdate between #{from_date} and date_add(#{to_date}, interval 1 day))
+					and (
+							(ntc_title Like CONCAT('%', #{sname}, '%'))
+							OR 	
+							(ntc_content LIKE CONCAT('%', #{sname}, '%'))
+						)
 				</when>
 			</choose>
 			AND ntc_deldate is NULL
@@ -119,21 +139,6 @@
 		FROM   tb_notice
 		WHERE  ntc_no = #{ntc_no}
 			]]>
-		<choose>
-			<when test="(oname eq 'title'.toString())">
-				and ntc_editdate between #{from_date} and #{to_date}
-				and ntc_title Like CONCAT('%', #{sname}, '%')
-			</when>
-			<when test="(oname eq 'content'.toString())">
-				and ntc_editdate between #{from_date} and #{to_date}
-				and ntc_content LIKE CONCAT('%', #{sname}, '%')
-			</when>
-			<when test="(oname eq 'all'.toString())">
-				and ntc_editdate between #{from_date} and #{to_date}
-				and ((ntc_title Like CONCAT('%', #{sname}, '%')
-				or (ntc_content LIKE CONCAT('%', #{sname}, '%'))
-			</when>
-		</choose>
 	</select>
 
 	

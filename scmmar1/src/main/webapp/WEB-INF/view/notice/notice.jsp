@@ -42,6 +42,18 @@
 		#attrfiles div{
 			margin: 3px 5px;
 		}
+		.n_files{
+			cursor:pointer;
+		}
+		.n_files::before{
+		    padding: 0 10px;
+		    content: '';
+		    background: url(/images/admin/comm/files.svg);
+		    background-repeat: no-repeat;
+		    background-color: transparent;
+	        background-size: 14px;
+   			background-position: 4px;
+		}
 	</style>
 </head>
 <body>
@@ -189,17 +201,21 @@
 						 		  	</textarea>
 					 		  	</td>
 							</tr>
-							<tr>
-								<th scope="row">파일</th>
-								<td>
-									<c:if test="${empty files}">
-										<label for="file" class="btn">
-											파일 추가<!-- <button type="button" class="btn">파일 추가</button> -->
-										</label>
-										<input type="file" id="file" name="file" style="display:none;" multiple/>
-									</c:if>
-								</td>
-							</tr>
+							<c:if test="${not empty userType && userType eq 'A'}">
+								
+								<tr>
+									<th scope="row">파일</th>
+									<td>
+										<c:if test="${empty files}">
+											<label for="file" class="btn">
+												파일 추가<!-- <button type="button" class="btn">파일 추가</button> -->
+											</label>
+											<input type="file" id="file" name="file" style="display:none;" multiple/>
+										</c:if>
+									</td>
+								</tr>
+								
+							</c:if>
 							<tr>
 								<th scope="row">첨부 파일 </th>
 								<td>
@@ -210,14 +226,21 @@
 					</table>
 
 					<div class="btn_areaC mt30">
-						<a href="" class="btnType blue" id="btnSaveNotice"><span>저장</span></a>
-						<a href="" class="btnType blue" id="btnUpdateNotice" style="display: none"><span>수정</span></a> 
-						<a href="" class="btnType blue" id="btnDeleteNotice"><span>삭제</span></a>
-						<a href="" class="btnType gray" id="btnClose"><span>취소</span></a>
+						<button class="btn btn-primary" id="btnSaveNotice">
+							<strong>등록</strong>
+						</button>
+						<button  class="btn btn-primary" id="btnUpdateNotice">
+							<strong>수정</strong>
+						</button> 
+						<button  class="btn btn-danger" id="btnDeleteNotice">
+							<strong>삭제</strong>
+						</button>
+						<button class="btn" id="btnClose">
+							<strong>취소</strong>
+						</button>
 					</div>
 				</dd>
 			</dl>
-			<a href="" class="closePop"><span class="hidden"></span></a>
 		</div>
 		
 		<input type="hidden" name="action" id="action"> 
