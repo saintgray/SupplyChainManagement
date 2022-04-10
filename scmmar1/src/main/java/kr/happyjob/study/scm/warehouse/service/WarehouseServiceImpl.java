@@ -2,9 +2,13 @@ package kr.happyjob.study.scm.warehouse.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.happyjob.study.scm.warehouse.dao.WarehouseDao;
 import kr.happyjob.study.scm.warehouse.model.PageInfo;
@@ -65,9 +69,14 @@ public class WarehouseServiceImpl implements WarehouseService{
 	}
 
 	@Override
-	public WarehouseDetail getWareHouseInfo(String idx) {
-	
-		return sst.getMapper(WarehouseDao.class).getWareHouseInfo(idx);
+	public WarehouseDetail getWareHouseInfo(String idx, HttpSession session) {
+		WarehouseDetail detail=sst.getMapper(WarehouseDao.class).getWareHouseInfo(idx);
+		// 수정 등록 삭제시에는 권한을 체크하는 NoticeManageAuthInterceptor 에서 SCM 담당자가 아닌 사람의 요청에 대해서는 튕겨내므로
+		// 모든 사용자에 대해서 선택한 창고의 PK 값을 세션에 저장할 필요가 없다 (서버의 부하 증가 고려)
+		if(session.getAttribute("userType").equals("A")){
+			session.setAttribute("whID", detail.getWh_id());
+		}
+		return detail;
 	}
 
 	@Override

@@ -11,11 +11,11 @@ public class NoticeManageAuthCheckInterceptor extends HandlerInterceptorAdapter{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
-		
-		boolean canManage=request.getSession().getAttribute("userType").equals("A");
+		Object userType=request.getSession().getAttribute("userType");
+		boolean canManage=(userType!=null && ((String)userType).equals("A"));
 		if(!canManage){
-			
 			response.sendError(403);
+			// response.sendRedirect("/accessdenied.do");
 		}
 		return canManage;
 		

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.chainsaw.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.happyjob.study.scm.user.service.UserInfoService;
 import kr.happyjob.study.scm.warehouse.model.PageInfo;
@@ -66,10 +70,10 @@ public class WarehouseController {
 	
 	@RequestMapping("/whinfo")
 	@PostMapping
-	public String getWhInfo(Model model, String action, String wh_id){
+	public String getWhInfo(Model model, String action, String wh_id, HttpSession session){
 		
 		if(!action.equalsIgnoreCase("NEW")){
-			model.addAttribute("info", whService.getWareHouseInfo(wh_id));
+			model.addAttribute("info", whService.getWareHouseInfo(wh_id,session));
 		}
 		model.addAttribute("action", action);
 		
@@ -80,14 +84,16 @@ public class WarehouseController {
 	@RequestMapping("/whManage")
 	@PostMapping
 	@ResponseBody
-	public int whManage(WarehouseDetail regdata, String action, PhoneNumberModel tel, String email_prefix, String email_suffix){
+	public int whManage(WarehouseDetail regdata, String action, PhoneNumberModel tel, HttpSession session){
 		
-		System.out.println(email_prefix);
-		System.out.println(email_suffix);
+	
+		System.out.println("whID .... "+ session.getAttribute("whID"));
+		
 		
 		regdata.setPhone(tel.getPhoneNumber());
 		
 		System.out.println(regdata.getPhone());
+		System.out.println(regdata.getWh_id());
 		
 		
 		
