@@ -150,6 +150,15 @@
 			<mvc:exclude-mapping path="/html/**" />
 			<bean class="kr.happyjob.study.common.interceptor.AuthCheckInterceptor" />
 		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/scm/noticeSave.do"/>
+			<mvc:mapping path="/scm/noticeUpdate.do"/>
+			<mvc:mapping path="/scm/noticeDelete.do"/>
+			
+			<bean class="kr.happyjob.study.notice.interceptor.NoticeManageAuthCheckInterceptor"/>
+			
+		</mvc:interceptor>
 	</mvc:interceptors>
 
 
