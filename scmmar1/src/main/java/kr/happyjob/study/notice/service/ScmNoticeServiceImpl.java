@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import kr.happyjob.study.common.comnUtils.NewFileUtil;
 import kr.happyjob.study.notice.dao.ScmNoticeDao;
+import kr.happyjob.study.notice.exception.NoticeNotExistException;
 import kr.happyjob.study.notice.model.NoticeModel;
 import kr.happyjob.study.scm.model.FileModel;
 
@@ -58,16 +59,31 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 	
 		// 상세정보 가져오기 
 		NoticeModel detailNotice = noticeDao.detailNotice(paramMap);
-		detailNotice.setFilesInfo(noticeDao.selectFile(paramMap));
+		
+		if(detailNotice==null){
+			throw new NoticeNotExistException();
+		}else{
+			detailNotice.setFilesInfo(noticeDao.selectFilesByNoticeId(paramMap));
+		}
+		
 		return detailNotice;
 	}
 	
 	// 파일정보 가져오기
 	@Override
-	public List<FileModel> selectFile(Map<String, Object> paramMap)throws Exception {
-		List<FileModel> selectFile = noticeDao.selectFile(paramMap);
+	public List<FileModel> selectFilesByNoticeId(Map<String, Object> paramMap)throws Exception {
+		List<FileModel> selectFile = noticeDao.selectFilesByNoticeId(paramMap);
 		return selectFile;
 	}
+	
+	@Override
+	// 선택한 파일들의 정보 가져오기
+	public List<FileModel> selectFilesByFileNo(List<String> delTargets) {
+		
+		return noticeDao.selectFilesByFileNo(delTargets);
+	}
+
+
 	
 	@Override
 	public FileModel selectOneFile(String file_no){
@@ -88,23 +104,16 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 		List<FileModel> filesInfoList=null;
 		
 		if(insertNoticeResult>0){
+			
 			NewFileUtil fUtil=new NewFileUtil(request, rootPath, virtualRootPath, noticePath);
-			// Map<String, List<MultipartFile>> filesMap= fUtil.extractFilesMap();
 			
 			filesInfoList=fUtil.uploadFiles(files, String.valueOf(data.getNtc_no()));
 			
 			int filesNum=files.size();
-			
-			System.out.println("files size......" + String.valueOf(files.size()));
-			System.out.println(files.isEmpty());
+		
 			if(!files.isEmpty()){
 				
-				System.out.println("DB에 파일 정보를 업로드합니다");
-				System.out.println("filesInfoList size....."+String.valueOf(filesInfoList.size()));
 				int insertFilesResult=noticeDao.insertNoticeFile(filesInfoList);
-				
-				System.out.println("result...");
-				System.out.printf("filesNum : %d  affectedRow : %d\n",filesNum,insertFilesResult);
 				if(filesNum!=insertFilesResult){
 					throw new Exception();
 				}
@@ -118,69 +127,46 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 	
 	
 	
+	/**
+	 * 
+	 * @param latestNoticeInfo : 수정하려는 공지사항의 수정 전 정보
+	 * @param paramMap : 수정정보를 담은 Map(제목, 내용)
+	 * @param files : 수정하면서 새롭게 등록한 첨부파일들
+	 * @param delTargets : 기존에 있던 첨부파일 중 수정하면서 지운 파일들의 고유번호 List
+	 * @param req : HttpServletRequest
+	 * @return : affected Row
+	 * @throws Exception
+	 */
+	@Transactional 
+	@Override
+	public int updateNotice(NoticeModel latestNoticeInfo, Map<String, Object> paramMap, List<MultipartFile> files, List<String> delTargets,HttpServletRequest req) throws Exception{
 	
-//	@Transactional 
-//	@Override
-//	public int updateNotice(Map<String, Object> paramMap, HttpServletRequest request) throws Exception{
-//		
-//		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
-//
-//			
-//		
-//		List<FileModel> deleteFile = new ArrayList<FileModel>();//빈 리스트 생성 (한번에 많은 파일 삭제 대비용으로)
-//		String itemFilePath = noticePath + File.separator; // 파일 구분자(os별로 다르기 때문에 java에서 자동 적용)
-//		NewFileUtil fileUtil = new NewFileUtil(request, rootPath, virtualRootPath, itemFilePath); //request와 파일저장루트, 디렉토리루트 전달
-//
-//		FileModel selectFile = noticeDao.selectFile(paramMap);
-//		deleteFile.add(selectFile);
-//		try {
-//			fileUtil.deleteFiles(deleteFile);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		List<FileModel> fileInfo = null;
-//		try {
-//			fileInfo = fileUtil.uploadFiles();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		Iterator<FileModel> iter = fileInfo.iterator();
-//
-//		String file_server_path = "";	
-//		String file_local_path = "";
-//		String file_new_name = "";
-//		String file_ofname = "";
-//		int file_size = 0;
-//		
-//		int result = noticeDao.deleteFile(paramMap);
-//
-//		
-//		int resultCnt = noticeDao.updateNotice(paramMap);		
-//		
-//		while(iter.hasNext()) {
-//			FileModel tempFileInfo = (FileModel)iter.next();
-//			file_server_path = tempFileInfo.getFile_server_path();
-//			file_local_path = tempFileInfo.getFile_local_path();
-//			file_new_name = tempFileInfo.getFile_new_name();
-//			file_ofname = tempFileInfo.getFile_ofname();
-//			file_size = tempFileInfo.getFile_size();
-//	
-//			//쿼리 파라미터 값 넣기
-//			paramMap.put("file_server_path", file_server_path);
-//			paramMap.put("file_local_path", file_local_path);
-//			paramMap.put("file_new_name", file_new_name);
-//			paramMap.put("file_ofname", file_ofname);
-//			paramMap.put("file_size", file_size);			
-//			
-//			int result2 = noticeDao.insertNoticeFile(paramMap);
-//		}
-//
-//		
-//
-//		
-//		return resultCnt;
-//	}
+		if(!(latestNoticeInfo.getNtc_title().equals(paramMap.get("ntc_title")))){
+			paramMap.remove("ntc_title");
+		}
+		if(!(latestNoticeInfo.getNtc_content().equals(paramMap.get("ntc_content")))){
+			paramMap.remove("ntc_content");
+		}
+		
+		int updateResult=0;
+		
+		updateResult=noticeDao.updateNotice(paramMap);
+		
+		System.out.println("files null?? >>>"+String.valueOf(files!=null));
+		
+		if(updateResult>0 && files!=null){
+			
+			NewFileUtil fUtil=new NewFileUtil(req, rootPath, virtualRootPath, noticePath);
+			fUtil.uploadFiles(files, String.valueOf(latestNoticeInfo.getNtc_no()));
+			
+			if(!(delTargets==null || delTargets.size()==0)){
+				List<FileModel> deleteTargetList= noticeDao.selectFilesByFileNo(delTargets);
+				noticeDao.deleteFiles(deleteTargetList);
+				NewFileUtil.deleteFiles(deleteTargetList);
+			}
+		}
+		return updateResult;
+	}
 
 	@Override
 	public int deleteNotice(Map<String, Object> paramMap) throws Exception{

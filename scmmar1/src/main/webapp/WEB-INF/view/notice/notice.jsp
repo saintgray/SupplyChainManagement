@@ -148,11 +148,13 @@
 										</div>
 									</div>
 								</div>
-							</div>						
-							
-							<div style = "float:right;">
-								<a class="btnType blue mt10" href="javascript:fNoticeModal(${nullNum});" name="modal"><span>신규등록</span></a>
 							</div>
+													
+							<c:if test="${userType eq 'A'}">
+								<div style = "float:right;">
+									<a class="btnType blue mt10" href="javascript:fNoticeModal(${nullNum});" name="modal"><span>신규등록</span></a>
+								</div>
+							</c:if>
 							
 						</div>
 						<!-- end of <div class="content"> -->		

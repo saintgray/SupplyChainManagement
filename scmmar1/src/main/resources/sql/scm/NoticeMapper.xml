@@ -41,8 +41,8 @@
 		</foreach>
 	</insert>
 	
-	<!-- 파일 리스트 조회 -->
-	<select id="selectFile" resultType="kr.happyjob.study.scm.model.FileModel">	
+	<!-- 공지사항에 첨부된 파일들 조회 -->
+	<select id="selectFilesByNoticeId" resultType="kr.happyjob.study.scm.model.FileModel">	
 		SELECT
 			file_no,
 			file_server_path,
@@ -54,6 +54,24 @@
 			ntc_no AS foreignKey
 		FROM tb_notice_file
 		WHERE ntc_no = #{ntc_no} 		
+	</select>
+	
+	<!-- 파일 리스트 조회(파일 id) -->
+	<select id="selectFilesByFileNo" resultType="kr.happyjob.study.scm.model.FileModel">
+		SELECT
+			file_no,
+			file_server_path,
+			file_local_path,
+			file_relative_path,
+			file_new_name,
+			file_ofname,
+			file_size,
+			ntc_no AS foreignKey
+		FROM tb_notice_file
+		WHERE file_no IN
+						<foreach collection="list" item="idx" open="(" close=")" separator=",">
+							#{idx}
+						</foreach>
 	</select>
 	
 	<!-- 특정 파일 조회 -->
@@ -146,8 +164,13 @@
 	<!-- 공지사항 수정 -->
 	<update id="updateNotice">
 		UPDATE tb_notice
-		SET ntc_title = #{ntc_title},
-		ntc_content = #{ntc_content},
+		SET 
+		<if test="ntc_title!=null">
+			ntc_title = #{ntc_title},
+		</if>
+		<if test="ntc_content!=null">
+			ntc_content = #{ntc_content},
+		</if>
 		ntc_editdate = current_timestamp
 		WHERE ntc_no = #{ntc_no}
 	</update>
@@ -161,8 +184,17 @@
 	
 	<!--  첨부파일 삭제 -->  
 	<delete id="deleteFile">
-		DELETE FROM tb_file 
+		DELETE FROM tb_notice_file
 		WHERE ntc_no = #{arg0}
 	</delete> 
+	
+	<!-- 선택한 첨부파일만 삭제 -->
+	<delete id="deleteFiles">
+		DELTE FROM tb_notice_file
+		WHERE ntc_no IN
+		<foreach collection="list" separator="," item="idx">
+			#{idx}
+		</foreach>
+	</delete>
 	
 </mapper>

@@ -3,6 +3,8 @@
 	var noticePageSize = 10; // 화면에 뿌릴 데이터 수 
 	var noticePageBlock = 5; // 블럭으로 잡히는 페이징처리 수
 	
+	// 수정시 삭제한파일 고유번호를 담은 배열객체
+	var delFileList= [];
 	
 	// $(document).ready()
 	$(function() {
@@ -66,7 +68,8 @@
 				fCloseModal();
 				break;
 			case 'btnUpdateNotice':
-				fUpdateNotice();
+					// fUpdateNotice();
+				fSaveNotice();
 				break;
 			case 'searchBtn':
 				selectNoticeList();
@@ -287,14 +290,14 @@
 			gfModalPop("#notice");
 
 			// 모달에 정보 넣기 
-			frealPopModal(data.info);
+			frealPopModal(data.info,data.type);
 		} else {
 			alert("오류가 발생했습니다 잠시 후 다시 시도하세요");
 		}
 	}
 
 	// 공지사항 작성 or 공지사항 상세조회,수정 모달창 호출 
-	function frealPopModal(info) {
+	function frealPopModal(info,type) {
 
 		if (info == "" || info == null || info == undefined) {
 			
@@ -333,17 +336,23 @@
 				
 				var prevHtml='';
 				$(info.filesInfo).each(function(index,item){
-					
 					prevHtml+='<div>';
 					prevHtml+='<span class="n_files" onclick=filedown('+item.file_no+')>'+item.file_ofname+' ,</span>';
+					if(type=='A'){
+						prevHtml+='<img src="/images/treeview/minus.gif" class="addDelete"/>';
+					}
 					prevHtml+='</div>';
 				})
 				$('#attrfiles').append(prevHtml);
 				// $("#attrfiles").empty().append("<a href='javascript:filedown("+ fobject.ntc_no + ")'>" + fobject.file_ofname + "</a>");				                                 
 			} 							
-			
-			$("#btnSaveNotice").hide();
-			$("#btnDeleteNotice, #r-regdate,#r-writer").show();
+			$('#btnSaveNotice').hide();
+			if(type=='A'){
+				$("#btnDeleteNotice, #btnUpdateNotice").show();
+			}else{
+				$("#btnDeleteNotice, #btnUpdateNotice").hide();
+			}
+			$("#r-regdate,#r-writer").show();
 		}
 	}
 	
@@ -387,11 +396,11 @@
 		formData.append('ntc_content',$('#ntc_content').summernote('code'));
 		formData.append('action',$('#action').val());
 		// append files in FormData
-		$($('#file')[0].files).each(function(index,item){
+		/*$($('#file')[0].files).each(function(index,item){
 			console.log(item);
 			// formData.append('files['+index+']',item);
 			formData.append('files',item);
-		});
+		});*/
 		
 		
 		
@@ -431,6 +440,7 @@
 
 	// 저장 ,수정, 삭제 콜백 함수 처리 
 	function fSaveNoticeResult(data) {
+		console.log(data);
 		var currentPage = currentPage || 1;
 
 		if ($("#action").val() != "I") {
@@ -496,6 +506,10 @@
 			$('#ntc_title,#file').val("");
 			$('#ntc_content').summernote('code','');
 			$('#attrfiles').empty();
+			if(!isNewRegForm){
+				// 전역 삭제파일 배열객체 초기화
+				delFileList.length=0;
+			}
 			gfCloseModal(); // 모달닫기
 		}
 		

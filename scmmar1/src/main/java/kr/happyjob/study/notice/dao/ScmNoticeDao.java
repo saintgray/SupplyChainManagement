@@ -13,7 +13,7 @@ public interface ScmNoticeDao {
 	public List<NoticeModel> selectNoticeList(Map<String, Object> paramMap);
 	
 	public NoticeModel detailNotice(Map<String, Object> paramMap);
-	public List<FileModel> selectFile(Map<String, Object> paramMap);
+	public List<FileModel> selectFilesByNoticeId(Map<String, Object> paramMap);
 	
 	public int insertNotice(NoticeModel data);
 	public int insertNoticeFile(List<FileModel> files);
@@ -24,6 +24,9 @@ public interface ScmNoticeDao {
 	public int updateNotice(Map<String, Object> paramMap);
 	public int deleteNotice(Map<String, Object> paramMap);
 	
+	
+	public List<FileModel> selectFilesByFileNo(List<String> filesNo);
 	public FileModel selectOneFile(String file_no);
 	public int deleteFile(Map<String, Object> paramMap);
+	public int deleteFiles(List<FileModel> filesIdxList);
 }

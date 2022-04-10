@@ -13,17 +13,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import kr.happyjob.study.common.comnUtils.NewFileUtil;
-
+import kr.happyjob.study.notice.exception.NoticeNotExistException;
 import kr.happyjob.study.notice.model.NoticeModel;
 import kr.happyjob.study.notice.service.ScmNoticeService;
 import kr.happyjob.study.scm.model.FileModel;
@@ -38,9 +38,15 @@ public class ScmNoticeController {
 	
 	// Set logger
 	private final Logger logger = LogManager.getLogger(this.getClass());
-
 	// Get class name for logger
 	private final String className = this.getClass().toString();
+	
+	@Value("${fileUpload.virtualRootPath}")
+	private String virtualRootPath;
+	@Value("${fileUpload.rootPath}")
+	private String rootPath;
+	@Value("${fileUpload.noticePath}")
+	private String noticePath;	
 	
 	
 	@RequestMapping("noticeMgr.do")
@@ -113,7 +119,7 @@ public class ScmNoticeController {
 				result = "삭제되었거나 없는 공지사항입니다";  // null이면 실패입니다.
 			}
 			
-			
+			resultMap.put("type", request.getSession().getAttribute("userType"));
 			resultMap.put("info", detailNotice); 
 			resultMap.put("resultMsg", result); // success 용어 담기 
 		
@@ -126,48 +132,64 @@ public class ScmNoticeController {
 	
 	
 	
-	/* 공지사항 등록하기 */
+	// 공지사항 등록
 	@RequestMapping("noticeSave.do")
 	@PostMapping
 	@ResponseBody
 	public int insertNotice(String action, NoticeModel data,List<MultipartFile> files, HttpServletRequest request) throws Exception {
 		
-		
-
-		 
-		// resultMessage
-		int manageResult=0; 
+		int insertResult=0; 
 		
 		try{
+			
 			if("I".equalsIgnoreCase(action)) {
-				System.out.println(files);
+				
 				// 저장 service
 				noticeService.insertNotice(data,files,request);
-				
-				
-
-				
-			}else if("U".equalsIgnoreCase(action)) {
-				// noticeService.updateNotice(paramMap,request); // 수정 service
-
-				
-			}else if("D".equalsIgnoreCase(action)) {
-				// noticeService.deleteNotice(paramMap); // 수정 service
-
-				
 			}
 			
 		}catch(Exception e){
-			manageResult =0;
+			
+		}
+		return insertResult;
+	}
+	
+	// 공지사항 수정
+	@RequestMapping("noticeUpdate.do")
+	@PutMapping
+	@ResponseBody
+	public int updateNotice(String action, @RequestParam Map<String, Object> params, List<MultipartFile> files, List<String> delTargets, HttpServletRequest req){
+		
+		int updateResult=0;
+		
+		try{
+			if("U".equalsIgnoreCase(action)){
+				
+				
+
+				// 기존 공지사항의 정보를 가져온다
+				NoticeModel latestNoticeInfo=noticeService.detailNotice(params); 
+				latestNoticeInfo.setFilesInfo(noticeService.selectFilesByNoticeId(params));
+				// 삭제하려는 파일들의 정보
+				List<FileModel> deleteFileInfo =noticeService.selectFilesByFileNo(delTargets);
+				// 기존에 첨부했던 파일의 백업본 생성
+				// 찾아보기
+
+				
+				updateResult=noticeService.updateNotice(latestNoticeInfo, params, files, delTargets, req);
+			}
+		}catch(Exception e){
+			if(!(e instanceof NoticeNotExistException)){
+				// 백업 파일 복원
+				// NewFileUtil fUtil=new NewFileUtil(req, rootPath, virtualRootPath, noticePath);
+			}
 			
 		}
 		
-		
-		
-		
-		
-		return manageResult;
+		return updateResult;
 	}
+	
+	
 	
 	@RequestMapping("fileDown.do")
 	public void downloadBbsAtmtFil(@RequestParam Map<String, Object> paramMap, HttpServletResponse response) throws Exception {

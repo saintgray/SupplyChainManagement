@@ -117,6 +117,22 @@ public class FileModel {
 	}
 	
 	
+	@Override
+	public boolean equals(Object obj){
+		
+		boolean chk=false;
+		
+		if(obj instanceof FileModel){
+			FileModel fm= (FileModel)obj;
+			if(this.file_no==fm.getFile_no()){
+				chk=true;
+			}
+		}
+		
+		return chk;
+	}
+	
+	
 	
 	
 }
