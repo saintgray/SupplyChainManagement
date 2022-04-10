@@ -142,6 +142,7 @@
 			<mvc:exclude-mapping path= "/register.do"/>
 			<mvc:exclude-mapping path="/updateFindPw.do" />
 			<mvc:exclude-mapping path="/system/selectUsrMgr.do" />
+			<mvc:exclude-mapping path="/accessdenied.do"/>
 			<mvc:exclude-mapping path="/adm/selectPrjMgr.do" />
 			<mvc:exclude-mapping path="/images/**" />
 			<mvc:exclude-mapping path="/css/**" />

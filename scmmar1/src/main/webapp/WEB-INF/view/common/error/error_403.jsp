@@ -4,9 +4,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Chain Maker :: 접근 불가</title>
+<style>
+#errwrap{
+	position:absolute;
+	left:50%;
+	top:50%;
+	transform:translate(-50%, -50%);
+	text-align: center;
+}
+
+</style>
 </head>
 <body>
-403 Error
+<div id="errwrap">
+	<img src="/images/error/403error.png" id="err403" style="display:block;">
+	<span style="color:rgb(212,0,0); font-size:40px; font-weight:bold;">올바르지 않은 요청입니다</span>
+</div>
 </body>
 </html>
