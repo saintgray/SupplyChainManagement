@@ -6,19 +6,19 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.happyjob.study.ged.dao.orderConfirmDao;
-import kr.happyjob.study.ged.model.orderConfirmModel;
+import kr.happyjob.study.ged.dao.OrderConfirmDao;
+import kr.happyjob.study.ged.model.OrderConfirmModel;
 
 @Service
-public class orderConfirmServiceImpl implements orderConfirmService{
+public class OrderConfirmServiceImpl implements OrderConfirmService{
 	
 	@Autowired
-	orderConfirmDao orderConfirmDao;
+	OrderConfirmDao orderConfirmDao;
 
 	@Override
-	public List<orderConfirmModel> orderConfirmList(Map<String, Object> paramMap) throws Exception {
+	public List<OrderConfirmModel> orderConfirmList(Map<String, Object> paramMap) throws Exception {
 		
-		List<orderConfirmModel> orderConfirmList = orderConfirmDao.orderConfirmList(paramMap);
+		List<OrderConfirmModel> orderConfirmList = orderConfirmDao.orderConfirmList(paramMap);
 		return orderConfirmList;
 	}
 
