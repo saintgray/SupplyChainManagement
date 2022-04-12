@@ -11,7 +11,7 @@ public class SalesModel {
 	private String photo;
 	private String mfcomp;
 	private String info;
-	
+	private String file_server_path;
 	
 	public int getSales_id() {
 		return sales_id;
@@ -66,6 +66,12 @@ public class SalesModel {
 	}
 	public void setInfo(String info) {
 		this.info = info;
+	}
+	public String getFile_server_path() {
+		return file_server_path;
+	}
+	public void setFile_server_path(String file_server_path) {
+		this.file_server_path = file_server_path;
 	}
 	
 	

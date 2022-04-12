@@ -2,12 +2,13 @@ package kr.happyjob.study.epc.model;
 
 public class ShoppingCartItemDTO {
 
+	int pur_id;
 	int sales_id;
 	String photo;
 	String model_nm;
 	int price;
 	int pur_cnt;
-	String wanteddate;
+	String wanted_date;
 	String loginID;
 	String purcYN;
 	public int getSales_id() {
@@ -26,7 +27,7 @@ public class ShoppingCartItemDTO {
 		return pur_cnt;
 	}
 	public String getWanteddate() {
-		return wanteddate;
+		return wanted_date;
 	}
 	public String getLoginID() {
 		return loginID;
@@ -37,6 +38,12 @@ public class ShoppingCartItemDTO {
 	
 	
 	
+	public int getPur_id() {
+		return pur_id;
+	}
+	public void setPur_id(int pur_id) {
+		this.pur_id = pur_id;
+	}
 	public void setSales_id(int sales_id) {
 		this.sales_id = sales_id;
 	}
@@ -53,7 +60,7 @@ public class ShoppingCartItemDTO {
 		this.pur_cnt = pur_cnt;
 	}
 	public void setWanteddate(String wanteddate) {
-		this.wanteddate = wanteddate;
+		this.wanted_date = wanteddate;
 	}
 	public void setLoginID(String loginID) {
 		this.loginID = loginID;
