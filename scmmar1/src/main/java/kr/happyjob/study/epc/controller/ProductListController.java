@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.happyjob.study.epc.model.SalesModel;
+import kr.happyjob.study.epc.model.SearchParamDTO;
 import kr.happyjob.study.epc.service.ProductListService;
 
 @Controller
@@ -28,22 +29,33 @@ public class ProductListController {
 	// Set logger
 	private final Logger logger = LogManager.getLogger(this.getClass());
 	
-	@RequestMapping(value="/productList", method=RequestMethod.GET)
+	@RequestMapping(value="/productList.do", method=RequestMethod.GET)
 	public String pl(Model model) {
 		
-		
+		/*int totalCount = comnCodService.countListComnGrpCod(paramMap);*/
+		model.addAttribute("totalProductListCnt", 18);
+		model.addAttribute("currentPageProductList", 1);
 		return "epc/productList";
 	}
 	
-	@RequestMapping(value="/getProductList", method=RequestMethod.GET)
+	@RequestMapping(value="/getProductList", method=RequestMethod.POST)
 	@ResponseBody
-	public ArrayList<SalesModel> gpl() {
-		ArrayList<SalesModel> list = pservice.getListProduct();
+	public HashMap<String, Object> gpl(
+			Model model,
+				SearchParamDTO param
+			) {
 		
-		return list;
+		HashMap<String, Object> result = new HashMap<>();
+		param.setStartIndex((param.getCurrentPage()-1)*param.getPageBlockSize());
+		param.setPageBlockSize(param.getPageBlockSize());
+		ArrayList<SalesModel> list = pservice.getListProduct(param);
+		int totalCntProductList = pservice.getListProductCnt(param);
+		result.put("list", list);
+		result.put("totalCntProductList", totalCntProductList);
+		return result;
 	}
 	
-	@RequestMapping(value="/getProductDetail", method=RequestMethod.GET)
+	@RequestMapping(value="/getProductDetail", method=RequestMethod.POST)
 	@ResponseBody
 	public SalesModel gpd( @RequestParam int sales_id ) {
 		SalesModel product = pservice.getProductDetail(sales_id);
@@ -65,21 +77,6 @@ public class ProductListController {
 		ArrayList<String> mfclist = pservice.getMfcompListBySalesType(salesType);
 		
 		return mfclist;
-	}
-	
-	@RequestMapping(value="/searchProductList", method=RequestMethod.POST)
-	@ResponseBody
-	public ArrayList<SalesModel> spl( 
-					@RequestParam String salesType, 
-					@RequestParam String mfcomp,
-					@RequestParam String keyword) {
-		HashMap<String, String> params = new HashMap<>();
-		params.put("salesType", salesType);
-		params.put("mfcomp", mfcomp);
-		params.put("keyword", keyword);
-		ArrayList<SalesModel> slist = pservice.searchProductList(params);
-		
-		return slist;
 	}
 	
 	@RequestMapping(value="/orderProduct", method=RequestMethod.POST)
