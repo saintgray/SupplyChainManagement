@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.happyjob.study.scm.dao.dailyOrderHistoryDao">
+<mapper namespace="kr.happyjob.study.scm.dao.DailyOrderHistoryDao">
 	
 	
-	<select id="listdailyOrderHistory" resultType="kr.happyjob.study.scm.model.dailyOrderHistoryModel">
+	<select id="listdailyOrderHistory" resultType="kr.happyjob.study.scm.model.DailyOrderHistoryModel">
 		SELECT    pur.pur_id AS pur_id
 				, pur.purdate AS purdate
 				, user.name AS name
@@ -70,6 +70,59 @@
 		LIMIT #{pageIndex}, #{pageSize}
 	</select>
 	
+	<select id="total" resultType="int">
+		SELECT  count(pur.pur_id)
+		FROM    tb_purchase pur 
+				inner join tb_userinfo user ON pur.loginID = user.loginID
+				inner join tb_purchaseinfo purinfo ON pur.pur_id = purinfo.pur_id
+				inner join tb_sales sal ON purinfo.sales_id = sal.sales_id
+				left outer join (
+				                   select st.sales_id
+				                        , sum(st_cnt) as sumcnt 
+				                     from tb_stock st 
+				                    where st.sales_id IN (
+				                                            select sa.sales_id 
+				                                              from tb_sales sa				                                              
+				                                         )
+				                   group by st.sales_id
+				                ) ll on ll.sales_id = purinfo.sales_id
+		<where>
+					<choose>
+						<when test="returnsearch == 'a'.toString()">
+							and returnYN='Y'
+						</when>
+						<when test="returnsearch == 'b'.toString()">
+							and returnYN='N'
+						</when>
+					</choose>
+				
+				<if test="!selectsearch.equals('')">
+					<choose>
+					<when test="selectsearch == '0'.toString()">
+					<![CDATA[
+						and (pur.purdate >=
+							#{datesearch1}
+							and
+							pur.purdate <=
+								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+							)
+						]]>		
+					</when>
+					<when test="selectsearch == '1'.toString()">
+					<![CDATA[
+						and (pur.purdate >=
+							#{datesearch1}
+							and
+							pur.purdate <=
+								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+							)
+						]]>
+					</when>
+				</choose>
+				</if>
+		</where>   
+	</select>
+	
 	<select id="onedailyOrderHistory" resultType="kr.happyjob.study.scm.model.WorkOrderModel">
 	SELECT    pur.pur_id AS pur_id
 				, pur.purdate AS purdate
@@ -84,30 +137,41 @@
 				, pur.depositYN AS depositYN
 				, sal.sales_id AS sales_id
 				, user.loginID AS loginID
-				
+				, red.return_cnt
 		FROM    tb_purchase pur 
-				inner join tb_userinfo user ON pur.loginID = user.loginID
-				inner join tb_purchaseinfo purinfo ON pur.pur_id = purinfo.pur_id
-				inner join tb_sales sal ON purinfo.sales_id = sal.sales_id
+				join tb_userinfo user ON pur.loginID = user.loginID
+				join tb_purchaseinfo purinfo ON pur.pur_id = purinfo.pur_id
+        		join tb_refundinfo reinfo on reinfo.purinf_id = purinfo.purinf_id
+        		join tb_returndir red on red.return_id = reinfo.rfinfo_id
+				join tb_sales sal ON purinfo.sales_id = sal.sales_id
 				left outer join (
 				                   select st.sales_id
 				                        , sum(st_cnt) as sumcnt 
 				                     from tb_stock st 
 				                    where st.sales_id IN (
 				                                            select sa.sales_id 
-				                                              from tb_sales sa	
+				                                              from tb_sales sa				                                              
 				                                         )
 				                   group by st.sales_id
 				                ) ll on ll.sales_id = purinfo.sales_id
 		WHERE 	pur.pur_id = #{pur_id}
 	</select>
 
-	<select id="total" resultType="int">
-		SELECT count(pur_id)
-		  FROM tb_purchase
-		   
-		  
-		  
+	<select id="comf" resultType="kr.happyjob.study.scm.model.DailyOrderHistoryModel">
+		select del.deliv_id
+		from tb_purchase pur
+			join tb_purchaseinfo pinfo on pur.pur_id = pinfo.pur_id
+			join tb_delivdir del on del.purinf_id = pinfo.purinf_id
+		 where pur.pur_id = #{pur_id}
+	</select>
+	
+	<select id="come" resultType="kr.happyjob.study.scm.model.DailyOrderHistoryModel">
+		select pur.pur_id
+		  from tb_purchase pur
+			  join tb_purchaseinfo pinfo on pur.pur_id = pinfo.pur_id
+			  join tb_refundinfo rinfo on pinfo.purinf_id = rinfo.purinf_id
+			  join tb_returndir rdir on rdir.rfinfo_id = rinfo.rfinfo_id
+  	 where pur.pur_id = #{pur_id}
 	</select>
 	
 	<select id="warehouse" resultType="kr.happyjob.study.scm.model.warehouseModel">
@@ -134,8 +198,9 @@
 	    WHERE 		sa.sales_id= #{sales_id} AND wh.wh_id = #{wh_id};
 	</select>
 	
-	
-	<insert id="insertcom2">
+	<!-- 발주상세 -->
+	<insert id="insertcom2" useGeneratedKeys="true" keyProperty="fk" >
+	INSERT
 		 INTO tb_orderinfo
 		 		(	
 		 	  		order_cnt
@@ -153,6 +218,7 @@
 				)
 	</insert>
 	
+	<!-- 발주지시서 -->
 	<insert id="insertcom1">
 		<!-- <selectKey resultType="string" keyProperty="orderid" order="BEFORE">
             select DISTINCT(select max(orderid) from tb_orderdir)+1 from tb_orderdir
@@ -161,15 +227,54 @@
 		 INTO tb_orderdir
 		 		(	
 		 			regdate
-		 		,	dir_result
-		 		,	wh_id
+		 		,	order_id
 				)
 		VALUES (
-				,	now()
-		        , 	'O'
-		        ,	 #{com_code}	
+					now()
+		        ,	#{fk}
 				);
 	</insert>
 	
+	<!-- 반품 지시서 -->
+	<insert id="insertreturn">
+		insert into tb_returndir
+	    		(	regdate 
+	    		, 	return_cnt
+	    		, 	dir_result
+	    		, 	rfinfo_id
+	    		)
+	    values 	(	now()
+	    		, 	#{return_cnt}
+	    		, 	'O'
+	    		,  (
+	    			select rinfo.rfinfo_id
+			          from tb_refundinfo rinfo
+			            join tb_purchaseinfo pinfo ON pinfo.purinf_id = rinfo.purinf_id
+			              where pinfo.pur_id = #{pur_id}
+	                )
+	    		)
+	</insert>
+	
+	<!-- 배송 지시서 -->
+	<insert id="insertdel">
+		insert into tb_delivdir
+			(
+				regdate
+			,	purinf_id
+			,	deliv_wh_id
+			)
+	values
+			(
+				now()
+			,	(
+					select distinct(pinfo.purinf_id)
+					  from tb_purchaseinfo pinfo
+							  join tb_delivdir del on del.purinf_id = pinfo.purinf_id
+							  join tb_purchase pur on pur.pur_id = pinfo.pur_id
+					  where pur.pur_id = #{pur_id}
+				)
+			,	#{deliv_wh_id}
+			)
+	</insert>
 	
 </mapper>

@@ -2,22 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.happyjob.study.epc.dao.ProductListDao">
-	<select id="getListProduct" resultType="kr.happyjob.study.epc.model.SalesModel">
+	<select id="getListProduct" parameterType="kr.happyjob.study.epc.model.SearchParamDTO" resultType="kr.happyjob.study.epc.model.SalesModel">
 		SELECT 	* 
-			FROM tb_sales
+		FROM tb_sales
+		<where> 
+			price > 0
+			<if test="salesType != null">
+				and sales_type like #{salesType}
+			</if>
+			<if test="mfcomp != null">
+				and mfcomp like #{mfcomp}
+			</if>
+			<if test="keywordProductList != null">
+				and (sales_type like concat('%',#{keywordProductList},'%') or mfcomp like concat('%',#{keywordProductList},'%'))
+			</if>
+		</where>
+		LIMIT #{startIndex}, #{pageBlockSize}
 	</select>
 	
+	<select id="getListProductCnt" parameterType="kr.happyjob.study.epc.model.SearchParamDTO" resultType="int">
+		SELECT 	COUNT(*) 
+		FROM tb_sales
+		<where> 
+			price > 0
+			<if test="salesType != null">
+				and sales_type like #{salesType}
+			</if>
+			<if test="mfcomp != null">
+				and mfcomp like #{mfcomp}
+			</if>
+			<if test="keywordProductList != null">
+				and (sales_type like concat('%',#{keywordProductList},'%') or mfcomp like concat('%',#{keywordProductList},'%'))
+			</if>
+		</where>
+	</select>
 	
 	<select id="getProductDetail" resultType="kr.happyjob.study.epc.model.SalesModel">
-		SELECT * 
-			FROM tb_sales 
-			WHERE sales_id = #{sales_id}
+		SELECT *
+		FROM tb_sales s
+			LEFT OUTER JOIN tb_sales_file f ON s.sales_id = f.sales_id
+		WHERE s.sales_id = #{sales_id}
 	</select>
 	
 	
 	<select id="getSalesTypeList"  parameterType="string" resultType="string">
-		SELECT distinct(sales_type) 
-			FROM tb_sales
+		SELECT detail_name as sales_type 
+		FROM tb_detail_code 
+		WHERE group_code = 'proCD' 
+			AND use_yn like 'Y'
 	</select>
 	
 	
@@ -26,30 +58,13 @@
 			distinct(mfcomp) 
 			FROM tb_sales
 			<where> 
-				<if test="(salesType != null)">
+				<if test="salesType != null">
 					sales_type like #{salesType}
 				</if>
 			</where>
 	</select>
 	
-	
-	<select id="searchProductList"  parameterType="hashmap" resultType="kr.happyjob.study.epc.model.SalesModel">
-		SELECT * FROM tb_sales
-			<where> 
-				price > 0
-				<if test="(salesType != null)">
-					and sales_type like #{salesType}
-				</if>
-				<if test="(mfcomp != null)">
-					and mfcomp like #{mfcomp}
-				</if>
-				<if test="(keyword != null)">
-					and (sales_type like concat('%',#{keyword},'%') or mfcomp like concat('%',#{keyword},'%'))
-				</if>
-			</where>
-	</select>
-	
-	
+
 	<insert id="addProductToCart"  parameterType="hashmap">
 		INSERT INTO tb_basket (loginID, sales_id, pur_cnt, wanteddate, purcYN )
 			VALUES ( #{loginID}, #{sales_id}, #{pur_cnt}, #{wanted_date}, 'N')
@@ -65,7 +80,7 @@
 	
 	<insert id="orderProductPurchaseinfo"  parameterType="hashmap">
 		<selectKey resultType="int" keyProperty="pur_id" order="BEFORE">
-		    select last_insert_id()
+		    SELECT distinct(last_insert_id()) FROM tb_purchase limit 1
 		</selectKey>
 		INSERT INTO
 		    tb_purchaseinfo (pur_cnt, wanted_date, returnYN, pur_type, pur_id, loginID, sales_id)

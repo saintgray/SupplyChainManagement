@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.shippingDirectionDao">
+	
+	<select id="listship" resultType="kr.happyjob.study.scm.model.shippingDirectionModel">
+	select 		del.deliv_id AS deliv_id
+			 ,  del.regdate AS regdate
+			 , 	user.client AS client
+			 ,	pcin.pur_cnt AS pur_cnt
+	from		tb_userinfo user
+		join 	tb_purchaseinfo pcin on user.loginID = pcin.loginID
+		join 	tb_delivdir del on del.purinf_id = pcin.purinf_id
+		order by del.deliv_id desc
+  		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<select id="total" resultType="int">
+	select 		COUNT(deliv_id)
+	from		tb_userinfo user
+		join 	tb_purchaseinfo pcin on user.loginID = pcin.loginID
+		join 	tb_delivdir del on del.purinf_id = pcin.purinf_id
+	</select>
+	
+	<select id="onesip" resultType="kr.happyjob.study.scm.model.oneshipModel">
+	select		del.regdate AS regdate
+		,	 	user.client AS client
+		,		sal.sales_nm AS sales_nm
+		,		pcin.pur_cnt AS pur_cnt
+		,		pc.depositYN AS depositYN
+
+	from 		tb_userinfo user
+		join 		tb_purchase pc on pc.loginID = user.loginID
+		join 		tb_purchaseinfo pcin on pc.loginID = pcin.loginID
+		join 		tb_delivdir del on del.purinf_id = pcin.purinf_id
+		join 		tb_sales sal ON sal.sales_id = pcin.sales_id
+	where 	del.deliv_id = #{deliv_id}
+	
+	</select>
+</mapper>

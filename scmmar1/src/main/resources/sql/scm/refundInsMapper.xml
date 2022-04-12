@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.refundInsDao">
+	
+	<select id="relist" resultType="kr.happyjob.study.scm.model.refundInsModel">
+	select ret.regdate AS regdate
+			,	sal.sales_nm AS sales_nm
+			,	ret.return_cnt AS return_cnt
+			,	(sal.price*ret.return_cnt) AS avg
+			,	ret.confirmYN AS confirmYN
+			,	user.client AS client
+			,	ret.confirm_requestYN AS confirm_requestYN
+			
+  	from 		tb_returndir ret
+    	join tb_refundinfo reinfo ON reinfo.rfinfo_id = ret.rfinfo_id
+	    join tb_purchaseinfo pinfo ON pinfo.purinf_id = reinfo.purinf_id
+	    join tb_sales sal ON sal.sales_id = pinfo.sales_id
+	    join tb_userinfo user ON pinfo.loginID = user.loginID
+	    <where>
+	    	<choose>
+				<when test="!datesearch1.equals('')">
+				<![CDATA[
+					and (ret.regdate >=
+						#{datesearch1}
+						and
+						ret.regdate <=
+							(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+						)
+				]]>	
+				</when>
+			</choose>
+			<if test="!searchinput.equals('')">
+				and user.client Like CONCAT('%', #{searchinput}, '%')
+			</if>
+	    </where>
+	LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<select id="total" resultType="int">
+		select count(ret.return_id)
+	  	from 		tb_returndir ret
+	    	join tb_refundinfo reinfo ON reinfo.rfinfo_id = ret.rfinfo_id
+		    join tb_purchaseinfo pinfo ON pinfo.purinf_id = reinfo.purinf_id
+		    join tb_sales sal ON sal.sales_id = pinfo.sales_id
+		    join tb_userinfo user ON pinfo.loginID = user.loginID
+	    <where>
+	    	<choose>
+				<when test="!datesearch1.equals('')">
+				<![CDATA[
+					and (ret.regdate >=
+						#{datesearch1}
+						and
+						ret.regdate <=
+							(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+						)
+				]]>	
+				</when>
+			</choose>
+			<if test="!searchinput.equals('')">
+				and user.client Like CONCAT('%', #{searchinput}, '%')
+			</if>
+	    </where>
+	</select>
+	
+	
+	
+	
+	
+</mapper>

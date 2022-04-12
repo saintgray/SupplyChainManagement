@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.shipping.dao.ShippingDao">
+
+	<!-- 배송지시서 목록 조회 -->
+	<select id="listDeliOrder" resultType="kr.happyjob.study.shipping.model.ShippingModel">
+		/* kr.happyjob.study.shipping.dao.ShippingDao.listDeliOrder */
+		SELECT 
+				dd.deliv_id, dd.regdate
+			,	dd.deldate, dd.editdate 
+     		,	dd.confirmYN, dd.purinf_id
+     		, 	pi.pur_cnt, s.sales_nm, ui.name , dd.deliv_wh_id   
+					
+		FROM tb_delivdir dd LEFT JOIN tb_purchaseinfo pi 
+		                           ON dd.purinf_id = pi.purinf_id
+		                    LEFT JOIN tb_sales s
+		                           ON pi.sales_id = s.sales_id
+		                    LEFT JOIN tb_purchase p
+		                           ON pi.pur_id = p.pur_id
+		                    LEFT JOIN tb_userinfo ui
+		                           ON p.loginID = ui.loginID
+		
+		    WHERE pi.returnYN='N'
+			<if test="(sname != null) and (!sname.equals(''))">
+			    and s.sales_nm LIKE CONCAT('%', #{sname}, '%')
+			</if>
+			
+			<if test="(oname != null) and (!oname.equals(''))">
+			    and dd.confirmYN= #{oname}
+			</if>
+			
+			<if test="(cal1 != null) and (!cal1.equals(''))">
+			    and dd.regdate  <![CDATA[>=]]> STR_TO_DATE(#{cal1},'%Y-%m-%d')
+			</if>
+			
+			<if test="(cal2 != null) and (!cal2.equals(''))">
+			    and dd.regdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY)
+			</if>
+		
+		ORDER BY deliv_id DESC
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+
+
+	<!-- 배송지시서 목록 총 갯수 조회 -->
+	<select id="countListDeliOrder" resultType="int">
+		/* kr.happyjob.study.shipping.dao.ShippingDao.countListDeliOrder */
+		SELECT count(1) AS tot_cnt 
+		FROM tb_delivdir dd LEFT JOIN tb_purchaseinfo pi 
+		                           ON dd.purinf_id = pi.purinf_id
+		                    LEFT JOIN tb_sales s
+		                           ON pi.sales_id = s.sales_id
+		                    LEFT JOIN tb_purchase p
+		                           ON pi.pur_id = p.pur_id
+		                    LEFT JOIN tb_userinfo ui
+		                           ON p.loginID = ui.loginID
+		                           
+		 
+            WHERE pi.returnYN='N'
+			<if test="(sname != null) and (!sname.equals(''))">
+			    and s.sales_nm LIKE CONCAT('%', #{sname}, '%')
+			</if>
+			
+			<if test="(oname != null) and (!oname.equals(''))">
+			    and dd.confirmYN= #{oname}
+			</if>
+			
+			<if test="(cal1 != null) and (!cal1.equals(''))">
+			    and dd.regdate  <![CDATA[>=]]> STR_TO_DATE(#{cal1},'%Y-%m-%d')
+			</if>
+			
+			<if test="(cal2 != null) and (!cal2.equals(''))">
+			    and dd.regdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY) 
+			</if>
+	</select>
+
+
+	<!-- 배송지시서 단건 상세 조회 selectOne -->
+	<select id="selectDeliOrder" resultType="kr.happyjob.study.shipping.model.ShippingModel">
+		/* kr.happyjob.study.shipping.dao.ShippingDao.selectDeliOrder */
+		SELECT dd.deliv_id, dd.regdate, dd.deldate, dd.editdate 
+       , dd.confirmYN, dd.purinf_id
+       , pi.pur_cnt, s.sales_nm, ui.name
+       , ui.address, ui.dtAddress, wh.wh_nm
+       , ui.loginID, dd.deliv_wh_id, s.sales_id
+       
+		FROM tb_delivdir dd LEFT JOIN tb_purchaseinfo pi
+		                           ON dd.purinf_id = pi.purinf_id
+		                    LEFT JOIN tb_sales s
+		                           ON pi.sales_id = s.sales_id
+		                    LEFT JOIN tb_purchase p
+		                           ON pi.pur_id = p.pur_id
+		                    LEFT JOIN tb_userinfo ui
+		                           ON p.loginID = ui.loginID
+		                    LEFT JOIN tb_warehouse wh
+		                           ON wh.loginID = ui.loginID
+		WHERE dd.deliv_id = #{deliv_id}
+	</select>
+
+
+	<!-- 배송지시서 배송상태 변경 -->
+	<update id="updateDeliOrder">
+		/* kr.happyjob.study.shipping.dao.ShippingDao.updateDeliOrder */
+		UPDATE tb_delivdir 
+		   SET confirmYN = 'E'
+			  , editdate = NOW()
+		 WHERE deliv_id = #{deliv_id}	
+	</update>
+	
+	
+	<!-- 창고 수량 감소 -->
+	<update id="updateStockReduce">
+		/* kr.happyjob.study.shipping.dao.ShippingDao.updateStockReduce */
+		UPDATE tb_stock
+		   SET st_cnt = st_cnt - #{pur_cnt}
+		 WHERE sales_id = #{sales_id} AND wh_id = #{wh_id}
+	</update>
+
+
+	<!-- 재고입출내역 insert -->
+	<insert id="insertDeparturehis">
+		/* kr.happyjob.study.shipping.dao.ShippingDao.insertDeparturehis */
+		INSERT INTO tb_departurehis (
+		   dpt_id
+		  ,comp_id
+		  ,dpt_type
+		  ,dptdate
+		  ,dpt_cnt
+		  ,sales_id
+		  ,wh_id
+		  ,deliv_id
+		) 
+		VALUES (default, null, 1, now(), #{pur_cnt}, #{sales_id}, #{wh_id}, #{deliv_id})
+	</insert>
+
+
+
+	<!-- 타임스탬프 테스트 -->
+	<select id="testSelect" resultType="String">
+		SELECT regDate
+		FROM tb_userinfo
+		WHERE loginID='deli1000'	
+	</select>
+
+</mapper>

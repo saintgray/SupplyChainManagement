@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.refundInfoDao">
+
+	<select id="reinfolist" resultType="kr.happyjob.study.scm.model.refundInfoModel">
+		select sal.sales_nm AS sales_nm
+				,	pinfo.wanted_date AS wanted_date
+				,	ret.return_cnt AS return_cnt
+				, 	(sal.price*ret.return_cnt) AS avg
+				,	ret.return_id AS return_id
+				,	pinfo.purinf_id AS purinf_id
+				,	ret.confirm_requestYN AS confirm_requestYN
+		  from		 tb_returndir ret
+	        join tb_refundinfo reinfo ON reinfo.rfinfo_id = ret.rfinfo_id
+	        join tb_purchaseinfo pinfo ON pinfo.purinf_id = reinfo.purinf_id
+			join tb_sales sal on pinfo.sales_id = sal.sales_id
+				<where>
+			    	<choose>
+						<when test="!datesearch1.equals('')">
+						<![CDATA[
+							and (pinfo.wanted_date >=
+								#{datesearch1}
+								and
+								pinfo.wanted_date <=
+									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+								)
+						]]>	
+						</when>
+					</choose>
+					<if test="!searchinput.equals('')">
+						and sal.sales_nm Like CONCAT('%', #{searchinput}, '%')
+					</if>
+			    </where>
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<select id="total" resultType="int">
+		select count(ret.return_id)
+		   from		 tb_returndir ret
+		        join tb_refundinfo reinfo ON reinfo.rfinfo_id = ret.rfinfo_id
+		        join tb_purchaseinfo pinfo ON pinfo.purinf_id = reinfo.purinf_id
+			 	join tb_sales sal on pinfo.sales_id = sal.sales_id
+				<where>
+			    	<choose>
+						<when test="!datesearch1.equals('')">
+						<![CDATA[
+							and (pinfo.wanted_date >=
+								#{datesearch1}
+								and
+								pinfo.wanted_date <=
+									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+								)
+						]]>	
+						</when>
+					</choose>
+					<if test="!searchinput.equals('')">
+						and sal.sales_nm Like CONCAT('%', #{searchinput}, '%')
+					</if>
+			    </where>
+	</select>
+	
+	<select id="onereinfo" resultType="kr.happyjob.study.scm.model.refundInfoModel">
+		select sal.sales_nm AS sales_nm
+				,	pinfo.wanted_date AS wanted_date
+				,	ret.return_cnt AS return_cnt
+				, 	(sal.price*ret.return_cnt) AS avg
+				,	ret.return_id AS return_id
+				,	ret.confirm_requestYN AS confirm_requestYN
+		 from		 tb_returndir ret 
+		  	  join tb_refundinfo rinfo on ret.rfinfo_id = rinfo.rfinfo_id  
+			  join tb_purchaseinfo pinfo ON pinfo.purinf_id = rinfo.purinf_id
+			  join tb_sales sal on pinfo.sales_id = sal.sales_id
+		 where ret.return_id = #{return_id}
+	</select>
+	
+	<update id="refupdate">
+		update tb_returndir
+		set		editdate = NOW()
+			,	return_cnt = #{return_cnt}
+			,	confirm_requestYN = '1'
+		where return_id = ${return_id}
+	</update>
+	
+	
+	
+	
+</mapper>

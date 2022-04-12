@@ -12,10 +12,27 @@
 				,	st.st_cnt AS st_cnt
 				,	wh.wh_loc AS wh_loc
 				,	wh.addr AS addr
-		
 		FROM	tb_warehouse wh
-			JOIN tb_stock st ON wh.wh_id = st.wh_id
-			JOIN tb_sales sal ON sal.sales_id = st.sales_id 
+			left JOIN tb_stock st ON wh.wh_id = st.wh_id
+			left JOIN tb_sales sal ON sal.sales_id = st.sales_id 
+		<where>
+					<choose>
+						<when test="searchgrouptype == '0'.toString()">
+							  and wh.wh_nm Like CONCAT('%', #{searchtext}, '%')
+						</when>
+						<when test="searchgrouptype == '1'.toString()">
+							  and sal.sales_nm Like CONCAT('%', #{searchtext}, '%')
+						</when>
+					</choose>
+		</where>
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<select id="total" resultType="int">
+		SELECT		count(wh.wh_id)
+		FROM	tb_warehouse wh
+			left JOIN tb_stock st ON wh.wh_id = st.wh_id
+			left JOIN tb_sales sal ON sal.sales_id = st.sales_id 
 		<where>
 					<choose>
 						<when test="searchgrouptype == '0'.toString()">
@@ -27,6 +44,7 @@
 					</choose>
 		</where>
 	</select>
+	
 	
 	<select id="cnt" resultType="kr.happyjob.study.scm.model.whcntModel">
 	SELECT  dt.sales_id AS sales_id

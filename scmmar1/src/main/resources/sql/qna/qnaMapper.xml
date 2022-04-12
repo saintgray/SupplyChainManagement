@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.study.qna.dao.QnaDao">
+
+	<select id="getTotalCount" resultType="Integer" parameterType="kr.happyjob.study.qna.model.SearchParam">
+		SELECT 
+			COUNT(1)
+		FROM
+			tb_Qna tq JOIN tb_userinfo tu
+							ON tq.loginID=tu.loginID
+		<where>
+			<if test='"C".equals(userType)'>
+				tu.loginID=#{loginID}
+			</if>
+			<if test='"all".equals(searchType)'>
+				AND (
+						tq.qna_title LIKE CONCAT('%',#{keyword},'%')
+						OR
+						tq.qna_content LIKE CONCAT('%',#{keyword},'%')
+					)
+			</if>
+			<if test='"qna_title".equals(searchType)'>
+				AND tq.qna_title LIKE CONCAT('%',#{keyword},'%')
+			</if>
+			<if test='"qna_content".equals(searchType)'>
+				AND tq.qna_content LIKE CONCAT('%',#{keyword},'%')
+			</if>
+			AND (SELECT COUNT(1) FROM tb_reply tr WHERE tr.qna_id=tq.qna_id AND reply_deldate IS NULL) = 0
+		</where>
+	</select>
+	
+	<select id="getQnaList" resultType="kr.happyjob.study.qna.model.QnaListRow" parameterType="kr.happyjob.study.qna.model.SearchParam">
+		SELECT 
+			tq.qna_id,
+			tq.qna_title,
+			tq.qna_regdate,
+			tu.name
+		FROM
+			tb_Qna tq JOIN tb_userinfo tu
+							ON tq.loginID=tu.loginID
+		<where>
+			<if test='"C".equals(userType)'>
+				tu.loginID=#{loginID}
+			</if>
+			<if test='"all".equals(searchType)'>
+				AND (
+						tq.qna_title LIKE CONCAT('%',#{keyword},'%')
+						OR
+						tq.qna_content LIKE CONCAT('%',#{keyword},'%')
+					)
+			</if>
+			<if test='"qna_title".equals(searchType)'>
+				AND tq.qna_title LIKE CONCAT('%',#{keyword},'%')
+			</if>
+			<if test='"qna_content".equals(searchType)'>
+				AND tq.qna_content LIKE CONCAT('%',#{keyword},'%')
+			</if>
+			AND (SELECT COUNT(1) FROM tb_reply tr WHERE tr.qna_id=tq.qna_id AND reply_deldate IS NULL) = 0
+		</where>
+		ORDER BY qna_regdate
+	</select>
+
+
+</mapper>

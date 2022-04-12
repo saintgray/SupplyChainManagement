@@ -107,6 +107,59 @@
 			wh_loc=#{arg0}
 	
 	</select> -->
+	
+	
+	
+	<select id="getWareHouseStock" resultType="Integer">
+		SELECT IFNULL(ts.st_cnt,0)
+		FROM tb_warehouse tw  LEFT JOIN tb_stock ts 
+									ON tw.wh_id =ts.wh_id
+		WHERE tw.wh_id=#{arg0}
+	</select>
+	
+	<insert id="insertWarehouse" parameterType="kr.happyjob.study.scm.warehouse.model.WarehouseDetail">
+		
+		INSERT INTO
+	 		tb_warehouse(
+	 						loginID,
+	 						wh_nm,
+	 						zipCode,
+	 						wh_loc,
+	 						addr,
+	 						dtAddress
+ 						)
+				VALUES(
+						#{loginID},
+						#{wh_nm},
+						#{zipCode},
+						#{wh_loc},
+						#{addr},
+						#{dtAddress}
+				)	
+	 			
+								
+	</insert>
+	
+	
+	<update id="updateWarehouse" parameterType="kr.happyjob.study.scm.warehouse.model.WarehouseDetail">
+	
+		UPDATE tb_warehouse
+		SET
+			loginID=#{loginID},
+			wh_nm=#{wh_nm},	
+			zipCode=#{zipCode},
+			wh_loc=#{wh_loc},
+			addr=#{addr},
+			dtAddress=#{dtAddress}
+		WHERE wh_id=#{wh_id}
+		
+	</update>
+	
+	<delete id="deleteWarehouse">
+		DELETE FROM
+		tb_warehouse
+		WHERE wh_id=#{arg0}
+	</delete>
 		
 	
 	

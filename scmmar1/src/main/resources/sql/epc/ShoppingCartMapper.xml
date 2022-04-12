@@ -2,11 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.happyjob.study.epc.dao.ShoppingCartDao">
-	<select id="getCartList" parameterType="string" resultType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
-		SELECT s.photo, s.model_nm, s.price, b.pur_cnt, b.wanteddate, b.sales_id
+	<select id="getCartList" parameterType="kr.happyjob.study.epc.model.SearchParamDTO" resultType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
+		SELECT s.photo, s.model_nm, s.price, b.pur_cnt, b.wanteddate as wanted_date, b.sales_id
 		FROM tb_basket b
 		INNER JOIN tb_sales s ON b.sales_id = s.sales_id
-		WHERE loginID = #{loginID};
+		WHERE purcYN = 'N'
+			AND loginID = #{loginID}
+		LIMIT #{startIndex}, #{pageBlockSize}
 	</select>
+	
+	<select id="getCartListTotalCount" parameterType="string" resultType="int">
+		SELECT count(*) 
+		FROM tb_basket
+		WHERE purcYN = 'N'
+			AND loginID like #{loginID}
+	</select>
+	
+	
+	<delete id="deleteCartItem" parameterType="hashmap">
+		DELETE FROM tb_basket
+		WHERE loginID = #{loginID} AND sales_id = #{sales_id}
+			
+	</delete>
+	
+	<update id="updateCartItemPurYN" parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
+		UPDATE tb_basket 
+		SET purcYN = 'Y' 
+		WHERE loginID = #{loginID} and sales_id = #{sales_id}
+	</update>
+	
+	<insert id="orderProductPurchase"  parameterType="string">
+		INSERT INTO
+			    tb_purchase (loginID, depositYN)
+		VALUES
+			    (#{loginID}, 'Y')
+	</insert>
+	
+	<insert id="orderProductPurchaseinfo"  parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
+	<selectKey keyProperty="pur_id" order="BEFORE" resultType="int"> 
+		SELECT max(pur_id) from tb_purchase 
+	</selectKey>
+		INSERT INTO
+		    tb_purchaseinfo (pur_cnt, wanted_date, returnYN, pur_type, pur_id, loginID, sales_id)
+		VALUES
+		    (#{pur_cnt}, #{wanted_date}, 'N', '0', #{pur_id}, #{loginID}, #{sales_id})
+	</insert>
+	
 	
 </mapper>

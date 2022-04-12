@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.purchaseDirDao">
+	
+	<select id="listpurchaseDir" resultType="kr.happyjob.study.scm.model.purchaseDirModel">
+	select ord.order_id AS order_id
+			,	ordinfo.sales_id AS sales_id  
+			,	sal.sales_nm AS sales_nm
+			,	com.comp_nm AS comp_nm
+			,	ord.regdate AS regdate
+			,	imp.unitprice AS unitprice
+			,	ordinfo.order_cnt AS order_cnt
+			,	(imp.unitprice * ordinfo.order_cnt) AS avg
+	from	 tb_orderdir ord
+	  join	 tb_orderinfo ordinfo on ord.order_id = ordinfo.order_id
+	  join 	 tb_sales sal on sal.sales_id = ordinfo.sales_id
+	  join 	 tb_comp com on com.comp_id = ordinfo.comp_id
+	  join 	 tb_import imp on ordinfo.comp_id = imp.comp_id and ordinfo.sales_id = imp.sales_id
+	  order by ord.order_id desc
+	
+		<where>
+					<choose>
+						<when test="!datesearch1.equals('')">
+						<![CDATA[
+							and (ordr.regdate >=
+								#{datesearch1}
+								and
+								ordr.regdate <=
+									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+								)
+						]]>	
+						</when>
+					</choose>
+					
+					<if test="!searchinput.equals('')">
+						<choose>
+							<when test="selectsearch == '0'.toString()">
+								and sales_nm Like CONCAT('%', #{searchinput}, '%')		
+							</when>
+							<when test="selectsearch == '1'.toString()">
+								and comp_nm Like CONCAT('%', #{searchinput}, '%')
+							</when>
+						</choose>
+					</if>
+				
+		</where>		
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<select id="total" resultType="int">
+	select count(orderid)
+	from	 tb_orderdir ord
+	  join	 tb_orderinfo ordinfo on ord.order_id = ordinfo.order_id
+	  join 	 tb_sales sal on sal.sales_id = ordinfo.sales_id
+	  join 	 tb_comp com on com.comp_id = ordinfo.comp_id
+	  join 	 tb_import imp on ordinfo.comp_id = imp.comp_id and ordinfo.sales_id = imp.sales_id
+	
+		<where>
+					<choose>
+						<when test="!datesearch1.equals('')">
+						<![CDATA[
+							and (ordr.regdate >=
+								#{datesearch1}
+								and
+								ordr.regdate <=
+									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+								)
+						]]>	
+						</when>
+					</choose>
+					
+					<if test="!searchinput.equals('')">
+						<choose>
+							<when test="selectsearch == '0'.toString()">
+								and sales_nm Like CONCAT('%', #{searchinput}, '%')		
+							</when>
+							<when test="selectsearch == '1'.toString()">
+								and comp_nm Like CONCAT('%', #{searchinput}, '%')
+							</when>
+						</choose>
+					</if>
+		</where>	
+	</select>
+	
+	
+	
+	
+</mapper>

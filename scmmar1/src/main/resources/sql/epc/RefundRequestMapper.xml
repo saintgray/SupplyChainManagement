@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.epc.dao.RefundRequestDao">
+
+	<select id="getOrderList" parameterType="kr.happyjob.study.epc.model.SearchParamDTO" resultType="kr.happyjob.study.epc.model.OrderListItemDTO">
+		SELECT 
+		    p.pur_id, p.purdate, i.purinf_id, i.pur_cnt, s.price, (i.pur_cnt * s.price) as total, i.wanted_date, s.sales_id, d.deliv_type
+		    , (
+		        SELECT 
+		            COUNT(*)
+		        FROM 
+		            tb_purchaseinfo si
+		        WHERE 
+		            si.pur_id = p.pur_id
+		    ) as item_cnt
+		FROM 
+		    tb_purchase p
+		    INNER JOIN tb_purchaseinfo i ON i.pur_id = p.pur_id
+		    INNER JOIN tb_delivdir d ON i.purinf_id = d.purinf_id
+		    INNER JOIN tb_sales s ON i.sales_id = s.sales_id
+		WHERE 
+		    p.loginID = #{loginID}
+		    <if test="searchKeyword != null"> AND s.model_nm LIKE CONCAT('%', #{searchKeyword}, '%') </if>
+		    <if test="dateStart != null"> AND p.purdate <![CDATA[ > ]]> #{dateStart} </if>
+		    <if test="dateEnd != null"> AND p.purdate <![CDATA[ < ]]> #{dateEnd} </if>
+		GROUP BY i.pur_id
+		ORDER BY p.pur_id
+		LIMIT #{startIndex}, #{pageBlockSize}
+	</select>
+	
+	
+	<select id="getTotalOrderListCnt" parameterType="kr.happyjob.study.epc.model.SearchParamDTO" resultType="int">
+		SELECT
+			distinct(COUNT(*)) 
+		FROM 
+		    tb_purchase p
+		    INNER JOIN tb_purchaseinfo i ON i.pur_id = p.pur_id
+		    INNER JOIN tb_delivdir d ON i.purinf_id = d.purinf_id
+		    INNER JOIN tb_sales s ON i.sales_id = s.sales_id
+		WHERE 
+		    p.loginID = #{loginID}
+		    <if test="searchKeyword != null and searchKeyword != ''"> AND s.model_nm LIKE CONCAT('%', #{searchKeyword}, '%') </if>
+		    <if test="dateStart != null and dateStart != ''"> AND p.purdate <![CDATA[ > ]]> #{dateStart} </if>
+		    <if test="dateEnd != null and dateEnd != ''"> AND p.purdate <![CDATA[ < ]]> #{dateEnd} </if>
+		GROUP BY i.pur_id
+	</select>
+	
+	
+	<select id="getOrderDetailList" parameterType="kr.happyjob.study.epc.model.OrderListItemDTO" resultType="kr.happyjob.study.epc.model.OrderListItemDTO">
+		SELECT 
+		    i.pur_id, i.purinf_id, s.sales_type, s.model_nm, s.mfcomp, s.price, i.pur_cnt, (price * pur_cnt) as total
+		FROM 
+		    tb_purchaseinfo i
+		    INNER JOIN tb_sales s ON s.sales_id = i.sales_id
+		WHERE
+		    i.pur_id = #{purID}
+		    AND i.returnYN = 'N'
+		LIMIT #{startIndex}, #{pageBlockSize}
+    </select>
+    
+    <select id="getTotalOrderDetailListCnt" parameterType="int" resultType="int">
+		SELECT 
+		    distinct(COUNT(*))
+		FROM 
+		    tb_purchaseinfo i
+		    INNER JOIN tb_sales s ON s.sales_id = i.sales_id
+		WHERE
+		    i.pur_id = #{purID}
+		    AND i.returnYN = 'N'
+				
+    </select>
+    
+    <insert id="insertRefundinfo" parameterType="kr.happyjob.study.epc.model.RefundinfoDTO">
+    	INSERT INTO tb_refundinfo (account_number, account_holder, bank_name, purinf_id) 
+    	VALUES (#{account_number}, #{account_holder}, #{bank_name}, #{purinf_id});
+    	
+    	UPDATE tb_purchaseinfo SET returnYN = 'Y' WHERE purinf_id = #{purinf_id}
+    	
+    </insert>
+    
+    
+    <select id="getBankNameList" resultType="string">
+		SELECT detail_name as bank_name 
+		FROM tb_detail_code 
+		WHERE group_code = 'bankCD' 
+			AND use_yn like 'Y'
+    </select>
+    
+    
+    
+</mapper>
