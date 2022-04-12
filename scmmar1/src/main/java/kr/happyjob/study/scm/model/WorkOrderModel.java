@@ -15,7 +15,16 @@ public class WorkOrderModel {
 	private String depositYN;
 	private int sales_id;
 	private String loginID;
+	private int return_cnt;
 	
+	
+	
+	public int getReturn_cnt() {
+		return return_cnt;
+	}
+	public void setReturn_cnt(int return_cnt) {
+		this.return_cnt = return_cnt;
+	}
 	public String getLoginID() {
 		return loginID;
 	}

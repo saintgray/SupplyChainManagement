@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import kr.happyjob.study.scm.model.CompModel;
+import kr.happyjob.study.scm.model.DailyOrderHistoryModel;
 import kr.happyjob.study.scm.model.WorkOrderModel;
-import kr.happyjob.study.scm.model.dailyOrderHistoryModel;
 import kr.happyjob.study.scm.model.warehouseModel;
 
-public interface dailyOrderHistoryDao {
+public interface DailyOrderHistoryDao {
 
 	// list 조회
-	public List<dailyOrderHistoryModel> listdailyOrderHistory(Map<String, Object> paramMap) throws Exception;
+	public List<DailyOrderHistoryModel> listdailyOrderHistory(Map<String, Object> paramMap) throws Exception;
 	// 총 값
 	public int total(Map<String, Object> paramMap) throws Exception;
 	// 단일 조회
@@ -24,7 +24,15 @@ public interface dailyOrderHistoryDao {
 	public List<CompModel> comp() throws Exception;
 
 	//발주지시서 저장
-	public Map<String,Object> insertcom1(Map<String, Object> paramMap) throws Exception;
+	public int insertcom1(Map<String, Object> paramMap) throws Exception;
 	//발주지시서 저장
-	public Map<String,Object> insertcom2(Map<String, Object> paramMap) throws Exception;
+	public int insertcom2(Map<String, Object> paramMap) throws Exception;
+	//반품지시서 저장
+	public int insertreturn(Map<String, Object> paramMap) throws Exception;
+	//배송지시서 저장
+	public int insertdel(Map<String,Object> paramMap) throws Exception;
+	//배송지시서 작성 유무 확인
+	public DailyOrderHistoryModel comf(Map<String,Object> paramMap) throws Exception;
+	//반품지시서 작성 유무 확인
+	public DailyOrderHistoryModel come(Map<String,Object> paramMap) throws Exception; 
 }

@@ -18,9 +18,7 @@ public class whInventoryFormServiceImpl implements whInventoryFormService {
 	
 	@Override
 	public List<whInventoryFormModel> whlist(Map<String, Object> paramMap) throws Exception {
-		
 		List<whInventoryFormModel> whlist = whinventoryformdao.whlist(paramMap);
-		
 		return whlist;
 	}
 
@@ -29,12 +27,10 @@ public class whInventoryFormServiceImpl implements whInventoryFormService {
 		whcntModel cnt = whinventoryformdao.cnt(paramMap);
 		return cnt;
 	}
-
 	
-	
-	
-	
-	
-	
+	@Override
+	public int total(Map<String, Object> paramMap) throws Exception {
+		return whinventoryformdao.total(paramMap);
+	}
 	
 }

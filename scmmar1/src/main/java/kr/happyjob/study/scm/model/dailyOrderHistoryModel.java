@@ -1,7 +1,7 @@
 package kr.happyjob.study.scm.model;
 
-public class dailyOrderHistoryModel {
-
+public class DailyOrderHistoryModel {
+       
 	private int pur_id;
 	private String purdate;
 	private String name;
@@ -15,8 +15,14 @@ public class dailyOrderHistoryModel {
 	private String depositYN;
 	private int sales_id;
 	private String loginID;
+	private int deliv_id;
 	
-	
+	public int getDeliv_id() {
+		return deliv_id;
+	}
+	public void setDeliv_id(int deliv_id) {
+		this.deliv_id = deliv_id;
+	}
 	public String getLoginID() {
 		return loginID;
 	}
