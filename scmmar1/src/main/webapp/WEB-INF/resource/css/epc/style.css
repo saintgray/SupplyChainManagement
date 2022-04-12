@@ -3,3 +3,12 @@
 	text-align : center;
 }
 
+#divSearchOrderList {
+	display:flex;
+	justify-content: space-around;
+	background-color: whitesmoke;
+}
+
+.orderDetailContainer {
+	margin-top: 5rem;
+}
