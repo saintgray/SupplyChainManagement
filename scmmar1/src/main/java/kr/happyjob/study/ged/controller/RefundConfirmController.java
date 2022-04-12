@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.happyjob.study.ged.model.OrderConfirmModel;
-import kr.happyjob.study.ged.service.OrderConfirmService;
+import kr.happyjob.study.ged.model.RefundConfirmModel;
+import kr.happyjob.study.ged.service.RefundConfirmService;
 
 @Controller
 @RequestMapping("/ged/")
-public class OderConfirmController {
+public class RefundConfirmController {
 	
 	@Autowired
-	OrderConfirmService oderConfirmService;
+	RefundConfirmService refundConfirmService;
 	
     // Set logger
 	private final Logger logger = LogManager.getLogger(this.getClass());
@@ -34,11 +34,11 @@ public class OderConfirmController {
 	private final String className = this.getClass().toString();
 	
 	// 처음 로딩될 때   승인 연결
-	@RequestMapping("orderConfirm.do")
+	@RequestMapping("refundConfirm.do")
 	public String init(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) throws Exception {
 
-		logger.info("+ Start " + className + ".initorderConfirm");
+		logger.info("+ Start " + className + ".initrefundConfirm");
 		logger.info("   - paramMap : " + paramMap);
 		
 		String loginID = (String) session.getAttribute("loginId");
@@ -46,15 +46,15 @@ public class OderConfirmController {
 		System.out.println(loginID);
 //		paramMap.put("writer", loginID);
 		
-		return "ged/OrderConfirm";
+		return "ged/RefundConfirm";
 	}
 
-	// 발주 승인 리스트 출력
-		@RequestMapping("orderConfirmList.do")
-		public String orderConfirmList(Model model, @RequestParam Map<String, Object> paramMap, 
+	// 반품 승인 리스트 출력
+		@RequestMapping("refundConfirmList.do")
+		public String refundConfirmList(Model model, @RequestParam Map<String, Object> paramMap, 
 				HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
 			
-			logger.info("+ Start " + className + ".orderConfirmList");
+			logger.info("+ Start " + className + ".refundConfirmList");
 			logger.info("   - paramMap : " + paramMap);
 			String sales_nm = (String) paramMap.get("sales_nm");
 			
@@ -66,46 +66,44 @@ public class OderConfirmController {
 			paramMap.put("pageSize", pageSize);
 			paramMap.put("title", sales_nm);
 			
-			// 발주 목록 조회
-			List<OrderConfirmModel> orderConfirmList = oderConfirmService.orderConfirmList(paramMap);
-			model.addAttribute("orderConfirm", orderConfirmList);
-			
-			System.out.println(orderConfirmList);
+			// 반품 목록 조회
+			List<RefundConfirmModel> refundConfirmList = refundConfirmService.refundConfirmList(paramMap);
+			model.addAttribute("refundConfirmList", refundConfirmList);
 			
 			// 목록 수 추출해서 보내기
-			int orderConfirmCnt = oderConfirmService.orderConfirmCnt(paramMap);
+			int refundConfirmCnt = refundConfirmService.refundConfirmCnt(paramMap);
 			
-			model.addAttribute("orderConfirmList", orderConfirmList);
-		    model.addAttribute("orderConfirmCnt", orderConfirmCnt);
+			model.addAttribute("refundConfirmList", refundConfirmList);
+		    model.addAttribute("refundConfirmCnt", refundConfirmCnt);
 		    model.addAttribute("pageSize", pageSize);
 		    model.addAttribute("currentPage",currentPage);
 		    
-		    return "ged/OrderConfirmList";
+		    return "ged/RefundConfirmList";
 		}
 		
-		@RequestMapping("OrderOne.do")
+		@RequestMapping("RefundOne.do")
 		@ResponseBody
-		public Map<String, Object> orderconfirmsubmit(
+		public Map<String, Object>refundconfirmsubmit(
 				Model model, @RequestParam Map<String, Object> paramMap, 
 				HttpServletRequest request, HttpServletResponse response, 
 				HttpSession session
 				)throws Exception {
 			
-			logger.info("+ Start " + className + ".orderconfirmsubmit");
+			logger.info("+ Start " + className + ".returnconfirmsubmit");
 			logger.info("   - paramMap : " + paramMap);
 			
 			String confirmYN = (String) paramMap.get("confirmYN");
-			int orderid = Integer.parseInt((String) paramMap.get("orderid"));
+			int returnId = Integer.parseInt((String) paramMap.get("returnId"));
 			
 			String result = "SUCCESS";
 			String resultMsg = "";			  
 			
-			paramMap.put("orderid", orderid);
+			paramMap.put("returnId", returnId);
 			paramMap.put("confirmYN", confirmYN);
 			
 			try{
 				
-				oderConfirmService.updateorderConfirm(paramMap);
+				refundConfirmService.updaterefundConfirm(paramMap);
 			}catch(Exception e){
 				
 			} 
@@ -122,9 +120,12 @@ public class OderConfirmController {
 			resultMap.put("resultMsg", resultMsg);		
 			
 			
-			logger.info("+ End " + className + ".orderconfirmsubmit");
+			logger.info("+ End " + className + ".refundconfirmsubmit");
 		
 		return resultMap;
 		}
 
 }
+
+
+

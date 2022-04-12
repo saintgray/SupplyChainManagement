@@ -1,6 +1,6 @@
 package kr.happyjob.study.ged.model;
 
-public class orderConfirmModel {
+public class OrderConfirmModel {
 	
 	public String getPurdate() {
 		return purdate;
