@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div id="formwrap" class="bts">
-	<input type="hidden" value="${action}" id="action">
+	<input type="hidden" value="${action}" id="action" name="action">
 	<input type="hidden" value="${info.loginID}" id="loginID">
 	<input type="hidden" value="${info.phone}" id="phone">
 	

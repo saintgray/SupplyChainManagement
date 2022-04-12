@@ -18,8 +18,6 @@
 								<th>창고별 품목</th>
 								<th>주문 개수 입력</th>
 							</tr>
-							
-						
 							<tr>
 								<td style="text-align: center;">
 									<select id="selcomcnt">
@@ -32,7 +30,6 @@
 								<td style="text-align: center">
 									<input type="number" id="compcnt">
 								</td>
-								<td id="userID"></td>
 							</tr>
 							
 						</tbody>
@@ -41,7 +38,7 @@
 
 				<div class="btn_areaC mt30">
 				    <!-- <input type="hidden" name="Action" id="Action" value="wa"> -->
-					<a class="btnType blue" id="savesa" name="btn" ><span onclick="send('com')" style="cursor: pointer;">작성</span></a> 
+					<a class="btnType blue" id="savesa" name="btn" ><span onclick="send('com')" style="cursor: pointer;" id="ordersned">주문</span></a> 
 					<a href=""	class="btnType gray"  id="btnClosewa" name="btn"><span>취소</span></a>
 				</div>
 			</dd>

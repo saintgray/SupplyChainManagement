@@ -123,17 +123,9 @@
 				<div id="whListArea" class="mt30"></div>
 				
 				
-				
 				<form id="whFormArea"></form>
 				
-				
-						        
-            
-            
             </div>
-            
-            
-         
          </li>
       </ul>
    </div>
@@ -218,21 +210,6 @@
 			
 		})
 		
-		// 이메일 선택시 이벤트
-		// 필요없음 (창고정보에는 담당자의 이메일을 변경할 수 없음)
-		/* $('body').on('change','#sb-emailDomain',function(){
-			var option_val= $(this).val();
-			console.log(option_val)
-			if(option_val!='self' || option_val=='none'){
-				$('#self-domain').remove();
-			}else{
-				if(option_val=='self'){
-					$('#email_prefix').next().after('<input type="text" class="form-control" id="self-domain">')
-				}
-				
-			}
-		})
-		 */
 		// 창고 등록시 담당자 select box 변경시 담당자의 전화번호,이메일 가져오기
 		$('body').on('change','#advisor',function(){
 			if($(this).val()!=''){
@@ -312,8 +289,8 @@
 		
 		if(param.action=='INFO'){
 			
-			
-			putPhone($('#phone').val());
+			putPhone($(data).find('#phone').val());
+		
 			
 			
 		}else{
@@ -337,30 +314,32 @@
 		$('#action').val(action);
 		var targetId=$('#wh_id').val();
 		var callback=function(data){
+			
+			console.log('manage Result...');
+			console.log(data);
 			if(data==1){
 				if(action=='UPDATE'){
 					alert('정상적으로 수정되었습니다');
 				}else if(action=='DELETE'){
-					alert('정상적으로 삭제되었습니다');
-					$('#salesListTable tr').each(function(index, item){
-						$(item).each(function(index,td){
-							if($(td).children('.wh_id').html()==targetId){
-								$(td).parent().remove();
-								return;
-							}
-						})
-						
-					})
+						alert('정상적으로 삭제되었습니다');
 				}else{
 					alert('정상적으로 등록되었습니다');
-				}	
+				}
+				$('#whFormArea').empty();
+				getWareHouseList($('.paging strong').text());
+			}else if(data==-1){
+				if(action=='DELETE'){
+					alert('창고에 재고가 남아있어 삭제할 수 없습니다');
+				}
+				
 			}else{
 				alert('오류가 발생하였습니다. 잠시 후 다시 시도하세요');
 			}
 			
+			
 		}
 		
-		callAjax('${CTX_PATH}/scm/whManage','post','json',true,$('#whFormArea').serialize(),callback)
+		callAjax('${CTX_PATH}/scm/whManage2','post','json',true,$('#whFormArea').serialize(),callback)
 		
 		
 	}
@@ -369,8 +348,9 @@
 	
 	// 전화번호 구분해서 넣기 3-4-4 자리 기준
 	function putPhone(phone){
+		console.log(phone);
 		
-		var p=phone.replaceAll("-","").trim();
+		var p=phone.replaceAll("-",'').trim();
 		$('#p-head').val(p.substr(0,3));
 		$('#p-mid').val(p.substr(3,4));
 		$('#p-end').val(p.substr(7,4));

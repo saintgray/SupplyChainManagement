@@ -20,7 +20,7 @@
 	$(function() {
 	
 		// 승인목록 조회
-		fListapplylist();
+		fRefundListapplylist();
 		
 		// 버튼 이벤트 등록
 		fRegisterButtonClickEvent();
@@ -48,22 +48,21 @@
 	}
 	
 	
-	function fListapplylist(currentPage) {
+	function fRefundListapplylist(currentPage) {
 		
-		currentPage = currentPage || 1;
+        currentPage = currentPage || 1;
 		
 		$('#saveCurrentPage').val(currentPage);
 		
 		var title = $('#title').val();
 		var fromdate = $('#from_date').val();
-		var todate = $('#to_date').val();
+		var todate = $('#to_date').val();		
 		
 		if($('#checkConfirm').is(":checked")){
 			var checkConfirm = 1;
 		}else{
 			var checkConfirm = 0;
 		}
-
 		
 		console.log("currentPage : " + currentPage);
 		
@@ -79,25 +78,25 @@
 		var resultCallback = function(data) {
 			//console.log("resultCallback : " + data)
 			
-			flistApplyResult(data, currentPage);
+			fRefundlistApplyResult(data, currentPage);
 		};
 		//Ajax실행 방식
 		//callAjax("Url",type,return,async or sync방식,넘겨준거,값,Callback함수 이름)
-		callAjax("/ged/orderConfirmList.do", "post", "text", true, param, resultCallback);
+		callAjax("/ged/refundConfirmList.do", "post", "text", true, param, resultCallback);
 	}
 	
 	
 	/** 그룹코드 조회 콜백 함수 */
-	function flistApplyResult(data, currentPage) {
+	function fRefundlistApplyResult(data, currentPage) {
 		
 		//swal(data);
 		//console.log(data);
 		
 		// 기존 목록 삭제
-		$('#divOrderConfirmList').empty();
+		$('#divRefundConfirmList').empty();
 		
 		// 신규 목록 생성
-		$("#divOrderConfirmList").append(data);
+		$("#divRefundConfirmList").append(data);
 		
 		// 총 개수 추출
 		
@@ -108,7 +107,7 @@
 		
 		// 페이지 네비게이션 생성
 		
-		var paginationHtml = getPaginationHtml(currentPage, totcnt, pageSize, pageBlock, 'fListapplylist');
+		var paginationHtml = getPaginationHtml(currentPage, totcnt, pageSize, pageBlock, 'fRefundListapplylist');
 		console.log("paginationHtml : " + paginationHtml);
 		//swal(paginationHtml);
 		$("#pagingnavi").empty().append( paginationHtml );
@@ -119,7 +118,7 @@
 	
 	
 	/** 발주내역 한건 조회*/
-	   function fOrderOne(orderid, confirmYN, checkConfirm) {
+	   function fRefundOne(returnId, confirmYN, checkConfirm) {
 		
 		   if(checkConfirm == 'Y'&& confirmYN =='Y'){
 			   alert("이미 승인된 요청입니다.");
@@ -133,31 +132,32 @@
 				   return false;
 			   } 
 		   }
+	      
 	      var param = { 
-	    		         orderid : orderid 
+	    		         returnId : returnId 
 	    		       ,confirmYN : confirmYN
 	                  };
 	      
 	      var resultCallback = function(data) {
 	    	  
-             alert(data.resultMsg);
-
+	    	 alert(data.resultMsg);
+	    	 
 	         console.log(data);
-	         console.log(fOrderOneResult);
-	         fListapplylist($('#saveCurrentPage').val()); 
+	         console.log(fRefundOneResult);
+	         fRefundListapplylist($('#saveCurrentPage').val()); 
 	      };
 	      
-	      callAjax("/ged/OrderOne.do", "post", "json", true, param, resultCallback);
+	      callAjax("/ged/RefundOne.do", "post", "json", true, param, resultCallback);
 	   }
 	   
-	   /** 발주내역 한건 조회 콜백 */
-	   function fOrderOneResult(data) {
+	   /**  반품내역 한건 조회 콜백 */
+	   function fRefundOneResult(data) {
 	      
 	      if (data.result == "SUCCESS") {
 	    	  
 	    	 alert(data.resultMsg);
 	    	  
-	    	 fListapplylist();
+	    	 fRefundListapplylist();
 	    	  
 	         //var uName = data.uName;         
 	         //var outData = data.outData;
@@ -175,9 +175,9 @@
 	         swal(data.resultMsg);
 	      }   
 	   }
-	
+
 	// 검색기능
-	function board_search() {
+		function board_search() {
         
 		$('#title').val($('#titleInput').val());
         //var searchKey = document.getElementById("searchKey");
@@ -185,10 +185,10 @@
 		
 		$('#from_date').val($('#from_dateInput').val());
 		$('#to_date').val($('#to_dateInput').val());
-		fListapplylist();
+		fRefundListapplylist();
 	}
 	function changeCheckConfirm() {
-		fListapplylist(1);
+		fRefundListapplylist(1);
   } 
 
 </script>
@@ -220,7 +220,7 @@
 					<p class="Location">
 						<a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a> 
 						<span class="btn_nav bold">승인</span> 
-						<span class="btn_nav bold">발주 승인</span> 
+						<span class="btn_nav bold">반품 승인</span> 
 						<a href="../system/comnCodMgr.do" class="btn_set refresh">새로고침</a>
 					</p>
 <!--검색창  -->
@@ -236,7 +236,7 @@
 
                            <td width="50" height="25" style="font-size: 100%">제품명</td>
                            <td width="50" height="25" style="font-size: 100%">
-                            <input type="text" style="width: 120px" id="titleInput" name="title"></td>                     
+                            <input type="text" style="width: 120px" id="title" name="title"></td>                     
                            <td width="50" height="25" style="font-size: 100%">작성일</td>
                            <td width="50" height="25" style="font-size: 100%">
                             <input type="date" style="width: 120px" id="from_dateInput" name="from_date"></td>
@@ -250,26 +250,28 @@
                      </table>    
 						
 						
-						<div class="divOderConfirmList">
+						<div class="divRefundConfirmList">
 							<table class="col">
 								<caption>caption</caption>
 	
 		                            <colgroup>
-						                   <col width="200px">
+						                   <col width="100px">
 						                   <col width="200px">
 					                 </colgroup>
 								<thead>
 									<tr>
-							              <th scope="col">납품업체명</th>
+							              <th scope="col">반품고객</th>
 							              <th scope="col">제품명</th>
-							              <th scope="col">수량</th>
+							              <th scope="col">구매일</th>
+							              <th scope="col">반품일</th>
+							              <th scope="col">구매수량</th>
+							              <th scope="col">반품수량</th>
 							              <th scope="col">금액</th>
-							              <th scope="col">구매일자</th>
 							              <th scope="col">승인여부</th>
 							              <th scope="col">   </th>
 									</tr>
 								</thead>
-								<tbody id="divOrderConfirmList"></tbody>
+								<tbody id="divRefundConfirmList"></tbody>
 							</table>
 							
 							<!-- 페이징 처리  -->

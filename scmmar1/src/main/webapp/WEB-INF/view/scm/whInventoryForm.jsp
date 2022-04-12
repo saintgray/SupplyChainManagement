@@ -11,7 +11,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<title>일별수주내역</title>
+<title>창고별 재고 현황</title>
 <!-- sweet alert import -->
 <script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
@@ -19,7 +19,8 @@
 <script type="text/javascript">
 var searchgrouptype = '';
 var searchtext = '';
-
+var pageSize = 10;
+var pageBlockSize = 10;
 
 // onload list 및 검색조건 함수 불러오기
 $(function(){
@@ -28,14 +29,22 @@ $(function(){
 	
 });
 
-function init(){
-	
+function init(currentPage){
+	currentPage = currentPage || 1;
 	var param = {
 			searchgrouptype : searchgrouptype
 		,	searchtext : searchtext
+		,	currentPage : currentPage
+		,	pageSize : pageSize
 			};
 	var resultCallback = function(data) {
 		$("#whlist").empty().append(data);
+		var total = $("#total").val();
+		// 페이지 네비게이션 생성
+		// pageBlockSize 보여지는 페이징 갯수
+		 var paginationHtml = getPaginationHtml(currentPage, total,  pageSize, pageBlockSize, 'init');
+		console.log("paginationHtml : " + paginationHtml);
+		$("#comnGrpCodPagination").empty().append( paginationHtml ); 
 	};
 	
 	callAjax("/scm/whInventoryFormlist.do", "post", "text", true, param, resultCallback);
@@ -50,7 +59,6 @@ function search(){
 function test(a,b,c){
 	//alert(a);
 	//alert(b);
-	
 	//$("#sales_id").val(b);	// 제품 번호
 	//$("#sales_nm").val(c);	// 제품명
 	
@@ -59,14 +67,19 @@ function test(a,b,c){
 		,	sales_id : b
 			};
 	var resultCallback = function(data) {
-		console.log(data.cnt.sales_id);
+		//console.log(data.cnt.sales_id);
 		
-		$("#sales_id").val(data.cnt.sales_id);
-		$("#sales_nm").val(data.cnt.sales_nm);
-		$("#insal").val(data.cnt.in_cnt);
-		$("#outsal").val(data.cnt.out_cnt); 
-		
-		gfModalPop("#layer1");
+		if(data.cnt == null){
+			alert(data.msg);
+		}else{
+			
+			$("#sales_id").val(data.cnt.sales_id);
+			$("#sales_nm").val(data.cnt.sales_nm);
+			$("#insal").val(data.cnt.in_cnt);
+			$("#outsal").val(data.cnt.out_cnt); 
+			
+			gfModalPop("#layer1");
+		}
 		
 	};
 	
@@ -153,7 +166,7 @@ function test(a,b,c){
 								<tbody id="whlist"></tbody>
 							</table>
 						</div>
-	
+				<div class="paging_area"  id="comnGrpCodPagination"> </div>
 					</div> <!--// content -->
 
 					<h3 class="hidden">풋터 영역</h3>
@@ -183,15 +196,15 @@ function test(a,b,c){
 							<th >출고 량</th>
 						</tr>
 						<tr>
-							<td><input type = "text" id = "sales_id" name="sales_id" readonly="readonly"></td>
-							<td><input type = "text" id = "sales_nm" readonly="readonly"></td>
-							<td><input type = "text" id = "insal" readonly="readonly"></td>
-							<td><input type = "text" id = "outsal" readonly="readonly"></td>
+							<td><input type="text" id="sales_id" readonly="readonly" style="text-align: center; border: none;"></td>
+							<td><input type="text" id="sales_nm" readonly="readonly" style="text-align: center; border: none;"></td>
+							<td><input type="text" id="insal" readonly="readonly" style="text-align: center; border: none;"></td>
+							<td><input type="text" id="outsal" readonly="readonly" style="text-align: center; border: none;"></td>
 						</tr>
 					</tbody>
 				</table>
 				<div class="btn_areaC mt30">
-					<a href=""	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span>취소</span></a>
+					<a href=""	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span >취소</span></a>
 				</div>
 			</dd>
 		</dl>

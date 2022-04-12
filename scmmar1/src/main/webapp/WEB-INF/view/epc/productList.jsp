@@ -15,12 +15,10 @@
 
             <div id="mask"></div>
             <div id="wrap_area">
-
+                <input type="hidden" name="action" id="currentPageProductList" value="${currentPageProductList}">
 
                 <!-- header 영역 -->
-                -- header
                 <jsp:include page="/WEB-INF/view/common/header.jsp"></jsp:include>
-                header --
 
 
                 <!-- main 영역 -->
@@ -45,9 +43,8 @@
                                     <select id="mfcomp">
                                         <option>전체</option>
                                     </select>
-                                    <input type="text" class="inputTxt p15" id="schKeyword" value="test">
+                                    <input type="text" class="inputTxt p15" id="schKeyword" value="" placeholder="검색어를 입력해 주세요.">
                                     <a href="" class="btnType blue" name="btn" id="searchProductList"><span>검색</span></a>
-                                    <button onclick="" id="testBtn">run test</button>
                                 </div>
 
 
@@ -79,7 +76,7 @@
                                     </table>
                                 </div>
                                 <!-- 페이지네이션 -->
-                                <div class="paging_area" id="comnGrpCodPagination">
+                                <div class="paging_area" id="productListPagination">
                                     ${pageContext.request.contextPath}
 
                                     <!-- 페이지네이션 끝 -->
@@ -95,9 +92,7 @@
 
 
                 <!-- footer 영역 -->
-                -- footer
                 <jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
-                footer --
                 <!-- end of div#wrap_area -->
             </div>
 
@@ -152,48 +147,27 @@
 
 
                         <div class="popDetail">상세 정보</div>
-                        <textarea>test message</textarea>
+                        <textarea></textarea>
 
                         <div class="btn_areaC mt30">
                             <a href="" class="btnType blue" id="putCartProduct" name="btn"><span>장바구니에 담기</span></a>
                             <a href="" class="btnType blue" id="orderProduct" name="btn"><span>주문</span></a>
                             <a href="" class="btnType gray" id="closeProductDetail" name="btn"><span>취소</span></a>
-                            <button onclick="testFunc2()" id="testbtn2">run2 test2</button>
                         </div>
                     </dd>
                 </dl>
             </div>
 
             <script>
+                const pageSizeProductList = 5
+                const pageBlockSizeProductList = 5;
+
                 $(function() {
-                    $.ajax({
-                        url: "getProductList",
-                        method: "GET",
-                        success: function(result) {
-                            inputProductListRows(result);
-                        }
-                    });
-                    linkEventFunc();
+                    getProductList();
                     getSalesTypeList();
                     getMfcompList();
+                    linkEventFunc();
                 });
-
-                function testFunc() {
-                    // console.log(document.querySelector('#sales_type').options['selectedIndex']);
-                    // alert('test passed');
-                    $.ajax({
-                        url: 'orderProduct',
-                        method: 'POST',
-                        data: {
-                            saled_id: saled_id,
-                            order_cnt: order_cnt,
-                            wanted_date: wanted_date
-                        },
-                        success: function(result) {
-                            console.log(result);
-                        }
-                    });
-                }
 
 
                 function linkEventFunc() {
@@ -217,26 +191,30 @@
 
 
                 function plmodal(item) {
+                    console.log('plmodal');
                     console.log(item);
-                    console.log($('tbody#tbodyProductDetail input[name="model_code"]'));
 
                     $('div#popProductDetail span[name="sales_id"]').html(item.sales_id);
                     $('div#popProductDetail span[name="sales_type"]').html(item.sales_type);
-                    $('tbody#tbodyProductDetail input[name="model_code"]').attr({
-                        value: item.model_code
-                    });
-                    $('tbody#tbodyProductDetail input[name="sales_nm"]').attr({
-                        value: item.sales_nm
-                    });
-                    $('tbody#tbodyProductDetail input[name="mfcomp"]').attr({
-                        value: item.mfcomp
-                    });
-                    $('tbody#tbodyProductDetail input[name="price"]').attr({
-                        value: item.price
-                    });
+                    $('tbody#tbodyProductDetail input[name="model_code"]').val(item.model_code);
+                    $('tbody#tbodyProductDetail input[name="sales_nm"]').val(item.sales_nm);
+                    $('tbody#tbodyProductDetail input[name="mfcomp"]').val(item.mfcomp);
+                    $('tbody#tbodyProductDetail input[name="price"]').val(item.price);
+                    $('tbody#tbodyProductDetail input[name="pur_cnt"]').val(1);
+                    $('tbody#tbodyProductDetail input[name="wanted_date"]').val('');
+                    $('tbody#tbodyProductDetail input[name="wanted_date"]').val('');
+                    $('div#popProductDetail textarea').html(item.info);
                     $('img#productDetailImg').attr({
-                        src: "/serverfile/kakaoRyan.png"
+                        src: item.file_server_path ? item.file_server_path : "/serverfile/kakaoRyan.png"
                     });
+
+                    const inputList = $('tbody#tbodyProductDetail').find('input');
+                    inputList.each((index, item) => {
+                        if (item.type == 'text') {
+                            item.disabled = true;
+                        }
+                    });
+                    document.querySelector('div#popProductDetail textarea').disabled = true;
                     gfModalPop('#popProductDetail');
                 }
 
@@ -265,6 +243,7 @@
                         newRow += ' </tr>';
                         $('#tbodyProductListTable').append($(newRow));
                     });
+
                 }
 
                 function eventProductListRow() {
@@ -282,7 +261,7 @@
                 function getProductDetail(rowNum) {
                     $.ajax({
                         url: 'getProductDetail',
-                        method: 'GET',
+                        method: 'POST',
                         data: {
                             sales_id: rowNum
                         },
@@ -354,15 +333,20 @@
 
                 function eventSearchBtn() {
                     const btn = document.querySelector('a#searchProductList');
-                    btn.onclick = searchProductList;
+                    btn.onclick = getProductList;
                 }
 
-                function searchProductList() {
+                function pageMoveFunc(currentPage) {
+                    document.querySelector('#currentPageProductList').value = currentPage;
+                    getProductList();
+                }
+
+                function getProductList() {
                     const salesOpt = document.querySelector('select#sales_type').options;
                     let salesType = salesOpt[salesOpt.selectedIndex].value;
                     let mfcomp = document.querySelector('select#mfcomp').options[document.querySelector('select#mfcomp').options.selectedIndex].value;
-                    const keyword = document.querySelector('input#schKeyword').value;
-
+                    let keyword = document.querySelector('input#schKeyword').value;
+                    const currentPagePL = $('#currentPageProductList').val();
                     if (mfcomp == '전체') {
                         mfcomp = '%';
                     }
@@ -371,36 +355,37 @@
                         salesType = '%';
                     }
 
+                    if (keyword == '') {
+                        keyword = '%';
+                    }
+
                     $.ajax({
-                        url: 'searchProductList',
+                        url: 'getProductList',
                         data: {
                             salesType: salesType,
                             mfcomp: mfcomp,
-                            keyword: keyword
+                            keywordProductList: keyword,
+                            currentPage: currentPagePL,
+                            pageBlockSize: pageSizeProductList,
                         },
                         method: 'POST',
                         success: function(result) {
-                            inputProductListRows(result);
+                            inputProductListRows(result.list);
+                            createPaginationDiv(currentPagePL, result.totalCntProductList);
                         }
                     });
 
                 }
 
-                function testFunc2(e) {
-
-                    let salesId = $('div#popProductDetail span[name="sales_id"]').html();
-                    let purCnt = document.querySelector('div#popProductDetail input[name="pur_cnt"]').value;
-                    let wantedDate = $('div#popProductDetail input[name="wanted_date"]').val();
-
-                    console.log(salesId);
-                    console.log(purCnt);
-                    console.log(wantedDate);
-                }
-
                 function eventCloseBtn() {
                     const btn = document.querySelector('a#closeProductDetail');
                     btn.onclick = gfCloseModal;
-
+                    //esc 누를 시에 모달 창 닫기
+                    document.addEventListener('keydown', function(e) {
+                        if (e.keyCode == '27') {
+                            gfCloseModal();
+                        }
+                    });
                 }
 
 
@@ -412,6 +397,15 @@
 
                 }
 
+                function createPaginationDiv(currentPage, totalCnt) {
+                    const paginationHtml = getPaginationHtml(
+                        currentPage,
+                        totalCnt,
+                        pageSizeProductList,
+                        pageBlockSizeProductList,
+                        'pageMoveFunc');
+                    $("#productListPagination").empty().append(paginationHtml);
+                }
 
                 function orderAndCart(e) {
                     const salesId = $('div#popProductDetail span[name="sales_id"]').html();
@@ -420,12 +414,18 @@
                     let type = '';
 
                     if (!purCnt || !wantedDate) {
-                        alert('수량 또는 날짜를 확인해 주세요.3');
+                        alert('수량 또는 날짜를 확인해 주세요.');
                         return;
                     } else {
                         if (e.currentTarget.id == 'putCartProduct') {
+                            if (!confirm('장바구니에 추가하시겠습니까?')) {
+                                return;
+                            }
                             type = 'cart';
                         } else if (e.currentTarget.id == 'orderProduct') {
+                            if (!confirm('주문하시겠습니까?')) {
+                                return;
+                            }
                             type = 'order';
                         } else {
                             alert('잘못된 접근입니다.');
@@ -443,6 +443,8 @@
                             type: type
                         },
                         success: function(result) {
+                            gfCloseModal();
+                            getProductList(1);
                             console.log(result);
                         }
                     });

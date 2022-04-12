@@ -1,12 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
 
 				
 		<!-- 갯수가 0인 경우  -->
-		<c:if test="${orderConfirmCnt eq 0 }">
+		<c:if test="${refundConfirmCnt eq 0 }">
 			<tr>
 				<td colspan="4">데이터가 존재하지 않습니다.</td>
 			</tr>
@@ -14,16 +13,18 @@
 		
 
 		<!-- 갯수가 있는 경우  -->
-		<c:if test="${orderConfirmCnt > 0 }">
+		<c:if test="${refundConfirmCnt > 0 }">
 			<c:set var="nRow" value="${pageSize*(currentPage-1)}" /> 
-			<c:forEach items="${orderConfirm}" var="list">
+			<c:forEach items="${refundConfirmList}" var="list">
 				<tr>
-				        <!--  <td>${list.orderid}</td>-->
-					    <td>${list.compNm}</td>
+				        <!--  <td>${list.returnId}</td>-->
+					    <td>${list.client}</td>
 						<td>${list.salesNm}</td>
-						<td>${list.orderCnt}</td>
-						<td>${list.unitprice}</td>
-						<td>${fn:substring(list.purdate,0,10)}</td>
+						<td>${list.purdate}</td>
+						<td>${list.regdate}</td>
+						<td>${list.purCnt}</td>
+						<td>${list.returnCnt}</td>
+						<td>${list.price}</td>
 						<td>
 
                              <c:if test="${list.confirmYN eq null }">
@@ -37,8 +38,8 @@
                              </c:if>                               
                         </td>
                         <td>
-                                 <a class="btnType3 color1" href="javascript:fOrderOne('${list.orderid}','Y','${list.confirmYN}');"><span>승인</span></a>
-                                 <a class="btnType3 color1" href="javascript:fOrderOne('${list.orderid}','N','${list.confirmYN}');"><span>반려</span></a>
+                                 <a class="btnType3 color1" href="javascript:fRefundOne('${list.returnId}','Y','${list.confirmYN}');"><span>승인</span></a>
+                                 <a class="btnType3 color1" href="javascript:fRefundOne('${list.returnId}','N','${list.confirmYN}');"><span>반려</span></a>
                         </td>     
 					<!-- List에 있는 js 함수 호출가능 이거 그대로 가지고 가기 때문에 !!  -->
 				</tr>
@@ -48,7 +49,7 @@
 		
 		<!-- 이거 중간에 있으면 table 안먹힘  -->
 
-        <input type="hidden" id="totcnt" name="totcnt" value="${orderConfirmCnt}"/>
+        <input type="hidden" id="totcnt" name="totcnt" value="${refundConfirmCnt}"/>
 
 
 

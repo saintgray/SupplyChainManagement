@@ -6,11 +6,9 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>insert title here</title>
-
+<title>반품내역리스트</title>
 <script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-
 <script type="text/javascript">
 	//페이징 설정
 	var pageSize = 5;			//페이지당 보여주는 목록 갯수
@@ -21,7 +19,8 @@
 	$(function() {
 	
 		// 그룹코드 조회 : OnLoad event가 실행되면서 처음에 그룹코드 조회 함수부터 실행되는 것!(여기서부터 시작)
-		fPurchaseOrderList();
+		fPurchaseReturnList();
+	
 		
 		// 버튼 이벤트 등록
 		fRegisterButtonClickEvent();
@@ -39,54 +38,54 @@
 			var btnId = $(this).attr('id');
 	
 			switch (btnId) {
-			
+			case 'btnSearch':
+				search();
+				  break;
 			case 'btnInitSearch':
 				  fInitSearch();
 				  break;
 			case 'btnCloseModal':
 				  gfCloseModal();
-				  break;
-			case 'btnSearch' :
-				search();
 				break;
 			}
 		});
 	}
 
-	/** 발주내역 폼 초기화 */
-	function fInitPcmOrder(object) {
+	/** 반품내역 폼 초기화 */
+	function fInitPcmReturn(object) {
 		//$("#orderid").focus();
 		if( object == "" || object == null || object == undefined) {
 			
-			$("#orderid").val("");
+			$("#return_id").val("");
 			$("#comp_nm").val("");
 			$("#sales_nm").val("");
+			$("#return_cnt").val("");
+			$("#regdate").val("");
 			$("#confirmYN").val("");
-			$("#order_cnt").val("");
-			$("#orderid").attr("readonly", false);
-			$("#orderid").css("background", "#FFFFFF");
+			$("#return_id").attr("readonly", false);
+			$("#return_id").css("background", "#FFFFFF");
 		
 			
 		} else {
 			
-			$("#orderid").val(object.orderid);
+			$("#return_id").val(object.return_id);
 			$("#comp_nm").val(object.comp_nm);
 			$("#sales_nm").val(object.sales_nm);
+			$("#return_cnt").val(object.return_cnt);
+			$("#regdate").val(object.regdate);
 			$("#confirmYN").val(object.confirmYN);
-			$("#order_cnt").val(object.order_cnt);
 			//$("input:radio[name=grp_use_poa]:input[value="+object.use_poa+"]").attr("checked", true);
-			$("#orderid").attr("readonly", true);
-			$("#orderid").css("background", "#F5F5F5");
+			$("#return_id").attr("readonly", true);
+			$("#return_id").css("background", "#F5F5F5");
 		    	//$("#grp_cod_nm").focus(); 
 			 
 		}
 	}
-
 	
 	
-	/**발주내역 목록 조회**/
-	function fPurchaseOrderList(currentPage) {
-	
+	/**반품내역 목록 조회**/
+	function fPurchaseReturnList(currentPage) {
+		
 		//매개변수로 넘어오는 currentPage(현재페이지)가 없으면 1이된다.
 		currentPage = currentPage || 1;
 		if($('#confirmCheck').is(":checked")){		//체크 박스 사용할때 체크가 된상태인지 아닌지 확인
@@ -120,30 +119,31 @@
 			pageSize : pageSize			//페이지 크기
 		}
 		
+		
 		//변수를 하나 만들어서 함수를 저장만 해뒀다.(함수 실행은 밑에있는 callAjax에서!!)
 		//data는 컨트롤러의 리턴값이다.??
 		var resultCallback = function(data) {
-			fPurchaseOrderListResult(data, currentPage);
+			fPurchaseReturnListResult(data, currentPage);
 		};
 		
 		//Ajax실행 방식
 		//callAjax("Url",type,return,async or sync방식,넘겨준거,값,Callback함수 이름)
 		//cmg/lectureroomList.do
-		callAjax("/pcm/listPurchaseOrder.do", "post", "text", true, param, resultCallback); //resultCallback에 저장되있는 함수가 실행된다.
+		callAjax("/pcm/listPurchaseReturn.do", "post", "text", true, param, resultCallback); //resultCallback에 저장되있는 함수가 실행된다.
 	}
 
 	 
-	/** 발주내역 목록 조회 콜백 함수 */
-	function fPurchaseOrderListResult(data, currentPage) {
+	/** 반품내역 목록 조회 콜백 함수 */
+	function fPurchaseReturnListResult(data, currentPage) {
 
 		//swal(data);
 		console.log(data);
 
 		// 기존 목록 삭제
-		$('#listPurchaseOrder').empty();
+		$('#listPurchaseReturn').empty();
 
 		// 신규 목록 생성 
-		$("#listPurchaseOrder").append(data);
+		$("#listPurchaseReturn").append(data);
 
 		// 총 개수 추출
 		var totalCnt = $("#totalCnt").val();
@@ -153,7 +153,7 @@
 		
 		// 페이지 네비게이션 생성
 		var paginationHtml = getPaginationHtml(currentPage, totalCnt,
-				pageSize, pageBlockSize, 'fPurchaseOrderList');
+				pageSize, pageBlockSize, 'fPurchaseReturnList');
 		console.log("paginationHtml : " + paginationHtml);
 		//swal(paginationHtml);
 		$("#pagingnavi").empty().append(paginationHtml);
@@ -185,15 +185,15 @@
         }
         //swal(JSON.stringify(param));
         var resultCallback = function(data) {
-        	fPurchaseOrderListResult(data, currentPage); 
+        	fPurchaseReturnListResult(data, currentPage); 
         };
      
-        callAjax("/pcm/listPurchaseOrder.do",  //컨트롤러랑 매핑되있는 주소
-        		"post", 					  //어떤 타입으로 보낼지 (get/post)
-        		"text", 					  //컨트롤러로 보내는 파라미터 타입인가?
+        callAjax("/pcm/listPurchaseReturn.do",  //컨트롤러랑 매핑되있는 주소
+        		"post", 					    //어떤 타입으로 보낼지 (get/post)
+        		"text", 					    //컨트롤러로 보내는 파라미터 타입인가?
         		true, 
-        		param, 						  //여기서 컨트롤러로 이동??(param에 저장된 값을 가지고)
-        		resultCallback				  //컨트롤러에서 받은(응답)데이터 (컨트롤러에서 return값)
+        		param, 						    //여기서 컨트롤러로 이동??(param에 저장된 값을 가지고)
+        		resultCallback				    //컨트롤러에서 받은(응답)데이터 (컨트롤러에서 return값)
         		);
         
   } 
@@ -203,36 +203,38 @@
 		$('#sname').val($('#snameInput').val());
 		$('#cal1').val($('#cal1Input').val());
 		$('#cal2').val($('#cal2Input').val());
-		fPurchaseOrderList();
+		fPurchaseReturnList();
 	}
 	
-	/** 발주내역 한건 조회*/
-	function fPcmOrderOne(orderid) {
-		
-		var param = { orderid : orderid };
-		
+	
+	/** 반품내역 한건 조회*/
+   function fPcmReturnOne(return_id) {
+      
+      var param = { return_id : return_id };
+      
 		var resultCallback = function(data) {
-			fPcmOrderOneResult(data, currentPage);
+			fPcmReturnOneResult(data, currentPage);
 			//alert(data.pcmOrderListModel.orderid);
 		};
-		
-		callAjax("/pcm/pcmOrderOne.do", "post", "json", true, param, resultCallback);
+      
+		callAjax("/pcm/pcmReturnOne.do", "post", "json", true, param, resultCallback);
 	}
 	
 	
-	/** 발주내역 한건 조회 콜백 */
-	function fPcmOrderOneResult(data) {
+	/** 반품내역 한건 조회 콜백 */
+	function fPcmReturnOneResult(data) {
 		//alert(data.pcmOrderListModel.orderid);
 		if (data.result == "SUCCESS") {
 			console.log(data);
 			//var uName = data.uName;			
 			//var outData = data.outData;
 			
+			
 			// 모달 팝업
 			gfModalPop("#layer1");
 	
 			//(controller에서 리턴한 Model명에서 실수함)
-			fInitPcmOrder(data.pcmOrderListModel);
+			fInitPcmReturn(data.pcmReturnListModel);
 			
 		} else {
 			swal(data.resultMsg);
@@ -240,19 +242,16 @@
 	}
 	
 	function changeConfirmCheck() {
-		fPurchaseOrderList(1)
+		fPurchaseReturnList(1)
 	}
 	
-	
 </script>
-
 </head>
 <body>
-	<form id="myForm" action="" method="">
+<form id="myForm" action="" method="">
 		<input type="hidden" id="currentPage" value="1"> 
 		 <!--form을 대상으로 serialize()메소드를 사용하면 폼의 객체들을 한번에 받을 수 있다.
 		 ajax에 data 값을 세팅할 때 사용하면, 해당 form의 모든 값을 쉽게 받을 수 있다.
-		 그럼? : 직렬화에서 myForm을 넘길 때 name이 있는 것만 넘어감? 안넘어감? (다시다시)
 		 -->
 		<input type="hidden" id="searchKey" value="">
 		<input type="hidden" id="sname" value="">
@@ -280,16 +279,17 @@
 
 							<p class="Location">
 								<a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a> 
-								<span class="btn_nav bold">납품업체</span>
-								<span class="btn_nav bold">발주지시서목록</span> 
-								<!-- <a href="${CTX_PATH}/pcm/purchaseOrder.do " class="btn_set refresh">새로고침</a> -->
-								<a href="../pcm/purchaseOrder.do " class="btn_set refresh">새로고침</a>
+								<span class="btn_nav bold">반품업체</span>
+								<span class="btn_nav bold">반품지시서목록</span> 
+								<!-- <a href="${CTX_PATH}/pcm/purchaseOrder.do " class="btn_set
+								 refresh">새로고침</a> -->
+								<a href="../pcm/returnPurchase.do" class="btn_set refresh">새로고침</a>
 							</p>
 							
 							<div id="thispagecontent">
 								<!-- 이 곳에 내 코드를 작성하세요 -->
 							
-							<div class="purchaseOrderList_area">
+							<div class="purchaseReturnList_area">
 							<!--검색창 부분  -->
 								<table style="margin-top:10px; margin-bottom:20px;" width="100%" cellpadding="5"
 									cellspacing="0" border="1" align="left"
@@ -313,27 +313,30 @@
 								<table class="col">
 									<caption>caption</caption>
 									<colgroup>
-										<col width="10%">
-										<col width="15%">
+									<col width="7%">
+										<col width="7%">
+										<col width="20%">
+										<col width="25%">
 										<col width="*%">
-										<col width="15%">
 										<col width="10%">
-										<col width="10%">
+										<col width="7%">
+										<col width="8%">
 									</colgroup>
 
 									<thead>
 										<tr>
 											<th scope="col">목록번호</th>
-											<th scope="col">발주번호</th>
-											<th scope="col">발주회사</th>
-											<th scope="col">발주제품</th>
+											<th scope="col">반품번호</th>
+											<th scope="col">반품업체</th>
+											<th scope="col">제품명</th>
+											<th scope="col">수량</th>
 											<th scope="col">날짜</th>
-											<th scope="col">임원 승인</th>
-											<th scope="col">발주 상태</th>
+											<th scope="col">임원승인</th>
+											<th scope="col">상세보기</th>
 										</tr>
 									</thead>
 <!-- 									listPurchaseOrder -->
-									<tbody id="listPurchaseOrder"></tbody>
+									<tbody id="listPurchaseReturn"></tbody>
 								</table>
 							</div>
 							<div class="paging_area" id="pagingnavi"></div>
@@ -349,7 +352,7 @@
 		<div id="layer1" class="layerPop layerType2" style="width: 600px;">
 	<dl>
 				<dt>
-					<strong>발주내역 상세</strong>
+					<strong>반품내역 상세</strong>
 				</dt>
 				<dd class="content">
 
@@ -366,32 +369,27 @@
 
 						<tbody>
 							<tr>
-								<th scope="row">발주 번호 <span class="font_red">*</span></th>
+								<th scope="row">반품 번호 <span class="font_red">*</span></th>
 								<td>
-									<input type="text" class="inputTxt p100" id="orderid" name="orderid" />
+									<input type="text" class="inputTxt p100" id="return_id" name="return_id" />
 								</td>
-								<th scope="row">발주회사 <span class="font_red">*</span></th>
+								<th scope="row">반품회사 <span class="font_red">*</span></th>
 								<td>
 									<input type="text" class="inputTxt p100" id="comp_nm" name="comp_nm" readonly/>
 								</td>
 							</tr>
 							<tr>
-								<th scope="row">제품명 <span class="font_red">*</span></th>
+								<th scope="row">제품명<span class="font_red">*</span></th>
 								<td>
 									<input type="text" class="inputTxt p100" id="sales_nm" name="sales_nm" readonly/>
 								</td>
-								<th scope="row">수량 <span class="font_red">*</span></th>
+								<th scope="row">수량<span class="font_red">*</span></th>
 								<td>
-									<input type="" class="inputTxt p100" id="order_cnt" name="order_cnt" readonly/>
+									<input type="" class="inputTxt p100" id="return_cnt" name="return_cnt" readonly/>
 								</td>
 							</tr>
-
-
 						</tbody>
 					</table>
-
-
-					<!-- e : 여기에 내용입력 -->
 					<div class="btn_areaC mt30">
 						<a href="" class="btnType gray" id="btnCloseModal" name="btn"><span>취소</span></a>
 					</div>
@@ -400,6 +398,5 @@
 			<a href="" class="closePop"><span class="hidden">닫기</span></a>
 		</div>
 	</form>
-
 </body>
 </html>
