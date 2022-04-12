@@ -93,28 +93,21 @@ public class SalesManageController {
 	@ResponseBody
 	public int manageSales(SalesRegData data, String action, HttpServletRequest req){
 		
-		
-		
-		
-		
-		System.out.println("init manageSales Controller");
-		
 		int result=0;
-		
 		
 		try{
 			
 			if(action.equalsIgnoreCase("REGISTER")){
-				// result=smService.insertSales(data,req);
 				
 				result=smService.insertSales(data, req);
-				
 
 	
 			}else if(action.equalsIgnoreCase("UPDATE")){
+				
 				result=smService.updateSales(data, req);
+				
 			}else{
-				// DELTE
+				
 				result=smService.deleteSales(data.getSales_id());
 			}
 			

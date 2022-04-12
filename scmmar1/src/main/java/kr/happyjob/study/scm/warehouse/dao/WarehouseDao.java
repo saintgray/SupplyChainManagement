@@ -14,6 +14,9 @@ public interface WarehouseDao {
 	int getTotalCount(PageInfo info);
 	WarehouseDetail getWareHouseInfo(String idx);
 	List<ComnCodUtilModel> getLocComnCod(String group_code);
-	
+	int insertWarehouse(WarehouseDetail data);
+	int deleteWarehouse(String wh_id);
+	int updateWarehouse(WarehouseDetail data);
+	int getWareHouseStock(String wh_id);
 
 }

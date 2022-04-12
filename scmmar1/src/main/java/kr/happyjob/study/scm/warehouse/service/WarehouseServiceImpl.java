@@ -11,6 +11,7 @@ import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.happyjob.study.scm.warehouse.dao.WarehouseDao;
+import kr.happyjob.study.scm.warehouse.exception.StockRemainsException;
 import kr.happyjob.study.scm.warehouse.model.PageInfo;
 import kr.happyjob.study.scm.warehouse.model.Warehouse;
 import kr.happyjob.study.scm.warehouse.model.WarehouseDetail;
@@ -83,6 +84,33 @@ public class WarehouseServiceImpl implements WarehouseService{
 	public List<ComnCodUtilModel> getLocCod(String group_code) {
 		
 		return sst.getMapper(WarehouseDao.class).getLocComnCod(group_code);
+	}
+
+	@Override
+	public int insertWarehouse(WarehouseDetail data) {
+		
+		return sst.getMapper(WarehouseDao.class).insertWarehouse(data);
+	}
+
+	@Override
+	public int deleteWarehouse(String wh_id) throws StockRemainsException {
+		
+		int deleteResult=0;
+		int stockCount= sst.getMapper(WarehouseDao.class).getWareHouseStock(wh_id);
+		if(stockCount>0){
+			throw new StockRemainsException();
+		}else{
+			deleteResult=sst.getMapper(WarehouseDao.class).deleteWarehouse(wh_id);
+		}
+		
+		return deleteResult;
+		
+	}
+
+	@Override
+	public int updateWarehouse(WarehouseDetail data) {
+		
+		return sst.getMapper(WarehouseDao.class).updateWarehouse(data);
 	}
 	
 	

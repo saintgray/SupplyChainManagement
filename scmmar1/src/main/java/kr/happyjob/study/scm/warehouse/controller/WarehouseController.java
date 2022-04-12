@@ -3,11 +3,11 @@ package kr.happyjob.study.scm.warehouse.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.chainsaw.Main;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,23 +15,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.happyjob.study.scm.user.service.UserInfoService;
+import kr.happyjob.study.scm.warehouse.exception.StockRemainsException;
 import kr.happyjob.study.scm.warehouse.model.PageInfo;
 import kr.happyjob.study.scm.warehouse.model.WarehouseDetail;
 import kr.happyjob.study.scm.warehouse.service.WarehouseService;
 import kr.happyjob.study.system.model.ComnCodUtilModel;
-import kr.happyjob.study.system.model.PhoneNumberModel;
 
 @Controller
 @RequestMapping("/scm")
 public class WarehouseController {
 	
+	
+	private final Logger logger = LogManager.getLogger(this.getClass());
+	
+	
 	private WarehouseService whService;
 	private UserInfoService uiService;
-	
 	
 	public WarehouseController() {
 		
@@ -70,10 +72,15 @@ public class WarehouseController {
 	
 	@RequestMapping("/whinfo")
 	@PostMapping
-	public String getWhInfo(Model model, String action, String wh_id, HttpSession session){
+	public String getWhInfo(Model model, String action, String wh_id, HttpSession session, RedirectAttributes rdAttr){
+		
+		
 		
 		if(!action.equalsIgnoreCase("NEW")){
-			model.addAttribute("info", whService.getWareHouseInfo(wh_id,session));
+			WarehouseDetail info=null;
+			info = whService.getWareHouseInfo(wh_id, session);
+			rdAttr.addFlashAttribute("whID",info.getWh_id());
+			model.addAttribute("info", info);
 		}
 		model.addAttribute("action", action);
 		
@@ -81,21 +88,47 @@ public class WarehouseController {
 	}
 	
 	
+	@RequestMapping("/whManage2")
+	@PostMapping
+	@ResponseBody
+	public int whManage(WarehouseDetail data, String action, HttpSession session){
+		
+		int result=0;
+		logger.info(action);
+		
+		try{
+			switch(action){
+			case "UPDATE":
+				result=whService.updateWarehouse(data);
+				break;
+			case "REGISTER":
+				result=whService.insertWarehouse(data);
+				break;
+			case "DELETE":
+				result=whService.deleteWarehouse(data.getWh_id());
+				break;
+			}
+		}catch(Exception e){
+			
+			logger.info("catched Exception... is exception instance of StockRemainException?  ".concat(String.valueOf(e instanceof StockRemainsException)));
+			if(e instanceof StockRemainsException){
+				// 삭제하려는 창고에 재고가 남아있을때 삭제 불가
+				result=-1;
+			}
+			
+		}
+		return result;
+	}
+	
 	@RequestMapping("/whManage")
 	@PostMapping
 	@ResponseBody
-	public int whManage(WarehouseDetail regdata, String action, PhoneNumberModel tel, HttpSession session){
+	public int whManage2(WarehouseDetail regdata, String action, RedirectAttributes rdAttr){
 		
-	
-		System.out.println("whID .... "+ session.getAttribute("whID"));
+		System.out.println(rdAttr.getFlashAttributes().get("whID"));
 		
-		
-		regdata.setPhone(tel.getPhoneNumber());
-		
-		System.out.println(regdata.getPhone());
-		System.out.println(regdata.getWh_id());
-		
-		
+		logger.info("whID in RedirectAttributes...");
+		logger.info(rdAttr);
 		
 		return 1;
 	}
