@@ -121,7 +121,7 @@
                                 <form action="" id="formDetail">
                                     <tr>
                                         <td rowspan="3">
-                                            <img id="productDetailImg">이미지
+                                            <img id="productDetailImg" style="width: 100%; height: auto;">이미지
                                         </td>
                                         <th>모델 번호</th>
                                         <td colspan="1"><input type="text" class="inputTxt p100" name="model_code" /></td>
@@ -193,7 +193,6 @@
                 function plmodal(item) {
                     console.log('plmodal');
                     console.log(item);
-
                     $('div#popProductDetail span[name="sales_id"]').html(item.sales_id);
                     $('div#popProductDetail span[name="sales_type"]').html(item.sales_type);
                     $('tbody#tbodyProductDetail input[name="model_code"]').val(item.model_code);
@@ -201,8 +200,7 @@
                     $('tbody#tbodyProductDetail input[name="mfcomp"]').val(item.mfcomp);
                     $('tbody#tbodyProductDetail input[name="price"]').val(item.price);
                     $('tbody#tbodyProductDetail input[name="pur_cnt"]').val(1);
-                    $('tbody#tbodyProductDetail input[name="wanted_date"]').val('');
-                    $('tbody#tbodyProductDetail input[name="wanted_date"]').val('');
+                    $('tbody#tbodyProductDetail input[name="wanted_date"]').val(dateFormatter(new Date()));
                     $('div#popProductDetail textarea').html(item.info);
                     $('img#productDetailImg').attr({
                         src: item.file_server_path ? item.file_server_path : "/serverfile/kakaoRyan.png"
@@ -242,6 +240,8 @@
                         newRow += '     </td>';
                         newRow += ' </tr>';
                         $('#tbodyProductListTable').append($(newRow));
+                        console.log('newRow');
+                        console.log(newRow);
                     });
 
                 }
@@ -249,6 +249,9 @@
                 function eventProductListRow() {
                     $('tbody#tbodyProductListTable').on('click', '.rowProductList', function(e) {
                         let rowNum = e.currentTarget.attributes['row-num'].value;
+                        const salesID = $(e.currentTarget).find('td[name="sales_id"]').html();
+                        console.log('salesID');
+                        console.log(salesID);
                         getProductDetail(rowNum);
                     });
                 }
@@ -259,11 +262,15 @@
                 }
 
                 function getProductDetail(rowNum) {
+                    const row = document.querySelector('tr[row-num="' + rowNum + '"]');
+                    const salesID = row.querySelector('td[name="sales_id"]').innerHTML;
+                    console.log('salesID');
+                    console.log(salesID);
                     $.ajax({
                         url: 'getProductDetail',
                         method: 'POST',
                         data: {
-                            sales_id: rowNum
+                            sales_id: salesID
                         },
                         success: function(result) {
                             plmodal(result);
@@ -303,6 +310,13 @@
                         }
                     });
 
+                }
+
+                function dateFormatter(now) {
+                    const year = now.getFullYear() < 10 ? '0' + now.getFullYear() : now.getFullYear();
+                    const month = now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1) : (now.getMonth() + 1);
+                    const day = now.getDate() < 10 ? '0' + now.getDate() : now.getDate();
+                    return year + '-' + month + '-' + day;
                 }
 
                 function listSelectOptionSalesType(list) {
@@ -370,6 +384,8 @@
                         },
                         method: 'POST',
                         success: function(result) {
+                            console.log('getProductList');
+                            console.log(result);
                             inputProductListRows(result.list);
                             createPaginationDiv(currentPagePL, result.totalCntProductList);
                         }

@@ -21,7 +21,6 @@
 					return;
 				
 				case 'delUserBtn' :
-					$('#action').val('DELETE');
 					fManageUser('DELETE');
 					return;
 			
@@ -105,20 +104,34 @@
 
 	function fManageUser(controlType) {
 		
-		var test=$('#user_Type').length;
-		console.log(test);
+		var action=$('#action').val();
+		console.log(action);
 		
-		if($('#user_Type').length==0){
+		if(controlType=='DELETE' && action!='UPDATE'){
 			alert('삭제하실 회원을 선택하세요');
 		}else{
+			
+			
 			var callback=function(data){
 				fAfterInsertOrUpdate(data,controlType);
 			}
 			
-			if((controlType=='DELETE' && confirm('정말로 삭제하시겠습니까?')) || controlType!='DELETE'){
-				callAjax('/scm/userinfo/manage', 'POST', 'json', true, $('#userModalForm').serialize(), callback);
-			}
+			if(
+				(controlType=='REGISTER' && confirm('등록하시겠습니까?')) ||
+				(controlType=='UPDATE' && confirm('수정하시겠습니까?')) ||
+				(controlType=='DELETE' && confirm('정말로 삭제하시겠습니까?'))
+			  ){
+				if(controlType=='DELETE'){
+					$('#action').val('DELETE');
+				}
 				
+				if(controlType=='REGISTER' && isDuplicated($('input[name=loginID]').val())){
+					alert('이미 등록된 사용자이거나 탈퇴한 회원입니다');
+					return;
+				}else{
+					callAjax('/scm/userinfo/manage', 'POST', 'json', true, $('#userModalForm').serialize(), callback);	
+				}
+			}	
 		}
 	}
 
@@ -139,6 +152,23 @@
 		}
 
 	}
+	
+	function isDuplicated(loginID){
+		var duplicated=false;
+		
+		var callback=function(data){
+			if(data!=null || data.length>0){
+				duplicated=true;
+			}else{
+				duplicated=false;
+			}
+		}
+		
+		
+		callAjax('/scm/userinfo/'+loginID, 'POST', 'json', false, null, callback);
+		
+		return duplicated;
+	}
 
 	////////////////////////////////////////////
 
@@ -155,7 +185,7 @@
 		html += '<span>담당업무</span>\r\n';
 		html += '</td>\r\n';
 		html += '<td>\r\n'
-		html += '<select class="form-control">\r\n';
+		html += '<select class="form-control" name="user_Type">\r\n';
 		html += '<option value="A">SCM</option>\r\n';
 		html += '<option value="B">배송</option>\r\n';
 		html += '<option value="D">구매</option>\r\n';

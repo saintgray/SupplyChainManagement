@@ -41,7 +41,8 @@
 		SELECT *
 		FROM tb_sales s
 			LEFT OUTER JOIN tb_sales_file f ON s.sales_id = f.sales_id
-		WHERE s.sales_id = #{sales_id}
+		WHERE s.sales_id = #{sales_id} 
+		LIMIT 1
 	</select>
 	
 	

@@ -153,7 +153,12 @@
 		VALUES(
 				#{loginID},
 				#{password},
-				#{user_Type},
+				<if test="user_Type == null">
+					'C',	
+				</if>
+				<if test="user_Type!=null">
+					#{user_Type},
+				</if>
 				#{client},
 				#{name},
 				#{phone},

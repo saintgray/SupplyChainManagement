@@ -86,9 +86,19 @@
 		background-color:rgb(197,197,197);
 		border-radius:10px;
 	}
+	
 	#l_files{
-	    position: absolute;
-   		top: 20px
+     	position: absolute;
+	    top: 20px;
+	    width: 15px;
+	    height: 15px;
+	    background: url(/images/treeview/plus.gif);
+	    background-repeat: no-repeat;
+	    background-position: 1px 1px;
+	    background-size: 15px 15px;
+	}
+	#files{
+		visibility: hidden;
 	}
 	#salesInfoArea #representPhoto{
 		width:200px;

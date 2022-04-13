@@ -162,7 +162,7 @@
 			tb_sales_file
 		WHERE
 			file_no IN
-			<foreach collection="files" separator="," open="(" close=")" item="file">
+			<foreach collection="list" separator="," open="(" close=")" item="file">
 				'${file.file_no}'
 			</foreach>
 	</delete>

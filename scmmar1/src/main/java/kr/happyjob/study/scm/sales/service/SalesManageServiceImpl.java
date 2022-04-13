@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +25,7 @@ import kr.happyjob.study.scm.sales.model.SalesRegData;
 @Service
 public class SalesManageServiceImpl implements SalesManageService{
 	
-	
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	private SqlSessionTemplate sst;
 	private SalesManageDao smDao;
 	
@@ -160,32 +162,20 @@ public class SalesManageServiceImpl implements SalesManageService{
 		List<MultipartFile> files=updateFilesMap.get("files");
 		List<FileModel> updateFiles=fUtil.uploadFiles(files,data.getSales_id());
 		// 4.
+		
+		logger.info("+  " + updateFiles.isEmpty() + " : " + prevFiles);
+		
 		if(!updateFiles.isEmpty()){
 			smDao.insertFiles(updateFiles);
-		}
-		
-		// 모두 지웠으면 이전 파일들은 DB에서 모두 삭제한다
-		if(prevFiles!=null){
-			////
-			System.out.println("파일이 있습니다.");
-			for(FileModel file: prevFiles){
-				System.out.println(file.getFile_no());
+			
+			
+			// 5. 
+			// 새로운 상품의 사진들을 등록했으며, 이전에 그 상품에 대한 파일 정보가 남아있다면
+			if(prevFiles!=null){
+				smDao.deleteFiles(prevFiles);
+				NewFileUtil.deleteFiles(prevFiles);
 			}
-			////
-			smDao.deleteFiles(prevFiles);
-		}
-		
-		
-		// 5.
-		// 이미지를 새로 등록하지 않았다면(= updateFiles가 null 이라면) 이전 이미지를 그대로 사용하겠다는 말이므로
-		// 이전 파일들을 서버에서 지우지 않는다
-		if(updateFiles==null || updateFiles.size()==0){
-			NewFileUtil.deleteFiles(prevFiles);
-		}
-		
-		
-
-		
+		} 
 		return updateResult;
 	}
 

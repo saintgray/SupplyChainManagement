@@ -11,16 +11,18 @@
 	<div class="bts mt30">
 		<input type="hidden" value="${page.totalCount}" id="totalCount">
 		
-		<table class="row" id="supplyListTable">
-			<tr>
-				<td>업체코드</td>
-				<td>납품업체명</td>
-				<td>아이디</td>
-				<td>패스워드</td>
-				<td>담당자명</td>
-				<td>연락처</td>
-				
-			</tr>
+		<table class="col" id="supplyListTable">
+			<thead>
+				<tr>
+					<th scope="col">업체코드</th>
+					<th scope="col">납품업체명</th>
+					<th scope="col">아이디</th>
+					<th scope="col">패스워드</th>
+					<th scope="col">담당자명</th>
+					<th scope="col">연락처</th>
+					
+				</tr>
+			</thead>
 			
 			<c:if test="${empty page.suppliers}">
 				<tr>

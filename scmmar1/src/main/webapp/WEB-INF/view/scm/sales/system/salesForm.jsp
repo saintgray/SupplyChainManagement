@@ -39,9 +39,9 @@
 
 				<!-- 상품사진 등록 버튼 -->
 				<label for="files" id="l_files">
-					<img src="/images/treeview/plus.gif" style="width:20px; height:20px;">
+					
 				</label>
-			    <input type="file" name="files" id="files" multiple style="display:none;">
+			    <input type="file" name="files" id="files" multiple>
 				
 			</div>
 			

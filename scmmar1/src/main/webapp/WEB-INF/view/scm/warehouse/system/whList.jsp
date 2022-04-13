@@ -16,17 +16,18 @@
 	<div class="bts mt30">
 		<input type="hidden" value="${page.totalCount}" id="totalCount">
 		
-		<table class="row" id="salesListTable">
-			<tr>
-				<td class="wh_id">창고 코드</td>
-				<td>창고명</td>
-				<td>담당자</td>
-				<td>이메일</td>
-				<td>전화 번호</td>
-				<td>우편번호</td>
-				<td>창고 위치</td>
-			</tr>
-			
+		<table class="col" id="salesListTable">
+			<thead>
+				<tr>
+					<th class="wh_id" scope="col">창고 코드</th>
+					<th scope="col">창고명</th>
+					<th scope="col">담당자</th>
+					<th scope="col">이메일</th>
+					<th scope="col">전화 번호</th>
+					<th scope="col">우편번호</th>
+					<th scope="col">창고 위치</th>
+				</tr>
+			</thead>
 			<c:if test="${empty page.whList}">
 				<tr>
 					<td colspan="7" class="text-center">등록된 창고가 없습니다</td>

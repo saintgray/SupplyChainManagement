@@ -9,12 +9,16 @@
 
 	<div class="bts mt30">
 		
-		<table class="row text-center" id="impSalesListTable">
-			<tr>
-				<td>제품번호</td>
-				<td>제품명</td>
-				<td>납품단가</td>
-			</tr>
+		<table class="col" id="impSalesListTable">
+			<thead>
+				
+				<tr>
+					<th scope="col">제품번호</th>
+					<th scope="col">제품명</th>
+					<th scope="col">납품단가</th>
+				</tr>
+				
+			</thead>
 			
 			<c:if test="${empty impSales}">
 				<tr>

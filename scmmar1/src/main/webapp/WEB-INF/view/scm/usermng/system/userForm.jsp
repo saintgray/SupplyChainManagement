@@ -94,7 +94,7 @@
 										<span>담당업무</span>
 									</td>
 									<td>
-										<select class="form-control">
+										<select class="form-control" name="user_Type">
 											<option value="A" <c:if test='${info.user_Type eq "A"}'>selected</c:if> >SCM</option>
 											<option value="B" <c:if test='${info.user_Type eq "B"}'>selected</c:if> >배송</option>
 											<option value="D" <c:if test='${info.user_Type eq "D"}'>selected</c:if> >구매</option>
@@ -150,9 +150,9 @@
 		
 		
 		<input type="hidden" id="action" name="action" value="${action}">
-		<c:if test="${not empty info}">
+		<%-- <c:if test="${not empty info}">
 			<input type="hidden" id="user_Type" name="user_Type" value="${info.user_Type}">
-		</c:if>
+		</c:if> --%>
 		
 		<!-- zipFrame for Daum zipCode API -->
 			<div id="zipFrame" style="position:absolute; display:none" >

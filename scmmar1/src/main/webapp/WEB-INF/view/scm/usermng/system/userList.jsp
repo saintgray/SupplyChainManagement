@@ -10,18 +10,19 @@
 		<input type="hidden" value="${page.totalCount}" id="totalCount">
 		
 	
-		<table class="row">
+		<table class="col">
 	
 			<tbody>
-			
-			<tr>
-				<td>아이디</td>
-				<td>구분명</td>
-				<td>회사명/성명</td>
-				<td>담당업무</td>
-				<td>담당자명</td>
-				<td>연락처</td>
-			</tr>
+				<thead>
+					<tr>
+						<th scope="col">아이디</th>
+						<th scope="col">구분명</th>
+						<th scope="col">회사명/성명</th>
+						<th scope="col">담당업무</th>
+						<th scope="col">담당자명</th>
+						<th scope="col">연락처</th>
+					</tr>
+				</thead>
 			
 			
 			<c:forEach items="${page.userlist}" var="user">
