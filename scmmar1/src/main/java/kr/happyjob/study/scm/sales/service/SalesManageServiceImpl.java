@@ -113,16 +113,12 @@ public class SalesManageServiceImpl implements SalesManageService{
 		
 		if(result==1){
 			
-			int fileDeleteResult=0;
-			
-		
-			NewFileUtil.deleteFiles(files);
-			
-		
-			
-			if(fileDeleteResult!=files.size()){
-				System.out.println("DB 통신 에러 또는 파일 일부가 로컬경로에서 삭제되지 않음");
-			}
+//			int fileDeleteResult=0;
+//			상품의 삭제는 삭제유무만 업데이트한다
+//			 NewFileUtil.deleteFiles(files);
+//			if(fileDeleteResult!=files.size()){
+//				System.out.println("DB 통신 에러 또는 파일 일부가 로컬경로에서 삭제되지 않음");
+//			}
 			
 		}
 		
@@ -171,7 +167,7 @@ public class SalesManageServiceImpl implements SalesManageService{
 			
 			// 5. 
 			// 새로운 상품의 사진들을 등록했으며, 이전에 그 상품에 대한 파일 정보가 남아있다면
-			if(prevFiles!=null){
+			if(prevFiles!=null && !prevFiles.isEmpty()){
 				smDao.deleteFiles(prevFiles);
 				NewFileUtil.deleteFiles(prevFiles);
 			}

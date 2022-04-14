@@ -66,20 +66,20 @@
 	</select>
 	
 
-	<insert id="addProductToCart"  parameterType="hashmap">
+	<insert id="addProductToCart"  parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
 		INSERT INTO tb_basket (loginID, sales_id, pur_cnt, wanteddate, purcYN )
 			VALUES ( #{loginID}, #{sales_id}, #{pur_cnt}, #{wanted_date}, 'N')
 	</insert>
 		
 	
-	<insert id="orderProductPurchase"  parameterType="hashmap">
+	<insert id="orderProductPurchase"  parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
 		INSERT INTO
 			    tb_purchase (loginID, depositYN)
 		VALUES
-			    (#{loginID}, 'N')
+			    (#{loginID}, 'Y')
 	</insert>
 	
-	<insert id="orderProductPurchaseinfo"  parameterType="hashmap">
+	<insert id="orderProductPurchaseinfo"  parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
 		<selectKey resultType="int" keyProperty="pur_id" order="BEFORE">
 		    SELECT distinct(last_insert_id()) FROM tb_purchase limit 1
 		</selectKey>
@@ -88,5 +88,28 @@
 		VALUES
 		    (#{pur_cnt}, #{wanted_date}, 'N', '0', #{pur_id}, #{loginID}, #{sales_id})
 	</insert>
+	
+	<select id="getCartItems"  parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO" resultType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
+		SELECT 
+			b.loginID, b.sales_id, b.pur_cnt, DATE_FORMAT(b.wanteddate, '%Y-%m-%d') as wanteddate
+			FROM
+				tb_basket b
+			<where> 
+				b.loginID like #{loginID}
+				AND b.sales_id = #{sales_id}
+			</where>
+	</select>
+	
+	<update id="updateCartItemCnt"  parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
+		UPDATE
+			tb_basket b
+		SET
+			pur_cnt = #{pur_cnt}
+		<where> 
+			b.loginID like #{loginID}
+			AND b.sales_id = #{sales_id}
+		</where>
+	</update>
+	
 	
 </mapper>

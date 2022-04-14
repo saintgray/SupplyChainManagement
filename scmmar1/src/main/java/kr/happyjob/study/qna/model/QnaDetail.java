@@ -3,6 +3,8 @@ package kr.happyjob.study.qna.model;
 public class QnaDetail {
 	
 	private String qna_id;
+	private String loginID;
+	private String client;
 	private String qna_title;
 	private String qna_content;
 	private String qna_regdate;
@@ -14,23 +16,6 @@ public class QnaDetail {
 	public QnaDetail() {
 		
 	}
-	
-	
-
-
-	public QnaDetail(String qna_id, String qna_title, String qna_content, String qna_regdate, String qna_editdate,
-			Reply reply) {
-		
-		this.qna_id = qna_id;
-		this.qna_title = qna_title;
-		this.qna_content = qna_content;
-		this.qna_regdate = qna_regdate;
-		this.qna_editdate = qna_editdate;
-		this.reply = reply;
-	}
-
-
-
 
 	public String getQna_id() {
 		return qna_id;
@@ -39,6 +24,25 @@ public class QnaDetail {
 
 	public void setQna_id(String qna_id) {
 		this.qna_id = qna_id;
+	}
+
+
+	public String getLoginID() {
+		return loginID;
+	}
+
+
+	public void setLoginID(String loginID) {
+		this.loginID = loginID;
+	}
+
+	public String getClient() {
+		return client;
+	}
+
+
+	public void setClient(String client) {
+		this.client = client;
 	}
 
 
@@ -90,6 +94,9 @@ public class QnaDetail {
 	public void setReply(Reply reply) {
 		this.reply = reply;
 	}
+	
+	
+	
 	
 	
 	

@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.happyjob.study.ged.dao.OrderConfirmDao">
 
-   <!-- 발주 목록 조회 -->
+   <!-- 매출 목록 조회 -->
    <select id = "orderConfirmList" resultType = "kr.happyjob.study.ged.model.OrderConfirmModel" parameterType="map">
       select
              od.orderid,

@@ -24,7 +24,7 @@ public interface ScmNoticeService {
 
     public int updateNotice(NoticeModel latestNoticeInfo, Map<String,Object> params, List<MultipartFile> files, List<String> delTargets, HttpServletRequest req) throws Exception;
 
-	int deleteNotice(Map<String, Object> paramMap) throws Exception;
+	int deleteNotice(String idx) throws Exception;
 
 
 	List<FileModel> selectFilesByNoticeId(Map<String, Object> paramMap) throws Exception;

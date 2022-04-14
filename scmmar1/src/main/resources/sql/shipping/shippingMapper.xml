@@ -9,7 +9,7 @@
 		SELECT 
 				dd.deliv_id, dd.regdate
 			,	dd.deldate, dd.editdate 
-     		,	dd.confirmYN, dd.purinf_id
+     		,	dd.deliverStatus, dd.purinf_id
      		, 	pi.pur_cnt, s.sales_nm, ui.name , dd.deliv_wh_id   
 					
 		FROM tb_delivdir dd LEFT JOIN tb_purchaseinfo pi 
@@ -27,7 +27,7 @@
 			</if>
 			
 			<if test="(oname != null) and (!oname.equals(''))">
-			    and dd.confirmYN= #{oname}
+			    and dd.deliverStatus= #{oname}
 			</if>
 			
 			<if test="(cal1 != null) and (!cal1.equals(''))">
@@ -63,7 +63,7 @@
 			</if>
 			
 			<if test="(oname != null) and (!oname.equals(''))">
-			    and dd.confirmYN= #{oname}
+			    and dd.deliverStatus= #{oname}
 			</if>
 			
 			<if test="(cal1 != null) and (!cal1.equals(''))">
@@ -78,24 +78,23 @@
 
 	<!-- 배송지시서 단건 상세 조회 selectOne -->
 	<select id="selectDeliOrder" resultType="kr.happyjob.study.shipping.model.ShippingModel">
-		/* kr.happyjob.study.shipping.dao.ShippingDao.selectDeliOrder */
-		SELECT dd.deliv_id, dd.regdate, dd.deldate, dd.editdate 
-       , dd.confirmYN, dd.purinf_id
-       , pi.pur_cnt, s.sales_nm, ui.name
-       , ui.address, ui.dtAddress, wh.wh_nm
-       , ui.loginID, dd.deliv_wh_id, s.sales_id
-       
-		FROM tb_delivdir dd LEFT JOIN tb_purchaseinfo pi
-		                           ON dd.purinf_id = pi.purinf_id
-		                    LEFT JOIN tb_sales s
-		                           ON pi.sales_id = s.sales_id
-		                    LEFT JOIN tb_purchase p
-		                           ON pi.pur_id = p.pur_id
-		                    LEFT JOIN tb_userinfo ui
-		                           ON p.loginID = ui.loginID
-		                    LEFT JOIN tb_warehouse wh
-		                           ON wh.loginID = ui.loginID
-		WHERE dd.deliv_id = #{deliv_id}
+		select del.deliv_ID 
+			,	sal.sales_nm
+			,	pinfo.pur_cnt
+			,	user.name
+          	, 	del.deliverStatus
+          	,  (select wh_nm 
+          		from tb_warehouse
+          		 where wh_id = #{deliv_wh_id}
+          		) AS wh_id_ship
+          ,		user.address 
+          ,		user.dtAddress
+      from 	tb_delivdir del
+	      join tb_purchaseinfo pinfo on pinfo.purinf_id = del.purinf_id
+	      join tb_sales sal on sal.sales_id = pinfo.sales_id
+	      join tb_userinfo user on user.loginID = pinfo.loginID
+      
+      where del.deliv_id = #{deliv_id}
 	</select>
 
 
@@ -103,7 +102,7 @@
 	<update id="updateDeliOrder">
 		/* kr.happyjob.study.shipping.dao.ShippingDao.updateDeliOrder */
 		UPDATE tb_delivdir 
-		   SET confirmYN = 'E'
+		   SET deliverStatus = 'E'
 			  , editdate = NOW()
 		 WHERE deliv_id = #{deliv_id}	
 	</update>

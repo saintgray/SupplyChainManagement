@@ -58,7 +58,31 @@
 			AND (SELECT COUNT(1) FROM tb_reply tr WHERE tr.qna_id=tq.qna_id AND reply_deldate IS NULL) = 0
 		</where>
 		ORDER BY qna_regdate
+		LIMIT #{firstIndex}, #{rowsPerPage}
 	</select>
+	
+	<select id="getQnaInfo" resultType="kr.happyjob.study.qna.model.QnaDetail">
+		SELECT qna_id,
+			   qna_title,
+			   qna_content,
+			   qna_regdate,
+			   qna_editdate,
+			   tq.loginID,
+			   tu.client
+		FROM
+			tb_Qna tq JOIN
+			tb_userinfo tu
+						ON tq.loginID=tu.loginID
+		WHERE 
+			qna_id=#{arg0} AND
+			qna_deldate IS NULL 
+	</select>
+
+	<update id="deleteQna">
+		UPDATE tb_Qna
+		SET qna_deldate=current_timestamp
+		WHERE qna_id=#{arg0}
+	</update>
 
 
 </mapper>

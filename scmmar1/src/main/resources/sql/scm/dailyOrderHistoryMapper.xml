@@ -67,6 +67,7 @@
 				</choose>
 				</if>
 		</where>
+		order by pur.purdate desc
 		LIMIT #{pageIndex}, #{pageSize}
 	</select>
 	
@@ -124,37 +125,22 @@
 	</select>
 	
 	<select id="onedailyOrderHistory" resultType="kr.happyjob.study.scm.model.WorkOrderModel">
-	SELECT    pur.pur_id AS pur_id
-				, pur.purdate AS purdate
-				, user.name AS name
-				, sal.sales_nm AS sales_nm
-				, ll.sumcnt AS price_sum
-				, sal.price AS price
-				, purinfo.pur_cnt AS pur_cnt
-				, (sal.price*purinfo.pur_cnt) AS price_cnt
-				, purinfo.returnYN AS returnYN
-				, purinfo.wanted_date AS wanted_date
-				, pur.depositYN AS depositYN
-				, sal.sales_id AS sales_id
-				, user.loginID AS loginID
-				, red.return_cnt
-		FROM    tb_purchase pur 
-				join tb_userinfo user ON pur.loginID = user.loginID
-				join tb_purchaseinfo purinfo ON pur.pur_id = purinfo.pur_id
-        		join tb_refundinfo reinfo on reinfo.purinf_id = purinfo.purinf_id
-        		join tb_returndir red on red.return_id = reinfo.rfinfo_id
-				join tb_sales sal ON purinfo.sales_id = sal.sales_id
-				left outer join (
-				                   select st.sales_id
-				                        , sum(st_cnt) as sumcnt 
-				                     from tb_stock st 
-				                    where st.sales_id IN (
-				                                            select sa.sales_id 
-				                                              from tb_sales sa				                                              
-				                                         )
-				                   group by st.sales_id
-				                ) ll on ll.sales_id = purinfo.sales_id
-		WHERE 	pur.pur_id = #{pur_id}
+		select pur.pur_id AS pur_id
+			,	pur.purdate AS purdate
+			,	user.name AS name 
+			,	sal.sales_nm AS sales_nm
+			,	pinfo.pur_cnt AS pur_cnt
+			,	pur.depositYN AS depositYN
+			,	pinfo.returnYN AS returnYN
+			,   tri.return_cnt
+		  from tb_purchaseinfo pinfo
+			  join tb_purchase pur on pinfo.pur_id = pur.pur_id
+			  join tb_userinfo user on user.loginID = pur.loginID
+			  join tb_sales sal on sal.sales_id = pinfo.sales_id
+			  left join tb_refundinfo tri on pinfo.purinf_id=tri.purinf_id
+		 where pur.pur_id = #{pur_id} 
+		 	AND pinfo.sales_id = #{sales_id}
+  
 	</select>
 
 	<select id="comf" resultType="kr.happyjob.study.scm.model.DailyOrderHistoryModel">
@@ -260,18 +246,20 @@
 		insert into tb_delivdir
 			(
 				regdate
+			,	deliverStatus
 			,	purinf_id
 			,	deliv_wh_id
+			
 			)
 	values
 			(
 				now()
+			,	'U'
 			,	(
-					select distinct(pinfo.purinf_id)
+					select pinfo.purinf_id
 					  from tb_purchaseinfo pinfo
-							  join tb_delivdir del on del.purinf_id = pinfo.purinf_id
-							  join tb_purchase pur on pur.pur_id = pinfo.pur_id
-					  where pur.pur_id = #{pur_id}
+					   	join tb_purchase pur on pur.pur_id = pinfo.pur_id
+					  where pinfo.pur_id = #{pur_id} and pinfo.sales_id = #{sales_id}
 				)
 			,	#{deliv_wh_id}
 			)

@@ -42,13 +42,7 @@ public class ShippingController {
 	 */
 	@RequestMapping("deliveryBuyer.do")
 	public String deliveryBuyer(Model model, @RequestParam Map<String,Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
-	
-		logger.info("+ Start " + className + ".deliveryBuyer");
-		logger.info("   - paramMap : " + paramMap);		
-		logger.info("+ End " + className + ".deliveryBuyer");
-
-		
+			HttpServletResponse response, HttpSession session) throws Exception {		
 		return "shipping/order";
 	}
 	
@@ -77,6 +71,7 @@ public class ShippingController {
 		List<ShippingModel> listShippingModel = shippingService.listDeliOrder(paramMap);
 		model.addAttribute("listShippingModel", listShippingModel);
 		
+		System.out.println(listShippingModel.get(1).getDeliv_wh_id());
 		
 		// 배송지시서 목록 개수 조회
 		int totalcount = shippingService.countListDeliOrder(paramMap);
@@ -114,6 +109,7 @@ public class ShippingController {
 		ShippingModel shippingModel = shippingService.selectDeliOrder(paramMap);
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
 		resultMap.put("result", result);
 		resultMap.put("resultMsg", resultMsg);
 		resultMap.put("shippingModel", shippingModel);
@@ -125,7 +121,7 @@ public class ShippingController {
 	
 	
 	/**
-	 *  배송지시서 배송상태 변경 		파라미터: deliv_id, action, confirmYN, pur_cnt
+	 *  배송지시서 배송상태 변경 		파라미터: deliv_id, action, deliverStatus, pur_cnt
 	 */
 	@RequestMapping("saveDeliOrder.do")
 	@ResponseBody
@@ -140,9 +136,9 @@ public class ShippingController {
 		
 		// $("#myForm").serialize() 값 가져오기, json타입
 		String action = (String)paramMap.get("action");	//폼 액션
-		String confirmYN = (String)paramMap.get("confirmYN");	//배송상태
+		String deliverStatus = (String)paramMap.get("deliverStatus");	//배송상태
 		
-		if("U".equals(action)&&confirmYN.equals("U")){
+		if("U".equals(action)&&deliverStatus.equals("U")){
 			//배송상태 변경
 			int deliv_id = Integer.parseInt((String)paramMap.get("deliv_id"));	//배송 번호
 			paramMap.put("deliv_id", deliv_id);
@@ -181,18 +177,8 @@ public class ShippingController {
 	
 	
 	
-	/**
-	 * 반품지시서 초기 화면
-	 */
-	@RequestMapping("refundBuyer.do")
-	public String initRefund(Model model, @RequestParam Map<String,Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
 	
-		logger.info("+ Start " + className + ".미완성");
-		logger.info("   - paramMap : " + paramMap);		
-		logger.info("+ End " + className + ".미완성");
-
-		
-		return "shipping/order";
-	}
+	
+	
+	
 }

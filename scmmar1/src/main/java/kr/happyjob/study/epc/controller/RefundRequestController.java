@@ -47,14 +47,13 @@ public class RefundRequestController {
 	public String gol(Model model, HttpSession session, SearchParamDTO param) {
 		
 		param.setLoginID((String)session.getAttribute("loginId"));
-		param.setStartIndex((param.getCurrentPage()-1)*param.getPageBlockSize() +1);
+		param.setStartIndex((param.getCurrentPage()-1)*param.getPageBlockSize());
 		
 		logger.info("---------- search param");
 		logger.info(param);
 		
 		ArrayList<OrderListItemDTO> itemList = rrservice.getOrderList(param);
-		/*int totalCnt = rrservice.getTotalOrderListCnt(param);*/
-		int totalCnt = 3;
+		int totalCnt = rrservice.getTotalOrderListCnt(param);
 		
 		model.addAttribute("totalOrderListCnt", totalCnt);
 		model.addAttribute("orderRecordList", itemList);
@@ -66,12 +65,14 @@ public class RefundRequestController {
 	
 	@RequestMapping(value="getOrderDetail", method= RequestMethod.POST)
 	public String god(Model model, SearchParamDTO param) {
-		param.setStartIndex((param.getCurrentPage()-1) * param.getPageBlockSize() + 1);
+		
+		param.setStartIndex((param.getCurrentPage()-1) * param.getPageBlockSize());
 		ArrayList<OrderListItemDTO> itemList = rrservice.getOrderDetailList(param);
-		/*int totalOrderDetailListCnt = rrservice.getTotalOrderDetailListCnt(param.getPurID());*/
-		int totalOrderDetailListCnt = 3;
+		int totalOrderDetailListCnt = rrservice.getTotalOrderDetailListCnt(param.getPurID());
+		
 		model.addAttribute("orderDetailList", itemList);
 		model.addAttribute("totalOrderDetailListCnt", totalOrderDetailListCnt);
+		
 		logger.info("---------- getOrderDetail itemList");
 		logger.info(itemList);
 		
@@ -90,18 +91,43 @@ public class RefundRequestController {
 	
 	@RequestMapping(value="sendRefundRequest", method={RequestMethod.POST})
 	@ResponseBody
-	public int srr(String bank_name, String account_holder, Integer account_number, @RequestParam(value="purinf_id_list[]") ArrayList<Integer> purinf_id_list) { 
-		RefundinfoDTO param = new RefundinfoDTO();
-		param.setBank_name(bank_name);
-		param.setAccount_holder(account_holder);
-		param.setAccount_number(account_number);
-		param.setPurinf_id_list(purinf_id_list);
+	public int srr(
+				String bank_name,
+				String account_holder,
+				int account_number,
+				@RequestParam(value="checkedPurinfIdList[]") ArrayList<Integer> checkedPurinfIdList,
+				@RequestParam(value="checkedReturnCntList[]") ArrayList<Integer> checkedReturnCntList,
+				HttpServletRequest request
+				) { 
+				
+		//verbose params
+	    Enumeration<?> params = request.getParameterNames();
+	    while (params.hasMoreElements()){
+	        String name = (String)params.nextElement();
+	        System.out.println(name + " : " +request.getParameter(name));
+	    }
+	    //verbose params
+	    RefundinfoDTO param = new RefundinfoDTO();
+	    param.setAccount_holder(account_holder);
+	    param.setAccount_number(account_number);
+	    param.setBank_name(bank_name);
+	    param.setCheckedPurinfIdList(checkedPurinfIdList);
+	    param.setCheckedReturnCntList(checkedReturnCntList);
 		
 		logger.info("controller srr print param");
+		logger.info(param);
 		
 		int result = rrservice.insertRefundinfo(param);
 		
 		return result;
+	}
+	
+	@RequestMapping(value="deleteRefundinfoByPurinfID", method={RequestMethod.POST})
+	@ResponseBody
+	public int drbp(int purinf_id) {
+		int result = rrservice.deleteRefundinfoByPurinfID(purinf_id);
+		return result;
+		
 	}
 }
 

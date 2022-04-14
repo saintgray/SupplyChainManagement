@@ -11,6 +11,8 @@ public class ShoppingCartItemDTO {
 	String wanted_date;
 	String loginID;
 	String purcYN;
+	String type;
+	
 	public int getSales_id() {
 		return sales_id;
 	}
@@ -35,11 +37,21 @@ public class ShoppingCartItemDTO {
 	public String getPurcYN() {
 		return purcYN;
 	}
-	
-	
-	
+	public String getWanted_date() {
+		return wanted_date;
+	}
+	public void setWanted_date(String wanted_date) {
+		this.wanted_date = wanted_date;
+	}
 	public int getPur_id() {
 		return pur_id;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	public void setPur_id(int pur_id) {
 		this.pur_id = pur_id;
@@ -68,6 +80,14 @@ public class ShoppingCartItemDTO {
 	public void setPurcYN(String purcYN) {
 		this.purcYN = purcYN;
 	}
+	@Override
+	public String toString() {
+		return "ShoppingCartItemDTO [pur_id=" + pur_id + ", sales_id=" + sales_id + ", photo=" + photo + ", model_nm="
+				+ model_nm + ", price=" + price + ", pur_cnt=" + pur_cnt + ", wanted_date=" + wanted_date + ", loginID="
+				+ loginID + ", purcYN=" + purcYN + ", type=" + type + "]";
+	}
 
+	
+	
 	
 }

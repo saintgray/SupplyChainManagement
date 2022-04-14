@@ -17,16 +17,16 @@
 								
 								<c:forEach items="${listShippingModel}" var="list">
 								
-									<tr class="hover_row"  onclick="fPopModalDeliOrder('${list.deliv_id}', '${list.confirmYN}')">
+									<tr class="hover_row"  onclick="fPopModalDeliOrder('${list.deliv_id}', '${list.deliverStatus}','${list.deliv_wh_id }')">
 										<td style="color: black; font-weight: bold;">${totalCntListDeliOrder - nRow}</td>
 										<td>${list.deliv_id}</td>
 										<td>${list.sales_nm}</td>
 										<td>${list.pur_cnt}</td>
 										<td>${list.name}</td>
 										<td>
-											<c:if test="${list.confirmYN eq 'U'}">배송준비</c:if>
-											<c:if test="${list.confirmYN eq 'O'}">배송시작</c:if>
-											<c:if test="${list.confirmYN eq 'E'}">배송완료</c:if>
+											<c:if test="${list.deliverStatus eq 'U'}">배송준비</c:if>
+<%-- 											<c:if test="${list.deliverStatus eq 'O'}">배송시작</c:if> --%>
+											<c:if test="${list.deliverStatus eq 'E'}">배송완료</c:if>
 										</td>
 <%-- 										<td>${list.regdate}</td> --%>
 <%-- 										<td>${list.editdate}</td> --%>

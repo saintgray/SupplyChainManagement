@@ -42,7 +42,7 @@ public class ShoppingCartController {
 		String loginID = (String)session.getAttribute("loginId");
 		int totalCount = scservice.getCartListTotalCount(loginID);
 		param.setLoginID(loginID);
-		param.setStartIndex((param.getCurrentPage()-1) * param.getPageBlockSize() + 1);
+		param.setStartIndex((param.getCurrentPage()-1) * param.getPageBlockSize());
 		ArrayList<ShoppingCartItemDTO> list = scservice.getCartList(param);
 		HashMap<String,Object> result = new HashMap<>();
 		result.put("cartList", list);

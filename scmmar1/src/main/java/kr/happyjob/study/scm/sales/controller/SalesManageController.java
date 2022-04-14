@@ -1,12 +1,11 @@
 package kr.happyjob.study.scm.sales.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.happyjob.study.common.comnUtils.NewFileUtil;
-import kr.happyjob.study.scm.model.FileModel;
 import kr.happyjob.study.scm.sales.model.PageInfo;
 import kr.happyjob.study.scm.sales.model.SalesRegData;
 import kr.happyjob.study.scm.sales.service.SalesManageService;
@@ -54,7 +51,7 @@ public class SalesManageController {
 	
 
 	// 상품 리스트 받아오기
-	@PostMapping("/saleslist")
+	@PostMapping(value="/saleslist", produces=MediaType.TEXT_HTML_VALUE)
 	public String getSales(Model model, PageInfo info){
 		
 		try{

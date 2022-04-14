@@ -1,8 +1,5 @@
 package kr.happyjob.study.shipping.model;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ShippingModel {
@@ -11,7 +8,7 @@ public class ShippingModel {
 	private String sales_nm;	//상품명
 	private int pur_cnt;		//수량(구매갯수) 
 	private String name;		//담당자명
-	private String confirmYN;	//지시서결과 ( U:배송준비, O:배송시작, E:배송완료)
+	private String deliverStatus;	//지시서결과 ( U:배송준비, O:배송시작, E:배송완료)
 	private Date regdate;		//등록일
 	private Date deldate;		//삭제일
 	private Date editdate;		//수정일
@@ -28,11 +25,21 @@ public class ShippingModel {
 	private String loginID;		//로그인아이디
 	private int deliv_wh_id;	//창고코드
 	private int sales_id;		//상품번호
+	private String wh_id_ship;	//shipping 전용 창고 코드
+	
 	
 	
 	
 	public int getDeliv_id() {
 		return deliv_id;
+	}
+
+	public String getWh_id_ship() {
+		return wh_id_ship;
+	}
+
+	public void setWh_id_ship(String wh_id_ship) {
+		this.wh_id_ship = wh_id_ship;
 	}
 
 	public void setDeliv_id(int deliv_id) {
@@ -63,12 +70,14 @@ public class ShippingModel {
 		this.name = name;
 	}
 
-	public String getConfirmYN() {
-		return confirmYN;
+	
+
+	public String getDeliverStatus() {
+		return deliverStatus;
 	}
 
-	public void setConfirmYN(String confirmYN) {
-		this.confirmYN = confirmYN;
+	public void setDeliverStatus(String deliverStatus) {
+		this.deliverStatus = deliverStatus;
 	}
 
 	public Date getRegdate() {

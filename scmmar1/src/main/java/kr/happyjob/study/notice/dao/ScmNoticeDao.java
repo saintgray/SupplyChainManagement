@@ -22,7 +22,7 @@ public interface ScmNoticeDao {
 	
 	
 	public int updateNotice(Map<String, Object> paramMap);
-	public int deleteNotice(Map<String, Object> paramMap);
+	public int deleteNotice(String idx);
 	
 	
 	public List<FileModel> selectFilesByFileNo(List<String> filesNo);

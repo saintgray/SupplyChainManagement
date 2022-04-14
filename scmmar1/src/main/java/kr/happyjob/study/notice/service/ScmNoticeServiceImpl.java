@@ -105,15 +105,20 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 		
 		if(insertNoticeResult>0){
 			
+			System.out.println("files uploaded....");
+			
 			NewFileUtil fUtil=new NewFileUtil(request, rootPath, virtualRootPath, noticePath);
 			
 			filesInfoList=fUtil.uploadFiles(files, String.valueOf(data.getNtc_no()));
 			
 			int filesNum=files.size();
 		
+			
 			if(!files.isEmpty()){
 				
 				int insertFilesResult=noticeDao.insertNoticeFile(filesInfoList);
+				
+				System.out.printf("업로드 파일 수 : %d , 실제 파일 insert 결과 %d \n", filesNum, insertFilesResult);
 				if(filesNum!=insertFilesResult){
 					throw new Exception();
 				}
@@ -169,8 +174,8 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 	}
 
 	@Override
-	public int deleteNotice(Map<String, Object> paramMap) throws Exception{
-		int deleteNotice = noticeDao.deleteNotice(paramMap);
+	public int deleteNotice(String idx) throws Exception{
+		int deleteNotice = noticeDao.deleteNotice(idx);
 		return deleteNotice;
 	}
 

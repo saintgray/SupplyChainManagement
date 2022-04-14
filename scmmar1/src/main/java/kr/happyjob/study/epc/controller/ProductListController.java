@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.happyjob.study.epc.model.SalesModel;
 import kr.happyjob.study.epc.model.SearchParamDTO;
+import kr.happyjob.study.epc.model.ShoppingCartItemDTO;
 import kr.happyjob.study.epc.service.ProductListService;
 
 @Controller
@@ -81,20 +82,15 @@ public class ProductListController {
 	
 	@RequestMapping(value="/orderProduct", method=RequestMethod.POST)
 	@ResponseBody
-	public Integer op( @RequestParam String saled_id,
-			@RequestParam String pur_cnt, 
-			@RequestParam String wanted_date,
-			@RequestParam String type,
+	public Integer op( ShoppingCartItemDTO param,
 			HttpSession session) {
-		HashMap<String, String> params = new HashMap<>();
-		params.put("loginID", (String)session.getAttribute("loginId"));
-		params.put("sales_id", saled_id);
-		params.put("pur_cnt", pur_cnt);
-		params.put("wanted_date", wanted_date);
-		params.put("type", type);
-		Integer result = pservice.orderAndCartProduct(params);
 		
+		logger.info("op param");
+		logger.info(param);
 		
+		param.setLoginID((String)session.getAttribute("loginId"));
+		Integer result = pservice.orderAndCartProduct(param);
+
 		return result;
 	}
 	 

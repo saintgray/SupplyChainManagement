@@ -3,10 +3,11 @@ package kr.happyjob.study.qna.model;
 public class SearchParam {
 	
 	private String selectPage;
-	private String rowsPerPage;
+	private int rowsPerPage;
 	private String totalCount;
 	private String searchType;
 	private String keyword;
+	private int firstIndex;
 	
 	private String loginID;
 	private String userType;
@@ -14,28 +15,6 @@ public class SearchParam {
 	public SearchParam() {
 
 	}
-
-	
-	
-	
-
-
-	public SearchParam(String selectPage, String rowsPerPage, String totalCount, String searchType, String keyword,
-			String loginID, String userType) {
-		
-		this.selectPage = selectPage;
-		this.rowsPerPage = rowsPerPage;
-		this.totalCount = totalCount;
-		this.searchType = searchType;
-		this.keyword = keyword;
-		this.loginID = loginID;
-		this.userType = userType;
-	}
-
-
-
-
-
 
 	public String getSelectPage() {
 		return selectPage;
@@ -45,11 +24,11 @@ public class SearchParam {
 		this.selectPage = selectPage;
 	}
 
-	public String getRowsPerPage() {
+	public int getRowsPerPage() {
 		return rowsPerPage;
 	}
 
-	public void setRowsPerPage(String rowsPerPage) {
+	public void setRowsPerPage(int rowsPerPage) {
 		this.rowsPerPage = rowsPerPage;
 	}
 
@@ -77,41 +56,33 @@ public class SearchParam {
 		this.keyword = keyword;
 	}
 
-
-
-
-
-
 	public String getLoginID() {
 		return loginID;
 	}
-
-
-
-
-
 
 	public void setLoginID(String loginID) {
 		this.loginID = loginID;
 	}
 
-
-
-
-
-
 	public String getUserType() {
 		return userType;
 	}
 
-
-
-
-
-
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
+
+	public int getFirstIndex() {
+		return firstIndex;
+	}
+
+	public void setFirstIndex(int firstIndex) {
+		this.firstIndex = firstIndex;
+	}
+
+	
+	
+	
 	
 	
 	

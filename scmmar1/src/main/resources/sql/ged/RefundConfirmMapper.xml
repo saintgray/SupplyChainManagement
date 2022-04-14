@@ -9,7 +9,7 @@
 	         pur_cnt as purCnt,
 	         client,
 	         s.sales_nm as salesNm,
-	         return_cnt as returnCnt,
+	         r.return_cnt as returnCnt,
 	         price,
 	         date_format( purdate,'%Y-%m-%d') as purdate, 
 	         date_format(r.regdate,'%Y-%m-%d') as regdate,
@@ -36,8 +36,9 @@
 		</if>
 		<if test="checkConfirm == 1">
          AND confirmYN is null
-        </if>		
-	    ORDER BY r.regdate ASC  
+        </if>
+        AND r.confirm_requestYN IS NOT NULL 	
+	    ORDER BY r.return_id DESC
         LIMIT #{pageIndex}, #{pageSize}
 	</select>
 	
@@ -68,6 +69,7 @@
 		<if test="checkConfirm == 1">
          AND confirmYN is null
         </if>	
+        AND r.confirm_requestYN IS NOT NULL 
 	</select>
 	
 	<!-- 승인 수정 -->

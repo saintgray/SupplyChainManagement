@@ -5,13 +5,32 @@
             <c:forEach items="${orderDetailList}" var="item">
                 <tr>
                     <td>
-                        <input type="checkbox" name="isRefund" id="isRefund">
+                        <c:choose>
+                            <c:when test="${item.returnYN == 'Y'}">
+                                <input type="button" name="cancelRefund" value="반품 취소">
+                            </c:when>
+                            <c:when test="${item.returnYN == 'N'}">
+                                <input type="checkbox" name="isRefund" id="isRefund">
+                            </c:when>
+                        </c:choose>
                     </td>
                     <td>
-                        <input type="number" name="refund_cnt" id="refund_cnt" value="1">
+                        <c:choose>
+                            <c:when test="${item.returnYN == 'Y'}">
+                                <span name="refund_cnt">${item.return_cnt}</span>
+                            </c:when>
+                            <c:when test="${item.returnYN == 'N'}">
+                                <input type="number" name="refund_cnt" class="refund_cnt" id="refund_cnt" value="${item.return_cnt}" min="1" max="${item.pur_cnt}">
+                            </c:when>
+                        </c:choose>
+                    </td>
+                    <td>
+                        <span name="pur_cnt" id="pur_cnt">${item.pur_cnt}</span>
                     </td>
                     <td>
                         <span name="pur_id" id="pur_id">${item.pur_id}</span>
+                        <input type="hidden" name="purinf_id" class="purinf_id" value="${item.purinf_id}" />
+                        <input type="hidden" id="totalOrderDetailListCnt" value="${totalOrderDetailListCnt}" />
                     </td>
                     <td>
                         <span name="sales_type" id="sales_type">${item.sales_type}</span>
@@ -26,15 +45,8 @@
                         <span name="price" id="price">${item.price}</span>
                     </td>
                     <td>
-                        <span name="pur_cnt" id="pur_cnt">${item.pur_cnt}</span>
-                    </td>
-                    <td>
                         <span name="total_price" id="total_price">${item.total}</span>
                     </td>
-                    <input type="hidden"  name="purinf_id" class="purinf_id" value="${item.purinf_id}" />
-                     <input type="hidden" value="${currentPageOrderDetailList}" id="currentPageOrderDetailList" />
-                     <input type="hidden" value="${totalOrderDetailListCnt}" id="totalOrderDetailListCnt" />
-                     
-                    
+
                 </tr>
             </c:forEach>

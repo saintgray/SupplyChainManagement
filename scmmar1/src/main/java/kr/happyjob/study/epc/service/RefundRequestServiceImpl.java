@@ -38,13 +38,16 @@ public class RefundRequestServiceImpl implements RefundRequestService {
 	}
 	
 	public int insertRefundinfo(RefundinfoDTO param) {
-		logger.info(param.getPurinf_id_list());
+		logger.info(param.getCheckedPurinfIdList());
+		logger.info(param.getCheckedReturnCntList());
 		
-		param.getPurinf_id_list().forEach((item)->{
-			param.setPurinf_id(item);
+		for(int i =0; i < param.getCheckedPurinfIdList().size(); i++) {
+			param.setPurinf_id(param.getCheckedPurinfIdList().get(i));
+			param.setReturn_cnt(param.getCheckedReturnCntList().get(i));
 			rrdao.insertRefundinfo(param);
 			logger.info(param);
-		});
+		}
+	
 		
 		return 1;
 	}
@@ -63,5 +66,10 @@ public class RefundRequestServiceImpl implements RefundRequestService {
 	
 	public int getTotalOrderDetailListCnt(int purID) {
 		return rrdao.getTotalOrderDetailListCnt(purID);
+	}
+	
+	public int deleteRefundinfoByPurinfID(int purinf_id) {
+		
+		return rrdao.deleteRefundinfoByPurinfID(purinf_id);
 	}
 }

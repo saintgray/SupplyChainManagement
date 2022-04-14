@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.ged.dao.ProfitAndLossDao">
+
+<select id="ProfitAndLossList" resultType="kr.happyjob.study.ged.model.ProfitAndLossModel" parameterType="map">
+		 select 		  
+		  ui.client as client,
+      SUM(pi.pur_cnt*sa.price) as sellSUM,
+		  SUM(
+      CASE
+        when rf.rfinfo_id is null
+        then 0
+        when rf.rfinfo_id is not null
+        then r.return_cnt*sa.price
+        end
+      ) as returnSUM,
+      SUM((pi.pur_cnt*sa.price)-(CASE
+        when rf.rfinfo_id is null
+        then 0
+        when rf.rfinfo_id is not null
+        then r.return_cnt*sa.price
+        end)) as sell
+		from tb_delivdir dlv inner join tb_purchaseinfo pi on dlv.purinf_id = pi.purinf_id 
+		inner join tb_userinfo ui on pi.loginID = ui.loginID
+		inner join tb_sales sa on pi.sales_id = sa.sales_id
+		inner join tb_purchase pur on pi.pur_id = pur.pur_id
+        left join tb_refundinfo rf on pi.purinf_id  = rf.purinf_id
+        left join tb_returndir r on r.rfinfo_id = rf.rfinfo_id
+		where dlv.deliverStatus = 'E'
+    and ui.user_Type='C'
+		<if test="(client != null) and (!client.equals(''))">
+		            AND ui.client LIKE CONCAT('%', #{client}, '%')
+         </if>
+         <if test="(from_date != null) and (!from_date.equals(''))">
+             AND DATE_FORMAT(pur.purdate, '%Y-%m-%d') <![CDATA[>=]]> #{from_date}
+         </if>
+         <if test="(to_date != null) and (!to_date.equals(''))">
+             AND DATE_FORMAT(pur.purdate, '%Y-%m-%d') <![CDATA[<=]]> #{to_date}
+         </if>
+       
+		GROUP BY ui.client ORDER BY sell DESC
+       LIMIT #{pageIndex}, #{pageSize}
+   </select>
+   
+<select id="ProfitAndLossCnt" resultType="int">
+   SELECT count(*)
+   FROM (
+      select
+      ui.client 
+		  from tb_delivdir dlv inner join tb_purchaseinfo pi on dlv.purinf_id = pi.purinf_id 
+		inner join tb_userinfo ui on pi.loginID = ui.loginID
+		inner join tb_sales sa on pi.sales_id = sa.sales_id
+		inner join tb_purchase pur on pi.pur_id = pur.pur_id
+    left join tb_refundinfo rf on pi.purinf_id  = rf.purinf_id
+    left join tb_returndir r on r.rfinfo_id = rf.rfinfo_id
+		where dlv.deliverStatus = 'E' 
+    and ui.user_Type='C'
+		<if test="(client != null) and (!client.equals(''))">
+		            AND ui.client LIKE CONCAT('%', #{client}, '%')
+         </if>
+         <if test="(from_date != null) and (!from_date.equals(''))">
+             AND DATE_FORMAT(pur.purdate, '%Y-%m-%d') <![CDATA[>=]]> #{from_date}
+         </if>
+         <if test="(to_date != null) and (!to_date.equals(''))">
+             AND DATE_FORMAT(pur.purdate, '%Y-%m-%d') <![CDATA[<=]]> #{to_date}
+         </if>
+         GROUP BY ui.client) B
+   </select>
+    
+    <select id="ProfitAndLossOne" resultType="ProfitAndLossModel" parameterType="map">
+    	select 
+		  dlv.deliv_id,
+		  ui.client,
+		  sa.sales_nm,
+		  pi.pur_cnt*sa.price sellSUM,
+		  r.return_cnt*sa.price returnSUM,
+		  date_format(pur.purdate, '%Y-%m-%d') as purdate
+		from tb_delivdir dlv inner join tb_purchaseinfo pi on dlv.purinf_id = pi.purinf_id 
+		inner join tb_userinfo ui on pi.loginID = ui.loginID 
+		inner join tb_sales sa on pi.sales_id = sa.sales_id
+		inner join tb_purchase pur on pi.pur_id = pur.pur_id
+        left join tb_refundinfo rf on pi.purinf_id  = rf.purinf_id
+        left join tb_returndir r on r.rfinfo_id = rf.rfinfo_id
+		where dlv.deliverStatus = 'E' 
+		and ui.client = #{client}
+		ORDER BY pur.purdate DESC
+       LIMIT #{pageIndex}, #{pageSize}
+    </select>
+    
+    <select id="ProfitAndLossOneCnt" resultType="int" parameterType="map">
+    	select 
+		  count(*)
+		from tb_delivdir dlv inner join tb_purchaseinfo pi on dlv.purinf_id = pi.purinf_id 
+		inner join tb_userinfo ui on pi.loginID = ui.loginID 
+		inner join tb_sales sa on pi.sales_id = sa.sales_id
+		inner join tb_purchase pur on pi.pur_id = pur.pur_id
+        left join tb_refundinfo rf on pi.purinf_id  = rf.purinf_id
+        left join tb_returndir r on r.rfinfo_id = rf.rfinfo_id
+		where dlv.deliverStatus = 'E' 
+		and ui.client = #{client}
+    </select>
+</mapper>

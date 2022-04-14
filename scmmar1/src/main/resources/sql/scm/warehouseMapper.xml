@@ -148,7 +148,9 @@
 			loginID=#{loginID},
 			wh_nm=#{wh_nm},	
 			zipCode=#{zipCode},
-			wh_loc=#{wh_loc},
+			<if test="wh_loc!=null">
+				wh_loc=#{wh_loc},
+			</if>
 			addr=#{addr},
 			dtAddress=#{dtAddress}
 		WHERE wh_id=#{wh_id}

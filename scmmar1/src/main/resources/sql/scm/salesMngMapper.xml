@@ -156,6 +156,13 @@
 	</insert>
 	
 	
+	<update id="deleteSales">
+		UPDATE tb_sales
+		SET deleteYN='Y'
+		WHERE sales_id=#{arg0}
+	
+	</update>
+	
 	<delete id="deleteFiles">
 		DELETE 
 		FROM

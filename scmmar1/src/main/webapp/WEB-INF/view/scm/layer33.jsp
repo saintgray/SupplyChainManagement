@@ -16,7 +16,7 @@
 						<tr>
 							<th style="text-align: center;">주문번호</th>
 							<th style="text-align: center;">주문일자</th>
-							<th style="text-align: center;">고객기업명</th>
+							<th style="text-align: center;">고객명</th>
 							<th style="text-align: center;">제품명</th>
 							<th style="text-align: center;">주문개수</th>
 							<th style="text-align: center;">입금여부</th>
@@ -31,9 +31,9 @@
 							<c:when test='${onedata.depositYN eq "Y"}'>
 								<td style="text-align: center;">완료</td>
 							</c:when>
-							<c:otherwise>
+							<c:when test='${onedata.depositYN eq "N"}'>
 								<td style="text-align: center;">미 입금</td>
-							</c:otherwise>
+							</c:when>
 						</c:choose>
 							
 							

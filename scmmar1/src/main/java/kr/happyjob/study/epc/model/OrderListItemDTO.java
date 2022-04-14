@@ -3,17 +3,22 @@ package kr.happyjob.study.epc.model;
 public class OrderListItemDTO {
 
 	String loginID;
-	int pur_id;
 	String sales_type;
 	String model_nm;
 	String mfcomp;
-	int price;
-	int pur_cnt;
 	String purdate;
 	String wanted_date;
-	String deliv_type;
+	String deliverStatus;
+	String returnYN;
+	int price;
+	int pur_cnt;
+	int pur_id;
 	int total;
 	int purinf_id;
+	int sales_id;
+	int return_cnt;
+	
+	
 	
 	public String getLoginID() {
 		return loginID;
@@ -42,17 +47,37 @@ public class OrderListItemDTO {
 	public String getWanted_date() {
 		return wanted_date;
 	}
-	public String getDeliv_type() {
-		return deliv_type;
-	}
 	public int getTotal() {
 		return total;
 	}
 	public int getPurinf_id() {
 		return purinf_id;
 	}
+	public int getSales_id() {
+		return sales_id;
+	}
+	public String getReturnYN() {
+		return returnYN;
+	}
 	
-	
+	public int getReturn_cnt() {
+		return return_cnt;
+	}
+	public void setReturn_cnt(int return_cnt) {
+		this.return_cnt = return_cnt;
+	}
+	public void setReturnYN(String returnYN) {
+		this.returnYN = returnYN;
+	}
+	public void setSales_id(int sales_id) {
+		this.sales_id = sales_id;
+	}
+	public String getDeliverStatus() {
+		return deliverStatus;
+	}
+	public void setDeliverStatus(String deliverStatus) {
+		this.deliverStatus = deliverStatus;
+	}
 	public void setPurinf_id(int purinf_id) {
 		this.purinf_id = purinf_id;
 	}
@@ -61,9 +86,6 @@ public class OrderListItemDTO {
 	}
 	public void setWanted_date(String wanted_date) {
 		this.wanted_date = wanted_date;
-	}
-	public void setDeliv_type(String deliv_type) {
-		this.deliv_type = deliv_type;
 	}
 	public void setPurdate(String purdate) {
 		this.purdate = purdate;

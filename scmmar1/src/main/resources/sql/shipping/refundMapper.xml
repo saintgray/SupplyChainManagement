@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.shipping.dao.RefundDao">
+
+	<!-- 반품지시서 목록 조회 -->
+	<select id="listRefund" resultType="kr.happyjob.study.shipping.model.RefundModel">
+		/* kr.happyjob.study.shipping.dao.RefundDao.listRefund */
+		SELECT rd.return_id
+		      , ui.client
+		      , s.sales_nm
+					, rd.return_cnt
+		      , rd.regdate
+		      , rd.editdate
+					, wh.wh_nm
+		      , dd.deliv_wh_id			
+		FROM tb_returndir rd 
+		       LEFT OUTER JOIN tb_refundinfo ri ON ri.rfinfo_id = rd.rfinfo_id
+					 LEFT OUTER JOIN tb_purchaseinfo pi ON pi.purinf_id = ri.purinf_id
+					 LEFT OUTER JOIN tb_userinfo ui ON pi.loginID = ui.loginID
+		       LEFT OUTER JOIN tb_delivdir dd on dd.return_id = rd.return_id
+					 LEFT OUTER JOIN tb_warehouse wh ON wh.wh_id = dd.deliv_wh_id
+					 LEFT OUTER JOIN tb_sales s ON pi.sales_id = s.sales_id
+		  
+		<where>			
+			<if test="(sname != null) and (!sname.equals(''))">
+			    and ui.client LIKE CONCAT('%', #{sname}, '%')
+			</if>
+			
+			<if test="(cal1 != null) and (!cal1.equals(''))">
+			    and rd.regdate  <![CDATA[>=]]> STR_TO_DATE(#{cal1},'%Y-%m-%d')
+			</if>
+			
+			<if test="(cal2 != null) and (!cal2.equals(''))">
+			    and rd.regdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY)
+			</if>
+		</where>
+		ORDER BY rd.return_id DESC
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+
+
+	<!-- 반품지시서 목록 카운트 -->
+	<select id="countListRefund" resultType="int">
+		/* kr.happyjob.study.shipping.dao.RefundDao.CountListRefund */
+		SELECT count(1) AS tot_cnt
+			
+			FROM tb_returndir rd 
+		       LEFT OUTER JOIN tb_refundinfo ri ON ri.rfinfo_id = rd.rfinfo_id
+					 LEFT OUTER JOIN tb_purchaseinfo pi ON pi.purinf_id = ri.purinf_id
+					 LEFT OUTER JOIN tb_userinfo ui ON pi.loginID = ui.loginID
+		       LEFT OUTER JOIN tb_delivdir dd on dd.return_id = rd.return_id
+					 LEFT OUTER JOIN tb_warehouse wh ON wh.wh_id = dd.deliv_wh_id
+					 LEFT OUTER JOIN tb_sales s ON pi.sales_id = s.sales_id
+					 
+		<where>			
+			<if test="(sname != null) and (!sname.equals(''))">
+			    and ui.client LIKE CONCAT('%', #{sname}, '%')
+			</if>
+			
+			<if test="(cal1 != null) and (!cal1.equals(''))">
+			    and rd.regdate  <![CDATA[>=]]> STR_TO_DATE(#{cal1},'%Y-%m-%d')
+			</if>
+			
+			<if test="(cal2 != null) and (!cal2.equals(''))">
+			    and rd.regdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY)
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

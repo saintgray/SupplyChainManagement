@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -145,11 +147,11 @@ public class ScmNoticeController {
 			if("I".equalsIgnoreCase(action)) {
 				
 				// 저장 service
-				noticeService.insertNotice(data,files,request);
+				insertResult=noticeService.insertNotice(data,files,request);
 			}
 			
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}
 		return insertResult;
 	}
@@ -160,6 +162,8 @@ public class ScmNoticeController {
 	@ResponseBody
 	public int updateNotice(String action, @RequestParam Map<String, Object> params, List<MultipartFile> files, List<String> delTargets, HttpServletRequest req){
 		
+		
+		logger.info("+ initiate updateNotice...");
 		int updateResult=0;
 		
 		try{
@@ -187,6 +191,23 @@ public class ScmNoticeController {
 		}
 		
 		return updateResult;
+	}
+	
+	// 공지사항 삭제
+	@RequestMapping("noticeDelete/{idx}")
+	@DeleteMapping
+	@ResponseBody
+	public int deleteNotice(@PathVariable String idx){
+		
+		int result=0;
+		
+		try{
+			result=noticeService.deleteNotice(idx);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	

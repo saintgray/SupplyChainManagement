@@ -78,7 +78,7 @@
                                     <div><span>장바구니 총액</span></div>
                                     <div><span>_________________</span></div>
                                     <div><span>합계 금액</span><span id="cartTotal">290000</span></div>
-                                    <div><a name="btn" class="btnType blue" id="payTotal"><span>입금하기</span></a></div>
+                                    <div><a name="btn" class="btnType blue" id="payTotal"><span>주문하기</span></a></div>
                                 </div>
                             </div>
                         </li>
@@ -196,6 +196,8 @@
                         newInput.classList.add('w150');
                     } else if (typeName == 'button') {
                         newInput.classList.add('p100');
+                    } else if (typeName == 'number') {
+                        newInput.setAttribute('min', '0');
                     } else {
                         newInput.classList.add('inputTxt');
                         newInput.classList.add('p92');
@@ -286,6 +288,9 @@
 
                 function deleteCartList(e) {
                     console.log('deleteCartList');
+                    if (!confirm('장바구니 목록에서 삭제하시겠습니까?')) {
+                        return;
+                    }
                     const row = e.currentTarget.parentNode.parentNode;
                     const sales_id = row.querySelector('input.salesId').value;
                     $.ajax({

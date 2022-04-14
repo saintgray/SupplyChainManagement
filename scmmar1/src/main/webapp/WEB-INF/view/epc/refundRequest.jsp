@@ -67,7 +67,7 @@
 
                                         <thead>
                                             <tr>
-                                                <th scope="col">일련번호</th>
+                                                <th scope="col">주문 번호</th>
                                                 <th scope="col">주문 수량</th>
                                                 <th scope="col">결제 금액</th>
                                                 <th scope="col">구매 일자</th>
@@ -79,32 +79,34 @@
                                         <tbody id="orderListMain"></tbody>
                                     </table>
                                 </div>
-                                <div class="paging_area" id="orderListPagination"><input type="hidden" value="${currentPageOrderList}" id="currentPageOrderList" /> </div>
+                                <div class="paging_area" id="orderListPagination"></div>
 
 
                                 <div class="orderDetailContainer">
                                     <table class="col">
                                         <caption>caption</caption>
                                         <colgroup>
-                                            <col width="6%">
-                                            <col width="17%">
-                                            <col width="20%">
-                                            <col width="20%">
                                             <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="12%">
+                                            <col width="13%">
                                             <col width="15%">
-                                            <col width="10%">
                                         </colgroup>
 
                                         <thead>
                                             <tr>
                                                 <th scope="col">체크</th>
                                                 <th scope="col">반품 수량</th>
+                                                <th scope="col">주문 수량</th>
                                                 <th scope="col">주문 번호</th>
                                                 <th scope="col">장비 구분</th>
                                                 <th scope="col">모델명</th>
                                                 <th scope="col">제조사</th>
                                                 <th scope="col">판매 가격</th>
-                                                <th scope="col">주문 수량</th>
                                                 <th scope="col">결제 금액 ${item.loginID}
                                                 </th>
                                             </tr>
@@ -207,8 +209,9 @@
 
                 function eventReturnBtn() {
                     $('tbody#orderListMain').on('click', 'input.returnBtn', function(e) {
+                        $('#currentPageOrderDetailList').val(1);
                         const row = $(e.currentTarget).parents('tr');
-                        const pur_id = $(e.currentTarget).parents('tr').find('input#sales_id').val();
+                        const pur_id = row.find('input#pur_id').val();
                         getOrderDetailTbody(pur_id);
                     });
                 }
@@ -244,8 +247,9 @@
                 }
 
                 function getOrderListTbody(type) {
+                    $('tbody#orderListMain').empty();
                     let data = null;
-                    let currentPage = $('#currentPageOrderList').val();
+                    const currentPage = $('#currentPageOrderList').val();
                     if (type == getOrderListType.ready) {
                         data = {
                             pageBlockSize: pageBlockSizeOrderList,
@@ -272,7 +276,6 @@
                         data: data,
                         method: 'POST',
                         success: function(result) {
-                            $('tbody#orderListMain').empty();
                             $('tbody#orderListMain').append(result);
                             getOrderDetailTbody();
                             createPaginationDiv('orderList');
@@ -297,9 +300,9 @@
                                 pageBlockSize: pageBlockSizeOrderDetailList
                             },
                             success: function(result) {
+                                console.log(result);
                                 $('tbody#orderDetailMain').append(result);
                                 createPaginationDiv('orderDetailList')
-                                console.log(result);
                             }
                         });
                     }
@@ -342,12 +345,21 @@
                         return;
                     }
                     //체크박스 체크된 row들의 purinf_id들만 골라서 list에 담기
-                    let checkedPurinfList = [];
+                    let checkedPurinfIdList = [];
+                    let checkedReturnCntList = [];
                     $('tbody#orderDetailMain>tr').each((index, item) => {
-                        const isChecked = $(item).find('input[name="isRefund"]').val();
-                        const purinfID = $(item).find('input.purinf_id').val();
-                        checkedPurinfList.push(parseInt(purinfID));
+                        const isChecked = $(item).find('input[name="isRefund"]').is(':checked');
+                        if (isChecked) {
+                            const purinfID = $(item).find('input.purinf_id').val();
+                            const returnCnt = $(item).find('input.refund_cnt').val();
+                            checkedPurinfIdList.push(purinfID);
+                            checkedReturnCntList.push(returnCnt);
+                        }
                     });
+                    console.log('checkedPurinfIdList');
+                    console.log(checkedPurinfIdList);
+                    console.log('checkedReturnCntList');
+                    console.log(checkedReturnCntList);
                     //ajax 보내기
                     $.ajax({
                         url: 'sendRefundRequest',
@@ -355,12 +367,13 @@
                         data: {
                             bank_name: $('select[name="bank_name"]').val(),
                             account_holder: $('input[name="account_holder"]').val(),
-                            account_number: $('input[name="account_number"]').val(),
-                            purinf_id_list: checkedPurinfList
+                            account_number: parseInt($('input[name="account_number"]').val()),
+                            checkedPurinfIdList: checkedPurinfIdList,
+                            checkedReturnCntList: checkedReturnCntList
                         },
                         success: (result) => {
                             gfCloseModal();
-                            getOrderListTbody();
+                            getOrderListTbody(getOrderListType.ready);
                             console.log(result);
                         }
                     });
@@ -370,7 +383,8 @@
                         bank_name: $('select[name="bank_name"]').val(),
                         account_holder: $('input[name="account_holder"]').val(),
                         account_number: $('input[name="account_number"]').val(),
-                        purinf_id_list: checkedPurinfList
+                        checkedPurinfIdList: checkedPurinfIdList,
+                        checkedReturnCntList: checkedReturnCntList
                     });
 
 
@@ -380,25 +394,26 @@
                     let pdiv = null;
                     let totalCnt = null;
                     let funcName = null;
+                    let currentPage = null;
                     switch (type) {
                         case 'orderList':
+                            currentPage = $('#currentPageOrderList').val();
                             pdiv = $('#orderListPagination');
                             totalCnt = $('#totalOrderListCnt').val();
                             funcName = 'pageMoveFuncOrderList';
                             break;
                         case 'orderDetailList':
+                            currentPage = $('#currentPageOrderDetailList').val();
                             pdiv = $('#orderDetailListPagination');
-                            totalCnt = $('#totalOrderListDetailCnt').val();
+                            totalCnt = $('#totalOrderDetailListCnt').val() || 1;
                             funcName = 'pageMoveFuncOrderDetailList';
                             break;
                     }
 
-                    //set current page
-                    currentPage = $('#currentPageOrderList').val();
                     const paginationHtml = getPaginationHtml(
                         currentPage,
                         totalCnt,
-                        7,
+                        5,
                         pageBlockSizeOrderList,
                         funcName);
                     pdiv.empty().append(paginationHtml);

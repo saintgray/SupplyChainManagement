@@ -70,16 +70,15 @@
 		});
 		
 	
-		//버튼 테스트
+		//검색 버튼
 		$('#btnSearch').click(function(){
 			flistDeliOrder();
 		});
-		
-		
-		
-		
+			
 		
 	});//	레디 end
+	
+	
 	
 	
 	
@@ -147,8 +146,7 @@
 	
 	
 	/** 배송지시서 단건 상세 조회 모달 실행 */
-	function fPopModalDeliOrder(deliv_id, confirmYN) {	//confirmYN : 배송완료 버튼 없앨려고 만든 파라미터
-		
+	function fPopModalDeliOrder(deliv_id, deliverStatus,deliv_wh_id) {	//deliverStatus : 배송완료 버튼 없앨려고 만든 파라미터
 		// 신규 저장			(사실 만들필요가 없지만...)
 		if (deliv_id == null || deliv_id=="") {
 			// Transaction type 설정
@@ -166,20 +164,22 @@
 			$("#action").val("U");	//UPDATE
 			
 			// 그룹코드 단건 조회
-			fSelectDeliOrder(deliv_id, confirmYN);
+			fSelectDeliOrder(deliv_id, deliverStatus,deliv_wh_id);
 		}
 	}
 	
 	
 	/** 배송지시서 단건 상세 조회 */
-	function fSelectDeliOrder(deliv_id, confirmYN) {
+	function fSelectDeliOrder(deliv_id, deliverStatus,deliv_wh_id) {
 		
 		var param = { deliv_id : deliv_id
-					, confirmYN : confirmYN };
+					, deliverStatus : deliverStatus
+					, deliv_wh_id : deliv_wh_id			
+					};
 		
 		console.log("param : "+JSON.stringify(param));	//파라미터 확인
 		
-		if(confirmYN=="U"){	//배송준비중이면 배송완료버튼 보이기
+		if(deliverStatus=="U"){	//배송준비중이면 배송완료버튼 보이기
 			$("#btnSaveDeliOrder").show();
 		}else{	//배송완료버튼 숨기기
 			$("#btnSaveDeliOrder").hide();
@@ -219,19 +219,19 @@
 		$("#sales_nm").val(data.sales_nm);
 		$("#pur_cnt").val(data.pur_cnt);
 		$("#name").val(data.name);
-		$("#hidden_confirmYN").val(data.confirmYN);	//name="confirmYN"
-		$("#wh_nm").val(data.wh_nm);
+		$("#hidden_deliverStatus").val(data.deliverStatus);	//name="deliverStatus"
+		$("#wh_nm").val(data.wh_id_ship);
 		$("#address").val(data.address);
 		$("#dtAddress").val(data.dtAddress);
 	
 		//배송상태
-		var confirmYN = $("#hidden_confirmYN").val();
-		if(confirmYN=="U"){
-			$("#confirmYN").val("배송준비");	//name속성 없음
-		}else if(confirmYN=="O"){
-			$("#confirmYN").val("배송시작");
-		}else if(confirmYN=="E"){
-			$("#confirmYN").val("배송완료");
+		var deliverStatus = $("#hidden_deliverStatus").val();
+		if(deliverStatus=="U"){
+			$("#deliverStatus").val("배송준비");	//name속성 없음
+		}else if(deliverStatus=="O"){
+// 			$("#deliverStatus").val("배송시작");
+		}else if(deliverStatus=="E"){
+			$("#deliverStatus").val("배송완료");
 		}
 	}
 		
@@ -507,7 +507,7 @@
 						
 						<tr>
 							<th scope="row">배송번호 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="hidden" name="confirmYN" id="hidden_confirmYN"><input type="text" class="inputTxt p100" name="deliv_id" id="deliv_id" readonly="readonly"/></td>		
+							<td colspan="3"><input type="hidden" name="deliverStatus" id="hidden_deliverStatus"><input type="text" class="inputTxt p100" name="deliv_id" id="deliv_id" readonly="readonly"/></td>		
 						</tr>
 						<tr>
 							<th scope="row">제품명 <span class="font_red">*</span></th>
@@ -521,7 +521,7 @@
 							<th scope="row">배송담당자 <span class="font_red">*</span></th>
 							<td><input type="text" class="inputTxt p100" name="name" id="name" readonly="readonly"/></td>
 							<th scope="row">배송상태 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt p100" id="confirmYN" readonly="readonly" /></td>
+							<td><input type="text" class="inputTxt p100" id="deliverStatus" readonly="readonly" /></td>
 						</tr>
 						<tr>					
 							<th scope="row">출발창고지 <span class="font_red">*</span></th>
@@ -538,9 +538,9 @@
 <!-- 						<tr> -->
 <!-- 							<th scope="row">배송상태 수정<span class="font_red">*</span></th> -->
 <!-- 							<td colspan="3"> -->
-<!-- 								<input type="radio" id="radio1-1" name="confirmYN" id="confirmYN_1" value='U' style="margin-left: 10px;"/> <label for="radio1-1" >배송준비</label> -->
-<!-- 								<input type="radio" id="radio1-2" name="confirmYN" id="confirmYN_2" value="O" style="margin-left: 10px;"/> <label for="radio1-2" >배송시작</label> -->
-<!-- 								<input type="radio" id="radio1-3" name="confirmYN" id="confirmYN_3" value="E" style="margin-left: 10px;"/> <label for="radio1-3" >배송완료</label>			 -->
+<!-- 								<input type="radio" id="radio1-1" name="deliverStatus" id="deliverStatus_1" value='U' style="margin-left: 10px;"/> <label for="radio1-1" >배송준비</label> -->
+<!-- 								<input type="radio" id="radio1-2" name="deliverStatus" id="deliverStatus_2" value="O" style="margin-left: 10px;"/> <label for="radio1-2" >배송시작</label> -->
+<!-- 								<input type="radio" id="radio1-3" name="deliverStatus" id="deliverStatus_3" value="E" style="margin-left: 10px;"/> <label for="radio1-3" >배송완료</label>			 -->
 <!-- 							</td> -->
 <!-- 						</tr> -->
 					</tbody>
@@ -549,7 +549,7 @@
 				<!-- e : 여기에 내용입력 -->
 
 				<div class="btn_areaC mt30">
-					<a href="" class="btnType blue" id="btnSaveDeliOrder" name="btn"><span>배송완료5661234</span></a> 
+					<a href="" class="btnType blue" id="btnSaveDeliOrder" name="btn"><span>배송완료</span></a> 
 					<a href="" class="btnType gray" id="btnCloseDeliOrder" name="btn"><span>닫기</span></a>
 				</div>
 			</dd>

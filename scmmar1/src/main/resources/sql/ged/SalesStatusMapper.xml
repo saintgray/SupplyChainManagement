@@ -12,7 +12,8 @@
 		inner join tb_userinfo ui on pi.loginID = ui.loginID 
 		inner join tb_sales sa on pi.sales_id = sa.sales_id
 		inner join tb_purchase pur on pi.pur_id = pur.pur_id
-		where dlv.deliverStatus = 'U' 
+		where dlv.deliverStatus = 'E'
+		and ui.user_Type='C' 
 		and dlv.return_id is null
 		<if test="(client != null) and (!client.equals(''))">
 		            AND ui.client LIKE CONCAT('%', #{client}, '%')
@@ -37,7 +38,8 @@
 		inner join tb_userinfo ui on pi.loginID = ui.loginID
 		inner join tb_sales sa on pi.sales_id = sa.sales_id
 		inner join tb_purchase pur on pi.pur_id = pur.pur_id
-		where dlv.deliverStatus = 'U' 
+		where dlv.deliverStatus = 'E'
+		and ui.user_Type='C' 
 		and dlv.return_id is null
 		<if test="(client != null) and (!client.equals(''))">
 		            AND ui.client LIKE CONCAT('%', #{client}, '%')
@@ -57,12 +59,13 @@
 		  ui.client,
 		  sa.sales_nm,
 		  pi.pur_cnt*sa.price sell,
-		  pur.purdate
+		  date_format(pur.purdate, '%Y-%m-%d') as purdate
 		from tb_delivdir dlv inner join tb_purchaseinfo pi on dlv.purinf_id = pi.purinf_id 
 		inner join tb_userinfo ui on pi.loginID = ui.loginID 
 		inner join tb_sales sa on pi.sales_id = sa.sales_id
 		inner join tb_purchase pur on pi.pur_id = pur.pur_id
-		where dlv.deliverStatus = 'U' 
+		where dlv.deliverStatus = 'E'
+		and ui.user_Type='C' 
 		and dlv.return_id is null
 		and ui.client = #{client}
        LIMIT #{pageIndex}, #{pageSize}
@@ -75,7 +78,8 @@
 		inner join tb_userinfo ui on pi.loginID = ui.loginID 
 		inner join tb_sales sa on pi.sales_id = sa.sales_id
 		inner join tb_purchase pur on pi.pur_id = pur.pur_id
-		where dlv.deliverStatus = 'U' 
+		where dlv.deliverStatus = 'E'
+		and ui.user_Type='C' 
 		and dlv.return_id is null
 		and ui.client = #{client}
     </select>

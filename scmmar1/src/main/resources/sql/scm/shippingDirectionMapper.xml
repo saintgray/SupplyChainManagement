@@ -11,7 +11,7 @@
 	from		tb_userinfo user
 		join 	tb_purchaseinfo pcin on user.loginID = pcin.loginID
 		join 	tb_delivdir del on del.purinf_id = pcin.purinf_id
-		order by del.deliv_id desc
+		order by del.deliv_id asc
   		LIMIT #{pageIndex}, #{pageSize}
 	</select>
 	
@@ -23,18 +23,12 @@
 	</select>
 	
 	<select id="onesip" resultType="kr.happyjob.study.scm.model.oneshipModel">
-	select		del.regdate AS regdate
-		,	 	user.client AS client
-		,		sal.sales_nm AS sales_nm
-		,		pcin.pur_cnt AS pur_cnt
-		,		pc.depositYN AS depositYN
-
-	from 		tb_userinfo user
-		join 		tb_purchase pc on pc.loginID = user.loginID
-		join 		tb_purchaseinfo pcin on pc.loginID = pcin.loginID
-		join 		tb_delivdir del on del.purinf_id = pcin.purinf_id
-		join 		tb_sales sal ON sal.sales_id = pcin.sales_id
-	where 	del.deliv_id = #{deliv_id}
+		select del.regdate,user.client,user.loginID,pinfo.pur_cnt,pur.depositYN
+  		from tb_delivdir del
+		    join tb_purchaseinfo pinfo on pinfo.purinf_id = del.purinf_id
+		    join tb_purchase pur on pur.pur_id = pinfo.pur_id 
+		    join tb_userinfo user on user.loginID = pur.loginID
+	    where del.deliv_id = #{deliv_id}
 	
 	</select>
 </mapper>

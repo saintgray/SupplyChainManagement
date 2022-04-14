@@ -16,7 +16,16 @@ public class DailyOrderHistoryModel {
 	private int sales_id;
 	private String loginID;
 	private int deliv_id;
+	private String client;
 	
+	
+	
+	public String getClient() {
+		return client;
+	}
+	public void setClient(String client) {
+		this.client = client;
+	}
 	public int getDeliv_id() {
 		return deliv_id;
 	}

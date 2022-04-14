@@ -73,7 +73,9 @@ function ship(a){
 	callAjax("/scm/oneshippingDirection.do", "post", "json", true, param, resultCallback);
 }
 	
-	
+function closemodel(){
+	gfCloseModal();
+}	
 	
 	
 </script>
@@ -185,7 +187,7 @@ function ship(a){
 					</tbody>
 				</table>
 				<div class="btn_areaC mt30">
-					<a href=""	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span >취소</span></a>
+					<a class="btnType gray"  id="btnCloseGrpCod" name="btn"><span onclick="closemodel()" style="cursor: pointer;">취소</span></a>
 				</div>
 			</dd>
 		</dl>

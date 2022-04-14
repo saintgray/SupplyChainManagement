@@ -174,7 +174,12 @@
 		UPDATE
 			tb_userinfo
 		SET
-			user_Type=#{user_Type},
+			<if test="user_Type==null">
+				user_Type='C',
+			</if>
+			<if test="user_Type!=null">
+				user_Type=#{user_Type},
+			</if>
 			client=#{client},
 			name=#{name},
 			phone=#{phone},

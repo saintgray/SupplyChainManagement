@@ -68,8 +68,7 @@
 				fCloseModal();
 				break;
 			case 'btnUpdateNotice':
-					// fUpdateNotice();
-				fSaveNotice();
+				fUpdateNotice();
 				break;
 			case 'searchBtn':
 				selectNoticeList();
@@ -268,8 +267,7 @@
 
 	// 공지사항 상세조회
 	function fdetailModal(notice_no) {
-		//alert("공지사항 상세 조회  ");
-
+		
 		var param = {
 			ntc_no : notice_no
 		};
@@ -278,7 +276,6 @@
 		};
 
 		callAjax("/scm/detailNoticeList.do", "post", "json", true, param,callback);
-		//alert("공지사항 상세 조회  22");
 	}
 
 	// 공지사항 상세 조회 -> 콜백함수   
@@ -324,7 +321,6 @@
 
 		} else {
 
-			//alert("숫자찍어보세 : " + info.wno);// 페이징 처리가 제대로 안되서 
 			$("#loginID").val(info.loginID).attr("readonly", true);
 			$("#ntc_regdate").val(info.ntc_regdate).attr("readonly", true);
 			$("#ntc_title").val(info.ntc_title);
@@ -380,9 +376,6 @@
 	// 공지사항 등록(저장) 
 	function fSaveNotice() {
 		
-	
-		//alert("저장 함수 타는지!!!!!?? ");
-		// validation 체크 
 		if (!(fValidatePopup())) {
 			return;
 		}
@@ -395,14 +388,9 @@
 		formData.append('ntc_title',$('#ntc_title').val());
 		formData.append('ntc_content',$('#ntc_content').summernote('code'));
 		formData.append('action',$('#action').val());
-		// append files in FormData
-		/*$($('#file')[0].files).each(function(index,item){
-			console.log(item);
-			// formData.append('files['+index+']',item);
+		$($('#file')[0].files).each(function(index,item){
 			formData.append('files',item);
-		});*/
-		
-		
+		})
 		
 		$.ajax({
 			url : '/scm/noticeSave.do',
@@ -437,7 +425,7 @@
 				$.unblockUI();
 			}
 		});
-		// callAjaxFileUpload("/scm/noticeSave.do", 'post', 'json', true, 'myNotice', callback);
+		
 	}
 
 	// 저장 ,수정, 삭제 콜백 함수 처리 
@@ -449,21 +437,30 @@
 			currentPage = $("#currentPage").val();
 		}
 		
+		
 		if(data==1){
+			var action=$('#action').val();
+			if(action=='I'){
+				alert('정상적으로 등록되었습니다');
+			}else if(action=='U'){
+				alert('정상적으로 수정되었습니다');
+			}else{
+				alert('정상적으로 삭제되었습니다');
+			}
 			$('#action').val('');
-			alert('정상적으로 등록되었습니다');
 			fCloseModal();
+			selectNoticeList($('.divComGrpCodList .paging strong').text());
+			
 		}else{
 			alert('오류가 발생하였습니다. 잠시 후 다시 시도하세요');
 		}
 		
 	}
 
-	// 공지사항 등록(수정) 
+	// 공지사항 등록 
 	function fUpdateNotice() {
 
-		//alert("수정  함수 타는지!!!!!?? ");
-		// validation 체크 
+		
 		if (!(fValidatePopup())) {
 			return;
 		}
@@ -474,11 +471,8 @@
 
 		$("#action").val("U"); // update
 		var frm = document.getElementById("myNotice");
-		var dataWithFile = new FormData(frm);	
-		
-
-		callAjaxFileUploadSetFormData("/scm/noticeSave.do", "post", "json", true, dataWithFile, resultCallback3);
-		// $("#myQna").serialize() => 직렬화해서 name 값들을 그냥 넘김.
+		var dataWithFile = new FormData(frm);
+		callAjaxFileUploadSetFormData("/scm/noticeUpdate.do", "PUT", "json", true, dataWithFile, resultCallback3);
 	}
 
 	// 공지사항 게시판 1건 삭제 
@@ -489,9 +483,8 @@
 				fSaveNoticeResult(data);
 			}
 			$("#action").val("D"); // delete
-			callAjax("/scm/noticeSave.do", "post", "json", true, $(
-					"#myNotice").serialize(), resultCallback3);
-			// num만 넘겨도되지만 그냥 귀찮으니깐...^^... 
+			callAjax("/scm/noticeDelete/"+$('#ntc_no').val(), "DELETE", "json", true, null, resultCallback3);
+			
 		} else {
 			gfCloseModal(); // 모달 닫기
 			selectNoticeList(currentPage); // 목록조회 함수 다시 출력 

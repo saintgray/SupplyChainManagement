@@ -5,14 +5,15 @@ import java.util.HashMap;
 
 import kr.happyjob.study.epc.model.SalesModel;
 import kr.happyjob.study.epc.model.SearchParamDTO;
+import kr.happyjob.study.epc.model.ShoppingCartItemDTO;
 
 public interface ProductListService {
 
-	abstract ArrayList<SalesModel> getListProduct(SearchParamDTO param);
-	abstract SalesModel getProductDetail(int num);
-	abstract ArrayList<String> getSalesTypeList();
-	abstract ArrayList<String> getMfcompListBySalesType(String salesType);
-	abstract Integer orderAndCartProduct(HashMap<String, String> params);
+	public abstract ArrayList<SalesModel> getListProduct(SearchParamDTO param);
+	public abstract SalesModel getProductDetail(int num);
+	public abstract ArrayList<String> getSalesTypeList();
+	public abstract ArrayList<String> getMfcompListBySalesType(String salesType);
+	public abstract Integer orderAndCartProduct(ShoppingCartItemDTO params);
 	public abstract int getListProductCnt(SearchParamDTO param);
 	
 }

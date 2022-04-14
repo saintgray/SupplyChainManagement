@@ -132,7 +132,7 @@
                                         <th>모델명</th>
                                         <td colspan="1"><input type="text" class="inputTxt p100" name="sales_nm" /></td>
                                         <th>주문 수량</th>
-                                        <td colspan="1"><input type="number" class="inputTxt p100" name="pur_cnt" /></td>
+                                        <td colspan="1"><input type="number" min="1" class="inputTxt p100" name="pur_cnt" /></td>
                                     </tr>
                                     <tr>
                                         <th>제조사</th>
@@ -263,7 +263,7 @@
 
                 function getProductDetail(rowNum) {
                     const row = document.querySelector('tr[row-num="' + rowNum + '"]');
-                    const salesID = row.querySelector('td[name="sales_id"]').innerHTML;
+                    const salesID = row.querySelector('td[name="sales_id"]').innerText;
                     console.log('salesID');
                     console.log(salesID);
                     $.ajax({
@@ -428,8 +428,18 @@
                     const purCnt = document.querySelector('div#popProductDetail input[name="pur_cnt"]').value;
                     const wantedDate = $('div#popProductDetail input[name="wanted_date"]').val();
                     let type = '';
+                    const existCheckType = {
+                        doesntExist: -1,
+                        salesExistDateDifferent: 0,
+                        alreadyExist: 1
+                    };
+                    let existCheck = existCheckType.doesntExist;
+                    // existCheck 설명
+                    // -1 : doesnt exist
+                    // 0 : same product diffrent date
+                    // 1 : same product same date
 
-                    if (!purCnt || !wantedDate) {
+                    if (purCnt < 1 || !wantedDate) {
                         alert('수량 또는 날짜를 확인해 주세요.');
                         return;
                     } else {
@@ -449,22 +459,34 @@
                         }
                     }
 
+
                     $.ajax({
                         url: 'orderProduct',
                         method: 'POST',
                         data: {
-                            saled_id: salesId,
+                            sales_id: salesId,
                             pur_cnt: purCnt,
                             wanted_date: wantedDate,
                             type: type
                         },
                         success: function(result) {
+                            switch (result) {
+                                case existCheckType.doesntExist:
+                                    console.log('상품 없고 날짜 없고');
+                                case existCheckType.salesExistDateDifferent:
+                                    console.log('상품 있고 날짜 없고');
+                                    alert('상품을 장바구니에 추가했습니다.');
+                                    break;
+                                case existCheckType.alreadyExist:
+                                    console.log('상품 있고 날짜 있고');
+                                    alert('상품 주문 개수를 추가했습니다.');
+                                    break;
+                            }
                             gfCloseModal();
                             getProductList(1);
                             console.log(result);
                         }
                     });
-
                 }
             </script>
         </body>

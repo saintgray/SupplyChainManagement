@@ -85,9 +85,7 @@
 				
 				<tr>
 					<td colspan="4">
-						<textarea name="info" id="dtInfoArea" rows="3" class="form-control" style="width:100%; text-align:left;">
-							<c:if test="${not empty info}">${info.info}</c:if>
-						</textarea>
+						<textarea name="info" id="dtInfoArea" rows="3" class="form-control" style="width:100%; text-align:left;"><c:if test="${not empty info}">${info.info}</c:if></textarea>
 					</td>
 				</tr>
 			

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.happyjob.study.qna.dao.QnaDao;
+import kr.happyjob.study.qna.exception.NotHaveAuthToWatchQnaException;
 import kr.happyjob.study.qna.model.PageInfo;
 import kr.happyjob.study.qna.model.QnaDetail;
 import kr.happyjob.study.qna.model.SearchParam;
@@ -47,12 +48,20 @@ public class QnaServiceImpl implements QnaService {
 		param.setUserType(userType);
 		
 		int selectPage=Integer.parseInt(param.getSelectPage());
-		int rowsPerPage=Integer.parseInt(param.getRowsPerPage());
+		int rowsPerPage=param.getRowsPerPage();
 		int totalCount=dao.getTotalCount(param);
 		
 		int totalPage=totalCount%rowsPerPage>0 ? (totalCount/rowsPerPage)+1 : totalCount/rowsPerPage;
-		param.setSelectPage(String.valueOf(selectPage=totalPage<selectPage ? totalPage : selectPage));
+		
+		if(totalCount==0){
+			selectPage=1;
+		}else{
+			selectPage=totalPage<selectPage ? totalPage : selectPage;
+		}
+		
+		param.setSelectPage(String.valueOf(selectPage));
 		param.setTotalCount(String.valueOf(totalCount));
+		param.setFirstIndex(rowsPerPage*(selectPage-1));
 		
 		
 		info.setList(dao.getQnaList(param));
@@ -61,9 +70,24 @@ public class QnaServiceImpl implements QnaService {
 	}
 
 	@Override
-	public QnaDetail getQnaDetail(String id, HttpSession session) {
+	public QnaDetail getQnaDetail(String id, HttpSession session) throws NotHaveAuthToWatchQnaException {
 		
-		return null;
+		
+		
+		String loginId=session.getAttribute("loginId").toString();
+		String userType=session.getAttribute("userType").toString();
+		
+		QnaDetail info=sst.getMapper(QnaDao.class).getQnaInfo(id);
+		
+		if(
+		   loginId==null ||
+		   (userType.equals("C") && !loginId.equals(info.getLoginID()))  
+		  ){
+			throw new NotHaveAuthToWatchQnaException();
+		}
+			
+		
+		return info;
 	}
 	
 	

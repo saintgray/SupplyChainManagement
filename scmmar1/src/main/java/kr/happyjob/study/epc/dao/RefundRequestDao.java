@@ -10,9 +10,10 @@ public interface RefundRequestDao {
 	
 	public abstract ArrayList<OrderListItemDTO> getOrderList(SearchParamDTO param);
 	public abstract ArrayList<OrderListItemDTO> getOrderDetailList(SearchParamDTO param); 
-	public abstract int insertRefundinfo(RefundinfoDTO param);
+	public abstract int insertRefundinfo(RefundinfoDTO item);
 	public abstract ArrayList<String> getBankNameList();
 	public abstract int getTotalOrderListCnt(SearchParamDTO param);
 	public abstract int getTotalOrderDetailListCnt(int purID);
+	public abstract int deleteRefundinfoByPurinfID(int purinf_id);
 	
 }

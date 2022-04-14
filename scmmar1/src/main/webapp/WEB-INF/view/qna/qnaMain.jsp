@@ -7,6 +7,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src='/js/sweetalert/sweetalert.min.js'></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
+<script src="/js/summernote/summernote.js"></script>
+<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="/js/summernote/summernote.css">
 <style>
 	
 	.searchArea{
@@ -19,14 +22,35 @@
 		margin: 0 10px;
 	}
 	#qnaListArea{
-		margin-bottom:30px;
+	
+		margin: 30px auto;
 		
 	}
+	
 	#qnaListArea table{
-		margin:0 auto;
+		margin:10px auto;
 		border-collapse: separate;
-    	border-spacing: 10px 5px;
 	}
+	#qnaInfoArea{
+		margin: 30px auto;
+	}
+	#qnaInfoArea #info-title, #qnaInfoArea #info-content{
+		
+	    border: 1px solid #bbc2cd;
+	    
+	}
+	#qnaInfoArea #info-title{
+		height: 27px;
+	    padding: 5px 10px;
+		font-weight: bold;
+	    background: #dce1e6;
+	    text-align: center;
+	}
+	#qnaInfoArea #info-content-body{
+		padding:10px
+	}
+	
+	
 
 </style>
 <title>1:1 문의</title>
@@ -89,8 +113,13 @@
                        	</tr>
 					</table>
 				</div>
+				<!-- List Area -->
+				<div id="qnaListArea" class="bts"></div>
+				<!-- Register Btn -->
 				
-				<div id="qnaListArea"></div>
+				<!-- Info Area -->
+				<div id="qnaInfoArea" class="bts"></div>
+				
 				
             </div>
          </li>
@@ -122,9 +151,37 @@
 					getQnaList();
 				}
 			})
-			//
+			// Qna 상세정보
+			$('#qnaListArea').on('click','table tr',function(){
+				getQnaInfo(this);
+			})
 			
-			
+			$('body').on('click','button',function(){
+				switch($(this).attr('id')){
+					case 'btnUpdateForm':
+						transForm('UPDATE');
+						break;
+					case 'btnNewQna':
+						transForm('NEW');
+						break;
+					case 'btnCancelUpdate':
+						if(confirm('취소하시겠습니까?')){
+							$('#qnaInfoArea').empty();
+						}
+						break;
+					case 'btnRegisterQna':
+						manageQna('REGISTER');
+						break;
+					case 'btnDeleteQna':
+						if(confirm('정말로 삭제하시겠습니까?')){
+							manageQna('DELETE');	
+						}
+						break;
+					case 'btnUpdateQna':
+						manageQna('UPDATE');
+						break;
+				}
+			})
 		}
 		
 		
@@ -137,14 +194,12 @@
 					keyword:$('#keyword').val()
 			}
 			var callback=function(data){
-				fAfterGetList(data,param)
+				fAfterGetList(data,param);
 			}
 			callAjax('${CTX_PATH}/sti/qna/list', 'POST', 'text',true, param, callback);
 		}
+		
 		function fAfterGetList(data, param){
-			
-			console.log($('#sp').val());
-			console.log($('#tc').val());
 			
 			$('#qnaListArea').empty()
 							.append(data)
@@ -154,6 +209,114 @@
 												  5, 
 												  'getQnaList'
 												  ));
+			
+		}
+		
+		function getQnaInfo(tr){
+			var idx=$(tr).children('.qna_id').text();
+			if(idx!=undefined || idx.length>0){
+				var callback=function(data){
+					$('#qnaInfoArea').empty().append(data);
+				}
+				callAjax('${CTX_PATH}/sti/qna/'+idx, 'POST', 'text',true, null, callback);
+			}
+		}
+		
+		function transForm(action){
+			
+			$('#qnaInfoArea').hide();
+			
+			if(action=='UPDATE'){
+				console.log('update process..');
+				
+				$('#btnUpdateForm').attr('id','btnUpdateQna').text('저장');
+				$('#btnDeleteQna').attr('id','btnCancelUpdate').text('취소').removeClass('btn-danger').addClass('btn-default');
+				$('#info-title').html('<span class="input-group-addon">제목</span><input name="qna_title" id="qna_title" class="form-control" value="'+$('#info-title #info-title-text').text().trim()+'"/>').addClass('input-group');
+				let content=$('#info-content-body').text();
+				
+				initSummernote($('#info-content')).summernote('code',content);
+			}else{
+				console.log('new reg process..');
+				
+				$('#btnNewReply').attr('id','btnRegisterQna').text('등록');
+				let titleArea=$('<div id="info-title" class="text-center input-group text-bold"><span class="input-group-addon">제목</span><input name="qna_title" id="qna_title" class="form-control"/></div>');
+				let contentArea=$('<div id="info-content"></div>');
+				let btnHtml='<div id="btnArea" class="text-right mt10">';
+				btnHtml+='<button type="button" class="btn btn-primary" id="btnRegisterQna">등록</button>';
+				btnHtml+='<button type="button" class="btn btn-default" id="btnCancelUpdate">취소</button>';
+				btnHtml+='</div>';
+				$('#qnaInfoArea').append(titleArea).append(contentArea).append($(btnHtml));
+				initSummernote($('#info-content'));
+				
+			}
+			
+			$('#qnaInfoArea').show();	
+		}
+		
+		function initSummernote(targetDom){
+			$(targetDom).summernote({
+				toolbar:[	
+				         	['fontNames',['fontname']],
+				         	['font',['bold','underline','Italic','clear']],
+				         	['color', ['forecolor','color']],
+				         	['insert',['picture','link','video']],
+				         	['table', ['table']],
+						    ['para', ['ul', 'ol', 'paragraph']],
+				         	['fontSize','fontsize']
+				        ],
+		    	image:[
+					       ['image','resizeQuarter'],
+					       ['float','floatLeft]']
+				       ],
+		       	fontSizes:['8','9','10','12','14','16','18','20','24','30','36','50'],
+		       	fontNames:['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+				lang: "ko-KR",
+				placeholder: "내용을 입력하세요",
+				height:"500",
+				maxHeight:"700"
+				
+			})
+			return targetDom
+		}
+		
+		function manageQna(action){
+			
+			
+			
+			let param={
+					qna_id:$('#qna_id').val(),
+					qna_title:$('#qna_title').val(),
+					qna_content:$('#info-content').summernote('code')
+			};
+			
+			let callback=function(data){
+				
+				
+				if(Object.keys(data).length==0){
+					
+					if(action=='REGISTER'){
+						alert('정상적으로 등록되었습니다');
+					}else if(action=='UPDATE'){
+						alert('정상적으로 수정되었습니다');
+					}else{
+						alert('정상적으로 삭제되었습니다');
+					}
+					
+					$('#qnaInfoArea').empty();
+					
+					getQnaList($('#qnaListArea .paging strong').text());
+					
+				}else{
+					alert(data.msg);
+				}
+			}
+			console.log(param.qna_id);
+			console.log(param.qna_title);
+			console.log(param.qna_content);
+			console.log('${CTX_PATH}/sti/manage/'+action.toLowerCase()+'/'+param.qna_id);
+			
+			callAjax('${CTX_PATH}/sti/manage/'+action.toLowerCase()+'/'+param.qna_id,'post','json',true,param,callback);
+			
 			
 		}
 		

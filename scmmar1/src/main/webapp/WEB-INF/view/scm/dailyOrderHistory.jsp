@@ -156,8 +156,9 @@ function layer1btn(){
 		alert("지시서를 선택해 주세요.");
 	}else{
 		var param = {	
-				pur_id : pur_id,
-				selcheck : selcheck
+				pur_id : pur_id
+			,	selcheck : selcheck
+			,	sales_id : sales_id
 				}
 		var resultCallback = function(data) {
 			console.log(data);
@@ -215,12 +216,12 @@ function send(f){
 		var deliv_wh_id = $('#wasel option:selected').val();		// 창고 지정
 		var delname = $('#purchaser option:selected').val();	// 배송담당자 지정
 		var pur_cnt =$('#warehinput').val();					// 수량 지정
-		console.log(pur_id);
 		var param = {
 				active : f					// 구분자
 			,	pur_id : pur_id				// 구매 번호
 			,	name : delname				// 배송 담당자
 			,	deliv_wh_id : deliv_wh_id	// 창고 타임
+			,	sales_id : sales_id
 				}
 		var resultCallback = function(data){
 			alert(data.msg);

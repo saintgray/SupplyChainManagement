@@ -63,6 +63,7 @@ public class DailyOrderHistoryController {
 		 String returnjsp = "";
 		 int selcheck = Integer.parseInt(String.valueOf(paramMap.get("selcheck")));
 		 System.out.println("pur_id : " + paramMap.get("pur_id"));
+		 System.out.println("sales_id : " + paramMap.get("sales_id"));
 		 
  		 if(selcheck == 1){
  			returnjsp = "scm/layer22";
@@ -91,7 +92,7 @@ public class DailyOrderHistoryController {
 			 comfp = "Y";
 			 model.addAttribute("comfp",comfp);
 		 }
-		 
+		   
 		 if(come == null){
 			 comfg = "N";
 			 model.addAttribute("comfg",comfg);
@@ -161,12 +162,16 @@ public class DailyOrderHistoryController {
 			 
 		 //반품 지시서	 
 		 }else if(act.equals("re")){
-			 a = dailyorderhistoryservice.insertreturn(paramMap);
-			 if(a == 1){
-				 msg = "반품 신청 완료";
-				 returnmap.put("msg", msg);
-			 }
-			 
+			 try {
+				 a = dailyorderhistoryservice.insertreturn(paramMap);
+				 if(a == 1){
+					 msg = "반품 신청 완료";
+					 returnmap.put("msg", msg);
+				 }
+			} catch (Exception e) {
+					msg = "반품 수량이 없습니다. ";
+					returnmap.put("msg", msg);
+			}
 			 
 		 //배송 지시서
 		 }else if(act.equals("wa")){

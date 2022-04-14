@@ -22,7 +22,7 @@
 					    <td>${list.compNm}</td>
 						<td>${list.salesNm}</td>
 						<td>${list.orderCnt}</td>
-						<td>${list.unitprice}</td>
+						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${list.unitprice}"></fmt:formatNumber></td>
 						<td>${fn:substring(list.purdate,0,10)}</td>
 						<td>
 

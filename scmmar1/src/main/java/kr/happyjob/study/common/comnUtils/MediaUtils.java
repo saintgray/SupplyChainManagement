@@ -21,6 +21,7 @@ public class MediaUtils {
         return mediaMap.get(type.toUpperCase());
     }
     public static boolean containsImageMediaType(String mediaType) {
+    	
         return mediaMap.values().contains(MediaType.valueOf(mediaType));
     }
 }
