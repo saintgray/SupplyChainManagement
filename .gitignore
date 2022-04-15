@@ -22,6 +22,9 @@ local.properties
 target/classes/kr
 
 
+## SVN ###
+*.svn
+
 # External tool builders
 .externalToolBuilders/
 
