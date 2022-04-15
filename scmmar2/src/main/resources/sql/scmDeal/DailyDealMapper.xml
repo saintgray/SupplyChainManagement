@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmDeal.dao.DailyDealDAO">
+
+	<select id="selectList" resultType="kr.happyjob.study.scmDeal.model.DailyDeal">
+	/*+ kr.happyjob.study.scmDeal.dao.DailyDealDAO.selectList */
+	     SELECT  us.client as client
+		      ,  od.orderdate as orderdate
+		      ,  ot.oddtcnt as oddtcnt
+		      ,  pm.pdmdprice * ot.oddtcnt as orderamount
+		      ,  od.orderpayyn as orderpayyn
+		      ,  ot.oddtno as oddtno
+		      ,  ot.oddtreqyn as oddtreqyn
+		      ,  pd.pdnm as pdnm
+	          ,  rt.rtncomdate as rtncomdate
+	          ,  ll.sumcnt as stockcnt
+	          ,  dl.cnt as dcnt
+			FROM tb_orderdetail ot
+			INNER JOIN tb_order od ON od.orderno = ot.orderno
+			INNER JOIN tb_userinfo us ON od.userID = us.loginID
+			INNER JOIN tb_pddetail pd ON pd.pdno = ot.pdno
+			INNER JOIN tb_pdmodel pm ON pm.pdmdno = pd.pdmdno AND pm.pdcode = pd.pdcode
+			INNER JOIN tb_pdcategory pc ON pm.pdcode = pc.pdcode
+			LEFT OUTER JOIN tb_clientreturn crt ON ot.oddtno = crt.crtrtio
+			LEFT OUTER JOIN tb_return rt ON rt.rtnno = crt.rtnno
+			LEFT OUTER JOIN (
+			                SELECT delio, count(delio)  as cnt
+			                FROM tb_delivery
+			                GROUP BY delio
+			                ) dl ON od.orderno = dl.delio
+			LEFT OUTER JOIN (
+			        		SELECT st.pdcode, st.pdmdno, st.pdno ,SUM(st.stockcnt) as sumcnt
+			              	FROM tb_stock st 
+			              	GROUP BY st.pdcode, st.pdmdno ,st.pdno
+				            ) ll ON ll.pdcode = pd.pdcode AND ll.pdmdno = pd.pdmdno AND pd.pdno = ll.pdno
+		<where>
+			<if test="(oddtreqyn != null) and (!oddtreqyn.equals(''))">
+				AND ot.oddtreqyn = #{oddtreqyn}
+			</if>	 	
+			<if test="(ordertype != null) and (!ordertype.equals(''))">
+				<choose>
+					<when test="ordertype eq 'orderdate'.toString()">
+						<if test="(startDate != null) and (!startDate.equals(''))">
+							AND ot.oddtdate <![CDATA[>=]]> #{startDate}  
+						</if>
+						<if test="(endDate != null) and (!endDate.equals(''))">
+							AND ot.oddtdate <![CDATA[<=]]> #{endDate}  
+						</if>
+					</when>
+					<when test="ordertype eq 'rtncomdate'.toString()">
+						<if test="(startDate != null) and (!startDate.equals(''))">
+							AND rt.rtncomdate <![CDATA[>=]]> #{startDate}  
+						</if>
+						<if test="(endDate != null) and (!endDate.equals(''))">
+							AND rt.rtncomdate <![CDATA[<=]]> #{endDate}  
+						</if>
+					</when>
+				</choose>
+			</if>
+		</where>
+		ORDER  BY ot.oddtno DESC
+		LIMIT  #{pageNumber}, #{pagePostNum}
+	</select>
+	
+	<!--                           
+		  	SELECT  us.client as client
+			     ,  od.orderdate as orderdate
+			     ,  ot.oddtcnt as oddtcnt
+			     ,  pm.pdmdprice * ot.oddtcnt as orderamount
+			     ,  od.orderpayyn as orderpayyn
+			     ,  ot.oddtno as oddtno
+			     ,  ot.oddtreqyn as oddtreqyn
+			     ,  pd.pdnm as pdnm
+		         ,  rt.rtncomdate as rtncomdate
+		         ,  ll.sumcnt as stockcnt
+		         ,  dl.cnt as dcnt
+			FROM tb_orderdetail ot
+			INNER JOIN tb_order od ON od.orderno = ot.orderno
+			INNER JOIN tb_userinfo us ON od.userID = us.loginID
+			INNER JOIN tb_pddetail pd ON pd.pdno = ot.pdno
+			INNER JOIN tb_pdmodel pm ON pm.pdmdno = pd.pdmdno AND pm.pdcode = pd.pdcode
+			INNER JOIN tb_pdcategory pc ON pm.pdcode = pc.pdcode
+			LEFT OUTER JOIN tb_clientreturn crt ON ot.oddtno = crt.crtrtio
+			LEFT OUTER JOIN tb_return rt ON rt.rtnno = crt.rtnno
+			LEFT OUTER JOIN (
+			                SELECT delio, count(delio)  as cnt
+			                FROM tb_delivery
+			                GROUP BY delio
+			                ) dl ON od.orderno = dl.delio
+			LEFT OUTER JOIN (
+			        		SELECT st.pdcode, st.pdmdno, st.pdno ,SUM(st.stockcnt) as sumcnt
+			              	FROM tb_stock st 
+			              	GROUP BY st.pdcode, st.pdmdno ,st.pdno
+				            ) ll on ll.pdcode = pd.pdcode and ll.pdmdno = pd.pdmdno and pd.pdno = ll.pdno
+	 -->
+	
+	<select id="selectListTotal" resultType="int">
+	/*+ kr.happyjob.study.scmDeal.dao.DailyDealDAO.selectListTotal */
+		  	SELECT  count(*)
+			FROM tb_orderdetail ot
+			INNER JOIN tb_order od ON od.orderno = ot.orderno
+			INNER JOIN tb_userinfo us ON od.userID = us.loginID
+			INNER JOIN tb_pddetail pd ON pd.pdno = ot.pdno
+			INNER JOIN tb_pdmodel pm ON pm.pdmdno = pd.pdmdno AND pm.pdcode = pd.pdcode
+			INNER JOIN tb_pdcategory pc ON pm.pdcode = pc.pdcode
+			LEFT OUTER JOIN tb_clientreturn crt ON ot.oddtno = crt.crtrtio
+			LEFT OUTER JOIN tb_return rt ON rt.rtnno = crt.rtnno
+			LEFT OUTER JOIN  (
+			                SELECT delio, count(delio)  as cnt
+			                FROM tb_delivery
+			                GROUP BY delio
+			                ) dl ON od.orderno = dl.delio
+			LEFT OUTER JOIN  (
+			        			 	SELECT st.pdcode, st.pdmdno, st.pdno ,SUM(st.stockcnt) as sumcnt
+			              	FROM tb_stock st 
+			              	GROUP BY st.pdcode, st.pdmdno ,st.pdno
+				            	) ll on ll.pdcode = pd.pdcode and ll.pdmdno = pd.pdmdno and pd.pdno = ll.pdno
+		<where>
+			<if test="(oddtreqyn != null) and (!oddtreqyn.equals(''))">
+				AND ot.oddtreqyn = #{oddtreqyn}
+			</if>	 	
+			<if test="(ordertype != null) and (!ordertype.equals(''))">
+				<choose>
+					<when test="ordertype eq 'orderdate'.toString()">
+						<if test="(startDate != null) and (!startDate.equals(''))">
+							AND ot.oddtdate <![CDATA[>=]]> #{startDate}  
+						</if>
+						<if test="(endDate != null) and (!endDate.equals(''))">
+							AND ot.oddtdate <![CDATA[<=]]> #{endDate}  
+						</if>
+					</when>
+					<when test="ordertype eq 'rtncomdate'.toString()">
+						<if test="(startDate != null) and (!startDate.equals(''))">
+							AND rt.rtncomdate <![CDATA[>=]]> #{startDate}  
+						</if>
+						<if test="(endDate != null) and (!endDate.equals(''))">
+							AND rt.rtncomdate <![CDATA[<=]]> #{endDate}  
+						</if>
+					</when>
+				</choose>
+			</if>
+		</where>
+	</select>
+	<!-- 
+		  	SELECT  count(*)
+			FROM tb_orderdetail ot
+			INNER JOIN tb_order od ON od.orderno = ot.orderno
+			INNER JOIN tb_userinfo us ON od.userID = us.loginID
+			INNER JOIN tb_pddetail pd ON pd.pdno = ot.pdno
+			INNER JOIN tb_pdmodel pm ON pm.pdmdno = pd.pdmdno AND pm.pdcode = pd.pdcode
+			INNER JOIN tb_pdcategory pc ON pm.pdcode = pc.pdcode
+			LEFT OUTER JOIN tb_clientreturn crt ON ot.oddtno = crt.crtrtio
+			LEFT OUTER JOIN tb_return rt ON rt.rtnno = crt.rtnno
+			LEFT OUTER JOIN  (
+			                SELECT delio, count(delio)  as cnt
+			                FROM tb_delivery
+			                GROUP BY delio
+			                ) dl ON od.orderno = dl.delio
+			LEFT OUTER JOIN  (
+			        			 	SELECT st.pdcode, st.pdmdno, st.pdno ,SUM(st.stockcnt) as sumcnt
+			              	FROM tb_stock st 
+			              	GROUP BY st.pdcode, st.pdmdno ,st.pdno
+				            	) ll on ll.pdcode = pd.pdcode and ll.pdmdno = pd.pdmdno and pd.pdno = ll.pdno
+	 -->	
+			
+	<select id="selectOne" resultType="kr.happyjob.study.scmDeal.model.DailyDeal">
+			SELECT  us.client as client
+				     ,  od.orderdate as orderdate
+				     ,  ot.oddtcnt as oddtcnt
+				     ,  pm.pdmdprice * ot.oddtcnt as orderamount
+				     ,  od.orderpayyn as orderpayyn
+				     ,  ot.oddtno as oddtno
+				     ,  ot.oddtreqyn as oddtreqyn
+				     ,  pd.pdnm as pdnm
+				     ,  pd.pdno as pdno
+			         ,  rt.rtncomdate as rtncomdate
+			         ,  ll.sumcnt as stockcnt
+            		 ,  pm.pdmdprice  as pdmdprice
+			FROM tb_orderdetail ot
+			INNER JOIN tb_order od ON od.orderno = ot.orderno
+			INNER JOIN tb_userinfo us ON od.userID = us.loginID
+			INNER JOIN tb_pddetail pd ON pd.pdno = ot.pdno
+			INNER JOIN tb_pdmodel pm ON pm.pdmdno = pd.pdmdno AND pm.pdcode = pd.pdcode
+			INNER JOIN tb_pdcategory pc ON pm.pdcode = pc.pdcode
+			LEFT OUTER JOIN tb_clientreturn crt ON ot.oddtno = crt.crtrtio
+			LEFT OUTER JOIN tb_return rt ON rt.rtnno = crt.rtnno
+	    	LEFT OUTER  JOIN (
+	    			 	 SELECT st.pdcode, st.pdmdno, SUM(st.stockcnt) as sumcnt
+	                	 FROM tb_stock st 
+	                	 GROUP BY st.pdcode, st.pdmdno
+			        	 )ll on ll.pdcode = pm.pdcode and ll.pdmdno = pm.pdmdno
+	       	 WHERE  ot.oddtno = #{oddtno}
+	</select>
+	
+	<select id="selectEmployeeList" resultType="kr.happyjob.study.scmDeal.model.DailyDeal">
+		SELECT loginID as loginID
+			 , user_Type as userType
+			 , name as name
+			 , address
+			 , dtAddress
+			 , phone
+			 , email
+		  FROM tb_userinfo
+	     WHERE user_Type = "B"
+	</select>
+	
+	<!-- 1창고 -->
+	<select id="selectWhList" resultType="kr.happyjob.study.scmDeal.model.DailyDeal">
+		SELECT whcode
+		     , whnm
+		  FROM tb_warehouse
+	</select>
+	
+	<!-- 2모델명 -->
+	<select id="selectPdList" resultType="kr.happyjob.study.scmDeal.model.DailyDeal">
+		  SELECT pd.pdno as pdno
+			   , pd.pdnm as pdnm
+		    FROM tb_stock sk
+	  INNER JOIN tb_pddetail pd ON sk.pdcode = pd.pdcode
+								AND sk.pdmdno = pd.pdmdno
+								AND sk.pdno = pd.pdno
+		   WHERE sk.whcode = #{whcode}
+	</select>
+	
+	<!-- 3재고수량 -->
+	<select id="selectStCount" resultType="int">
+		SELECT IFNULL(SUM(stockcnt), 0) AS stCntforModal
+		FROM tb_stock
+		WHERE whcode = #{whcode} AND pdno = #{pdmdno}
+	</select>
+	
+	<!-- 재고수량
+		 SELECT IFNULL(SUM(si.stockcnt), 0) AS stCntforModal
+		 FROM tb_storeinfo si
+		 WHERE si.whcode = #{whcode} 
+		   AND si.pdmdno = #{pdmdno}
+	 -->
+	
+	<select id="selectComList" resultType="kr.happyjob.study.scmDeal.model.DailyDeal">
+		SELECT comp_id as compId
+		     , comp_nm as compNm
+		FROM   tb_comp
+	</select>
+	
+	<insert id="insertDelivery">
+		INSERT INTO tb_delivery
+		(
+			delio
+		,	userId
+		,	delstate
+		)
+		VALUES
+		(
+			#{orderno}
+		,	#{loginID}
+		,	1
+		)
+	</insert>
+	
+	<insert id="insertImport">
+		<selectKey resultType="map" keyProperty="resultMap" order="BEFORE">
+			 SELECT A.impprice ,B.impno  FROM
+			 (SELECT  PM.pdmdprice+TRUNCATE(PM.pdmdprice * 0.2, -1) as impprice
+					FROM tb_pddetail PD
+					inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+					inner join tb_pdcategory PC on PM.pdcode = PC.pdcode
+				WHERE PD.pdno = #{pdno}) A,
+      			(SELECT CONCAT('I',CAST(IFNULL(MAX(CAST(SUBSTR(impno, 2) AS unsigned)),0) + 1 AS CHAR(50))) as impno                     
+	   				 FROM tb_import
+	   			 WHERE impno LIKE CONCAT('I','%'))B
+		</selectKey>
+		INSERT INTO tb_import
+			(
+				impno
+			, 	comp_id
+			,	userID
+			,	impregdate
+			,	impcnt
+			,	imppayyn
+			,	impamount
+			,	impmgryn
+			)
+		VALUES 
+			(
+				#{resultMap.impno}
+			,	#{compId}
+			,	#{userID}
+			,	NOW()
+			,	#{impdtcnt}
+			,	'N'
+			,	 (#{impdtcnt} * #{resultMap.impprice})
+			,	'N'
+			)
+	</insert>
+	
+	<insert id="insertImportDetail">
+		INSERT INTO tb_impdetail
+		(
+			impno
+		,	comp_id
+		,	impdtdate
+		,	impdtcnt
+		,	imprtnyn
+		,	pdno
+		)
+		VALUES 
+		(
+			(
+	            SELECT CONCAT('I',CAST(IFNULL(MAX(CAST(SUBSTR(impno, 2) AS unsigned)),0) AS CHAR(50)))                        
+	            FROM tb_import
+	            WHERE impno LIKE CONCAT('I','%')
+            )
+		,	#{compId}
+		,	NOW()
+		,	#{impdtcnt}
+		,	'N'
+		,	#{pdno}
+		)
+	</insert>
+
+</mapper>

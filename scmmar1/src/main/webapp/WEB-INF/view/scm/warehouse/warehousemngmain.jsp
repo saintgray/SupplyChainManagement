@@ -319,21 +319,21 @@
 			console.log(data);
 			if(data==1){
 				if(action=='UPDATE'){
-					alert('정상적으로 수정되었습니다');
+					swal('정상적으로 수정되었습니다');
 				}else if(action=='DELETE'){
 						alert('정상적으로 삭제되었습니다');
 				}else{
-					alert('정상적으로 등록되었습니다');
+					swal('정상적으로 등록되었습니다');
 				}
 				$('#whFormArea').empty();
 				getWareHouseList($('.paging strong').text());
 			}else if(data==-1){
 				if(action=='DELETE'){
-					alert('창고에 재고가 남아있어 삭제할 수 없습니다');
+					swal('창고에 재고가 남아있어 삭제할 수 없습니다');
 				}
 				
 			}else{
-				alert('오류가 발생하였습니다. 잠시 후 다시 시도하세요');
+				swal('오류가 발생하였습니다. 잠시 후 다시 시도하세요');
 			}
 			
 			

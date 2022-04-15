@@ -1,0 +1,26 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>					
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<c:if test="${totalCount eq 0 }">
+	<tr>
+		<td colspan="9">데이터가 존재하지 않습니다.</td>
+	</tr>
+</c:if>
+							
+<c:if test="${totalCount > 0 }">
+	<c:set var="nRow" value="${pageSize*(currentPageReturnList-1)}" />
+	<c:forEach items="${ReturnListModel}" var="list">
+		<tr>
+			<td><a onclick="ReturnDetail(${list.rtnno},${list.pdno })">${list.pdnm}</a></td>
+			<td>${list.rtnregdate}</td>
+			<td>${list.crtncnt}</td>
+			<td>${list.crtnprice}</td>
+		</tr>
+		<c:set var="nRow" value="${nRow + 1}" />
+	</c:forEach>
+</c:if>
+
+<input type="hidden" id="totalCount" name="totalCount" value ="${totalCount}"/>

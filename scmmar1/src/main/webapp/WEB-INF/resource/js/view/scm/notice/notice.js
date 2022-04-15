@@ -208,33 +208,24 @@
 	// 공지사항 리스트 data를 콜백함수를 통해 뿌린다.  
 	function noticeListResult(data, currentPage) {
 
-		// 일단 기존 목록을 삭제합니다. (변경시 재부팅 용)
+		
 		$("#noticeList").empty();
-		//alert("데이터!!! " + data);
-		//console.log("data !!!! " +  data);
-
-		//var $data = $( $(data).html() ); // data의 .html()통해서 html구문을 끌어온다.
-		//alert("데이터 찍어보자!!!! " +  $data); // object
-
 		$("#noticeList").append(data);
-
-		// 리스트의 총 개수를 추출합니다. 
+		
 		var totalCnt = $("#totalCnt").val(); 
-		
 
-		// * 페이지 네비게이션 생성 (만들어져있는 함수를 사용한다 -common.js)
-		// function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc, exParams)
-		// 파라미터를 참조합시다. 
 		var list = $("#tmpList").val();
-		//var listnum = $("#tmpListNum").val();
-		var pagingnavi = getPaginationHtml(currentPage, totalCnt,
-				noticePageSize, noticePageBlock, 'selectNoticeList', [ list ]);
+		var pagingnavi = 
 
-		
-		 
-		$("#pagingnavi").empty().append(pagingnavi); // 위에꺼를 첨부합니다. 
-
-		// 현재 페이지 설정 
+		$("#pagingnavi").empty().append(getPaginationHtml(
+															currentPage, 
+															totalCnt,
+															noticePageSize, 
+															noticePageBlock, 
+															'selectNoticeList', 
+															[ list ]
+															)
+										); 
 		$("#currentPage").val(currentPage);
 
 	}
@@ -441,23 +432,23 @@
 		if(data==1){
 			var action=$('#action').val();
 			if(action=='I'){
-				alert('정상적으로 등록되었습니다');
+				swal('정상적으로 등록되었습니다');
 			}else if(action=='U'){
-				alert('정상적으로 수정되었습니다');
+				swal('정상적으로 수정되었습니다');
 			}else{
-				alert('정상적으로 삭제되었습니다');
+				swal('정상적으로 삭제되었습니다');
 			}
 			$('#action').val('');
 			fCloseModal();
 			selectNoticeList($('.divComGrpCodList .paging strong').text());
 			
 		}else{
-			alert('오류가 발생하였습니다. 잠시 후 다시 시도하세요');
+			swal('오류가 발생하였습니다. 잠시 후 다시 시도하세요');
 		}
 		
 	}
 
-	// 공지사항 등록 
+	// 공지사항 수정
 	function fUpdateNotice() {
 
 		

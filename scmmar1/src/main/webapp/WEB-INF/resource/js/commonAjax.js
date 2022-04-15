@@ -29,15 +29,17 @@ function callAjax(url, method, dataType, async, param, callback) {
          $.blockUI({ message: '<h1><img src="/images/admin/comm/busy.gif" /> Just a moment...</h1>', T:99999 });
       },
       success : function(data) {
+    	  console.log('entered success...');
          // 서버에서 JSON 객체로 받았지만, AJax 의 경우 javascript 객체로 자동 변화해주기 때문에
          // data 자체가 문자열이 아닌 자바스크립트 객체가 된다.
-         console.log(data);
-         console.log(JSON.stringify(data));
+         // console.log(data);
+         // console.log(JSON.stringify(data));
          // 파라미터로 받은 callback 매개변수 (= fLoginProcResult 함수 ) 를 실행한다.
          // fLoginProcResult 의 매개변수로 data 를 넣어준다.
          callback(data);
       },
       error : function(xhr, status, err) {
+    	 console.log('entered error...');
          console.log("xhr : " + xhr);
          console.log("status : " + status);
          console.log("err : " + err);

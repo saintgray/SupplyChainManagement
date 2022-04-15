@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.crtPayback.dao.CrtOrderHistoryDao">
+	<select id="listOrderHistory" resultType="kr.happyjob.study.crtPayback.model.OrderModel">
+		select 
+		  orderno,
+		  userID,
+		  orderdate,
+		  ordercnt,
+		  orderpayyn,
+		  orderamount
+		from tb_order 
+		where userID= #{userID}
+		and  orderdate between #{fromdate} and #{todate}
+		order by orderdate desc
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	
+	<select id="countlistOrderHistory" resultType="int">
+		select 
+		  count(1) as tot_cnt
+		from tb_order 
+		where userID= #{userID}
+		and  orderdate between #{fromdate} and #{todate}
+			
+	</select>
+	
+	<select id="listorderHistoryDtl" resultType="kr.happyjob.study.crtPayback.model.OrderDetailModel">
+			SELECT     
+		      	  PDALL.oddtno,
+				  PDALL.orderno,
+				  PDALL.oddtdate,
+				  PDALL.oddtcnt,
+				  PDALL.oddtreqyn,
+				  PDALL.oddtrecnt,
+				  PDALL.oddtrtnyn,
+				  PDALL.pdcode,
+				  PDALL.pdmdno,
+				  PDALL.pdno,
+				  PDALL.pdcodenm,
+				  PDALL.pdmdnm,
+				  PDALL.pdmdcop,
+				  PDALL.pdmdprice,
+				  DV.delstate
+    from tb_delivery DV
+    inner join (select 
+				  ODD.oddtno,
+				  ODD.orderno,
+				  ODD.oddtdate,
+				  ODD.oddtcnt,
+				  ODD.oddtrecnt,
+				  ODD.oddtreqyn,
+				  ODD.oddtrtnyn,
+				  ODD.pdcode,
+				  ODD.pdmdno,
+				  ODD.pdno,
+				  IPDALL.pdcodenm,
+				  IPDALL.pdmdnm,
+				  IPDALL.pdmdcop,
+				  IPDALL.pdmdprice
+			from tb_orderdetail ODD
+			inner join (SELECT    	
+					      PC.pdcode,
+		            PC.pdcodenm,
+		            PD.pdmdno,
+		            PM.pdmdnm,
+		            PM.pdmdcop,
+		            PM.pdmdprice,
+		            PM.pdmdregdate,
+		            PD.pdno,
+		            PD.pdnm,
+		            PD.pdinfo
+		      FROM tb_pddetail PD
+		            inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+		            inner join tb_pdcategory PC on PM.pdcode = PC.pdcode) IPDALL
+			on ODD.pdno = IPDALL.pdno) PDALL
+      on DV.delio = PDALL.orderno and DV.deliono = PDALL.oddtno
+		where 
+			PDALL.orderno = #{orderno} 
+		order by PDALL.oddtdate desc
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	
+	<select id="countlistOrderHistoryDtl" resultType="int">
+		SELECT     
+     			COUNT(1)
+	    from tb_delivery DV
+	    inner join (select 
+				  ODD.oddtno,
+				  ODD.orderno,
+				  ODD.oddtdate,
+				  ODD.oddtcnt,
+				  ODD.oddtreqyn,
+				  ODD.oddtrtnyn,
+				  ODD.pdcode,
+				  ODD.pdmdno,
+				  ODD.pdno,
+				  IPDALL.pdcodenm,
+				  IPDALL.pdmdnm,
+				  IPDALL.pdmdcop,
+				  IPDALL.pdmdprice
+			from tb_orderdetail ODD
+			inner join (SELECT    	
+					      PC.pdcode,
+		            PC.pdcodenm,
+		            PD.pdmdno,
+		            PM.pdmdnm,
+		            PM.pdmdcop,
+		            PM.pdmdprice,
+		            PM.pdmdregdate,
+		            PD.pdno,
+		            PD.pdnm,
+		            PD.pdinfo
+		      FROM tb_pddetail PD
+		            inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+		            inner join tb_pdcategory PC on PM.pdcode = PC.pdcode) IPDALL
+			on ODD.pdno = IPDALL.pdno) PDALL
+      on DV.delio = PDALL.orderno and DV.deliono = PDALL.oddtno
+		where 
+			PDALL.orderno = #{orderno} 
+			
+	</select>
+	
+	
+	<select id="listBankList" resultType="map">
+		select 
+			detail_name
+		from
+			tb_detail_code
+		where group_code = 'bankCD'
+	</select>
+	
+	<update id="updateReturnYn">
+		UPDATE 
+			tb_orderdetail 
+		SET
+			oddtreqyn = 'Y',
+			oddtrecnt = #{oddtrecnt} + oddtrecnt
+		WHERE oddtno = #{oddtno}
+	</update>
+	
+	<insert id="insertReturnInfo">
+		<selectKey order="BEFORE" keyProperty="rtnno" resultType="int">
+			SELECT IFNULL(MAX(rtnno),0) + 1 FROM tb_return
+		</selectKey>
+		INSERT INTO tb_return
+		(
+			rtnno,
+			rtnio,
+			rtncnt,
+			rtnamount,
+			rtnregdate,
+			rtncomdate
+		)VALUES(
+			#{rtnno},
+			#{rtnio},
+			#{rtncnt},
+			#{rtnamount},
+			NOW(),
+			null
+		)
+	</insert>
+	
+	<insert id="insertClientReturn">
+		<selectKey order="BEFORE" keyProperty="rtnno" resultType="int">
+			SELECT IFNULL(MAX(rtnno),0) FROM tb_return
+		</selectKey>
+		INSERT INTO tb_clientreturn
+		(
+			rtnno,
+			pdcode,
+			pdno,
+			pdmdno,
+			crtrtio,
+			banknm,
+			accno,
+			accnm,
+			mgryn,
+			scryn,
+			crtncnt,
+			crtnprice,
+			crtrtyn
+		)VALUES(
+			#{rtnno},
+			#{pdcode},
+			#{pdno},
+			#{pdmdno},
+			#{crtrtio},
+			#{banknm},
+			#{accno},
+			#{accnm},
+			'N',
+			'N',
+			#{crtncnt},
+			#{crtnprice},
+			'N'
+		)
+	</insert>
+	
+	
+</mapper>

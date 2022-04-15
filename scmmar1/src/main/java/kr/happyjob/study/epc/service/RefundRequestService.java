@@ -15,5 +15,4 @@ public interface RefundRequestService {
 	public abstract int getTotalOrderListCnt(SearchParamDTO param);
 	public abstract int getTotalOrderDetailListCnt(int purID);
 	public abstract int deleteRefundinfoByPurinfID(int purinf_id);
-	
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.study.delCust.dao.CustDeliveryDao">
+
+	<!-- 목록 조회 -->
+	<select id="listCustDelivery" resultType="kr.happyjob.study.delCust.model.CustDeliveryModel">
+		/*kr.happyjob.study.delCust.dao.DeliveryDao.listCustDelivery*/
+		SELECT DEL.delno
+        	, DEL.delio
+        	, DEL.deliono
+        	, UI.loginID
+        	, UI.name
+        	, UI.clientnm
+        	, UI.address
+       		, WH.whplace
+        	, WH.whcode
+        	, WH.whnm
+        	, WH.whplace
+        	, PDDT.pdnm
+        	, ODDT.oddtcnt
+        	, DEL.delstate
+  		FROM tb_delivery DEL
+			  INNER JOIN tb_userinfo UI ON DEL.userID = UI.loginID
+			  INNER JOIN tb_stock ST ON DEL.delio = ST.stockiono
+			  INNER JOIN tb_warehouse WH ON WH.whcode = ST.whcode
+			  INNER JOIN tb_pddetail PDDT ON ST.pdno = PDDT.pdno 
+			  												AND ST.pdcode = PDDT.pdcode 
+			  												AND ST.pdmdno = PDDT.pdmdno
+			  LEFT OUTER JOIN tb_orderdetail ODDT ON DEL.deliono = ODDT.oddtno
+     	ORDER BY DEL.delno DESC
+	 	LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 목록 총 갯수 조회 -->
+	<select id="countCustDelivery" resultType="int">
+		/*kr.happyjob.study.delCust.dao.CustDeliveryDao.countCustDelivery*/
+		SELECT COUNT(*) AS tot_cnt
+        FROM tb_delivery DEL
+  			INNER JOIN tb_userinfo UI ON DEL.userID = UI.loginID
+  			INNER JOIN tb_stock ST ON DEL.delio = ST.stockiono AND DEL.deliono = ST.stockdtiono
+			INNER JOIN tb_warehouse WH ON ST.whcode = WH.whcode 
+	</select>
+	
+	<!-- 단건 조회 -->
+	<select id="selectCustDelivery" resultType="kr.happyjob.study.delCust.model.CustDeliveryModel">
+		/*kr.happyjob.study.delCust.dao.CustDeliveryDao.selectCustDelivery*/
+		SELECT DEL.delno
+  			, PDDT.pdnm
+  			, ODDT.oddtcnt
+  			, DEL.delstate
+		FROM tb_delivery DEL
+  			INNER JOIN tb_orderdetail ODDT ON DEL.delio = ODDT.orderno
+  			INNER JOIN tb_pddetail PDDT ON ODDT.pdno = PDDT.pdno
+                              									AND PDDT.pdmdno = ODDT.pdmdno AND PDDT.pdcode = ODDT.pdcode
+  		WHERE DEL.delno = #{delno}
+	</select>	
+</mapper>

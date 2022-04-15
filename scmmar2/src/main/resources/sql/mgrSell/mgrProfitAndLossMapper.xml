@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.mgrSell.dao.MgrProfitAndLossDao">
+
+	<!-- 손익 목록 조회 -->
+	<select id="listProfitAndLoss" resultType="kr.happyjob.study.mgrSell.model.MgrProfitAndLossModel">
+		/*kr.happy.study.mgrSell.dao.MgrProfitAndLossDao.listProfitAndLoss*/
+		SELECT  
+					o.userID, u.name, SUM(o.orderamount) as totalorder, SUM(c.crtnprice) as totalreturn, (SUM(o.orderamount) - SUM(c.crtnprice)) as totalprofit
+		FROM	
+			     	tb_order o
+					join tb_userinfo u on o.userID = u.loginID
+					join tb_orderdetail od on o.orderno = od.orderno
+					join tb_clientreturn c on od.oddtno = c.crtrtio
+	   WHERE 
+	   				 o.orderpayyn = 'Y'
+					and c.mgryn = 'Y'
+	   <if test="(sname != null) and (!sname.equals(''))">
+			     and u.name Like CONCAT('%', #{sname}, '%')
+	  </if>
+		ORDER BY 
+					totalprofit desc
+	</select>
+	
+	<!-- 손익 목록 총 개수 조회 -->
+	<select id="countListProfitAndLoss" resultType="int">
+		/*kr.happy.study.mgrSell.dao.MgrProfitAndLossDao.countListProfitAndLoss*/
+		SELECT COUNT(DISTINCT 1) AS tot_cnt 
+		FROM	
+			     tb_order o
+					join tb_userinfo u on o.userID = u.loginID
+					join tb_orderdetail od on o.orderno = od.orderno
+					join tb_clientreturn c on od.oddtno = c.crtrtio
+	   WHERE 
+	 			  o.orderpayyn = 'Y'
+					and c.mgryn = 'Y'
+		<if test="(sname != null) and (!sname.equals(''))">
+			     and u.name Like CONCAT('%', #{sname}, '%')
+	  </if>
+	</select>
+	
+	<!-- 손익 상세 목록 조회 -->
+	<select id="listDtProfitAndLoss" resultType="kr.happyjob.study.mgrSell.model.MgrProfitAndLossDtModel">
+		/*kr.happy.study.mgrSell.dao.MgrProfitAndLossDao.listDtProfitAndLoss*/
+		SELECT	
+					o.userID, u.name, od.oddtdate, od.oddtcnt, pm.pdmdprice, od.oddtcnt * pm.pdmdprice as oddtsell, pd.pdnm, 
+					SUM(c.crtncnt * pm.pdmdprice) as crtndtsell
+		FROM
+					tb_order o
+					join tb_userinfo u on o.userID = u.loginID
+					join tb_orderdetail od on o.orderno = od.orderno
+					join tb_pdmodel pm on od.pdmdno = pm.pdmdno
+					join tb_pddetail pd on pm.pdmdno = pd.pdmdno
+													and pm.pdcode = pd.pdcode
+					join tb_clientreturn c on od.oddtno = c.crtrtio
+														and c.pdmdno=pm.pdmdno 
+							                             and pd.pdno=c.pdno 
+							                             and pd.pdcode = c.pdcode
+		WHERE
+					o.userID = #{userID}
+					and 	o.orderpayyn = 'Y'
+					and  c.mgryn = 'Y'
+		GROUP BY
+					o.orderno, pd.pdno
+		ORDER BY
+					od.oddtdate desc
+		<if test="(pageIndex != null) and (!pageIndex.equals('')) and (pageSize != null) and (!pageSize.equals(''))">
+		LIMIT #{pageIndex}, #{pageSize}
+		</if>
+		</select>
+		
+		
+		<!-- 손익 상세 목록 총 개수 조회 -->
+		<select id="countListDtProfitAndLoss" resultType="int">
+		/*kr.happy.study.mgrSell.dao.MgrProfitAndLossDao.countListDtProfitAndLoss*/
+		SELECT COUNT(1) AS tot_cnt 
+		FROM
+					 tb_order o
+					join tb_userinfo u on o.userID = u.loginID
+					join tb_orderdetail od on o.orderno = od.orderno
+					join tb_pdmodel pm on od.pdmdno = pm.pdmdno
+					join tb_pddetail pd on pm.pdmdno = pd.pdmdno
+													and pm.pdcode = pd.pdcode
+					join tb_clientreturn c on od.oddtno = c.crtrtio
+														and c.pdmdno=pm.pdmdno 
+							                             and pd.pdno=c.pdno 
+							                             and pd.pdcode = c.pdcode
+		WHERE 
+					o.userID = #{userID}
+					and 	o.orderpayyn = 'Y'
+					and  c.mgryn = 'Y'
+			<if test="(sname != null) and (!sname.equals(''))">
+			     	and u.name Like CONCAT('%', #{sname}, '%')
+			</if>
+		
+	</select>
+</mapper>

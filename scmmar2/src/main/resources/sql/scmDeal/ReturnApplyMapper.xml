@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmDeal.dao.ReturnApplyDao">
+
+<select  id ="ReturnList" resultType="kr.happyjob.study.scmDeal.model.ReturnApplyModel">
+
+		select D.pdnm
+		         ,C.rtnregdate
+		         ,C.rtnno
+             ,D.crtncnt
+             ,D.crtnprice
+             ,D.pdno
+		  from tb_return C ,
+			     (
+           select A.pdnm,B.rtnno,B.crtnprice,B.pdno,B.crtncnt
+			        from tb_pddetail A,
+               (select 
+              			tb_cl.rtnno 
+                    ,tb_cl.pdmdno 
+                    ,tb_cl.pdno
+                    ,tb_cl.crtnprice
+                    ,tb_cl.crtncnt
+              			from tb_clientreturn tb_cl left outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio 
+              			where tb_cl.scryn='N'
+              			union 
+              			select tb_busi.rtnno ,tb_busi.pdmdno ,tb_busi.pdno,tb_cl.crtnprice,tb_cl.crtncnt
+              			from tb_clientreturn tb_cl right outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio
+              			where tb_cl.scryn='N') B 
+              			where A.pdno = B.pdno 
+                    ) D 
+			where C.rtnno = D.rtnno
+		<if test="(sname != null) and (!sname.equals(''))">
+			<choose>
+				<when
+					test="oname eq 'pdnm'.toString()">
+					and pdnm Like CONCAT('%', #{sname}, '%')
+				</when>
+				<otherwise>
+					AND 1=2
+				</otherwise>
+			</choose>
+		</if>
+		<if test="(sdate != null) and (!sdate.equals(''))">
+		         	 and rtnregdate <![CDATA[>=]]>   STR_TO_DATE(#{sdate},' %Y-%m-%d')
+		      </if>
+		      <if test="(edate != null) and (!edate.equals(''))">
+		           and rtnregdate <![CDATA[<=]]> STR_TO_DATE(#{edate},' %Y-%m-%d')  
+		</if>
+		 LIMIT #{pageIndex}, #{pageSize}
+
+</select>
+
+<select id ="CountReturnList" resultType="int">
+	select count(1)
+		  from tb_return C ,
+			     (
+           select A.pdnm,B.rtnno,B.crtnprice,B.pdno,B.crtncnt
+			        from tb_pddetail A,
+               (select 
+              			tb_cl.rtnno 
+                    ,tb_cl.pdmdno 
+                    ,tb_cl.pdno
+                    ,tb_cl.crtnprice
+                    ,tb_cl.crtncnt
+              			from tb_clientreturn tb_cl left outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio 
+              			where tb_cl.scryn='N'
+              			union 
+              			select tb_busi.rtnno ,tb_busi.pdmdno ,tb_busi.pdno,tb_cl.crtnprice,tb_cl.crtncnt
+              			from tb_clientreturn tb_cl right outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio
+              			where tb_cl.scryn='N') B 
+              			where A.pdno = B.pdno 
+                    ) D 
+			where C.rtnno = D.rtnno
+		<if test="(sname != null) and (!sname.equals(''))">
+			<choose>
+				<when
+					test="oname eq 'pdnm'.toString()">
+					and pdnm Like CONCAT('%', #{sname}, '%')
+				</when>
+				<otherwise>
+					AND 1=2
+				</otherwise>
+			</choose>
+		</if>
+		<if test="(sdate != null) and (!sdate.equals(''))">
+		         	 and rtnregdate <![CDATA[>=]]>   STR_TO_DATE(#{sdate},' %Y-%m-%d')
+		      </if>
+		      <if test="(edate != null) and (!edate.equals(''))">
+		           and rtnregdate <![CDATA[<=]]> STR_TO_DATE(#{edate},' %Y-%m-%d')  
+		</if>
+</select>
+
+		<select  id="ReturnSelect" resultType="kr.happyjob.study.scmDeal.model.ReturnApplyModel">
+				<!-- 	select D.pdnm
+		         ,C.rtnregdate
+		         ,C.rtnno
+             ,D.crtncnt
+             ,D.crtnprice
+             ,D.pdno
+		  from tb_return C ,
+			     (
+           select A.pdnm,B.rtnno,B.crtnprice,B.pdno,B.crtncnt
+			        from tb_pddetail A,
+               (select 
+              			tb_cl.rtnno 
+                    ,tb_cl.pdmdno 
+                    ,tb_cl.pdno
+                    ,tb_cl.crtnprice
+                    ,tb_cl.crtncnt
+              			from tb_clientreturn tb_cl left outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio 
+              			where tb_cl.scryn='N'
+              			union 
+              			select tb_busi.rtnno ,tb_busi.pdmdno ,tb_busi.pdno,tb_cl.crtnprice,tb_cl.crtncnt
+              			from tb_clientreturn tb_cl right outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio
+              			where tb_cl.scryn='N') B 
+              			where A.pdno = B.pdno 
+                    ) D  -->
+             select D.pdnm
+		         ,C.rtnregdate
+		         ,C.rtnno
+             ,D.crtncnt
+             ,D.crtnprice
+             ,D.pdno
+             ,C.rtnio
+             ,D.crtrtio
+             ,D.pdcode
+             ,D.pdmdno
+		  from tb_return C ,
+			     (
+           select A.pdnm,B.rtnno,B.crtnprice,B.pdno,B.crtncnt,B.crtrtio, A.pdmdno,A.pdcode
+			        from tb_pddetail A,
+               (select 
+              			tb_cl.rtnno 
+                    ,tb_cl.pdmdno 
+                    ,tb_cl.pdno
+                    ,tb_cl.crtnprice
+                    ,tb_cl.crtncnt
+                    ,tb_cl.crtrtio
+              			from tb_clientreturn tb_cl left outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio 
+              			where tb_cl.scryn='N'
+              			union 
+              			select tb_busi.rtnno ,
+                          tb_busi.pdmdno ,
+                          tb_busi.pdno,
+                          tb_cl.crtnprice,
+                          tb_cl.crtncnt,
+                          tb_cl.crtrtio
+              			from tb_clientreturn tb_cl right outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio
+              			where tb_cl.scryn='N') B 
+              			where A.pdno = B.pdno 
+                    ) D
+				where C.rtnno = D.rtnno
+		       and C.rtnno = #{rtnno}
+		       and D.pdno = #{pdno}
+		</select>
+		
+		<update id="ReturnApproval">
+			update tb_clientreturn set scryn ='Y' where rtnno = #{rtnno} and pdno = #{pdno}
+		</update>
+		
+		<update id="updateReturnDate">
+			update tb_return set rtncomdate = NOW() where rtnno = #{rtnno}
+		</update>
+		
+		
+		<insert id="ReturnStock">
+			insert into tb_stock (whcode,stockiono,rtnno,stockcnt,pdcode,pdmdno,pdno)
+			select   E.whcode
+			        ,C.rtnio
+			        ,C.rtnno
+			        ,D.crtncnt
+			        ,D.pdcode
+			        ,D.pdmdno
+			        ,D.pdno
+							      from tb_return C ,
+								         (
+								           select A.pdnm,A.pdcode,A.pdmdno,B.rtnno,B.crtnprice,B.pdno,B.crtncnt
+			        from tb_pddetail A,
+               (select 
+              			tb_cl.rtnno 
+                    ,tb_cl.pdmdno 
+                    ,tb_cl.pdno
+                    ,tb_cl.crtnprice
+                    ,tb_cl.crtncnt
+              			from tb_clientreturn tb_cl left outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio 
+              			where tb_cl.scryn='N'
+              			union 
+              			select tb_busi.rtnno ,tb_busi.pdmdno ,tb_busi.pdno,tb_cl.crtnprice,tb_cl.crtncnt
+              			from tb_clientreturn tb_cl right outer join tb_business tb_busi 
+              			on tb_cl.rtnno = tb_busi.brtrtio
+              			where tb_cl.scryn='N') B 
+              			where A.pdno = B.pdno 
+							     ) D ,
+			             (select * from tb_warehouse where whcode = #{whcode}) E
+					   where C.rtnno = D.rtnno 
+					       and C.rtnno = #{rtnno}
+					       and D.pdno = #{pdno}
+		</insert>
+		
+		
+		
+		
+		<!-- 반품 승인 완료시 배송정보 추가 -->
+		<insert id="insertDelReturn">
+			<selectKey order="BEFORE" keyProperty="delno" resultType="int">
+				SELECT IFNULL(MAX(delno),0)+1 FROM tb_delivery
+			</selectKey>
+		
+			INSERT INTO tb_delivery
+			(
+				delno,
+				delio,
+				rtnno,
+				deliono,
+				userID,
+				delstate,
+				delenddate
+			)VALUES(
+				#{delno},
+				#{delio},
+				#{rtnno},
+				#{deliono},
+				null,
+				2,
+				null
+			)
+		</insert>
+		
+		<!-- 반품 완료시 재고정보에 insert -->
+
+		<insert id="insertStock">
+			<selectKey order="BEFORE" keyProperty="stockno" resultType="int">
+				SELECT IFNULL(MAX(stockno),0)+1 FROM tb_stock
+			</selectKey>
+			
+			INSERT INTO tb_stock(
+				stockno,
+				whcode,
+				stockiono,
+				stockdtiono,
+				rtnno,
+				stockcnt,
+				pdcode,
+				pdmdno,
+				pdno
+			)VALUES(
+				#{stockno},
+				3,
+				#{delio},
+				#{deliono},
+				#{rtnno},
+				#{rtncnt},
+				#{pdcode},
+				#{pdmdno},
+				#{pdno}
+			)
+		
+		</insert>
+
+
+
+
+
+
+</mapper>

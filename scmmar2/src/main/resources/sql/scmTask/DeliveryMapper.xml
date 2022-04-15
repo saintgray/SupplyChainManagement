@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmTask.dao.DeliveryDao">
+	
+	<!-- 목록 조회 -->
+	<select id="listDelivery" resultType="kr.happyjob.study.scmTask.model.DeliveryModel">
+		/*kr.happyjob.study.scmTask.dao.DeliveryDao.listDelivery*/
+		SELECT
+			DEL.deliono as orderSeq
+          , ODDT.oddtdate as orderDate
+          , OD.userID as client
+          , ODDT.oddtcnt as orderCnt
+      FROM tb_delivery DEL
+           INNER JOIN tb_orderdetail ODDT ON DEL.deliono = ODDT.oddtno
+           INNER JOIN tb_order OD ON OD.orderno = ODDT.orderno
+     ORDER BY DEL.deliono ASC
+	 LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 목록 총 갯수 조회 -->
+	<select id="countListDelivery" resultType="Integer">
+		/*kr.happyjob.study.scmTask.dao.DeliveryDao.countListDelivery*/
+		SELECT COUNT(*) AS tot_cnt
+        FROM tb_delivery DEL
+           INNER JOIN tb_orderdetail ODDT ON ODDT.oddtno = DEL.deliono
+           INNER JOIN tb_order CD ON CD.orderno = ODDT.orderno
+	</select>
+	
+	<!-- 상세 조회 -->
+	<select id="selectDelivery" resultType="kr.happyjob.study.scmTask.model.DeliveryModel">
+		/*kr.happyjob.study.scmTask.dao.DeliveryDao.selectDelivery*/
+		    SELECT
+			     ODDT.oddtno as orderSeq, 
+			     ODDT.oddtdate as orderDate,
+			     OD.userID as client,
+			     PD.pdnm as product,
+			     ODDT.oddtcnt as orderCnt,
+			     US.name as name,
+			     OD.orderpayyn as payyn
+    		FROM tb_orderdetail ODDT
+			    INNER JOIN tb_order OD on ODDT.orderno = OD.orderno
+			    INNER JOIN tb_pddetail PD ON ODDT.pdno = PD.pdno
+			    INNER JOIN tb_delivery DEL ON ODDT.oddtno = DEL.deliono
+			    LEFT OUTER JOIN tb_userinfo US ON DEL.userID = US.loginID
+		  WHERE ODDT.oddtno = #{orderSeq}
+	</select>
+</mapper>

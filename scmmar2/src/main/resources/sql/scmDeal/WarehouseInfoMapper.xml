@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmDeal.dao.WarehouseInfoDAO">
+
+	<select id="selectList" resultType="kr.happyjob.study.scmDeal.model.WarehouseInfo">
+		SELECT wh.whcode as whcode
+		     , wh.whnm as whnm
+		     , wh.whzip as whzip
+		     , wh.whplace as whplace
+		     , wh.whaddr as whaddr
+		     , wh.mgrnm as mgrnm
+		     , st.pdno as pdno
+		     , pd.pdnm as pdnm
+		     , SUM(st.stockcnt) as stockcnt
+		FROM tb_warehouse wh
+	    INNER JOIN tb_stock st ON wh.whcode = st.whcode
+	    INNER JOIN tb_pddetail pd ON pd.pdno = st.pdno 
+     	INNER JOIN tb_pdmodel PM ON PM.pdmdno = pd.pdmdno AND PM.pdcode = pd.pdcode
+		INNER JOIN tb_pdcategory PC ON PM.pdcode = PC.pdcode
+ 		WHERE st.stockiono LIKE '%O%'
+		 	<if test="(searchWord != null) and (!searchWord.equals(''))">
+		 		<choose>
+		 			<when test="searchType eq 'whnm'.toString()">
+		 				AND wh.whnm LIKE CONCAT('%', #{searchWord}, '%')
+		 			</when>
+		 			<when test="searchType eq 'pdno'.toString()">
+		 				AND pd.pdnm LIKE CONCAT('%', #{searchWord}, '%')
+		 			</when>
+		 		</choose>
+		 	</if>
+		 GROUP BY wh.whcode, wh.whnm, wh.whzip, wh.whplace, wh.whaddr, wh.mgrnm, st.pdno
+		 ORDER BY wh.whcode
+		 LIMIT  #{pageNumber}, #{pageSize}
+	</select>
+	
+	<select id="selectListTotal" resultType="int">
+		SELECT COUNT(*) FROM (
+				SELECT wh.whcode as whcode
+				     , wh.whnm as whnm
+				     , wh.whzip as whzip
+				     , wh.whplace as whplace
+				     , wh.whaddr as whaddr
+				     , wh.mgrnm as mgrnm
+				     , st.pdno as pdno
+				     , pd.pdnm as pdnm
+				     , SUM(st.stockcnt) as stockcnt
+		 	    FROM tb_warehouse wh
+			    INNER JOIN tb_stock st ON wh.whcode = st.whcode
+			    INNER JOIN tb_pddetail pd ON pd.pdno = st.pdno 
+		      	INNER JOIN tb_pdmodel PM ON PM.pdmdno = pd.pdmdno AND PM.pdcode = pd.pdcode
+				INNER JOIN tb_pdcategory PC ON PM.pdcode = PC.pdcode
+		 		WHERE st.stockiono LIKE '%O%'
+ 		 	<if test="(searchWord != null) and (!searchWord.equals(''))">
+		 		<choose>
+		 			<when test="searchType eq 'whnm'.toString()">
+		 				AND wh.whnm LIKE CONCAT('%', #{searchWord}, '%')
+		 			</when>
+		 			<when test="searchType eq 'pdno'.toString()">
+		 				AND pd.pdnm LIKE CONCAT('%', #{searchWord}, '%')
+		 			</when>
+		 		</choose>
+		 	</if>
+     GROUP BY wh.whcode, wh.whnm, wh.whzip, wh.whplace, wh.whaddr, wh.mgrnm, st.pdno) A
+	</select>
+	
+	<select id="selectDetailList" resultType="kr.happyjob.study.scmDeal.model.WarehouseInfo">
+	select A.whcode as whcode
+	      ,A.pdno as pdno
+	      ,C.pdnm as pdnm
+	      ,D.oddtcnt as oddtcnt
+	      ,D.oddtdate as oddtdate
+        ,SUBSTR(D.orderno,1,1) as oi
+	  from  tb_stock A 
+	       ,tb_warehouse B 
+	       ,tb_pddetail C
+	       ,tb_orderdetail D
+	    where A.whcode = #{whcode} 
+	    and A.whcode = B.whcode 
+	    and   A.pdno = C.pdno
+	    and   A.stockiono = D.orderno
+	    group by A.whcode ,A.stockno
+	    union
+	    select A.whcode
+	      ,A.pdno 
+	      ,C.pdnm
+	      ,D.impdtcnt
+	      ,D.impdtdate
+	      ,SUBSTR(D.impno,1,1) as oi
+	      from  tb_stock A 
+	           ,tb_warehouse B 
+	           ,tb_pddetail C
+	           ,tb_impdetail D
+	        where A.whcode = #{whcode}
+	          and   A.pdno = C.pdno
+	          and   A.stockiono = D.impno
+		LIMIT #{pageStartNo}, #{pageSize}
+	</select>
+	
+	<!--    1. 
+			SELECT st.whcode as whcode
+			     , pd.pdno as pdno
+			     , pd.pdnm as pdnm
+			     , odt.oddtcnt as oddtcnt
+			     , odt.oddtdate as oddtdate
+			 	 , imd.impdtcnt as impdtcnt
+			 	 , imd.impdtdate as impdtdate
+		      FROM tb_stock st
+		INNER JOIN tb_pddetail pd ON pd.pdno = st.pdno 
+		       AND pd.pdmdno = st.pdmdno AND pd.pdcode = st.pdcode
+		LEFT OUTER JOIN(
+						 SELECT oddtdate
+		               , SUM(oddtcnt) as oddtcnt
+		               , pdmdno
+		               , orderno
+		          		 FROM tb_orderdetail
+		          	   ) odt ON odt.orderno = st.stockiono
+		LEFT OUTER JOIN(
+						 SELECT impdtdate
+		               , SUM(impdtcnt) as impdtcnt
+			           , pdmdno
+			           , impordno
+				         FROM tb_impdetail
+				         ) imd ON imd.impordno = st.stockiono 
+		WHERE st.whcode = #{whcode}
+		ORDER BY imd.impdtdate
+	  	LIMIT #{pageStartNo}, #{pageSize}
+	  	
+	  	2.
+	  	SELECT st.whcode as whcode
+		     , st.pdno as pdno
+		     , pt.pdnm as pdnm
+		     , ot.oddtcnt as oddtcnt
+		     , ot.oddtdate as oddtdate
+		     , it.impdtcnt as impdtcnt
+		     , it.impdtdate as impdtdate
+		FROM tb_stock st
+		INNER JOIN tb_warehouse wh ON wh.whcode = st.whcode
+		INNER JOIN tb_pddetail pt ON st.pdcode = pt.pdcode
+		                          AND st.pdno = pt.pdno
+		                          AND st.pdmdno = pt.pdmdno
+		LEFT OUTER JOIN tb_orderdetail ot ON st.stockiono = ot.orderno
+		                                  AND st.pdcode = ot.pdcode
+		                                  AND st.pdno = ot.pdno
+		                                  AND st.pdmdno = ot.pdmdno
+		LEFT OUTER JOIN tb_impdetail it ON st.stockiono = it.impno
+		                                  AND st.pdcode = it.pdcode
+		                                  AND st.pdno = it.pdno
+		                                  AND st.pdmdno = it.pdmdno
+		WHERE st.whcode = #{whcode}
+		ORDER BY it.impdtdate
+	  	LIMIT #{pageStartNo}, #{pageSize}
+	 -->
+	
+	<select id="selectDetailTotal" resultType="int">
+         select count(*) from
+		(select A.whcode as whcode
+	      ,A.pdno as pdno
+	      ,C.pdnm as pdnm
+	      ,D.oddtcnt as oddtcnt
+	      ,D.oddtdate as oddtdate
+        ,SUBSTR(D.orderno,1,1) as oi
+	  from  tb_stock A 
+	       ,tb_warehouse B 
+	       ,tb_pddetail C
+	       ,tb_orderdetail D
+	    where A.whcode = #{whcode}
+	    and A.whcode = B.whcode 
+	    and   A.pdno = C.pdno
+	    and   A.stockiono = D.orderno
+	    group by A.whcode ,A.stockno
+	    union
+	    select A.whcode
+	      ,A.pdno 
+	      ,C.pdnm
+	      ,D.impdtcnt
+	      ,D.impdtdate
+	      ,SUBSTR(D.impno,1,1) as oi
+	      from  tb_stock A 
+	           ,tb_warehouse B 
+	           ,tb_pddetail C
+	           ,tb_impdetail D
+	        where A.whcode = #{whcode}
+	          and   A.pdno = C.pdno
+	          and   A.stockiono = D.impno) a
+	</select>
+
+</mapper>

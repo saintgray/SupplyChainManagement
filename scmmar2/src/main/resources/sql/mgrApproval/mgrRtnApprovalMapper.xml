@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.mgrApproval.dao.MgrRtnApprovalDao">
+
+	<!-- 반품미승인 목록 조회 -->
+	<select id="listRtnApproval" resultType="kr.happyjob.study.mgrApproval.model.MgrRtnApprovalModel">
+		/*kr.happy.study.mgrApproval.dao.MgrRtnApprovalDao.listRtnApproval*/
+		SELECT
+					u.name, ode.oddtdate, pde.pdnm, r.rtnregdate, cre.crtncnt, cre.crtnprice, cre.scryn, cre.crtrtio
+		FROM	
+					tb_order o join tb_userinfo u on o.userID = u.loginID
+					join tb_orderdetail ode	on o.orderno = ode.orderno
+					join tb_pddetail pde on ode.pdno = pde.pdno
+					join tb_return r on ode.orderno = r.rtnio
+					join tb_clientreturn cre on r.rtnno = cre.rtnno
+		WHERE cre.scryn = 'Y'
+					and cre.mgryn = 'N'
+				<if test="(sname != null) and (!sname.equals(''))">
+			     and pde.pdnm Like CONCAT('%', #{sname}, '%')
+				</if>
+				<if test ="(from_date != null) and (!from_date.equals(''))">
+			    and r.rtnregdate  <![CDATA[>=]]> STR_TO_DATE(#{from_date}, '%Y-%m-%d')   
+			</if>			
+			<if test ="(to_date != null) and (!to_date.equals(''))">
+			    and r.rtnregdate  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
+			</if>	
+		ORDER BY r.rtnregdate DESC
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 반품미승인 목록 총 개수 조회 -->
+	<select id="countListRtnApproval" resultType="int">
+		/*kr.happy.study.mgrApproval.dao.MgrRtnApprovalDao.countListRtnApproval*/
+		SELECT COUNT(1) AS tot_cnt 
+		FROM 
+					tb_order o join tb_userinfo u on o.userID = u.loginID
+					join tb_orderdetail ode	on o.orderno = ode.orderno
+					join tb_pddetail pde on ode.pdno = pde.pdno
+					join tb_return r on ode.orderno = r.rtnio
+					join tb_clientreturn cre on r.rtnno = cre.rtnno
+		WHERE cre.scryn = 'Y'
+					and cre.mgryn = 'N'
+			<if test="(sname != null) and (!sname.equals(''))">
+			     and pde.pdnm Like CONCAT('%', #{sname}, '%')
+			</if>
+	</select>
+
+	<!-- 임원 승인 여부 수정 -->
+	<update id = "updateRtnMgrYn">
+		/*kr.happy.study.mgrApproval.dao.MgrRtnApprovalDao.updateRtnMgrYn*/
+		UPDATE tb_clientreturn
+		SET 	mgryn = 'Y'
+		WHERE  crtrtio = #{crtrtio}
+	</update>
+
+	
+</mapper>

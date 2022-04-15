@@ -19,6 +19,7 @@ public class RefundinfoDTO {
 	String bank_name;
 	Integer purinf_id;
 	Integer return_cnt;
+	Integer rfinfo_id;
 	ArrayList<Integer> checkedPurinfIdList;
 	ArrayList<Integer> checkedReturnCntList;
 	
@@ -43,6 +44,13 @@ public class RefundinfoDTO {
 	}
 	public ArrayList<Integer> getCheckedReturnCntList() {
 		return checkedReturnCntList;
+	}
+	
+	public Integer getRfinfo_id() {
+		return rfinfo_id;
+	}
+	public void setRfinfo_id(Integer rfinfo_id) {
+		this.rfinfo_id = rfinfo_id;
 	}
 	public void setAccount_number(Integer account_number) {
 		this.account_number = account_number;

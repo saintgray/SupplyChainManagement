@@ -15,5 +15,6 @@ public interface RefundRequestDao {
 	public abstract int getTotalOrderListCnt(SearchParamDTO param);
 	public abstract int getTotalOrderDetailListCnt(int purID);
 	public abstract int deleteRefundinfoByPurinfID(int purinf_id);
+	public abstract int updatePurinfReturnYNtoY(int purinf_id);
 	
 }

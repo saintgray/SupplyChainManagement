@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmStandard.dao.NoticeBoardDao">
+
+	<!-- 공지사항 목록 조회 -->
+	<select id="noticeBoardlist" resultType="kr.happyjob.study.scmStandard.model.NoticeBoardModel">
+		SELECT  NT.ntc_no,
+		        MB.loginID,
+		        MB.name,
+		        NT.ntc_title,
+		        NT.ntc_content,
+		        NT.ntc_regdate,
+		        NT.ntc_readcnt,
+		        NT.file_server_path,
+		        NT.file_local_path,
+		        NT.file_relative_path,
+		        NT.file_new_name,
+		        NT.file_ofname,
+		        NT.file_size
+		FROM    tb_notice NT  
+		        inner join tb_userinfo MB ON MB.loginID = NT.loginID
+		        <where>
+					<if test="(searchword != null) or (searchword != '')">
+					    <if test="searchKey != 'all_ntc'.toString()">
+							<choose>
+								<when test="searchKey eq 'title'.toString()">
+									and NT.ntc_title Like CONCAT('%', #{searchword}, '%')
+									<![CDATA[
+										and (NT.ntc_regdate >= #{timeline1}
+										and NT.ntc_regdate <= #{timeline2})]]> 
+								</when>
+								<when test="searchKey eq 'writer'.toString()">
+									and MB.name Like CONCAT('%', #{searchword}, '%')
+									<![CDATA[
+										and (NT.ntc_regdate >= #{timeline1}
+										and NT.ntc_regdate <= #{timeline2})]]>
+								</when>
+								<otherwise>
+									and NT.ntc_title Like CONCAT('%', #{searchword}, '%')
+									and MB.name Like CONCAT('%', #{searchword}, '%')
+									<![CDATA[
+										and (NT.ntc_regdate >= #{timeline1}
+										and NT.ntc_regdate <= #{timeline2})]]>
+								</otherwise> 
+							</choose>
+						</if>
+					</if>
+				</where>
+		ORDER BY NT.ntc_no ASC
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	
+	<!-- 공지사항 카운트 -->
+	<select id="countListNoticeCod" resultType="int">
+	/*kr.happy.study.scmStandard.dao.NoticeBoardDao.countListNoticeCod*/
+		SELECT  count(*)
+		FROM    tb_notice NT
+		        inner join tb_userinfo MB ON MB.loginID = NT.loginID
+		        <where>
+					<if test="(searchword != null) or (searchword != '')">
+					    <if test="searchKey != 'all_ntc'.toString()">
+							<choose>
+								<when test="searchKey eq 'title'.toString()">
+									and NT.ntc_title Like CONCAT('%', #{searchword}, '%')
+									<![CDATA[
+										and (NT.ntc_regdate >= #{timeline1}
+										and NT.ntc_regdate <= #{timeline2})]]>
+								</when>
+								<when test="searchKey eq 'writer'.toString()">
+									and MB.name Like CONCAT('%', #{searchword}, '%')
+									<![CDATA[
+										and (NT.ntc_regdate >= #{timeline1}
+										and NT.ntc_regdate <= #{timeline2})]]>
+								</when>
+								<otherwise>
+									and NT.ntc_title Like CONCAT('%', #{searchword}, '%')
+									and MB.name Like CONCAT('%', #{searchword}, '%')
+									<![CDATA[
+										and (NT.ntc_regdate >= #{timeline1}
+										and NT.ntc_regdate <= #{timeline2})]]>
+								</otherwise> 
+							</choose>
+						</if>
+					</if>
+				</where>
+	</select>
+	
+	
+	<!-- 공지사항 조회수 -->
+	<update id="updateNoticeCnt" parameterType="int">
+		UPDATE tb_notice SET
+			   ntc_readcnt = ntc_readcnt + 1
+		WHERE  ntc_no = #{ntc_no}
+	</update>
+	
+	<!-- 공지사항 단건 조회 -->
+	<select id="selectNoticeCod" resultType="kr.happyjob.study.scmStandard.model.NoticeBoardModel">
+	/*kr.happy.study.scmStandard.dao.NoticeBoardDao.selectNoticeCod*/
+		SELECT  NT.ntc_no,
+		        MB.loginID,
+		        MB.name,
+		        NT.ntc_title,
+		        NT.ntc_content,
+		        NT.ntc_regdate,
+		        NT.ntc_readcnt,
+		        NT.file_server_path,
+		        NT.file_local_path,
+		        NT.file_relative_path,
+		        NT.file_new_name,
+		        NT.file_ofname,
+		        NT.file_size
+		FROM    tb_notice NT  
+		        inner join tb_userinfo MB
+		ON		MB.loginID = NT.loginID
+		WHERE	NT.ntc_no = #{ntc_no}
+	</select>
+	
+	<!-- 공지사항 파일 조회 -->
+	<select id="selectFile" resultType="kr.happyjob.study.scmStandard.model.NoticeBoardModel">
+		SELECT ntc_no,
+			   file_ofname,
+			   file_new_name,
+			   file_size
+		FROM   tb_notice
+		WHERE  ntc_no = #{ntc_no}
+	</select>
+	
+	<!-- 공지사항 신규 등록 -->
+	<insert id="insertNoticecode" useGeneratedKeys="true" keyProperty="ntc_no">
+	/*kr.happy.study.scmStandard.dao.NoticeBoardDao.insertNoticecode*/
+		INSERT INTO tb_notice
+			  (
+				  loginID
+				, name
+				, ntc_title
+				, ntc_content
+				, ntc_regdate
+				, ntc_readcnt
+				, file_server_path
+				, file_local_path
+				, file_relative_path
+				, file_new_name
+				, file_ofname
+				, file_size
+				) VALUES (
+				  #{loginID}
+				, #{name}
+				, #{ntc_title}
+				, #{ntc_content}
+				, now()
+				, '0'
+				, #{file_server_path}
+				, #{file_local_path}
+				, #{file_relative_path}
+				, #{file_new_name}
+				, #{file_ofname}
+				, #{file_size}
+				);
+	</insert>
+	
+
+	
+	<!-- 공지사항 수정 -->
+	<update id="updateNoticecode">
+		UPDATE tb_notice NT
+			INNER JOIN tb_userinfo MB
+			ON  MB.loginID = NT.loginID AND MB.name = NT.name
+		SET		MB.loginID = #{loginID},
+				MB.name = #{name},
+				NT.ntc_title = #{ntc_title},
+				NT.ntc_content = #{ntc_content},
+				NT.ntc_regdate = now(),
+				NT.ntc_readcnt = #{ntc_readcnt},
+				NT.file_server_path = #{file_server_path},
+		        NT.file_local_path = #{file_local_path},
+		        NT.file_relative_path = #{file_relative_path},
+		        NT.file_new_name = #{file_new_name},
+		        NT.file_ofname = #{file_ofname},
+		        NT.file_size = #{file_size}
+		WHERE	NT.ntc_no = #{ntc_no}
+	</update>
+	
+	
+	<!-- 공지사항 삭제 -->
+	<delete id="deleteNoticeCod">
+		/*kr.happy.study.scmStandard.dao.ProductDao.deleteProductCod*/
+		DELETE FROM tb_notice
+		WHERE ntc_no = #{ntc_no}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.crtOrder.dao.CrtOrderDao">
+
+	<select id="listProduct" resultType="kr.happyjob.study.crtOrder.model.CrtOrderModel">
+		   SELECT   
+		   			PC.pdcode,
+		            PC.pdcodenm,
+		            PD.pdmdno,
+		            PM.pdmdnm,
+		            PM.pdmdcop,
+		            PM.pdmdprice,
+		            PM.pdmdregdate,
+		            PD.pdno,
+		            PD.pdnm,
+		            PD.pdinfo,
+                	F.file_server_path
+		      FROM tb_pddetail PD
+		            inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+		            inner join tb_pdcategory PC on PM.pdcode = PC.pdcode
+                	left join tb_file F on F.pdno = PD.pdno AND F.pdmdno = PD.pdmdno AND F.pdcode = PD.pdcode
+					where 1=1
+					<if test = "category != null and category != '' ">
+						and PC.pdcodenm = #{category}
+					</if>			
+					<if test = "pdmdcop != null and pdmdcop != '' ">
+						and PM.pdmdcop = #{pdmdcop}
+					</if>
+			ORDER BY PD.pdcode ASC
+			LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<select id="countlistProduct" resultType="int">
+		   SELECT count(PD.pdno) AS tot_cnt
+		      FROM tb_pddetail PD
+		            inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+		            inner join tb_pdcategory PC on PM.pdcode = PC.pdcode 
+					where 1=1
+					<if test = "category != null and category != '' ">
+						and PC.pdcodenm = #{category}
+					</if>			
+					<if test = "pdmdcop != null and pdmdcop != '' ">
+						and PM.pdmdcop = #{pdmdcop}
+					</if>
+	</select>
+
+	<select id="categoryBoxList" resultType="kr.happyjob.study.crtOrder.model.CrtOrderModel">
+		 select 
+			  PDC.pdcode,
+			  PDC.pdcodenm,
+			  PDA.pdmdno,
+			  PDA.pdmdnm,
+			  PDA.pdmdcop
+			from tb_pdcategory PDC
+			left join 
+			  (select  
+			      PDM.pdcode,
+			      PDM.pdmdno,
+			      PDM.pdmdnm,
+			      PDM.pdmdcop
+			  from
+			tb_pdmodel PDM
+			left join tb_pddetail PDD on PDM.pdmdno = PDD.pdmdno)
+			PDA on PDC.pdcode = PDA.pdcode
+	</select>
+	
+	<select id="pdmdcopBoxList" resultType="kr.happyjob.study.crtOrder.model.CrtOrderModel">
+		 select 
+      		DISTINCT(PDM.pdmdcop),
+		  	PDC.pdcodenm
+		from
+      		tb_pdmodel PDM
+			inner join  tb_pdcategory PDC on PDC.pdcode = PDM.pdcode
+			where PDC.pdcodenm =#{category} and PDM.pdcode = PDC.pdcode
+	</select>
+
+<select id="selectProductOne" resultType="kr.happyjob.study.crtOrder.model.CrtOrderModel">
+		    SELECT   
+		   			PC.pdcode,
+		            PC.pdcodenm,
+		            PD.pdmdno,
+		            PM.pdmdnm,
+		            PM.pdmdcop,
+		            PM.pdmdprice,
+		            PM.pdmdregdate,
+		            PD.pdno,
+		            PD.pdnm,
+		            PD.pdinfo,
+                	F.file_server_path
+		      FROM tb_pddetail PD
+		            inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+		            inner join tb_pdcategory PC on PM.pdcode = PC.pdcode
+                	left join tb_file F on F.pdno = PD.pdno AND F.pdmdno = PD.pdmdno AND F.pdcode = PD.pdcode 
+			WHERE
+			PD.pdno = #{pdno}			
+
+	</select>
+	
+	<insert id="insertCartProduct">
+		<selectKey resultType="string" keyProperty="cartno" order="BEFORE">
+            SELECT IFNULL(MAX(cartno),0) + 1 FROM tb_cart
+        </selectKey> 
+		INSERT INTO tb_cart(
+			cartno,
+			loginID,
+			cartcnt,
+			cartamount ,
+			carthopedate,
+			pdcode,
+			pdmdno,
+			pdno
+		)VALUES(
+			#{cartno},
+			#{loginID},
+			#{cartcnt},
+			#{cartamount},
+			#{carthopedate},
+			#{pdcode},
+			#{pdmdno},
+			#{pdno}
+		)
+		
+	</insert>
+	
+	
+ 	<insert id="insertOrderProduct">
+ 		<selectKey resultType="string" keyProperty="orderno" order="BEFORE">
+           	SELECT IFNULL(MAX(seq_orderno),0) + 1 FROM tb_seqorderno
+        </selectKey> 
+		INSERT INTO tb_order(
+        	orderno,
+			userID,
+			orderdate,
+			ordercnt,
+			orderpayyn,
+			orderamount
+		) VALUES(
+			CONCAT('O',#{orderno}),
+			#{userID},
+			NOW(),
+			#{ordercnt},
+			'Y',
+			#{orderamount}
+		)
+	</insert> 
+
+	<insert id="insertOrderProductDetail">
+ 			<selectKey resultType="int" keyProperty="oddtno" order="BEFORE">
+				SELECT IFNULL(MAX(oddtno),0)+1  as oddtno FROM tb_orderdetail
+        </selectKey> 
+		INSERT INTO tb_orderdetail(
+			oddtno,
+        	orderno,
+			oddtdate,
+			oddtcnt,
+			oddtreqyn,
+			oddtrtnyn,
+			oddtrecnt,
+			pdcode,
+			pdmdno,
+			pdno,
+			oddthopedate
+		) VALUES(
+			#{oddtno},
+			(SELECT CONCAT('O',IFNULL(MAX(seq_orderno),0)) as orderno FROM tb_seqorderno),
+			NOW(),
+			#{ordercnt},
+			'N',
+			'N',
+		 	 0,
+			#{pdcode},
+			#{pdmdno},
+			#{pdno},
+			#{oddthopedate}
+		)
+	</insert> 
+
+	<!--  주문 완료시 배송정보에 등록 -->
+
+		 <insert id="insertOrderDelivery">
+			<selectKey resultType="int" keyProperty="delno" order="BEFORE">
+	           	SELECT IFNULL(MAX(delno),0) +1 FROM tb_delivery
+	        </selectKey> 
+			
+			INSERT INTO tb_delivery(
+				delno,
+				delio,
+				rtnno,
+				deliono,
+				userID,
+				delstate,
+				delenddate
+				)VALUES(
+				#{delno},
+				(SELECT CONCAT('O',IFNULL(MAX(seq_orderno),0)) as orderno FROM tb_seqorderno),
+				null,
+				(SELECT IFNULL(MAX(oddtno),0) as oddtno FROM tb_orderdetail),
+				null,
+				0,
+				null
+				)
+		</insert>
+
+
+
+
+</mapper>

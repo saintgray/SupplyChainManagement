@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmTask.dao.ImpOrderDao">
+
+<select id="ImpSearch" resultType="kr.happyjob.study.scmTask.model.ImpOrderModel">
+
+	select pd.pdno
+	         ,pd.pdnm 
+	         ,ui.client
+	         ,id.impdtdate
+	         ,id.impdtcnt  
+	   from tb_impdetail id
+	          ,tb_import im
+	          ,tb_pddetail pd
+	          ,tb_userinfo ui
+     where id.pdmdno = pd.pdmdno 
+        and id.impno = im.impno 
+        and im.userid = ui.loginid
+        <if test="(sdate != null) and (!sdate.equals(''))">
+             and id.impdtdate <![CDATA[>=]]>   STR_TO_DATE(#{sdate},' %Y-%m-%d')
+        </if>
+        <if test="(edate != null) and (!edate.equals(''))">
+             and id.impdtdate <![CDATA[<=]]> STR_TO_DATE(#{edate},' %Y-%m-%d')  
+        </if>        
+		<if test="(sname != null) and (!sname.equals(''))">
+			<choose>
+				<when test="oname eq 'pdnm'.toString()">
+					and pd.pdnm Like CONCAT('%', #{sname}, '%')
+				</when>
+				<when test="oname eq 'client'.toString()">
+					and ui.client LIKE CONCAT('%', #{sname}, '%')
+				</when>
+				<otherwise>
+					AND 1=2
+				</otherwise>
+			</choose>
+		</if>
+		group by id.impordno
+		LIMIT #{pageIndex}, #{pageSize}
+
+</select>
+
+<select id ="countImp" resultType="Int">
+	select count(1) from 
+	(select pd.pdno
+	         ,pd.pdnm 
+	         ,ui.client
+	         ,id.impdtdate
+	         ,id.impdtcnt  
+	   from tb_impdetail id
+	          ,tb_import im
+	          ,tb_pddetail pd
+	          ,tb_userinfo ui
+     where id.pdmdno = pd.pdmdno 
+        and id.impno = im.impno 
+        and im.userid = ui.loginid
+        <if test="(sdate != null) and (!sdate.equals(''))">
+             and id.impdtdate <![CDATA[>=]]>   STR_TO_DATE(#{sdate},' %Y-%m-%d')
+        </if>
+        <if test="(edate != null) and (!edate.equals(''))">
+             and id.impdtdate <![CDATA[<=]]> STR_TO_DATE(#{edate},' %Y-%m-%d')  
+        </if>        
+		<if test="(sname != null) and (!sname.equals(''))">
+			<choose>
+				<when test="oname eq 'pdnm'.toString()">
+					and pd.pdnm Like CONCAT('%', #{sname}, '%')
+				</when>
+				<when test="oname eq 'client'.toString()">
+					and ui.client LIKE CONCAT('%', #{sname}, '%')
+				</when>
+				<otherwise>
+					AND 1=2
+				</otherwise>
+			</choose>
+		</if>
+		group by id.impordno) as Tot
+</select>
+
+
+</mapper>

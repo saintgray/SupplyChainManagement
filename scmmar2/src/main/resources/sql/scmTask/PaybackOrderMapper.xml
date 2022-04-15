@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmTask.dao.PaybackOrderDao">
+
+
+<!-- 	반품신청 목록 조회 -->
+	<select id="listPaybackOrder" resultType="kr.happyjob.study.scmTask.model.PaybackOrderModel">
+		SELECT 
+		  	U.client
+		  , OD.oddtdate
+		  , PD.pdnm
+		  , CRT.crtncnt
+		  , CRT.crtnprice
+		  , DV.delstate
+		  , CRT.rtnno
+		  ,	CRT.crtrtio
+		  , CRT.crtrtyn
+		  
+		FROM			tb_clientreturn CRT
+		  INNER JOIN	tb_orderdetail OD ON CRT.crtrtio = OD.oddtno
+		  INNER JOIN	tb_order ORD ON ORD.orderno = OD.orderno
+		  INNER JOIN	tb_userinfo U ON ORD.userID = U.loginID
+		  INNER JOIN	tb_pddetail PD ON PD.pdno = OD.pdno
+		  INNER JOIN	tb_pdmodel PM ON PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+		  INNER JOIN	tb_pdcategory PC ON PM.pdcode = PC.pdcode  
+		  INNER JOIN	tb_delivery DV ON DV.rtnno = CRT.rtnno
+		  
+		<where>		CRT.mgryn = 'Y'
+			AND		CRT.crtrtyn = 'N'
+			AND		DV.delstate = 2
+			AND		CRT.crtrtio = DV.deliono
+			<if test="(sname != null) and (!sname.equals(''))">
+				AND		U.client Like CONCAT('%', #{sname}, '%')
+				<choose>
+					<when test="(from_date != null) and (!from_date.equals(''))">				
+						AND		OD.oddtdate between #{from_date} and #{to_date}
+					</when>
+				</choose>
+			</if>
+		</where>
+		
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+
+<!-- 반품신청 목록 총 갯수 조회 -->
+	<select id="countListPaybackOrder" resultType="int">
+
+		SELECT		COUNT(1) AS tot_paybackCnt
+		
+		FROM		tb_clientreturn as CRT
+		INNER JOIN	tb_orderdetail OD ON CRT.crtrtio = OD.oddtno
+		INNER JOIN	tb_order ORD ON ORD.orderno = OD.orderno
+		INNER JOIN	tb_userinfo U ON ORD.userID = U.loginID
+		INNER JOIN	tb_delivery DV ON DV.rtnno = CRT.rtnno
+		
+		<where>		CRT.mgryn = 'Y'
+			AND		CRT.crtrtyn = 'N'
+			AND		DV.delstate = 2
+			AND		CRT.crtrtio = DV.deliono
+			<if test="(sname != null) and (!sname.equals(''))">
+				AND		U.client Like CONCAT('%', #{sname}, '%')
+				<choose>
+					<when test="(from_date != null) and (!from_date.equals(''))">				
+						AND		OD.oddtdate between #{from_date} and #{to_date}
+					</when>
+				</choose>
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- 반품승인여부 업데이트 -->
+	<update id="updateOdryn">
+		UPDATE 		tb_orderdetail as OD
+		INNER JOIN	tb_clientreturn as CRT 
+		ON 			CRT.crtrtio = OD.oddtno
+		SET 		CRT.crtrtyn = 'Y' 
+		WHERE 		CRT.rtnno = #{rtnno} and CRT.crtrtio = #{crtrtio}
+		AND			CRT.mgryn = 'Y'
+	</update>
+	
+</mapper>

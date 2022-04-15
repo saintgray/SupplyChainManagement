@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.crtOrder.dao.CrtCartDao">
+
+	<select id="cartInfoList" resultType="kr.happyjob.study.crtOrder.model.CrtCartModel">
+	
+			select
+			  CRT.cartno,
+			  CRT.loginID,
+			  CRT.cartcnt,
+			  CRT.cartamount,
+			  CRT.carthopedate,
+			  CRT.pdcode,
+			  CRT.pdmdno,
+			  CRT.pdno,
+			  PRO.pdcodenm,
+			  PRO.pdmdnm,
+			  PRO.pdmdprice,
+			  PRO.pdmdcop,
+			  PRO.pdmdregdate,
+			  PRO.pdnm,
+			  PRO.pdinfo,
+			  PRO.file_server_path
+			from tb_cart CRT
+			left join 
+			  (  SELECT   
+		   			PC.pdcode,
+		            PC.pdcodenm,
+		            PD.pdmdno,
+		            PM.pdmdnm,
+		            PM.pdmdcop,
+		            PM.pdmdprice,
+		            PM.pdmdregdate,
+		            PD.pdno,
+		            PD.pdnm,
+		            PD.pdinfo,
+                	F.file_server_path
+		      FROM tb_pddetail PD
+		            inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+		            inner join tb_pdcategory PC on PM.pdcode = PC.pdcode
+                	left join tb_file F on F.pdno = PD.pdno AND F.pdmdno = PD.pdmdno AND F.pdcode = PD.pdcode
+					) PRO
+   			on PRO.pdno = CRT.pdno
+   			where loginID = #{loginID}
+	</select>
+	
+	<insert id="saveCartOrder">
+	
+	<selectKey resultType="string" keyProperty="orderno" order="BEFORE">
+           	SELECT IFNULL(MAX(seq_orderno),0) + 1 FROM tb_seqorderno
+        </selectKey> 
+		INSERT INTO tb_order(
+        	orderno,
+			userID,
+			orderdate,
+			ordercnt,
+			orderpayyn,
+			orderamount
+		) VALUES(
+			CONCAT('O',#{orderno}),
+			#{userID},
+			NOW(),
+			#{ordercnt},
+			'Y',
+			#{orderamount}
+		)
+	</insert>
+	
+	<insert id="saveCartOrderDetail">
+ 		<selectKey resultType="int" keyProperty="oddtno" order="BEFORE">
+				SELECT IFNULL(MAX(oddtno),0)+1  as oddtno FROM tb_orderdetail
+        </selectKey> 
+		INSERT INTO tb_orderdetail(
+			oddtno,
+        	orderno,
+			oddtdate,
+			oddtcnt,
+			oddtreqyn,
+			oddtrtnyn,
+			oddtrecnt,
+			pdcode,
+			pdmdno,
+			pdno,
+			oddthopedate
+		) VALUES(			
+			#{oddtno},
+			(SELECT CONCAT('O',IFNULL(MAX(seq_orderno),0)) as orderno FROM tb_seqorderno),
+			NOW(),
+			#{oddtcnt},
+			'N',
+			'N',
+		 	 0,
+			#{pdcode},
+			#{pdmdno},
+			#{pdno},
+			#{oddthopedate}
+		)
+	</insert> 
+	
+	<delete id="deleteCart">
+		DELETE FROM 
+			tb_cart
+		WHERE cartno = #{cartno}
+	</delete>
+
+
+	<!--  주문 완료시 배송정보에 등록 -->
+
+		 <insert id="insertCartOrderDelivery">
+			<selectKey resultType="int" keyProperty="delno" order="BEFORE">
+	           	SELECT IFNULL(MAX(delno),0) +1 FROM tb_delivery
+	        </selectKey> 
+			
+			INSERT INTO tb_delivery(
+				delno,
+				delio,
+				rtnno,
+				deliono,
+				userID,
+				delstate,
+				delenddate
+				)VALUES(
+				#{delno},
+				(SELECT CONCAT('O',IFNULL(MAX(seq_orderno),0)) as orderno FROM tb_seqorderno),
+				null,
+				(SELECT IFNULL(MAX(oddtno),0) as oddtno FROM tb_orderdetail),
+				null,
+				0,
+				null
+				)
+		</insert>
+
+</mapper>

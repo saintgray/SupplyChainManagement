@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.crtCs.dao.CrtCsDao">
+
+	<insert id="insertNewQuestion">
+		<selectKey order="BEFORE" keyProperty="qna_no" resultType="int">
+			SELECT IFNULL(MAX(qna_no),0)+1 FROM tb_qna
+		</selectKey>
+		INSERT INTO tb_qna
+		(
+			qna_no,
+			loginID,
+			qna_title,
+			qna_content,
+			qna_regdate,
+			qna_ano,
+			qna_atitle,
+			qna_acontent,
+			qna_aregdate,
+			qna_astate,
+			qna_category
+		)VALUES(
+			#{qna_no},
+			#{loginID},
+			#{qna_title},
+			#{qna_content},
+			NOW(),
+			null,
+			null,
+			null,
+			null,
+			0,
+			#{qna_category}
+		)
+	</insert>
+	
+	<select id="selectQnAlist" resultType="kr.happyjob.study.crtCs.model.CrtCsModel">
+		select 
+			qna_no,
+			qna_title,
+			qna_content,
+			qna_regdate,
+			qna_ano,
+			qna_atitle,
+			qna_acontent,
+			qna_aregdate,
+			qna_astate,
+			qna_category
+		from tb_qna
+		where loginID = #{loginID}
+		ORDER BY qna_regdate DESC
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+
+
+	<select id="countQnAlist" resultType="int">
+		select 
+			count(1)
+		from tb_qna
+		where loginID = #{loginID}
+		ORDER BY qna_regdate ASC
+	</select>
+
+	<select id="selectQnaOne" resultType="kr.happyjob.study.crtCs.model.CrtCsModel">
+		select
+			qna_no,
+			loginID,
+			qna_title,
+			qna_content,
+			qna_regdate,
+			qna_ano,
+			qna_atitle,
+			qna_acontent,
+			qna_aregdate,
+			qna_astate,
+			qna_category
+		from tb_qna
+		where qna_no = #{qna_no} and loginID = #{loginID}
+	</select>
+
+	<update id="updateQna">
+	
+		UPDATE tb_qna SET
+			qna_title = #{qna_title},
+			qna_content = #{qna_content},
+			qna_category = #{qna_category}
+		WHERE qna_no = #{qna_no} and loginID = #{loginID}
+	
+	</update>
+	
+	<delete id="deleteQna">
+		DELETE FROM 
+			tb_qna
+		WHERE qna_no = #{qna_no} and loginID = #{loginID}
+	</delete>
+
+
+</mapper>

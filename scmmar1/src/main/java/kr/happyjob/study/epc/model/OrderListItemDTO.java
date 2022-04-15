@@ -10,6 +10,7 @@ public class OrderListItemDTO {
 	String wanted_date;
 	String deliverStatus;
 	String returnYN;
+	int rfinfo_id;
 	int price;
 	int pur_cnt;
 	int pur_id;
@@ -60,6 +61,12 @@ public class OrderListItemDTO {
 		return returnYN;
 	}
 	
+	public int getRfinfo_id() {
+		return rfinfo_id;
+	}
+	public void setRfinfo_id(int rfinfo_id) {
+		this.rfinfo_id = rfinfo_id;
+	}
 	public int getReturn_cnt() {
 		return return_cnt;
 	}

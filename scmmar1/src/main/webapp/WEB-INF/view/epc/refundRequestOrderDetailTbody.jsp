@@ -7,7 +7,7 @@
                     <td>
                         <c:choose>
                             <c:when test="${item.returnYN == 'Y'}">
-                                <input type="button" name="cancelRefund" value="반품 취소">
+                                <input type="button" name="cancelRefund" class="cancelRefund" value="반품 취소">
                             </c:when>
                             <c:when test="${item.returnYN == 'N'}">
                                 <input type="checkbox" name="isRefund" id="isRefund">
@@ -20,7 +20,7 @@
                                 <span name="refund_cnt">${item.return_cnt}</span>
                             </c:when>
                             <c:when test="${item.returnYN == 'N'}">
-                                <input type="number" name="refund_cnt" class="refund_cnt" id="refund_cnt" value="${item.return_cnt}" min="1" max="${item.pur_cnt}">
+                                <input type="number" name="refund_cnt" class="refund_cnt" id="refund_cnt" value="${item.pur_cnt}" min="1" max="${item.pur_cnt}">
                             </c:when>
                         </c:choose>
                     </td>
@@ -30,6 +30,7 @@
                     <td>
                         <span name="pur_id" id="pur_id">${item.pur_id}</span>
                         <input type="hidden" name="purinf_id" class="purinf_id" value="${item.purinf_id}" />
+                        <input type="hidden" name="rfinfo_id" class="rfinfo_id" value="${item.rfinfo_id}" />
                         <input type="hidden" id="totalOrderDetailListCnt" value="${totalOrderDetailListCnt}" />
                     </td>
                     <td>

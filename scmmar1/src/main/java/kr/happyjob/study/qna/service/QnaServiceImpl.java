@@ -8,6 +8,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mchange.rmi.NotAuthorizedException;
+
 import kr.happyjob.study.qna.dao.QnaDao;
 import kr.happyjob.study.qna.exception.NotHaveAuthToWatchQnaException;
 import kr.happyjob.study.qna.model.PageInfo;
@@ -89,6 +91,63 @@ public class QnaServiceImpl implements QnaService {
 		
 		return info;
 	}
+	
+	
+	@Override
+	public int insertQna(QnaDetail data,String loginID) throws Exception {
+		
+		int result=0;
+		
+		if(loginID!=null){
+			data.setLoginID(loginID);
+			result=sst.getMapper(QnaDao.class).insertQna(data);
+		}else{
+			throw new NotAuthorizedException();
+		}
+		
+		
+		
+		return result;
+	}
+
+
+	@Override
+	public int updateQna(QnaDetail data,String loginID) throws Exception {
+		
+		
+		int result=0;
+		
+		dao=sst.getMapper(QnaDao.class);
+		String writerId=dao.getQnaInfo(data.getQna_id()).getLoginID();
+		if(loginID!=null && writerId.equals(loginID)){
+			data.setLoginID(loginID);
+			result=dao.updateQna(data);
+		}else{
+			throw new NotAuthorizedException();
+		}
+		
+		
+		return result;
+	}
+
+	
+	@Override
+	public int deleteQna(QnaDetail data,String loginID) throws Exception {
+		
+		int result=0;
+		
+		dao=sst.getMapper(QnaDao.class);
+		String writerId=dao.getQnaInfo(data.getQna_id()).getLoginID();
+		if(loginID!=null && writerId.equals(loginID)){
+			
+			result=dao.deleteQna(data.getQna_id());
+		}else{
+			throw new NotAuthorizedException();
+		}
+		return result;
+	}
+	
+	
 	
 	
 

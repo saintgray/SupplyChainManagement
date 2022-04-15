@@ -3,6 +3,9 @@
     				
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+
+
+
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/admin/basic.css" />
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/jh_css/style.css" />
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/js/jquery-ui/jquery-ui-1.11.4/jquery-ui.css" />
@@ -27,6 +30,7 @@
 <script type="text/javascript" charset="utf-8" src="${CTX_PATH}/js/jquery.model.js"></script>
 <!-- IE 8 이하에서 HTML5 태그 지원 -->
 <script type="text/javascript" charset="utf-8" src="${CTX_PATH}/js/html5shiv.js"></script>
+
 <!-- 공통 스크립트 -->
 <script type="text/javascript" charset="utf-8" src="${CTX_PATH}/js/common.js"></script>
 <script type="text/javascript" charset="utf-8" src="${CTX_PATH}/js/commonAjax.js"></script>
@@ -49,6 +53,5 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script> 
 
 <!-- sweet alert import -->
-<script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
-
+<script src='/js/sweetalert/sweetalert.min.js'></script>
 

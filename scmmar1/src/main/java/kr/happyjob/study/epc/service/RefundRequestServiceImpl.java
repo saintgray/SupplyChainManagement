@@ -69,7 +69,17 @@ public class RefundRequestServiceImpl implements RefundRequestService {
 	}
 	
 	public int deleteRefundinfoByPurinfID(int purinf_id) {
+		int result = 0;
+		int a = updatePurinfReturnYNtoY(purinf_id);
+		int b = rrdao.deleteRefundinfoByPurinfID(purinf_id);
+		if(a==1 && b==1) {
+			result =1;
+		}
+		return result;
+	}
+	
+	private int updatePurinfReturnYNtoY(int purinf_id) {
 		
-		return rrdao.deleteRefundinfoByPurinfID(purinf_id);
+		return rrdao.updatePurinfReturnYNtoY(purinf_id);
 	}
 }

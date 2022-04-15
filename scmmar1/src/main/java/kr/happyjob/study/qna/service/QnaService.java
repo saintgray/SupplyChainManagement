@@ -15,4 +15,10 @@ public interface QnaService {
 
 	QnaDetail getQnaDetail(String id, HttpSession session) throws NotHaveAuthToWatchQnaException;
 
+	int updateQna(QnaDetail data,String loginID) throws Exception;
+
+	int insertQna(QnaDetail data,String loginID) throws Exception;
+
+	int deleteQna(QnaDetail data, String loginID) throws Exception;
+
 }

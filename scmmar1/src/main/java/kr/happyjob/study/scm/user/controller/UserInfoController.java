@@ -75,12 +75,17 @@ public class UserInfoController {
 	@RequestMapping("/userinfo/{userID}")
 	@PostMapping
 	@ResponseBody
-	public UserDetail getUserInfo(@PathVariable("userID") String id){
+	public int getUserInfo(@PathVariable("userID") String id){
+		int userCount=0;
 		
-		return uiService.getUserInfo(id);
+		UserDetail detail=null;
+		
+		detail=uiService.getUserInfo(id);
+		
+		if(detail!=null){
+			userCount=1;
+		}
+		return userCount;
 	}
-	
-	
-	
 
 }

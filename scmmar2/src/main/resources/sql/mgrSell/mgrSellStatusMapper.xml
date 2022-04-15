@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.mgrSell.dao.MgrSellStatusDao">
+
+	<!-- 매출 목록 조회 -->
+	<select id="listSellStauts" resultType="kr.happyjob.study.mgrSell.model.MgrSellStatusModel">
+		/*kr.happy.study.mgrSell.dao.MgrSellStatusDao.listSellStauts*/
+		SELECT  
+					u.name, o.userID, SUM(o.orderamount) as usersell
+		FROM	
+			     	tb_order o JOIN tb_userinfo u ON o.userID = u.loginID
+	   WHERE 
+	   				o.orderpayyn = 'Y'
+	   <if test="(sname != null) and (!sname.equals(''))">
+			     and u.name Like CONCAT('%', #{sname}, '%')
+	  </if>
+		GROUP BY
+					 o.userID
+		ORDER BY 
+					usersell desc;
+	</select>
+	
+	<!-- 매출 목록 총 개수 조회 -->
+	<select id="countListSellStauts" resultType="int">
+		/*kr.happy.study.mgrSell.dao.MgrSellStatusDao.countListSellStauts*/
+		SELECT COUNT(DISTINCT 1) AS tot_cnt 
+		FROM	
+			      tb_order o JOIN tb_userinfo u ON o.userID = u.loginID
+	   WHERE 
+	 			  o.orderpayyn = 'Y'
+	    <if test="(sname != null) and (!sname.equals(''))">
+			     and u.name Like CONCAT('%', #{sname}, '%')
+	  </if>
+	</select>
+	
+	<!-- 매출 상세 목록 조회 -->
+	<select id="listDtSellStauts" resultType="kr.happyjob.study.mgrSell.model.MgrSellStatusDtModel">
+		/*kr.happy.study.mgrSell.dao.MgrSellStatusDao.listDtSellStauts*/
+		SELECT	
+					u.name, od.oddtno, od.oddtcnt, od.oddtdate, pm.pdmdprice, pd.pdnm, od.oddtcnt * pm.pdmdprice as oddtsell
+		FROM
+					tb_order o
+					JOIN tb_userinfo u ON o.userID = u.loginID
+					JOIN tb_orderdetail od ON o.orderno = od.orderno
+					JOIN tb_pdmodel pm ON od.pdmdno = pm.pdmdno
+					JOIN tb_pddetail pd ON pm.pdmdno = pd.pdmdno
+		WHERE
+					o.userID = #{userID}
+					and 	o.orderpayyn = 'Y'
+					and  od.oddtcnt is not null 
+		GROUP BY
+					od.oddtno
+		ORDER BY
+					 od.oddtdate desc
+		<if test="(pageIndex != null) and (!pageIndex.equals('')) and (pageSize != null) and (!pageSize.equals(''))">
+		LIMIT #{pageIndex}, #{pageSize}
+		</if>
+		</select>
+		
+		
+		<!-- 매출 상세 목록 총 개수 조회 -->
+		<select id="countListDtSellStauts" resultType="int">
+		/*kr.happy.study.mgrSell.dao.MgrSellStatusDao.countListDtSellStauts*/
+		SELECT COUNT(1) AS tot_cnt 
+		FROM
+					tb_order o
+					JOIN tb_userinfo u ON o.userID = u.loginID
+					JOIN tb_orderdetail od ON o.orderno = od.orderno
+		WHERE 
+					o.userID = #{userID}
+					and 	o.orderpayyn = 'Y'
+					and  od.oddtcnt is not null 
+			<if test="(sname != null) and (!sname.equals(''))">
+			     	and u.name Like CONCAT('%', #{sname}, '%')
+			</if>
+		
+	</select>
+</mapper>

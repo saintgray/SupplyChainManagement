@@ -245,7 +245,7 @@
 				btnHtml+='<button type="button" class="btn btn-primary" id="btnRegisterQna">등록</button>';
 				btnHtml+='<button type="button" class="btn btn-default" id="btnCancelUpdate">취소</button>';
 				btnHtml+='</div>';
-				$('#qnaInfoArea').append(titleArea).append(contentArea).append($(btnHtml));
+				$('#qnaInfoArea').empty().append(titleArea).append(contentArea).append($(btnHtml));
 				initSummernote($('#info-content'));
 				
 			}

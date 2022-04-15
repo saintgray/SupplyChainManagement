@@ -439,9 +439,16 @@
                     // 0 : same product diffrent date
                     // 1 : same product same date
 
-                    if (purCnt < 1 || !wantedDate) {
-                        alert('수량 또는 날짜를 확인해 주세요.');
+                    const now = new Date();
+                    const wanted = new Date(wantedDate);
+
+
+                    if (wanted < now.addDays(3)) {
+                        alert('최소 3일 후부터 선택해주세요.');
                         return;
+                    } else if (purCnt < 1) {
+                        alert('수량을 확인해 주세요.');
+
                     } else {
                         if (e.currentTarget.id == 'putCartProduct') {
                             if (!confirm('장바구니에 추가하시겠습니까?')) {
@@ -487,6 +494,12 @@
                             console.log(result);
                         }
                     });
+                }
+
+                Date.prototype.addDays = function(days) {
+                    const date = new Date(this.valueOf());
+                    date.setDate(date.getDate() + days);
+                    return date;
                 }
             </script>
         </body>

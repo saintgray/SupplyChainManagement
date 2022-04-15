@@ -136,7 +136,8 @@
 	}
 
 	function fAfterInsertOrUpdate(data,controlType) {
-		if (data == 1) {
+		console.log(data);
+		if (data==1) {
 			if(controlType=='REGISTER'){
 				alert('등록이 완료되었습니다');	
 			}else if(controlType=='UPDATE'){
@@ -157,15 +158,16 @@
 		var duplicated=false;
 		
 		var callback=function(data){
-			if(data!=null || data.length>0){
-				duplicated=true;
-			}else{
-				duplicated=false;
+			
+			if(data==1){
+				duplicated=true;	
 			}
 		}
 		
-		
-		callAjax('/scm/userinfo/'+loginID, 'POST', 'json', false, null, callback);
+		console.log(loginID);
+		console.log('/scm/userinfo/'+loginID);
+		console.log('started duplicated AJAX Call.......');
+		callAjax('/scm/userinfo/'+loginID, 'POST', 'json', false, {}, callback);
 		
 		return duplicated;
 	}

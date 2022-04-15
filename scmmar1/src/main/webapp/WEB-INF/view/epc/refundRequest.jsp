@@ -205,6 +205,7 @@
                     eventReturnBtn();
                     eventSearchBtn();
                     eventRequestPopBtn();
+                    eventCancelReturnBtn();
                 }
 
                 function eventReturnBtn() {
@@ -234,6 +235,23 @@
                     });
                     $('a#closeRefundinfo').click(gfCloseModal);
                     $('a#sendRefund').click(sendRefundRequest);
+                }
+
+                function eventCancelReturnBtn() {
+                    $('tbody#orderDetailMain').on('click', 'input.cancelRefund', function(e) {
+                        const pid = e.currentTarget.parentNode.parentNode.querySelector('.purinf_id').value;
+                        $.ajax({
+                            url: 'deleteRefundinfoByPurinfID',
+                            method: 'POST',
+                            data: {
+                                purinf_id: pid
+                            },
+                            success: function(result) {
+                                getOrderListTbody(getOrderListType.ready);
+                                console.log(result);
+                            }
+                        });
+                    });
                 }
 
                 function pageMoveFuncOrderList(currentPage) {
@@ -352,10 +370,17 @@
                         if (isChecked) {
                             const purinfID = $(item).find('input.purinf_id').val();
                             const returnCnt = $(item).find('input.refund_cnt').val();
+                            if (returnCnt < 1) {
+                                alert('반품 수량을 확인해 주세요');
+                            }
                             checkedPurinfIdList.push(purinfID);
                             checkedReturnCntList.push(returnCnt);
                         }
                     });
+                    if (checkedPurinfIdList.length < 1 || checkedReturnCntList.length < 1) {
+                        alert('반품할 항목을 선택해 주세요.');
+                        return;
+                    }
                     console.log('checkedPurinfIdList');
                     console.log(checkedPurinfIdList);
                     console.log('checkedReturnCntList');

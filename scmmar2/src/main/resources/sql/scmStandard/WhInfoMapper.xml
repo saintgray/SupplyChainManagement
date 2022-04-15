@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmStandard.dao.WhInfoDao">
+
+	<!-- 창고정보 목록 조회 -->
+	<select id="listWarehouseInfo" resultType="kr.happyjob.study.scmStandard.model.WhInfoModel">
+		
+		SELECT 
+  			  w.whcode
+  			, w.whnm
+  			, w.mgrnm
+  			, u.email
+  			, u.phone
+  			, w.whzip
+			, w.whplace
+  			, w.whaddr
+  
+		FROM  tb_warehouse as w
+		JOIN  (select clientnm, email, phone
+				from  tb_userinfo
+ 		       where user_Type = 'B') as u
+		ON    u.clientnm = w.mgrnm
+		<where>
+			<if test="(sname != null) and (!sname.equals(''))">
+				<choose>
+					<when
+						test="oname eq 'whnm'.toString()">
+						and w.whnm Like CONCAT('%', #{sname}, '%')
+					</when>
+					<when
+						test="oname eq 'whplace'.toString()">
+						and w.whplace LIKE CONCAT('%', #{sname}, '%')
+					</when>
+					<otherwise>
+						AND 1=2
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+		
+		ORDER BY w.whcode
+		LIMIT #{pageIndex}, #{pageSize}		
+		
+	</select>
+	
+	<!-- 창고정보 목록 총 갯수 조회 -->
+	<select id="countListWarehouseInfo" resultType="int">
+
+		SELECT COUNT(1) AS tot_whCnt
+		
+		FROM tb_warehouse
+		<where>
+			<if test="(sname != null) and (!sname.equals(''))">
+				<choose>
+					<when
+						test="oname eq 'whnm'.toString()">
+						and whnm Like CONCAT('%', #{sname}, '%')
+					</when>
+					<when
+						test="oname eq 'whplace'.toString()">
+						and whplace LIKE CONCAT('%', #{sname}, '%')
+					</when>
+					<otherwise>
+						AND 1=2
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 창고정보 단건 조회 -->
+	<select id="selectWarehouseInfo" resultType="kr.happyjob.study.scmStandard.model.WhInfoModel">
+		SELECT 
+  			  w.whcode
+  			, w.whnm
+  			, w.mgrnm
+  			, u.email
+  			, u.phone
+  			, w.whzip
+			, w.whplace
+  			, w.whaddr
+  
+		FROM	tb_warehouse as w
+		JOIN	(select clientnm, email, phone
+				from  tb_userinfo
+ 		    	where user_Type = 'B') as u
+		ON		u.clientnm = w.mgrnm
+		WHERE	w.whcode = #{whcode}
+	</select>
+	
+	
+	<!-- 창고정보 저장 -->
+	<insert id="insertWarehouseInfo">
+		
+		INSERT INTO tb_warehouse
+		(
+		    whcode, whnm, mgrnm, whzip, whplace, whaddr
+		)
+		VALUES
+		(
+				#{whcode}
+			,	#{whnm}
+			,	#{mgrnm}
+			,   #{whzip}
+			,   #{whplace}
+			,   #{whaddr}
+		)		
+	</insert>
+	
+	<!-- 창고정보 수정 -->
+	<update id="updateWarehouseInfo">
+		UPDATE tb_warehouse 
+		SET
+				whcode = #{whcode}
+			,   whnm = #{whnm}
+			,   mgrnm = #{mgrnm}
+			,   whzip = #{whzip}
+			,   whplace = #{whplace}
+			,   whaddr = #{whaddr}
+		WHERE	whcode = #{whcode};
+	</update>
+	
+	
+	<!-- 창고정보 삭제 -->
+	<delete id="deleteWarehouseInfo">
+		DELETE FROM tb_warehouse WHERE whcode = #{whcode}
+	</delete>
+	
+	
+	<select id="mgrnmList" resultType="kr.happyjob.study.system.model.ComnCodUtilModel">
+		SELECT	clientnm AS dtl_cod,
+				clientnm AS dtl_cod_nm
+		FROM	tb_userinfo
+		WHERE	user_Type ='B'
+	</select>
+	
+</mapper>

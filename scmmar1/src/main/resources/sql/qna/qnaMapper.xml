@@ -77,12 +77,36 @@
 			qna_id=#{arg0} AND
 			qna_deldate IS NULL 
 	</select>
+	
+	<insert id="insertQna"  parameterType="kr.happyjob.study.qna.model.QnaDetail">
+		INSERT INTO tb_Qna (qna_title, qna_content,loginID)
+			   VALUES (
+			   			#{qna_title},
+			   			#{qna_content},
+			   			#{loginID}
+			   			)
+	
+	</insert>
 
+	
+	<update id="updateQna"  parameterType="kr.happyjob.study.qna.model.QnaDetail">
+		UPDATE tb_Qna
+		SET
+			qna_title=#{qna_title},
+			qna_content=#{qna_content},
+			qna_editdate=current_timestamp
+		WHERE qna_id=#{qna_id}
+	</update>
+	
+	
 	<update id="deleteQna">
 		UPDATE tb_Qna
 		SET qna_deldate=current_timestamp
 		WHERE qna_id=#{arg0}
 	</update>
-
+	
+	
+	
+	
 
 </mapper>

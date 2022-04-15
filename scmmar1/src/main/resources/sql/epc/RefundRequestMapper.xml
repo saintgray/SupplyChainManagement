@@ -54,7 +54,7 @@
 	
 	<select id="getOrderDetailList" parameterType="kr.happyjob.study.epc.model.SearchParamDTO" resultType="kr.happyjob.study.epc.model.OrderListItemDTO">
 		SELECT 
-			    i.pur_id, i.purinf_id, s.sales_type, s.model_nm, s.mfcomp, s.price, i.pur_cnt, (price * pur_cnt) as total, i.returnYN, r.return_cnt
+			    i.pur_id, i.purinf_id, s.sales_type, s.model_nm, s.mfcomp, s.price, i.pur_cnt, (price * pur_cnt) as total, i.returnYN, r.return_cnt, r.rfinfo_id
 			FROM 
 			    tb_purchaseinfo i
 			    INNER JOIN tb_sales s ON s.sales_id = i.sales_id
@@ -111,4 +111,13 @@
     			purinf_id = #{purinf_id}
     </delete>
     
+    
+     <update id="updatePurinfReturnYNtoY" parameterType="int" >
+    	UPDATE
+    			tb_purchaseinfo
+    		SET 
+    			returnYN = 'N'
+    		WHERE 
+    			purinf_id = #{purinf_id}
+    </update>
 </mapper>

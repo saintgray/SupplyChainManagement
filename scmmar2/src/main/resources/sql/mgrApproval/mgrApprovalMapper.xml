@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.mgrApproval.dao.MgrImpApprovalDao">
+
+	<!-- 발주미승인 목록 조회 -->
+	<select id="listImpApproval" resultType="kr.happyjob.study.mgrApproval.model.MgrImpApprovalModel">
+		/*kr.happy.study.mgrApproval.dao.MgrImpApprovalDao.listImpApproval*/
+		SELECT  
+					c.comp_nm, p.pdnm, i.impcnt, i.impamount, i.impregdate, i.impmgryn, i.impno, 
+					d.impordno, d.impdtcnt, p.pdcode, p.pdmdno, p.pdno
+		FROM	
+			     	tb_import i left outer join tb_impdetail d 	on i.impno = d.impno
+			     	left outer join tb_pddetail p 	on d.pdno = p.pdno
+			 	    inner  join tb_comp c 	on i.comp_id = c.comp_id
+<!-- 			 	    inner join  tb_stock s on d.impordno = s.stockdtiono and d.impno = s.stockiono -->
+	   WHERE i.impmgryn = 'N'
+			<if test="(sname != null) and (!sname.equals(''))">
+			      and p.pdnm Like CONCAT('%', #{sname}, '%')
+			</if>
+			<if test ="(from_date != null) and (!from_date.equals(''))">
+			     and i.impregdate  <![CDATA[>=]]> STR_TO_DATE(#{from_date}, '%Y-%m-%d')   
+			</if>			
+			<if test ="(to_date != null) and (!to_date.equals(''))">
+			     and i.impregdate  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
+			</if>		
+		GROUP BY i.impno
+		ORDER BY i.impregdate DESC
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 발주 미승인 목록 총 개수 조회 -->
+	<select id="countListImpApproval" resultType="int">
+		/*kr.happy.study.mgrApproval.dao.MgrImpApprovalDao.countListImpApproval*/
+		SELECT COUNT(*) AS tot_cnt 
+		FROM	
+			      (SELECT  
+								c.comp_nm, p.pdnm, i.impcnt, i.impamount, i.impregdate, i.impmgryn, i.impno
+		      	   FROM	
+						     	tb_import i left outer join tb_impdetail d 	on i.impno = d.impno
+						     	left outer join tb_pddetail p 	on d.pdno = p.pdno
+						 	    inner  join tb_comp c 	on i.comp_id = c.comp_id
+	   			  WHERE i.impmgryn = 'N'
+	   			  	<if test="(sname != null) and (!sname.equals(''))">
+			     		and p.pdnm Like CONCAT('%', #{sname}, '%')
+					</if>
+			      GROUP BY i.impno
+				  ORDER BY i.impregdate DESC) A
+	</select>
+	
+	<!-- 임원 승인 여부 수정 -->
+	<update id = "updateImpMgrYn">
+		/*kr.happy.study.mgrApproval.dao.MgrImpApprovalDao.updateImpMgrYn*/
+		UPDATE tb_import  
+		SET 	impmgryn = 'Y',
+				imppayyn = 'Y',
+			   impdate = NOW()
+		
+		WHERE  impno = #{impno}
+	</update>
+
+	<!-- 발주 상세 목록 조회 -->
+	<select id="listDtImpApproval" resultType="kr.happyjob.study.mgrApproval.model.MgrImpApprovalModel">
+		/*kr.happy.study.system.dao.MgrImpApprovalDao.listDtImpApproval*/
+		SELECT	
+					c.comp_nm, p.pdnm, d.impdtcnt, d.impdtcnt*i.impprice as impdtprice, i.impregdate
+		FROM
+					tb_import i left outer join tb_impdetail d on i.impno = d.impno
+					left outer join tb_pddetail p on d.pdno = p.pdno
+					inner join tb_comp c on i.comp_id = c.comp_id
+		WHERE 
+			 i.impno = #{impno}
+<!-- 		<if test="(pageIndex != null) and (!pageIndex.equals('')) and (pageSize != null) and (!pageSize.equals(''))"> -->
+		LIMIT #{pageIndex}, #{pageSize}
+<!-- 		</if> -->
+		</select>
+		
+		
+		<!-- 발주 상세 목록 총 개수 조회 -->
+		<select id="countListImpApprovalDt" resultType="int">
+		/*kr.happy.study.mgrApproval.dao.mgrApprovalDao.countListImpApprovalDt*/
+		SELECT COUNT(1) AS tot_cnt 
+		FROM
+					tb_import i left outer join tb_impdetail d on i.impno = d.impno
+					left outer join tb_pddetail p on d.pdno = p.pdno
+					inner join tb_comp c on i.comp_id = c.comp_id
+		WHERE 
+				 i.impno = #{impno}
+			<if test="(sname != null) and (!sname.equals(''))">
+			     and p.pdnm Like CONCAT('%', #{sname}, '%')
+			</if>
+	</select>
+	
+	
+	<!-- 재고수량 insert -->
+	<insert id="insertStockCnt">
+		INSERT INTO tb_stock
+		(
+		whcode, 
+		stockiono, 
+		stockdtiono, 
+		stockcnt, 
+		pdcode, 
+		pdmdno, 
+		pdno
+		)
+		VALUES
+		(
+				2
+			,	#{impno}
+			,	#{impordno}
+			,	#{impdtcnt}
+			,	#{pdcode}
+			,	#{pdmdno}
+			,	#{pdno}
+		)
+	</insert>
+		
+	
+</mapper>

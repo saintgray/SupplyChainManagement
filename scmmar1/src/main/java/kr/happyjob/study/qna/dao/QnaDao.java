@@ -11,6 +11,8 @@ public interface QnaDao {
 	int getTotalCount(SearchParam param);
 	List<QnaListRow> getQnaList(SearchParam param);
 	QnaDetail getQnaInfo(String id);
-	int deleteQna(String id);
+	int deleteQna(String qna_id);
+	int updateQna(QnaDetail data);
+	int insertQna(QnaDetail data);
 
 }

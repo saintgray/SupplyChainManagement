@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import kr.happyjob.study.qna.exception.ContentNotExistException;
 import kr.happyjob.study.qna.exception.NotHaveAuthToWatchQnaException;
 import kr.happyjob.study.qna.model.PageInfo;
+import kr.happyjob.study.qna.model.QnaDetail;
 import kr.happyjob.study.qna.model.SearchParam;
 import kr.happyjob.study.qna.service.QnaService;
 
@@ -101,21 +102,26 @@ public class QnaController {
 	
 	@RequestMapping("/manage/{action}/{idx}")
 	@ResponseBody
-	public Map<String, Object> manageQna(@PathVariable(value="action") String action, @PathVariable(value="idx") String qna_id){
+	public Map<String, Object> manageQna(@PathVariable(value="action") String action, @PathVariable(value="idx") String qna_id,QnaDetail data,HttpSession session ){
 		
 		logger.info("+ manageQna initiate...");
 		
 		Map<String,Object> messageMap=new HashMap<String, Object>();
+		String loginID=session.getAttribute("loginId").toString();
 		
+		int manageResult=0;
 		
 		try{
-			switch(action){
+			switch(action.toUpperCase()){
 			
 			case "REGISTER":
+				manageResult=qnaService.insertQna(data,loginID);
 				break;
 			case "UPDATE":
+				manageResult=qnaService.updateQna(data,loginID);
 				break;
 			case "DELETE":
+				manageResult=qnaService.deleteQna(data,loginID);
 				break;
 			}
 
@@ -128,6 +134,10 @@ public class QnaController {
 			}else{
 				messageMap.put(MSG_KEY_VAL, SERVER_ERR);
 			}
+		}
+		
+		if(manageResult<1){
+			messageMap.put(MSG_KEY_VAL, SERVER_ERR);
 		}
 		
 		return messageMap;

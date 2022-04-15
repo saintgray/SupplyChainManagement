@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scmStandard.dao.ProductDao">
+
+	<!-- 제품 정보 목록 조회 -->
+	<select id="listProductCod" resultType="kr.happyjob.study.scmStandard.model.ProductModel">
+		/*kr.happy.study.scmStandard.dao.ProductDao.listProductCod*/
+		SELECT 	PC.pdcode,
+				PC.pdcodenm,
+				PD.pdmdno,
+				PM.pdmdnm,
+				PM.pdmdcop,
+				PM.pdmdprice,
+				PM.pdmdregdate,
+				PD.pdno,
+				PD.pdnm,
+				PD.pdinfo
+		FROM tb_pddetail PD
+				inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+				inner join tb_pdcategory PC on PM.pdcode = PC.pdcode   
+      		<where>
+				<if test="(searchword != null) or (searchword != '')">
+				    <if test="searchKey != 'all_pd'.toString()">
+						<choose>
+							<when test="searchKey eq 'pd_nm'.toString()">
+								and PD.pdnm Like CONCAT('%', #{searchword}, '%')
+							</when>
+							<when test="searchKey eq 'pd_mdnm'.toString()">
+								and PM.pdmdnm Like CONCAT('%', #{searchword}, '%')
+							</when>
+							<when test="searchKey eq 'pd_mdcop'.toString()">
+								and PM.pdmdcop Like CONCAT('%', #{searchword}, '%')
+							</when>
+							<otherwise>
+								and PD.pdnm Like CONCAT('%', #{searchword}, '%')
+								and PM.pdmdnm Like CONCAT('%', #{searchword}, '%')
+								and PM.pdmdcop Like CONCAT('%', #{searchword}, '%')
+							</otherwise> 
+						</choose>
+					</if>
+				</if>
+			</where>
+    	ORDER BY PD.pdno ASC 
+		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	
+	<!-- 제품 정보 카운트 -->
+	<select id="countListProductCod" resultType="int">
+	/*kr.happy.study.scmStandard.dao.ProductDao.countListProductCod*/
+		SELECT count(*)
+      	FROM tb_pddetail PD
+           inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+           inner join tb_pdcategory PC on PM.pdcode = PC.pdcode  
+    	<where>
+			<if test="(searchword != null) or (searchword != '')">
+			    <if test="searchKey != 'all_pd'.toString()">
+					<choose>
+						<when test="searchKey eq 'pd_nm'.toString()">
+							and PD.pdnm Like CONCAT('%', #{searchword}, '%')
+						</when>
+						<when test="searchKey eq 'pd_mdnm'.toString()">
+							and PM.pdmdnm Like CONCAT('%', #{searchword}, '%')
+						</when>
+						<when test="searchKey eq 'pd_mdcop'.toString()">
+							and PM.pdmdcop Like CONCAT('%', #{searchword}, '%')
+						</when>
+						<otherwise>
+							and PD.pdnm Like CONCAT('%', #{searchword}, '%')
+							and PM.pdmdnm Like CONCAT('%', #{searchword}, '%')
+							and PM.pdmdcop Like CONCAT('%', #{searchword}, '%')
+						</otherwise> 
+					</choose>
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- 제품 정보 단건 조회 -->
+	<select id="selectProductCod" resultType="kr.happyjob.study.scmStandard.model.ProductModel">
+	/*kr.happy.study.scmStandard.dao.ProductDao.selectProductCod*/
+		SELECT	PC.pdcode,
+				PC.pdcodenm,
+				PD.pdmdno,
+				PM.pdmdnm,
+				PM.pdmdcop,
+				PM.pdmdprice,
+				PM.pdmdregdate,
+				PD.pdno,
+				PD.pdnm,
+				PD.pdinfo
+		FROM tb_pddetail PD
+				inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+				inner join tb_pdcategory PC on PM.pdcode = PC.pdcode
+	    WHERE PD.pdno = #{pdno}
+	</select>
+	
+	
+	<!-- 제품 정보 파일 조회 -->
+	<select id="selectFile" resultType="kr.happyjob.study.scmStandard.model.ProductFileModel">
+		SELECT  pdcode,
+				pdmdno,
+				pdno,
+				file_no,
+				file_server_path,
+				file_local_path,
+				file_relative_path,
+				file_new_name,
+				file_ofname,
+				file_size
+		FROM    tb_file
+		WHERE   (pdno, pdmdno, pdcode) = (
+											SELECT  PD.pdno,	
+													PD.pdmdno,
+													PC.pdcode
+											FROM tb_pddetail PD
+                                    				inner join tb_pdmodel PM on PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+                                    				inner join tb_pdcategory PC on PM.pdcode = PC.pdcode 
+											WHERE PD.pdno = #{pdno}
+										  )
+	</select>
+	
+	
+	
+	<!-- 제품 정보 신규 등록(제품) -->
+	<insert id="insertproductcode">
+	/*kr.happy.study.scmStandard.dao.ProductDao.insertproductcode*/
+	<selectKey keyProperty="pdno" order="BEFORE" resultType="int">
+		SELECT IFNULL(MAX(pdno),0)+1 FROM tb_pddetail
+	</selectKey>
+		INSERT INTO tb_pddetail
+			  (
+			  	pdno
+			  , pdmdno
+			  , pdcode
+			  , pdnm
+			  , pdinfo
+			  , comp_id
+			  ) VALUES (
+			  	#{pdno}
+			  , #{pdmdno}
+			  , #{pdcode}
+			  , #{pdnm}
+			  , #{pdinfo}
+			  , #{comp_id}
+			  );
+	</insert>
+	
+	
+	<!-- 제품 정보 파일 등록 -->
+	<insert id="insertProducteFile">
+	<selectKey keyProperty="file_no" order="BEFORE" resultType="int">
+		SELECT IFNULL(MAX(file_no),0)+1 FROM tb_file
+	</selectKey>
+		INSERT INTO tb_file
+				(
+				  pdno
+				, pdmdno
+				, pdcode
+				, file_no
+				, file_server_path
+				, file_local_path
+				, file_relative_path
+				, file_new_name
+				, file_ofname
+				, file_size
+				) VALUES (
+				  #{pdno}
+				, #{pdmdno}
+				, #{pdcode}
+				, #{file_no}
+				, #{file_server_path}
+				, #{file_local_path}
+				, #{file_relative_path}
+				, #{file_new_name}
+				, #{file_ofname}
+				, #{file_size}
+				)
+	</insert>
+	
+	
+	<!-- 제품 정보 수정 -->
+	<update id="updateProductCod">
+		/*kr.happy.study.scmStandard.dao.ProductDao.updateProductCod*/
+		UPDATE tb_pddetail PD
+			INNER JOIN tb_pdmodel PM
+			ON PM.pdmdno = PD.pdmdno AND PM.pdcode = PD.pdcode
+		SET PD.pdnm = #{pdnm02}
+		  , PD.pdinfo = #{pdinfo}
+		  , PM.pdmdnm = #{pdmdnm}
+		  , PM.pdmdprice = #{pdmdprice}
+		  , PM.pdmdregdate = now()
+		WHERE PD.pdno = #{pdno}
+	</update>
+	
+	
+	<!-- 제품 정보 삭제 전 값 불러오기 -->
+    <select id="selectProductCodpre" resultType="kr.happyjob.study.scmStandard.model.ProductModel">
+		/*kr.happy.study.scmStandard.dao.ProductDao.selectProductCod*/
+		SELECT pdcode,
+			   pdmdno
+		FROM tb_pddetail
+	    WHERE pdno = #{pdno}
+	</select>	
+	
+	
+	<!-- 제품 파일 삭제 -->
+	<delete id="deleteFile">
+		DELETE FROM tb_file
+		WHERE  pdno = #{pdno}
+	</delete>
+	
+	
+	<!-- 제품 정보 삭제 -->
+	<delete id="deleteProductCod">
+		/*kr.happy.study.scmStandard.dao.ProductDao.deleteProductCod*/
+		DELETE FROM tb_pddetail
+		WHERE pdno = #{pdno}
+	</delete>
+	
+		
+	<!-- 제품 모델 정보 삭제 -->
+	<delete id="deleteModelCod">
+		/*kr.happy.study.scmStandard.dao.ProductDao.deleteModelCod*/
+		DELETE FROM tb_pdmodel WHERE pdmdno = #{pdmdno} and pdcode = #{pdcode}
+	</delete>
+	
+</mapper>
