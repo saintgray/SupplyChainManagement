@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.happyjob.study.common.comnUtils.FileModel;
 import kr.happyjob.study.common.comnUtils.NewFileUtil;
 import kr.happyjob.study.notice.dao.ScmNoticeDao;
 import kr.happyjob.study.notice.exception.NoticeNotExistException;
 import kr.happyjob.study.notice.model.NoticeModel;
-import kr.happyjob.study.scm.model.FileModel;
 
 @Service
 public class ScmNoticeServiceImpl implements ScmNoticeService {

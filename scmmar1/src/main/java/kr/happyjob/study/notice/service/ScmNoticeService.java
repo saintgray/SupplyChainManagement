@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.happyjob.study.common.comnUtils.FileModel;
 import kr.happyjob.study.notice.model.NoticeModel;
-import kr.happyjob.study.scm.model.FileModel;
 
 @Service
 public interface ScmNoticeService {

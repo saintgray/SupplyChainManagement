@@ -6,6 +6,7 @@ public class SalesRegData {
 	
 	private String model_code;
 	private String model_nm;
+	private String sales_type;
 	private String sales_id;
 	private String sales_nm;
 	private String mfcomp;
@@ -16,11 +17,12 @@ public class SalesRegData {
 		
 	}
 
-	public SalesRegData(String model_code, String model_nm, String sales_id, String sales_nm, String mfcomp,
-			String price, String info) {
-	
+	public SalesRegData(String model_code, String model_nm, String sales_type, String sales_id, String sales_nm,
+			String mfcomp, String price, String info) {
+		
 		this.model_code = model_code;
 		this.model_nm = model_nm;
+		this.sales_type = sales_type;
 		this.sales_id = sales_id;
 		this.sales_nm = sales_nm;
 		this.mfcomp = mfcomp;
@@ -42,6 +44,14 @@ public class SalesRegData {
 
 	public void setModel_nm(String model_nm) {
 		this.model_nm = model_nm;
+	}
+
+	public String getSales_type() {
+		return sales_type;
+	}
+
+	public void setSales_type(String sales_type) {
+		this.sales_type = sales_type;
 	}
 
 	public String getSales_id() {
@@ -83,6 +93,9 @@ public class SalesRegData {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+
+	
+	
 	
 	
 	

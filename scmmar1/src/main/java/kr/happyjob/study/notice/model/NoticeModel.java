@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.happyjob.study.scm.model.FileModel;
+import kr.happyjob.study.common.comnUtils.FileModel;
 
 public class NoticeModel {
 	

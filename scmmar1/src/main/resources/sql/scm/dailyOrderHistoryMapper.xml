@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.happyjob.study.scm.dao.DailyOrderHistoryDao">
+<mapper namespace="kr.happyjob.study.scm.orders.dao.DailyOrderHistoryDao">
 	
-	
-	<select id="listdailyOrderHistory" resultType="kr.happyjob.study.scm.model.DailyOrderHistoryModel">
+	<!--  decrepated -->
+	<select id="listdailyOrderHistory1" resultType="kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel">
 		SELECT    pur.pur_id AS pur_id
 				, pur.purdate AS purdate
 				, user.name AS name
@@ -71,6 +71,83 @@
 		LIMIT #{pageIndex}, #{pageSize}
 	</select>
 	
+	
+	<select id="listdailyOrderHistory" resultType="kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel">
+		SELECT
+			tp.pur_id AS pur_id,
+			date_format(tp.purdate,'%Y-%m-%d') AS purdate,
+			tu.name,
+			SUM(tpi.pur_cnt) AS pur_cnt_total,
+			SUM(ts.price*tpi.pur_cnt) AS total_price,
+			tp.depositYN,
+			CASE WHEN 
+				(SELECT COUNT(1) FROM tb_purchaseinfo tpi2 WHERE tpi2.pur_id=tp.pur_id AND tpi.returnYN = 'Y') &gt; 0
+				THEN 'Y'
+				ELSE 'N'
+				END AS returnYN
+		FROM 
+			tb_purchase tp  JOIN
+			tb_userinfo tu ON tp.loginID=tu.loginID
+						    JOIN
+			tb_purchaseinfo tpi ON tpi.pur_id=tp.pur_id
+							JOIN
+			tb_sales ts ON ts.sales_id=tpi.sales_id
+							LEFT JOIN
+			(
+			SELECT st.sales_id, sum(st_cnt) AS sumcnt 
+			FROM tb_stock st 
+			GROUP BY st.sales_id
+			) ll ON ll.sales_id=tpi.sales_id
+		
+		
+		<where>
+					<choose>
+						<when test="returnsearch == 'a'.toString()">
+							AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
+							<!-- and returnYN='Y' -->
+						</when>
+						<when test="returnsearch == 'b'.toString()">
+							AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id)=0
+							<!-- and returnYN='N' -->
+						</when>
+					</choose>
+				
+				<if test="!selectsearch.equals('')">
+					<choose>
+					<when test="selectsearch == '0'.toString()">
+					<![CDATA[
+						and (tp.purdate >=
+							#{datesearch1}
+							and
+							tp.purdate <=
+								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+							)
+						]]>		
+					</when>
+					<when test="selectsearch == '1'.toString()">
+					<![CDATA[
+						and (tp.purdate >=
+							#{datesearch1}
+							and
+							tp.purdate <=
+								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+							)
+						]]>
+					</when>
+				</choose>
+				</if>
+		</where>
+		GROUP BY tp.pur_id
+		ORDER BY tp.purdate DESC
+		LIMIT #{pageIndex}, #{pageSize}
+			
+						
+			
+		
+			
+	
+	</select>
+	
 	<select id="total" resultType="int">
 		SELECT  count(pur.pur_id)
 		FROM    tb_purchase pur 
@@ -124,7 +201,7 @@
 		</where>   
 	</select>
 	
-	<select id="onedailyOrderHistory" resultType="kr.happyjob.study.scm.model.WorkOrderModel">
+	<select id="onedailyOrderHistory" resultType="kr.happyjob.study.scm.orders.model.WorkOrderModel">
 		select pur.pur_id AS pur_id
 			,	pur.purdate AS purdate
 			,	user.name AS name 
@@ -143,7 +220,7 @@
   
 	</select>
 
-	<select id="comf" resultType="kr.happyjob.study.scm.model.DailyOrderHistoryModel">
+	<select id="comf" resultType="kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel">
 		select del.deliv_id
 		from tb_purchase pur
 			join tb_purchaseinfo pinfo on pur.pur_id = pinfo.pur_id
@@ -151,7 +228,7 @@
 		 where pur.pur_id = #{pur_id}
 	</select>
 	
-	<select id="come" resultType="kr.happyjob.study.scm.model.DailyOrderHistoryModel">
+	<select id="come" resultType="kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel">
 		select pur.pur_id
 		  from tb_purchase pur
 			  join tb_purchaseinfo pinfo on pur.pur_id = pinfo.pur_id
@@ -160,21 +237,21 @@
   	 where pur.pur_id = #{pur_id}
 	</select>
 	
-	<select id="warehouse" resultType="kr.happyjob.study.scm.model.warehouseModel">
+	<select id="warehouse" resultType="kr.happyjob.study.scm.orders.model.warehouseModel">
 		SELECT		wh_id AS wh_id
 				,	wh_nm AS wh_nm
 		FROM 		tb_warehouse
 		
 	</select>
 	
-	<select id="comp" resultType="kr.happyjob.study.scm.model.CompModel">
+	<select id="comp" resultType="kr.happyjob.study.scm.orders.model.CompModel">
 		SELECT		comp_id AS comp_id
 				,	comp_nm AS comp_nm
 		FROM		tb_comp
 	</select>
 	
 	
-	<select id="whcnt" resultType="kr.happyjob.study.scm.model.warehouseModel">
+	<select id="whcnt" resultType="kr.happyjob.study.scm.orders.model.warehouseModel">
 		SELECT 		st.st_cnt AS st_cnt
 		FROM 	 	tb_stock st
 			 join tb_sales sa ON sa.sales_id = st.sales_id

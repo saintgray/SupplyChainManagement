@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.happyjob.study.common.comnUtils.FileModel;
 import kr.happyjob.study.notice.exception.NoticeNotExistException;
 import kr.happyjob.study.notice.model.NoticeModel;
 import kr.happyjob.study.notice.service.ScmNoticeService;
-import kr.happyjob.study.scm.model.FileModel;
 
 
 @Controller

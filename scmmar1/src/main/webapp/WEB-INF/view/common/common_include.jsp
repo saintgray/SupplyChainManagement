@@ -15,7 +15,7 @@
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/vuecss/bootstrap-datepicker3.standalone.min.css" />
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/vuecss/bootstrap-datepicker3.standalone.css" />
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/js/bootstrap/custom_bootstrap.css" />
-<%-- <link rel="stylesheet" type="text/css" href="${CTX_PATH}/js/statistics/css/font-awesome.min.css" /> --%>
+
 <!-- 나눔고딕폰트 import -->
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
@@ -39,13 +39,14 @@
 <script type="text/javascript" charset="utf-8" src="${CTX_PATH}/js/map.js"></script>
 <script type="text/javascript" charset="utf-8" src="${CTX_PATH}/js/jquery.blockUI.js"></script>
 
-<!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<!-- <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>  -->
+
+<!-- ## Vue 2.6.0 CDN import ## -->
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>  
 <script src="https://unpkg.com/vue-router@3.5.1/dist/vue-router.js"></script>
+<!-- ## Axios ## -->
 <script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
 <script type="text/javascript" src="//rawgit.com/wenzhixin/vue-bootstrap-table/develop/docs/static/dist/vue-bootstrap-table.js"></script>
 <script type="text/javascript" src="//rawgit.com/wenzhixin/vue-bootstrap-table/develop/docs/static/dist/vue-bootstrap-table.js"></script>
 

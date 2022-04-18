@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import kr.happyjob.study.scm.model.FileModel;
-
 /**
  * 
  * @author edit by.som

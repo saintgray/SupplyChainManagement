@@ -2,7 +2,7 @@ package kr.happyjob.study.scm.sales.dao;
 
 import java.util.List;
 
-import kr.happyjob.study.scm.model.FileModel;
+import kr.happyjob.study.common.comnUtils.FileModel;
 import kr.happyjob.study.scm.sales.model.PageInfo;
 import kr.happyjob.study.scm.sales.model.Sales;
 import kr.happyjob.study.scm.sales.model.SalesDetails;

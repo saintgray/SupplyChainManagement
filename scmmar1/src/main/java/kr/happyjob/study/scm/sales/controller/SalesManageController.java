@@ -110,7 +110,7 @@ public class SalesManageController {
 			
 		}catch(Exception e){
 			
-				
+				logger.info("+ catch thrown Exception occured ServiceImpl method....");
 		
 		}
 		

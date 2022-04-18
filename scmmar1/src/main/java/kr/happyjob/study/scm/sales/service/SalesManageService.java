@@ -1,14 +1,9 @@
 package kr.happyjob.study.scm.sales.service;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import kr.happyjob.study.scm.model.FileModel;
 import kr.happyjob.study.scm.sales.model.PageInfo;
 import kr.happyjob.study.scm.sales.model.SalesDetails;
 import kr.happyjob.study.scm.sales.model.SalesRegData;

@@ -3,9 +3,8 @@ package kr.happyjob.study.notice.dao;
 import java.util.List;
 import java.util.Map;
 
-
+import kr.happyjob.study.common.comnUtils.FileModel;
 import kr.happyjob.study.notice.model.NoticeModel;
-import kr.happyjob.study.scm.model.FileModel;
 
 public interface ScmNoticeDao {
 

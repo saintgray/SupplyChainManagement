@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.happyjob.study.scm.dao.shippingDirectionDao">
+<mapper namespace="kr.happyjob.study.scm.orders.dao.shippingDirectionDao">
 	
-	<select id="listship" resultType="kr.happyjob.study.scm.model.shippingDirectionModel">
+	<select id="listship" resultType="kr.happyjob.study.scm.orders.model.shippingDirectionModel">
 	select 		del.deliv_id AS deliv_id
 			 ,  del.regdate AS regdate
 			 , 	user.client AS client
@@ -22,7 +22,7 @@
 		join 	tb_delivdir del on del.purinf_id = pcin.purinf_id
 	</select>
 	
-	<select id="onesip" resultType="kr.happyjob.study.scm.model.oneshipModel">
+	<select id="onesip" resultType="kr.happyjob.study.scm.orders.model.oneshipModel">
 		select del.regdate,user.client,user.loginID,pinfo.pur_cnt,pur.depositYN
   		from tb_delivdir del
 		    join tb_purchaseinfo pinfo on pinfo.purinf_id = del.purinf_id

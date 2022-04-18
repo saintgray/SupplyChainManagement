@@ -2,7 +2,7 @@ package kr.happyjob.study.scm.sales.model;
 
 import java.util.List;
 
-import kr.happyjob.study.scm.model.FileModel;
+import kr.happyjob.study.common.comnUtils.FileModel;
 
 
 

@@ -13,43 +13,33 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<!-- # @Controller 어노테이션을 이용한 컨트롤러를 사용하기 위한 설정 -->
+	<!-- # Annotation Driven #-->
 	<mvc:annotation-driven />
 
-	<!-- # DispatcherServlet의 매핑 경로를 '/'로 주었을 때, 기본 컨트롤러 연결 설정 -->
+	<!-- ## Default Controller for path "/" ## -->
 	<mvc:view-controller path="/" view-name="/login/login" />
-	
-	
 
-	<!-- # DispatcherServlet의 매핑 경로를 '/'로 주었을 때, JSP/HTML/CSS등을 올바르게 처리하기 위한 
-		설정 -->
-	 <!--<mvc:default-servlet-handler /> -->
-
-	<!-- # DispatcherServlet의 매핑 경로를 '/'로 주었을 때, 기본 컨트롤러 연결 설정 -->
-	<!-- mvc:resources location="/WEB-INF/resource/" mapping="/resource/**"/ -->
+	<!-- ## Exclude Static Resources url for Dispatcher Servlet ## -->
 	<mvc:resources location="/WEB-INF/resource/images/" mapping="/images/**" />
 	<mvc:resources location="/WEB-INF/resource/css/" mapping="/css/**" />
 	<mvc:resources location="/WEB-INF/resource/js/" mapping="/js/**" />
 	<mvc:resources location="/WEB-INF/resource/fonts/" mapping="/fonts/**" />
 	<mvc:resources location="/WEB-INF/resource/html/" mapping="/html/**" />
 
-	<!-- Component Scan을 하기 위한 ROOT Package 설정 -->
-	<!-- context:component-scan base-package="kr.happyjob.study" /  -->
+	<!-- ## Component Scan and MapperScannerConfigurer Setup ## -->
 	<context:component-scan base-package="kr.happyjob" />
-	
-	<!-- dao 스캔 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="kr.happyjob.study.**.dao" />
 	</bean>
 	
-	<!-- MultipartResolver 설정 -->
+	<!-- ## MultipartResolver Setup ## -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="200000000" />
 		<property name="maxInMemorySize" value="200000000" />
 	</bean>
 
-	<!-- 프로퍼티 파일 등록 -->
+	<!-- ## Properties location ## -->
 	<context:property-placeholder location="/WEB-INF/classes/happyjob.properties"/>
 	
 	
@@ -84,12 +74,10 @@
 		<property name="dataSource" ref="myLogger" />
 		<property name="configLocation" value="/WEB-INF/mybatis-mysql-config.xml" />
 		<property name="typeAliasesPackage" value="kr.happyjob.study" />
-		<!-- property name="mapperLocations" value="classpath*:kr/happy/jobkorea/**/dao/mapper/*Mapper.xml" /-->
 		<property name="mapperLocations" value="classpath*:sql/*/*Mapper.xml" />
 	</bean>
 
- 	
-	<!-- ## DB Tranjection setup ## -->
+ 	<!-- ## DB Transaction and AOP setup ## -->
 	<bean id="mysqlSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg ref="mysqlSqlSessionFactory" />
 	</bean>
@@ -132,7 +120,7 @@
 		</property>
 	</bean>
 
-	<!-- auth interceptor -->
+	<!-- ## Interceptor SETUP ## -->
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
@@ -167,8 +155,7 @@
 	<!--## 공통 Exception setup ## -->
 	<bean class="kr.happyjob.study.common.exception.CommonExceptionHandler" />
 
-	<!-- JSP를 이용해서 컨트롤러의 실행 결과를 보여주기 위한 설정 -->
-	<!-- <mvc:view-resolvers> <mvc:jsp prefix="/WEB-INF/view/" /> </mvc:view-resolvers> -->
+	<!-- ## View Resolver SETUP ## -->
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/view/" />

@@ -3,6 +3,7 @@
 <mapper namespace="kr.happyjob.study.scm.sales.dao.SalesManageDao">
 	
 	
+	
 	<!-- 검색 조건에 따른 상품 리스트 가져오기 -->
 	<select id="getSalesList" parameterType="kr.happyjob.study.scm.sales.model.PageInfo" resultType="kr.happyjob.study.scm.sales.model.Sales">
 		SELECT 
@@ -73,7 +74,7 @@
 	</select>
 	
 	<!-- get files -->
-	<select id="getFilesBySalesID" resultType="kr.happyjob.study.scm.model.FileModel">
+	<select id="getFilesBySalesID" resultType="kr.happyjob.study.common.comnUtils.FileModel">
 	
 		SELECT *
 		FROM
@@ -91,15 +92,18 @@
 			tb_sales
 					(
 						model_code,
+						sales_type,
 						model_nm,
 						sales_nm,
 						mfcomp,
 						price,
 						info
+						
 					)
 		VALUES
 					(
 						#{model_code},
+						#{sales_type},
 						#{model_nm},
 						#{sales_nm},
 						#{mfcomp},
@@ -137,8 +141,6 @@
 							file_size,
 							sales_id,
 							file_exts
-							<!-- 고의 오류 발생 -->
-							<!-- file_no -->
 						)
 				VALUES
 						<foreach item="file" collection="list" separator=",">

@@ -169,7 +169,7 @@
 		
 		var callback=function(data){
 			fSalesListCallback(data,param)
-		}
+		}	
 		
 		callAjax('${CTX_PATH}/scm/saleslist','post','text',true, param, callback);
 		
