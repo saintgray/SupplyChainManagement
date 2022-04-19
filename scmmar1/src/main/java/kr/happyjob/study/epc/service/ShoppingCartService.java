@@ -10,7 +10,7 @@ public interface ShoppingCartService {
 
 	public abstract ArrayList<ShoppingCartItemDTO> getCartList(SearchParamDTO param);
 	public abstract int deleteCartItem(HashMap<String, String> params);
-	public abstract int orderProducts(String data, String loginID);
+	public abstract int orderProducts(String data, String loginID,String userType) throws Exception;
 	public abstract int getCartListTotalCount(String loginID);
 	
 	

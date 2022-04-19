@@ -5,8 +5,8 @@
 	
 	<select id="listship" resultType="kr.happyjob.study.scm.orders.model.shippingDirectionModel">
 	select 		del.deliv_id AS deliv_id
-			 ,  del.regdate AS regdate
-			 , 	user.client AS client
+			 ,  date_format(del.regdate,'%Y-%m-%d') AS regdate
+			 , 	IFNULL(user.client,user.name) AS client
 			 ,	pcin.pur_cnt AS pur_cnt
 	from		tb_userinfo user
 		join 	tb_purchaseinfo pcin on user.loginID = pcin.loginID
@@ -23,12 +23,19 @@
 	</select>
 	
 	<select id="onesip" resultType="kr.happyjob.study.scm.orders.model.oneshipModel">
-		select del.regdate,user.client,user.loginID,pinfo.pur_cnt,pur.depositYN
-  		from tb_delivdir del
+		SELECT 
+			del.regdate,
+			IFNULL(user.client,user.name),
+			user.loginID,
+			pinfo.pur_cnt,
+			sal.sales_nm,
+			pur.depositYN
+  		FROM tb_delivdir del
 		    join tb_purchaseinfo pinfo on pinfo.purinf_id = del.purinf_id
 		    join tb_purchase pur on pur.pur_id = pinfo.pur_id 
 		    join tb_userinfo user on user.loginID = pur.loginID
-	    where del.deliv_id = #{deliv_id}
+		    join tb_sales sal on sal.sales_id=pinfo.sales_id
+	    WHERE del.deliv_id = #{deliv_id}
 	
 	</select>
 </mapper>

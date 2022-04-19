@@ -15,7 +15,7 @@ public interface DailyOrderHistoryService {
 	// 총 값
 	public int total(Map<String, Object> paramMap) throws Exception;
 	// 단건 조회
-	public WorkOrderModel onedailyOrderHistory(Map<String, Object> paramMap) throws Exception;
+	public List<WorkOrderModel> onedailyOrderHistory(Map<String, Object> paramMap) throws Exception;
 	// 창로 list 조회
 	public List<warehouseModel> warehouse() throws Exception;
 	//창고 제고 조회

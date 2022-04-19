@@ -137,10 +137,10 @@ function closemodel(){
 	
 								<thead>
 									<tr>
-										<th scope="col">주문 번호</th>
+										<th scope="col">배송 번호</th>
 										<th scope="col">주문일자</th>
-										<th scope="col">고객기업명</th>
-										<th scope="col">주문개수</th>
+										<th scope="col">고객기업명/이름</th>
+										<th scope="col">주문/발주 개수</th>
 									</tr>
 								</thead>
 								<tbody id="dlist"></tbody>

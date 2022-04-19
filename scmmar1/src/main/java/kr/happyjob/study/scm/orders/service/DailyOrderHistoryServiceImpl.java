@@ -32,8 +32,8 @@ public class DailyOrderHistoryServiceImpl implements DailyOrderHistoryService{
 	}
 
 	@Override
-	public WorkOrderModel onedailyOrderHistory(Map<String, Object> paramMap) throws Exception {
-		WorkOrderModel onedailyOrderHistory = dailyorderhistorydao.onedailyOrderHistory(paramMap);
+	public List<WorkOrderModel> onedailyOrderHistory(Map<String, Object> paramMap) throws Exception {
+		List<WorkOrderModel> onedailyOrderHistory = dailyorderhistorydao.onedailyOrderHistory(paramMap);
 		return onedailyOrderHistory;
 	}
 

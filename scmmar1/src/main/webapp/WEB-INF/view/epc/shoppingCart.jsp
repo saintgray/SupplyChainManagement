@@ -158,7 +158,7 @@
                         newRow.appendChild(createNewCell('text', 'unitPrice', item.price));
                         newRow.appendChild(createNewCell('number', 'purCnt', item.pur_cnt));
                         newRow.appendChild(createNewCell('text', 'totalPrice', item.price * item.pur_cnt));
-                        newRow.appendChild(createNewCell('date', 'wantedDate', item.wanteddate));
+                        newRow.appendChild(createNewCell('date', 'wantedDate', item.wanted_date));
                         newRow.appendChild(createNewCell('button', 'delBtn', '삭제'));
                         newRow.appendChild(createNewCell('hidden', 'salesId', item.sales_id));
                         console.log('try4');
@@ -331,10 +331,9 @@
                     if (dataList.length < 1) {
                         alert('주문할 상품을 선택해 주세요');
                         return;
-                    } else if (!confirm('입금하시겠습니까?')) {
-                        return;
-                    } else {
-                        $.ajax({
+                    } else if (confirm('입금하시겠습니까?')) {
+                    	
+                    	$.ajax({
                             url: 'payCart',
                             data: {
                                 param: JSON.stringify(dataList)

@@ -29,23 +29,40 @@
 		UPDATE tb_basket 
 		SET purcYN = 'Y' 
 		WHERE loginID = #{loginID} and sales_id = #{sales_id}
+		
 	</update>
 	
-	<insert id="orderProductPurchase"  parameterType="string">
+	<insert id="orderProductPurchase" useGeneratedKeys="true" keyProperty="pur_id">
 		INSERT INTO
-			    tb_purchase (loginID, depositYN)
+			    tb_purchase (loginID, depositYN,type)
 		VALUES
-			    (#{loginID}, 'Y')
+			    (
+			    #{loginID}, 
+			    'Y',
+			    <if test='userType.equals("C")'>
+	    			'1'
+		    	</if> 
+		    	<if test='!userType.equals("C")'>
+		    		'0'
+		    	</if>
+			    )
 	</insert>
 	
-	<insert id="orderProductPurchaseinfo"  parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
-	<selectKey keyProperty="pur_id" order="BEFORE" resultType="int"> 
+	<insert id="orderProductPurchaseinfo"  parameterType="kr.happyjob.study.epc.model.ShoppingCartItemDTO" useGeneratedKeys="true" keyProperty="purinf_id">
+	<!-- <selectKey keyProperty="pur_id" order="BEFORE" resultType="int"> 
 		SELECT max(pur_id) from tb_purchase 
-	</selectKey>
+	</selectKey> -->
 		INSERT INTO
-		    tb_purchaseinfo (pur_cnt, wanted_date, returnYN, pur_type, pur_id, loginID, sales_id)
+		    tb_purchaseinfo (pur_cnt, wanted_date, returnYN, pur_id, loginID, sales_id)
 		VALUES
-		    (#{pur_cnt}, #{wanted_date}, 'N', '0', #{pur_id}, #{loginID}, #{sales_id})
+		    (
+	    	#{pur_cnt}, 
+	    	#{wanted_date}, 
+	    	'N',
+	    	#{pur_id}, 
+	    	#{loginID}, 
+	    	#{sales_id}
+	    	)
 	</insert>
 	
 	

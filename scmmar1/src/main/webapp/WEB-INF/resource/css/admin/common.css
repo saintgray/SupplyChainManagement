@@ -177,8 +177,8 @@ div.scroll {overflow:auto;}
 	.topUtil ul li.login .btnLogin	{padding: 0 15px 0 5px;background:url(/images/admin/comm/set_bul.png) 100% -60px no-repeat;}
 
 
-/* CONTAINER LNB */ 
-#container li.lnb	{height: 100%;font-family: '나눔바른고딕',NanumBarunGothic;font-size:15px;}
+/* CONTAINER LNB */ /* 2022-04-19 종현 수정 (sticky) */
+#container li.lnb	{height: 100%;font-family: '나눔바른고딕',NanumBarunGothic;font-size:15px; position:sticky; top:0}
 	li.lnb #lnb_area .logo {display:block;width:100%;background:url(/images/admin/comm/left_logoBg01.jpg) no-repeat;text-align: center;}
 	li.lnb #lnb_area .logo strong {display:inline-block;margin:20px 0;font-size:19px;color:#fff;font-weight: 500;}
 	

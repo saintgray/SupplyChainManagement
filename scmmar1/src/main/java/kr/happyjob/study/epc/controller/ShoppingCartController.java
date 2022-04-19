@@ -69,10 +69,17 @@ public class ShoppingCartController {
 	@RequestMapping(value="/payCart", method=RequestMethod.POST)
 	@ResponseBody
 	public int pc(HttpSession session, @RequestParam String param) {
+		
+		int result=0;
+		
 		String loginId = (String)session.getAttribute("loginId");
-		scservice.orderProducts(param, loginId);
-	
-		return 1;
+		String userType= session.getAttribute("userType").toString();
+		try{
+			result=scservice.orderProducts(param, loginId,userType);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 }

@@ -101,7 +101,7 @@ public class ProductListServiceImpl implements ProductListService{
 			alreadyExistFlag = false;
 			boolean isId = param.getLoginID().equals(item.getLoginID());
 			boolean isSalesId = param.getSales_id() == item.getSales_id();
-			boolean isDate = param.getWanted_date().trim().equals(item.getWanteddate().trim());
+			boolean isDate = param.getWanted_date().trim().equals(item.getWanted_date().trim());
 			if(isId && isSalesId && isDate) {
 				alreadyExistFlag = true;
 			} else if (isId && isSalesId && !isDate) {

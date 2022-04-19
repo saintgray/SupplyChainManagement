@@ -2,7 +2,9 @@
     pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>					
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-						   
+
+
+<!-- 배송지시서 -->					   
 
 		<dl>
 			<dt>

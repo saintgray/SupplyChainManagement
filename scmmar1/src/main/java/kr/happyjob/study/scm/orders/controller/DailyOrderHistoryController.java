@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,6 +35,7 @@ public class DailyOrderHistoryController {
 		return "scm/orders/dailyOrderHistory";
 	}
 	
+	 // 수주 내역 
 	 @RequestMapping("listdailyOrderHistory.do")
 	 public String Initlist(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 	         HttpServletResponse response, HttpSession session) throws Exception {
@@ -54,63 +56,84 @@ public class DailyOrderHistoryController {
 	      
 	      
 	      return "scm/orders/system/dailyOrderHistorylist";
-	   }  
+	   }
+	 
+	 // 주문 상세 보기
+	 @RequestMapping("/purchaseinfo/{idx}")
+	 public String getOrderInfo(@PathVariable String idx,Model model){
+		 
+		 Map<String, Object> paramMap =new HashMap<>();
+		 paramMap.put("pur_id", idx);
+		 
+		 
+		 List<WorkOrderModel> infoList=null;
+		 try {
+			 infoList=dailyorderhistoryservice.onedailyOrderHistory(paramMap);
+			 model.addAttribute("infoList",infoList);
+			 model.addAttribute("depositYN", infoList.get(0).getDepositYN());
+			 
+			 // 구매한 상품중 반품요청이 하나라도 있다면 Model 객체에 반품요청이 있다는 flag 를 추가한다
+			 model.addAttribute("flagReturnYN","N");
+			 for(WorkOrderModel orderItem : infoList){
+				 if(orderItem.getReturnYN().equals("Y")){
+					 model.addAttribute("flagReturnYN","Y");
+					 break;
+				 }
+			 }
+			 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "scm/orders/system/orderInfo"; 
+	 }
 
 	 @RequestMapping("onedailyOrderHistory.do")
-	 public String OnedailyOrderHistory(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+	 public String getPurchaseInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 	         HttpServletResponse response, HttpSession session) throws Exception{
 		 
+		 // target jsp path
 		 String returnjsp = "";
-		 int selcheck = Integer.parseInt(String.valueOf(paramMap.get("selcheck")));
-		 System.out.println("pur_id : " + paramMap.get("pur_id"));
-		 System.out.println("sales_id : " + paramMap.get("sales_id"));
 		 
- 		 if(selcheck == 1){
- 			returnjsp = "scm/orders/system/layer22";
- 			System.out.println(selcheck);
-		 }else if (selcheck == 2){
-			 returnjsp = "scm/orders/system/layer33";
-			 System.out.println(selcheck);
-		 }else {
-			 returnjsp = "scm/orders/system/layer44";
-			 System.out.println(selcheck);
-		 }	 
+		 int selcheck = Integer.parseInt(String.valueOf(paramMap.get("selcheck")));
+		 
+		 
+		 switch(selcheck){
+		 case 1:
+			 returnjsp="scm/orders/system/layer22";
+			 break;
+		 case 2:
+			 returnjsp="scm/orders/system/layer33";
+			 break;
+		 case 3:
+			 returnjsp="scm/orders/system/layer44";
+			 break;
+		 }
+ 		
  		 
  		 List<warehouseModel> warehouse = dailyorderhistoryservice.warehouse();
-		 WorkOrderModel onedailyOrderHistory = dailyorderhistoryservice.onedailyOrderHistory(paramMap);
+		 List<WorkOrderModel> onedailyOrderHistory = dailyorderhistoryservice.onedailyOrderHistory(paramMap);
 		 List<CompModel> comp = dailyorderhistoryservice.comp();
 		 DailyOrderHistoryModel comf = dailyorderhistoryservice.comf(paramMap);
 		 DailyOrderHistoryModel come = dailyorderhistoryservice.come(paramMap);
 		 
-		 String comfp = "";
-		 String comfg = "";
 		 
+		 // 반품지시서? 관련
 		 if(comf == null){
-			 comfp = "N";
-			 model.addAttribute("comfp",comfp);
+			 model.addAttribute("comfp","N");
 		 }else{
-			 comfp = "Y";
-			 model.addAttribute("comfp",comfp);
+			 model.addAttribute("comfp","Y");
 		 }
 		   
 		 if(come == null){
-			 comfg = "N";
-			 model.addAttribute("comfg",comfg);
+			 model.addAttribute("comfg","N");
 		 }else{
-			 comfg = "Y";
-			 model.addAttribute("comfg",comfg);
+			 model.addAttribute("comfg","Y");
 		 }
-				 
-				 
-		 System.out.println("comf : " + comf);
-		 System.out.println("come : " + come);
-		 System.out.println("onedailyOrderHistory : " + onedailyOrderHistory);
-		 
-		 model.addAttribute("onedata",onedailyOrderHistory);
+		 model.addAttribute("infoList",onedailyOrderHistory);
 		 model.addAttribute("warehouse",warehouse);
 		 model.addAttribute("comp",comp);
 		 
-		 
+		 model.addAttribute("depositYN",onedailyOrderHistory.get(0).getDepositYN());
 		 return returnjsp;
 	 }
 	
@@ -122,12 +145,9 @@ public class DailyOrderHistoryController {
 		 warehouseModel whcnt = dailyorderhistoryservice.whcnt(paramMap);
 		 Map<String,Object> returnmap = new HashMap<String,Object>();
 		 String msg = "이 창고는 재고 준비중 입니다";
-		 //System.out.println("sales_id : " + paramMap.get("sales_id"));
-		 //System.out.println("wh_id : " + paramMap.get("wh_id"));
-		 //System.out.println("whcnt : " + whcnt.getSt_cnt());
-			
-		 	returnmap.put("whcnt", whcnt); 
-			returnmap.put("msg", msg);
+		 
+	 	returnmap.put("whcnt", whcnt); 
+		returnmap.put("msg", msg);
 		
 	      return returnmap;
 		 

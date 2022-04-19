@@ -101,40 +101,40 @@
 		
 		
 		<where>
-					<choose>
-						<when test="returnsearch == 'a'.toString()">
-							AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
-							<!-- and returnYN='Y' -->
-						</when>
-						<when test="returnsearch == 'b'.toString()">
-							AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id)=0
-							<!-- and returnYN='N' -->
-						</when>
-					</choose>
+				<choose>
+					<when test="returnsearch == 'a'.toString()">
+						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
+						<!-- and returnYN='Y' -->
+					</when>
+					<when test="returnsearch == 'b'.toString()">
+						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id)=0
+						<!-- and returnYN='N' -->
+					</when>
+				</choose>
 				
 				<if test="!selectsearch.equals('')">
 					<choose>
-					<when test="selectsearch == '0'.toString()">
-					<![CDATA[
-						and (tp.purdate >=
-							#{datesearch1}
-							and
-							tp.purdate <=
-								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
-							)
-						]]>		
-					</when>
-					<when test="selectsearch == '1'.toString()">
-					<![CDATA[
-						and (tp.purdate >=
-							#{datesearch1}
-							and
-							tp.purdate <=
-								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
-							)
-						]]>
-					</when>
-				</choose>
+						<when test="selectsearch == '0'.toString()">
+						<![CDATA[
+							and (tp.purdate >=
+								#{datesearch1}
+								and
+								tp.purdate <=
+									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+								)
+							]]>		
+						</when>
+						<when test="selectsearch == '1'.toString()">
+						<![CDATA[
+							and (tp.purdate >=
+								#{datesearch1}
+								and
+								tp.purdate <=
+									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+								)
+							]]>
+						</when>
+					</choose>
 				</if>
 		</where>
 		GROUP BY tp.pur_id
@@ -149,92 +149,115 @@
 	</select>
 	
 	<select id="total" resultType="int">
-		SELECT  count(pur.pur_id)
-		FROM    tb_purchase pur 
-				inner join tb_userinfo user ON pur.loginID = user.loginID
-				inner join tb_purchaseinfo purinfo ON pur.pur_id = purinfo.pur_id
-				inner join tb_sales sal ON purinfo.sales_id = sal.sales_id
-				left outer join (
-				                   select st.sales_id
-				                        , sum(st_cnt) as sumcnt 
-				                     from tb_stock st 
-				                    where st.sales_id IN (
-				                                            select sa.sales_id 
-				                                              from tb_sales sa				                                              
-				                                         )
-				                   group by st.sales_id
-				                ) ll on ll.sales_id = purinfo.sales_id
+	
+	SELECT COUNT(alias.pur_id) FROM (
+		SELECT  tp.pur_id
+		FROM   		
+			tb_purchase tp  JOIN
+			tb_userinfo tu ON tp.loginID=tu.loginID
+						    JOIN
+			tb_purchaseinfo tpi ON tpi.pur_id=tp.pur_id
+							JOIN
+			tb_sales ts ON ts.sales_id=tpi.sales_id
+							LEFT JOIN
+			(
+			SELECT st.sales_id, sum(st_cnt) AS sumcnt 
+			FROM tb_stock st 
+			GROUP BY st.sales_id
+			) ll ON ll.sales_id=tpi.sales_id
 		<where>
-					<choose>
-						<when test="returnsearch == 'a'.toString()">
-							and returnYN='Y'
-						</when>
-						<when test="returnsearch == 'b'.toString()">
-							and returnYN='N'
-						</when>
-					</choose>
+				<choose>
+					<when test="returnsearch == 'a'.toString()">
+						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
+						<!-- and returnYN='Y' -->
+					</when>
+					<when test="returnsearch == 'b'.toString()">
+						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id)=0
+						<!-- and returnYN='N' -->
+					</when>
+				</choose>
 				
 				<if test="!selectsearch.equals('')">
 					<choose>
-					<when test="selectsearch == '0'.toString()">
-					<![CDATA[
-						and (pur.purdate >=
-							#{datesearch1}
-							and
-							pur.purdate <=
-								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
-							)
-						]]>		
-					</when>
-					<when test="selectsearch == '1'.toString()">
-					<![CDATA[
-						and (pur.purdate >=
-							#{datesearch1}
-							and
-							pur.purdate <=
-								(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
-							)
-						]]>
-					</when>
-				</choose>
+						<when test="selectsearch == '0'.toString()">
+						<![CDATA[
+							and (tp.purdate >=
+								#{datesearch1}
+								and
+								tp.purdate <=
+									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+								)
+							]]>		
+						</when>
+						<when test="selectsearch == '1'.toString()">
+						<![CDATA[
+							and (tp.purdate >=
+								#{datesearch1}
+								and
+								tp.purdate <=
+									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+								)
+							]]>
+						</when>
+					</choose>
 				</if>
-		</where>   
+		</where>
+		GROUP BY tp.pur_id
+	) alias;
+		
+		
+		
+		
 	</select>
 	
 	<select id="onedailyOrderHistory" resultType="kr.happyjob.study.scm.orders.model.WorkOrderModel">
-		select pur.pur_id AS pur_id
-			,	pur.purdate AS purdate
-			,	user.name AS name 
-			,	sal.sales_nm AS sales_nm
-			,	pinfo.pur_cnt AS pur_cnt
-			,	pur.depositYN AS depositYN
-			,	pinfo.returnYN AS returnYN
-			,   tri.return_cnt
-		  from tb_purchaseinfo pinfo
-			  join tb_purchase pur on pinfo.pur_id = pur.pur_id
-			  join tb_userinfo user on user.loginID = pur.loginID
-			  join tb_sales sal on sal.sales_id = pinfo.sales_id
-			  left join tb_refundinfo tri on pinfo.purinf_id=tri.purinf_id
-		 where pur.pur_id = #{pur_id} 
-		 	AND pinfo.sales_id = #{sales_id}
-  
+		SELECT 
+			pur.pur_id,
+			pur.depositYN,
+			sal.sales_nm,
+			pinfo.purinf_id,
+			pinfo.pur_cnt,
+			pinfo.returnYN,
+			sal.price*pinfo.pur_cnt AS price_sum,
+			tri.return_cnt,
+			trd.confirmYN
+		FROM tb_purchaseinfo pinfo
+			  JOIN tb_purchase pur ON pinfo.pur_id = pur.pur_id
+			  JOIN tb_userinfo user ON user.loginID = pur.loginID
+			  JOIN tb_sales sal ON sal.sales_id = pinfo.sales_id
+			  LEFT JOIN tb_refundinfo tri ON pinfo.purinf_id=tri.purinf_id
+			  LEFT JOIN tb_returndir trd on trd.rfinfo_id =tri.rfinfo_id
+		WHERE pur.pur_id = #{pur_id}
 	</select>
-
+	
 	<select id="comf" resultType="kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel">
-		select del.deliv_id
-		from tb_purchase pur
-			join tb_purchaseinfo pinfo on pur.pur_id = pinfo.pur_id
-			join tb_delivdir del on del.purinf_id = pinfo.purinf_id
-		 where pur.pur_id = #{pur_id}
+		SELECT
+			del.deliv_id
+		FROM 
+			tb_purchase pur JOIN 
+			tb_purchaseinfo pinfo 
+								ON pur.pur_id = pinfo.pur_id
+							JOIN 
+			tb_delivdir del 
+								ON del.purinf_id = pinfo.purinf_id
+		 WHERE pur.pur_id = #{pur_id}
 	</select>
 	
 	<select id="come" resultType="kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel">
-		select pur.pur_id
-		  from tb_purchase pur
-			  join tb_purchaseinfo pinfo on pur.pur_id = pinfo.pur_id
-			  join tb_refundinfo rinfo on pinfo.purinf_id = rinfo.purinf_id
-			  join tb_returndir rdir on rdir.rfinfo_id = rinfo.rfinfo_id
-  	 where pur.pur_id = #{pur_id}
+		SELECT 
+			pur.pur_id
+		  FROM 
+		  	tb_purchase pur 
+		  					JOIN 
+		  	tb_purchaseinfo pinfo 
+		  						ON pur.pur_id = pinfo.pur_id
+			  				JOIN 
+			tb_refundinfo rinfo 
+								ON pinfo.purinf_id = rinfo.purinf_id
+							JOIN 
+			tb_returndir rdir 
+								ON rdir.rfinfo_id = rinfo.rfinfo_id
+  	 	WHERE pur.pur_id = #{pur_id}
 	</select>
 	
 	<select id="warehouse" resultType="kr.happyjob.study.scm.orders.model.warehouseModel">

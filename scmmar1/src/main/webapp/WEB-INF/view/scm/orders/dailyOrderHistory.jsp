@@ -10,16 +10,21 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
+<style>
+	#dirBtnArea{
+		display: flex;
+		justify-content: space-around;
+	}
+</style>
 <title>일별수주내역</title>
 <!-- sweet alert import -->
 <script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-<!-- sweet swal import -->
+
 <script type="text/javascript">
 
 var pageSize = 10;
-var pageBlockSize = 10;
+var pageBlockSize = 5;
 var returnsearch = '';	// 반품 목록 조회 검색 조건
 var selectsearch = '';	// 검색 조건 일자 구분
 var datesearch1 = '';	// 검색 조건 앞 날짜
@@ -35,12 +40,9 @@ var loginID='';
 $(function(){
 	
 	$('#serchdate2').val(today);
+	connectEvent();
 	init();
-	/* $('body').on('keyup','#enter_cnt',function(e){
-		if(enter($(this).val())){
-			e.preventDefault();
-		};
-	}) */
+	
 });
 
 // list 조회
@@ -60,7 +62,7 @@ function init(currentPage) {
 		
 		// list tbody에 넣는 내용
 		$("#dailyOrderlist").empty().append(data);
-		var total = $("#total").val();
+		var total = $('#total').val();
 		
 		// 페이지 네비게이션 생성
 		// pageBlockSize 보여지는 페이징 갯수
@@ -69,6 +71,21 @@ function init(currentPage) {
 		$("#comnGrpCodPagination").empty().append( paginationHtml );
 	};
 	callAjax("/scm/listdailyOrderHistory.do", "post", "text", true, param, resultCallback);
+}
+
+function connectEvent(){
+	
+	// 주문 상세 내역 팝업
+	$('body').on('click','#dailyOrderlist tr',function(){
+		
+		var callback=function(data){
+			$("#layer").empty().append(data);
+			gfModalPop("#layer");
+		}
+		callAjax('/scm/purchaseinfo/'+$(this).children().eq(0).text(),"post", "text",true,null,callback);
+
+	})
+	
 }
 
 // 반품/미반품 목록 검색 조회
@@ -164,17 +181,6 @@ function layer1btn(){
 			console.log(data);
 			console.log(param.selcheck);
 			$("#layer").empty().append(data);
-			// 배송담당자 이름 불러 오기
-			/* switch(param.selcheck){
-				case '1':
-					break;
-				case '2':
-					console.log('entered....');
-					comcombo('B', 'purchaser', 'sel', null, '${CTX_PATH}/scm/whComcombo.do');
-					break;
-				case '3':
-					break;
-			} */
 			gfModalPop("#layer");
 		};
 		callAjax("/scm/onedailyOrderHistory.do", "post", "text", true, param, resultCallback);
@@ -384,7 +390,11 @@ function addrow(){
 										<th scope="col">지시서 작성</th>
 									</tr>
 								</thead>
+								
+								<!-- 일별 수주내역 Data 영역 -->
 								<tbody id="dailyOrderlist"></tbody>
+								
+								
 							</table>
 						</div>
 	
@@ -398,7 +408,7 @@ function addrow(){
 		</div>
 	</div>
 
-<!-- 모달팝업 -->
+	<!-- 모달팝업 -->
 	<div id="layer1" class="layerPop layerType2" style="width: 600px;">
 
 		<dl>
@@ -429,6 +439,9 @@ function addrow(){
 						</tr>
 					</tbody>
 				</table>
+				
+				
+				
 				<div class="btn_areaC mt30">
 				    <input type="hidden" name="Action" id="Action" value="">
 					<a class="btnType blue" id="btnSaveGrpCod" name="btn" onclick="layer1btn()"><span style="cursor: pointer;">작성</span></a> 
@@ -438,9 +451,10 @@ function addrow(){
 		</dl>
 		<a href="" class="closePop"><span class="hidden">닫기</span></a>
 	</div>
+	<!-- end of Modal -->
 	
 	
-	<div id="layer" class="layerPop layerType2" style="width: auto;"></div>
+	<div id="layer" class="layerPop layerType2 bts" style="width: auto;"></div>
 </form>
 </body>
 </html>
