@@ -88,10 +88,12 @@
 		FROM 
 			tb_purchase tp  JOIN
 			tb_userinfo tu ON tp.loginID=tu.loginID
-						    JOIN
+						    LEFT JOIN
 			tb_purchaseinfo tpi ON tpi.pur_id=tp.pur_id
-							JOIN
-			tb_sales ts ON ts.sales_id=tpi.sales_id
+							LEFT JOIN
+			tb_orderinfo toi ON toi.pur_id=tp.pur_id
+							LEFT JOIN
+			tb_sales ts ON ts.sales_id=tpi.sales_id OR ts.sales_id=toi.sales_id
 							LEFT JOIN
 			(
 			SELECT st.sales_id, sum(st_cnt) AS sumcnt 
@@ -104,10 +106,25 @@
 				<choose>
 					<when test="returnsearch == 'a'.toString()">
 						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
+						AND 
+						 	CASE tp.type 
+							WHEN 1
+								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
+							WHEN 0
+								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.order_id =toi.order_id) &gt; 0
+							END
 						<!-- and returnYN='Y' -->
 					</when>
 					<when test="returnsearch == 'b'.toString()">
 						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id)=0
+						AND 
+						 	CASE tp.type 
+							WHEN 1
+								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) =0
+							WHEN 0
+								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.order_id =toi.order_id) =0
+							END
+						
 						<!-- and returnYN='N' -->
 					</when>
 				</choose>
@@ -140,12 +157,6 @@
 		GROUP BY tp.pur_id
 		ORDER BY tp.purdate DESC
 		LIMIT #{pageIndex}, #{pageSize}
-			
-						
-			
-		
-			
-	
 	</select>
 	
 	<select id="total" resultType="int">
@@ -155,10 +166,12 @@
 		FROM   		
 			tb_purchase tp  JOIN
 			tb_userinfo tu ON tp.loginID=tu.loginID
-						    JOIN
+						    LEFT JOIN
 			tb_purchaseinfo tpi ON tpi.pur_id=tp.pur_id
-							JOIN
-			tb_sales ts ON ts.sales_id=tpi.sales_id
+							LEFT JOIN
+			tb_orderinfo toi ON toi.pur_id=tp.pur_id
+							LEFT JOIN
+			tb_sales ts ON ts.sales_id=tpi.sales_id OR ts.sales_id=toi.sales_id
 							LEFT JOIN
 			(
 			SELECT st.sales_id, sum(st_cnt) AS sumcnt 
@@ -169,10 +182,25 @@
 				<choose>
 					<when test="returnsearch == 'a'.toString()">
 						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
+						AND 
+						 	CASE tp.type 
+							WHEN 1
+								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
+							WHEN 0
+								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.order_id =toi.order_id) &gt; 0
+							END
 						<!-- and returnYN='Y' -->
 					</when>
 					<when test="returnsearch == 'b'.toString()">
 						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id)=0
+						AND 
+						 	CASE tp.type 
+							WHEN 1
+								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) =0
+							WHEN 0
+								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.order_id =toi.order_id) =0
+							END
+						
 						<!-- and returnYN='N' -->
 					</when>
 				</choose>

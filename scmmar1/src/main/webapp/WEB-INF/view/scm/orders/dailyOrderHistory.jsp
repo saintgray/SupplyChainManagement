@@ -11,7 +11,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <style>
-	#dirBtnArea{
+	#dirRadioArea{
 		display: flex;
 		justify-content: space-around;
 	}
@@ -84,6 +84,18 @@ function connectEvent(){
 		}
 		callAjax('/scm/purchaseinfo/'+$(this).children().eq(0).text(),"post", "text",true,null,callback);
 
+	})
+	$('body').on('focus','#dirRadioArea input[type=radio]',function(){
+		console.log($(this).attr('id'));
+		/* callAjax(
+					'/scm/callDirForm/'+$(this).attr(id),
+					'post',
+					'text',
+					true,
+					null,
+					function(data){$('#layer').append(data)}
+				) */
+		
 	})
 	
 }

@@ -10,8 +10,8 @@ public interface whInventoryFormService {
 
 	// list 조회
 	public List<whInventoryFormModel> whlist(Map<String, Object> paramMap) throws Exception;
-	// 재고량 조회
-	public whcntModel cnt(Map<String, Object> paramMap) throws Exception;
+	// 창고재고현황 조회
+	public List<whcntModel> getStockState(String idx) throws Exception;
 	// 총 값
 	public int total(Map<String, Object> paramMap) throws Exception;
 	

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,7 +23,7 @@ import kr.happyjob.study.scm.orders.service.whInventoryFormService;
 
 @Controller
 @RequestMapping("/scm/")
-public class whInventoryFormController {
+public class WarehouseStockController {
 	
 	@Autowired
 	whInventoryFormService whinventoryformservice;
@@ -29,7 +31,7 @@ public class whInventoryFormController {
 	// 화면 이동
 	@RequestMapping("whInventoryForm.do")
 	public String initApproval(Model model, @RequestParam Map<String, Object> paramMap) throws Exception {
-		return "scm/whInventoryForm";
+		return "scm/warehouse/warehouseStocks";
 	}
 	
 	
@@ -57,28 +59,23 @@ public class whInventoryFormController {
 		model.addAttribute("total",total);
 		model.addAttribute("whlist",whlist);
 		
-		return "scm/whInventoryFormlist";
+		return "scm/warehouse/system/warehouseStateList";
 	}
 	
-	@RequestMapping("lay1.do")
-	@ResponseBody
-	public Map<String,Object> lay1(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-		     HttpServletResponse response, HttpSession session) throws Exception{
-		Map<String,Object> returnmap = new HashMap<String,Object>();
-		String msg = "";
+	@RequestMapping("warehousestock/{idx}")
+	@PostMapping
+	public String getDetailStock(Model model, @PathVariable String idx) throws Exception{
+		
+		
 		try {
-			whcntModel cnt = whinventoryformservice.cnt(paramMap);
-			returnmap.put("cnt", cnt);
-			returnmap.put("msg", msg);
-			
-			System.out.println("------------"+cnt.getSales_id());
+			List<whcntModel> detail=null;
+			detail= whinventoryformservice.getStockState(idx);
+			model.addAttribute("detail",detail);			
 		} catch (Exception e) {
-			msg = "준비중인 창고 입니다.";
-			returnmap.put("msg", msg);
-			System.out.println("e : " + e);
+			e.printStackTrace();
 		}
 		
-	    return returnmap;
+	    return "scm/warehouse/system/stockDetail";
 	}
 	
 	

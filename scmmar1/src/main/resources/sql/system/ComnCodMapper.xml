@@ -65,6 +65,7 @@
 	<select id="selectComnGrpCod" resultType="kr.happyjob.study.system.model.ComnGrpCodModel">
 		/*kr.happy.study.system.dao.ComnCodDao.selectComnGrpCod*/
 		SELECT			TA.group_code as grp_cod
+			,   TA.note as grp_cod_eplti
 			,	TA.group_name as grp_cod_nm
 			,	TA.use_yn as use_poa
 			,	TA.reg_date as fst_enlm_dtt

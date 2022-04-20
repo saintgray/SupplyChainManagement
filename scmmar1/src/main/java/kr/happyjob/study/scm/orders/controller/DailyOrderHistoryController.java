@@ -70,7 +70,10 @@ public class DailyOrderHistoryController {
 		 try {
 			 infoList=dailyorderhistoryservice.onedailyOrderHistory(paramMap);
 			 model.addAttribute("infoList",infoList);
-			 model.addAttribute("depositYN", infoList.get(0).getDepositYN());
+			 if(infoList!=null && !infoList.isEmpty()){
+				 model.addAttribute("depositYN", infoList.get(0).getDepositYN());
+			 }
+			 
 			 
 			 // 구매한 상품중 반품요청이 하나라도 있다면 Model 객체에 반품요청이 있다는 flag 를 추가한다
 			 model.addAttribute("flagReturnYN","N");

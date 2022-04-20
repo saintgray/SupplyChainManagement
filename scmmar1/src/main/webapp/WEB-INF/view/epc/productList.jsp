@@ -198,7 +198,7 @@
                     $('tbody#tbodyProductDetail input[name="model_code"]').val(item.model_code);
                     $('tbody#tbodyProductDetail input[name="sales_nm"]').val(item.sales_nm);
                     $('tbody#tbodyProductDetail input[name="mfcomp"]').val(item.mfcomp);
-                    $('tbody#tbodyProductDetail input[name="price"]').val(item.price);
+                    $('tbody#tbodyProductDetail input[name="price"]').val(item.price.toLocaleString());
                     $('tbody#tbodyProductDetail input[name="pur_cnt"]').val(1);
                     $('tbody#tbodyProductDetail input[name="wanted_date"]').val(dateFormatter(new Date()));
                     $('div#popProductDetail textarea').html(item.info);
@@ -236,7 +236,7 @@
                         newRow += item.mfcomp;
                         newRow += '     </td>';
                         newRow += '     <td name="price">';
-                        newRow += item.price;
+                        newRow += item.price.toLocaleString(); //with decimal comma 
                         newRow += '     </td>';
                         newRow += ' </tr>';
                         $('#tbodyProductListTable').append($(newRow));

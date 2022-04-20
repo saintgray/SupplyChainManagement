@@ -157,7 +157,7 @@
                                             <select class="inputTxt p100" name="bank_name"></select>
                                         </td>
                                         <th>계좌 번호</th>
-                                        <td><input type="text" class="inputTxt p100" name="account_number" /></td>
+                                        <td><input type="text" class="inputTxt p100" name="account_number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2"></td>
@@ -392,7 +392,7 @@
                         data: {
                             bank_name: $('select[name="bank_name"]').val(),
                             account_holder: $('input[name="account_holder"]').val(),
-                            account_number: parseInt($('input[name="account_number"]').val()),
+                            account_number: $('input[name="account_number"]').val(),
                             checkedPurinfIdList: checkedPurinfIdList,
                             checkedReturnCntList: checkedReturnCntList
                         },

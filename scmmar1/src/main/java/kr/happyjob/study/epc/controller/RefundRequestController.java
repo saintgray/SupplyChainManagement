@@ -94,7 +94,7 @@ public class RefundRequestController {
 	public int srr(
 				String bank_name,
 				String account_holder,
-				int account_number,
+				String account_number,
 				@RequestParam(value="checkedPurinfIdList[]") ArrayList<Integer> checkedPurinfIdList,
 				@RequestParam(value="checkedReturnCntList[]") ArrayList<Integer> checkedReturnCntList,
 				HttpServletRequest request

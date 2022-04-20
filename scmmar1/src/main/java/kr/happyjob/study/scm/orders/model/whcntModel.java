@@ -2,35 +2,42 @@ package kr.happyjob.study.scm.orders.model;
 
 public class whcntModel {
 	
-	private int sales_id;
+	private String sales_type;
 	private String sales_nm;
-	private int in_cnt;
-	private int out_cnt;
+	private String st_cnt;
 	
+	public whcntModel() {
 	
-	public int getSales_id() {
-		return sales_id;
 	}
-	public void setSales_id(int sales_id) {
-		this.sales_id = sales_id;
+
+	
+
+	public String getSales_type() {
+		return sales_type;
 	}
+
+
+
+	public void setSales_type(String sales_type) {
+		this.sales_type = sales_type;
+	}
+
+
+
 	public String getSales_nm() {
 		return sales_nm;
 	}
+
 	public void setSales_nm(String sales_nm) {
 		this.sales_nm = sales_nm;
 	}
-	public int getIn_cnt() {
-		return in_cnt;
+
+	public String getSt_cnt() {
+		return st_cnt;
 	}
-	public void setIn_cnt(int in_cnt) {
-		this.in_cnt = in_cnt;
-	}
-	public int getOut_cnt() {
-		return out_cnt;
-	}
-	public void setOut_cnt(int out_cnt) {
-		this.out_cnt = out_cnt;
+
+	public void setSt_cnt(String st_cnt) {
+		this.st_cnt = st_cnt;
 	}
 	
 	

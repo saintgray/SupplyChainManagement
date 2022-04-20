@@ -77,7 +77,7 @@
                                 <div id="paymentInfo" style="text-align: right; padding-top: 2rem;">
                                     <div><span>장바구니 총액</span></div>
                                     <div><span>_________________</span></div>
-                                    <div><span>합계 금액</span><span id="cartTotal">290000</span></div>
+                                    <div><span>합계 금액</span><span id="cartTotal"></span></div>
                                     <div><a name="btn" class="btnType blue" id="payTotal"><span>주문하기</span></a></div>
                                 </div>
                             </div>
@@ -155,10 +155,10 @@
                         }));
                         // newRow.appendChild(createNewCell('img', 'photo','', {attrName:'src', attrVal:'/serverfile' + item.photo}));
                         newRow.appendChild(createNewCell('text', 'modelNm', item.model_nm));
-                        newRow.appendChild(createNewCell('text', 'unitPrice', item.price));
+                        newRow.appendChild(createNewCell('text', 'unitPrice', (item.price).toLocaleString()));
                         newRow.appendChild(createNewCell('number', 'purCnt', item.pur_cnt));
-                        newRow.appendChild(createNewCell('text', 'totalPrice', item.price * item.pur_cnt));
-                        newRow.appendChild(createNewCell('date', 'wantedDate', item.wanted_date));
+                        newRow.appendChild(createNewCell('text', 'totalPrice', (item.price * item.pur_cnt).toLocaleString()));
+                        newRow.appendChild(createNewCell('date', 'wantedDate', item.wanteddate));
                         newRow.appendChild(createNewCell('button', 'delBtn', '삭제'));
                         newRow.appendChild(createNewCell('hidden', 'salesId', item.sales_id));
                         console.log('try4');
@@ -249,7 +249,7 @@
                     const cell = row.querySelector('.totalPrice'); //꼭 document에만 querySelector를 쓸 수 있는 것은 아님. 어떤 요소에 붙여서 그 하위 요소를 찾는 개념.
                     const price = row.querySelector('input.unitPrice').value;
                     const cnt = row.querySelector('input.purCnt').value;
-                    cell.value = price * cnt;
+                    cell.value = numberParser(price) * numberParser(cnt);
 
                 }
 
@@ -265,12 +265,12 @@
                             if (chTF) {
                                 const price = item.querySelector('input.unitPrice').value;
                                 const cnt = item.querySelector('input.purCnt').value;
-                                total += (price * cnt);
+                                total += (numberParser(price) * numberParser(cnt));
                             }
                         }
                     });
                     const payTotal = document.querySelector('div#paymentInfo span#cartTotal');
-                    payTotal.innerHTML = total;
+                    payTotal.innerHTML = total.toLocaleString();
 
 
                 }
@@ -331,9 +331,10 @@
                     if (dataList.length < 1) {
                         alert('주문할 상품을 선택해 주세요');
                         return;
-                    } else if (confirm('입금하시겠습니까?')) {
-                    	
-                    	$.ajax({
+                    } else if (!confirm('입금하시겠습니까?')) {
+                        return;
+                    } else {
+                        $.ajax({
                             url: 'payCart',
                             data: {
                                 param: JSON.stringify(dataList)
@@ -345,6 +346,10 @@
                             }
                         });
                     }
+                }
+
+                function numberParser(value) {
+                    return parseInt(value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'));
                 }
             </script>
         </body>

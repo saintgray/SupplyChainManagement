@@ -6,7 +6,34 @@
 	
 	
 	<select id="whlist" resultType="kr.happyjob.study.scm.orders.model.whInventoryFormModel">
-		SELECT		wh.wh_id AS wh_id
+	
+		SELECT		wh.wh_id
+					,	wh.wh_nm
+					,	SUM(st.st_cnt) AS st_cnt
+					,tdc.detail_name AS wh_loc 
+					,	wh.addr
+			FROM	tb_warehouse wh
+				JOIN tb_detail_code tdc on wh.wh_loc = tdc.detail_code 
+				left JOIN tb_stock st ON wh.wh_id = st.wh_id
+				left JOIN tb_sales sal ON sal.sales_id = st.sales_id
+			WHERE tdc.group_code ='wareCD'
+			
+			<choose>
+				<when test="searchgrouptype == '0'.toString()">
+					  and wh.wh_nm Like CONCAT('%', #{searchtext}, '%')
+				</when>
+				<when test="searchgrouptype == '1'.toString()">
+					  and sal.sales_nm Like CONCAT('%', #{searchtext}, '%')
+				</when>
+			</choose>
+		
+				
+			
+		    GROUP BY wh.wh_id
+		    LIMIT #{pageIndex}, #{pageSize}
+		    
+		    
+		<!-- SELECT		wh.wh_id AS wh_id
 				,	wh.wh_nm AS wh_nm
 				,	sal.sales_id AS sales_id
 				,	sal.sales_nm AS sales_nm
@@ -25,12 +52,34 @@
 							  and sal.sales_nm Like CONCAT('%', #{searchtext}, '%')
 						</when>
 					</choose>
-		</where>
-		LIMIT #{pageIndex}, #{pageSize}
+		</where> -->
+		
 	</select>
 	
 	<select id="total" resultType="int">
-		SELECT		count(wh.wh_id)
+		SELECT COUNT(1) FROM (
+		
+			SELECT wh.wh_id
+			FROM tb_warehouse wh
+				JOIN tb_detail_code tdc ON wh.wh_loc=tdc.detail_code
+				LEFT JOIN tb_stock st ON wh.wh_id=st.wh_id
+				LEFT JOIN tb_sales sal ON sal.sales_id=st.sales_id
+			WHERE tdc.group_code='wareCD'
+			<choose>
+				<when test="searchgrouptype == '0'.toString()">
+					  AND wh.wh_nm Like CONCAT('%', #{searchtext}, '%')
+				</when>
+				<when test="searchgrouptype == '1'.toString()">
+					  AND sal.sales_nm Like CONCAT('%', #{searchtext}, '%')
+				</when>
+			</choose>
+			GROUP BY wh.wh_id
+
+		) alias
+	
+	
+	
+		<!-- SELECT		count(wh.wh_id)
 		FROM	tb_warehouse wh
 			left JOIN tb_stock st ON wh.wh_id = st.wh_id
 			left JOIN tb_sales sal ON sal.sales_id = st.sales_id 
@@ -43,12 +92,13 @@
 							  and sal.sales_nm Like CONCAT('%', #{searchtext}, '%')
 						</when>
 					</choose>
-		</where>
+		</where> -->
 	</select>
 	
 	
-	<select id="cnt" resultType="kr.happyjob.study.scm.orders.model.whcntModel">
-	SELECT  dt.sales_id AS sales_id
+	
+	<select id="getStockState" resultType="kr.happyjob.study.scm.orders.model.whcntModel">
+<!-- 	SELECT  dt.sales_id AS sales_id
             , sa.sales_nm AS sales_nm
             , dt.in_cnt AS in_cnt
             , dt.out_cnt AS out_cnt
@@ -73,7 +123,19 @@
                    ) ll
               group by ll.sales_id
             ) dt
-        JOIN tb_sales sa ON sa.sales_id = dt.sales_id
+        JOIN tb_sales sa ON sa.sales_id = dt.sales_id -->
+		SELECT 
+		  		sal.sales_type, 
+		  		sal.sales_nm, 
+		  		ts.st_cnt 
+		FROM 
+		 		tb_warehouse tw 
+				JOIN 
+				tb_stock ts
+		  					ON tw.wh_id =ts.wh_id 
+				JOIN tb_sales sal
+							ON sal.sales_id =ts.sales_id 
+		WHERE tw.wh_id =#{arg0};
 	</select>
 	
 	

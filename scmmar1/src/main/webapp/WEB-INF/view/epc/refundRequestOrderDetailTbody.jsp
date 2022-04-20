@@ -43,10 +43,10 @@
                         <span name="mfcomp" id="mfcomp">${item.mfcomp}</span>
                     </td>
                     <td>
-                        <span name="price" id="price">${item.price}</span>
+                        <span name="price" id="price"><fmt:formatNumber value="${item.price}" type="number" /></span>
                     </td>
                     <td>
-                        <span name="total_price" id="total_price">${item.total}</span>
+                        <span name="total_price" id="total_price"><fmt:formatNumber value="${item.total}" type="number" /></span>
                     </td>
 
                 </tr>

@@ -14,7 +14,7 @@ import net.sf.json.JSONObject;
 public class RefundinfoDTO {
 
 	
-	Integer account_number;
+	String account_number;
 	String account_holder;
 	String bank_name;
 	Integer purinf_id;
@@ -23,10 +23,6 @@ public class RefundinfoDTO {
 	ArrayList<Integer> checkedPurinfIdList;
 	ArrayList<Integer> checkedReturnCntList;
 	
-	
-	public Integer getAccount_number() {
-		return account_number;
-	}
 	public String getAccount_holder() {
 		return account_holder;
 	}
@@ -46,14 +42,17 @@ public class RefundinfoDTO {
 		return checkedReturnCntList;
 	}
 	
+	public String getAccount_number() {
+		return account_number;
+	}
+	public void setAccount_number(String account_number) {
+		this.account_number = account_number;
+	}
 	public Integer getRfinfo_id() {
 		return rfinfo_id;
 	}
 	public void setRfinfo_id(Integer rfinfo_id) {
 		this.rfinfo_id = rfinfo_id;
-	}
-	public void setAccount_number(Integer account_number) {
-		this.account_number = account_number;
 	}
 	public void setAccount_holder(String account_holder) {
 		this.account_holder = account_holder;

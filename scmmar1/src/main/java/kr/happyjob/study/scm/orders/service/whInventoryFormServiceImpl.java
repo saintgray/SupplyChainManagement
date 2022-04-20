@@ -23,9 +23,9 @@ public class whInventoryFormServiceImpl implements whInventoryFormService {
 	}
 
 	@Override
-	public whcntModel cnt(Map<String, Object> paramMap) throws Exception {
-		whcntModel cnt = whinventoryformdao.cnt(paramMap);
-		return cnt;
+	public List<whcntModel> getStockState(String idx) throws Exception {
+		List<whcntModel> detail = whinventoryformdao.getStockState(idx);
+		return detail;
 	}
 	
 	@Override

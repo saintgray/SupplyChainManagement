@@ -315,6 +315,46 @@ public class ComnCodController {
 		
 		return resultMap;
 	}
+	
+	
+	// listComnGrpCod.do For Vue functions
+	@RequestMapping("vueListComnGrpCod.do")
+	@ResponseBody
+	public Map<String,Object> vueListComnGrpCod(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		
+		Map<String,Object> resultMap= new HashMap<>();
+	
+		
+		int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));	// 현재 페이지 번호
+		int pageSize = Integer.parseInt((String)paramMap.get("pageSize"));			// 페이지 사이즈
+		int pageIndex = (currentPage-1)*pageSize;												// 페이지 시작 row 번호
+				
+		paramMap.put("pageIndex", pageIndex);
+		paramMap.put("pageSize", pageSize);
+		
+		// 공통 그룹코드 목록 조회
+		List<ComnGrpCodModel> listComnGrpCodModel = comnCodService.listComnGrpCod(paramMap);
+		// 공통 그룹코드 목록 카운트 조회
+		int totalCount = comnCodService.countListComnGrpCod(paramMap);
+		
+		
+//		model.addAttribute("listComnGrpCodModel", listComnGrpCodModel);		
+//		model.addAttribute("totalCntComnGrpCod", totalCount);
+//		model.addAttribute("pageSize", pageSize);
+//		model.addAttribute("currentPageComnGrpCod",currentPage);
+// 		return "/system/comnGrpCodList";
+		
+		
+		// for Vue, should response JSON Object
+		resultMap.put("listComnGrpCodModel",listComnGrpCodModel);
+		resultMap.put("totalCntComnGrpCod",totalCount);
+		resultMap.put("pageSize",pageSize);
+		resultMap.put("currentPageComnGrpCod",currentPage);
+		return resultMap;
+			
+	}	
+
 
 
 }

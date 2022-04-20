@@ -10,12 +10,34 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
 <title>창고별 재고 현황</title>
-<!-- sweet alert import -->
 <script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-<!-- sweet swal import -->
+<style>
+
+table #detail{
+	padding:0;
+	height:auto;
+}
+/* #detailArea{
+	animation-duration:1s;
+	animation-name:slideDown;
+}
+
+@keyframes slideDown{
+
+	from{
+		height:0;
+	}
+	to{
+		height:100%;
+	}
+	
+	
+} */
+</style>
+
+
 <script type="text/javascript">
 var searchgrouptype = '';
 var searchtext = '';
@@ -56,36 +78,20 @@ function search(){
 	init();
 }
 	
-function test(a,b,c){
-	//alert(a);
-	//alert(b);
-	//$("#sales_id").val(b);	// 제품 번호
-	//$("#sales_nm").val(c);	// 제품명
+function getStocksDetail(idx,row){
 	
-	var param = {
-			wh_id : a
-		,	sales_id : b
-			};
+	$('#detail').remove();
+	
 	var resultCallback = function(data) {
-		//console.log(data.cnt.sales_id);
 		
-		if(data.cnt == null){
-			alert(data.msg);
-		}else{
-			
-			$("#sales_id").val(data.cnt.sales_id);
-			$("#sales_nm").val(data.cnt.sales_nm);
-			$("#insal").val(data.cnt.in_cnt);
-			$("#outsal").val(data.cnt.out_cnt); 
-			
-			gfModalPop("#layer1");
-		}
+		
+		$(row).after(data).slideUp();
 		
 	};
 	
+	console.log('idx >> '+idx)
 	
-	
-	callAjax("/scm/lay1.do", "post", "json", true, param, resultCallback);
+	callAjax('/scm/warehousestock/'+idx, "post", "text", true, null, resultCallback);
 }
 	
 </script>
@@ -141,26 +147,13 @@ function test(a,b,c){
 						
 						<div class="divComGrpCodList">
 							<table class="col">
-								<caption>caption</caption>
-								<colgroup>
-									<col width="8%">
-									<col width="14%">
-									<col width="8%">
-									<col width="23%">
-									<col width="8%">
-									<col width="14%">
-									<col width="23%">
-								</colgroup>
-	
 								<thead>
 									<tr>
 										<th scope="col">창고 코드</th>
 										<th scope="col">창고명</th>
-										<th scope="col">제품 번호</th>
-										<th scope="col">제품명</th>
-										<th scope="col">재고 수량</th>
+										<th scope="col">총 재고량</th>
 										<th scope="col">지역</th>
-										<th scope="col">상세 위치</th>
+										<th scope="col">주소</th>
 									</tr>
 								</thead>
 								<tbody id="whlist"></tbody>
@@ -176,6 +169,9 @@ function test(a,b,c){
 		</div>
 	</div>
 
+
+
+<!-- DECREPATED -->
 <!-- 모달팝업 -->
 	<div id="layer1" class="layerPop layerType2" style="width: 800px;">
 

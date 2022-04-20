@@ -5,7 +5,7 @@
 
 	<select id="getOrderList" parameterType="kr.happyjob.study.epc.model.SearchParamDTO" resultType="kr.happyjob.study.epc.model.OrderListItemDTO">
 		SELECT 
-			    p.pur_id, p.purdate, i.purinf_id, i.pur_cnt, s.price, (i.pur_cnt * s.price) as total, i.wanted_date, s.sales_id, d.deliverStatus 	
+			    p.pur_id, DATE_FORMAT(p.purdate, '%Y-%m-%d') as purdate, i.purinf_id, i.pur_cnt, s.price, (i.pur_cnt * s.price) as total, DATE_FORMAT(i.wanted_date, '%Y-%m-%d') wanted_date, s.sales_id, d.deliverStatus 	
 			    , (
 			        SELECT 
 				            COUNT(*)
