@@ -14,4 +14,6 @@ public interface whInventoryFormDao {
 	public List<whcntModel> getStockState(String idx) throws Exception;
 	// 총 값
 	public int total(Map<String, Object> paramMap) throws Exception;
+	
+	List<whcntModel> getValidWareHouseInfo(List<String> purinf_idxList);
 }

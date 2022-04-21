@@ -228,7 +228,12 @@ public class SalesManageServiceImpl implements SalesManageService{
 		}
 		return result;
 	}
-	
+
+	@Override
+	public List<String> selectAllPurchaseInfoByIdx(String pur_idx,String userType) throws Exception {
+		smDao=sst.getMapper(SalesManageDao.class);
+		return smDao.selectAllPurchaseInfoByIdx(pur_idx,userType);
+	}
 	
 	
 	

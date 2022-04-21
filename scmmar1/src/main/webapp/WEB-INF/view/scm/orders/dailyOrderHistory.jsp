@@ -15,6 +15,36 @@
 		display: flex;
 		justify-content: space-around;
 	}
+	#v-warehouse{
+		margin:15px;
+		display: flex;
+		width:675px;
+		flex-direction:row;
+		flex-wrap:wrap;
+		justify-content:space-between;
+	}
+ 	#v-orderAndReturn{
+ 		width:350px;
+ 		margin:20px auto;
+ 	}
+	#v-warehouse>div{
+		margin:10px;
+	}
+	#v-orderAndReturn>div{
+		position: relative;
+	}
+	#layer{
+	    max-height: 500px;
+   		overflow-y: scroll;
+	}
+	.remove{
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		width:10px;
+		height:10px;
+		cursor: pointer;
+	}
 </style>
 <title>일별수주내역</title>
 <!-- sweet alert import -->
@@ -74,6 +104,12 @@ function init(currentPage) {
 }
 
 function connectEvent(){
+	// 발주대상 제외
+	$('body').on('click','.remove',function(){
+		if(confirm($(this).prev().text()+' 발주를 취소하시겠습니까?')){
+			$(this).parent().parent().remove();	
+		}
+	})
 	
 	// 주문 상세 내역 팝업
 	$('body').on('click','#dailyOrderlist tr',function(){
@@ -85,17 +121,100 @@ function connectEvent(){
 		callAjax('/scm/purchaseinfo/'+$(this).children().eq(0).text(),"post", "text",true,null,callback);
 
 	})
-	$('body').on('focus','#dirRadioArea input[type=radio]',function(){
-		console.log($(this).attr('id'));
-		/* callAjax(
-					'/scm/callDirForm/'+$(this).attr(id),
-					'post',
-					'text',
-					true,
-					null,
-					function(data){$('#layer').append(data)}
-				) */
+	$('body').on('change','#dirRadioArea input[type=radio]',function(){
+		if($(this).is(':checked')){
+			
+			let id =$(this).attr('id');
+			let url='';
+			let dataType='';
+			let param={};
+			var callback;
+			switch(id){
+			///////////////////////////////
+				case 'orderDir':
+					param={pur_id:$(this).val()};
+					callback=function(data){
+						console.log('order dir input ');
+						$('#v-warehouse, #v-orderAndReturn').remove();
+						$('#layer').append(data);
+						$('#action').val(id);
+						if($('.sb').length>0){
+							let combo_name=$('.sb').eq(0).attr('id');
+							$('.sb').each(function(index,item){
+								console.log('sb'+index);
+								comcombo('','sb'+index,null,null,'/scm/whCombo.do');
+							});
+						}
+						
+					};
+					break;
+			///////////////////////////////
+				case 'returnDir':
+					
+					break;
+			///////////////////////////////
+				case 'shippingDir':
+					
+					param=null;
+					callback=function(data){
+						$('#v-warehouse, #v-orderAndReturn').remove();
+						$('#layer').append(data);
+						$('#action').val(id);
+					}
+					break;
+			///////////////////////////////
+			}
+			 callAjax(
+					 	'/scm/callDirForm/'+id+'/'+$(this).val(),
+						'post',
+						'text',
+						true,
+						param,
+						callback
+					);	
+		}	
+	})
+	$('body').on('change','#v-warehouse table input[type=checkbox]',function(){
+		$(this).parent().
+				parent().
+				siblings().
+				children().
+				children('input[type=checkbox]').
+				attr('checked',false);
+	})
+	$('body').on('click','#v-warehouse .btn_areaC #writeBtn',function(){
 		
+		switch($('#action').val()){
+		case 'shippingDir':
+			console.log($('#layer #orderinfo tr').length-1);
+			console.log($('#v-warehouse table').length);
+			if($('#layer #orderinfo tr').length-1!= $('#v-warehouse table').length){
+				alert('창고에 없는 구매상품이 있습니다. 발주 후 진행하세요');
+			}else{
+				var purinfIdxArr=[];
+				$('.targetIdx').each(function(index,item){
+					purinfIdxArr.push($(item).text());
+				})
+				var exportWhArr=[];
+				$('.shippingTarget:checked').each(function(index,item){
+					exportWhArr.push($(item).val());
+				})
+				console.log(purinfIdxArr);
+				console.log(exportWhArr);
+				var param={
+							idxList:purinfIdxArr,
+							targetWh:exportWhArr
+						  };
+				callAjax('/scm/dirManage/'+$('#action').val(),'POST','json',true,param,function(data){
+					console.log('테스트 통신 성공');
+				})
+			}
+			break;
+		case 'orderDir':
+			break;
+		case 'returnDir':
+			break;
+		}
 	})
 	
 }
@@ -108,7 +227,7 @@ function returns(value){
 }
 function search(){
 	
-	selectsearch = $("#searchgrouptype option:selected").val()
+	selectsearch = $("#searchgrouptype option:selected").val();
 	datesearch1 = $("#serchdate1").val();
 	datesearch2 = $("#serchdate2").val();
 	var testdate ='';
@@ -419,54 +538,10 @@ function addrow(){
 			</ul>
 		</div>
 	</div>
-
-	<!-- 모달팝업 -->
-	<div id="layer1" class="layerPop layerType2" style="width: 600px;">
-
-		<dl>
-			<dt>
-				<strong>지시서 작성</strong>
-			</dt>
-			<dd class="content">
-				<!-- s : 여기에 내용입력 -->
-				<table class="row">
-					<caption>caption</caption>
-					<colgroup>
-						<col width="120px">
-						<col width="*">
-						<col width="120px">
-						<col width="*">
-					</colgroup>
-
-					<tbody>
-						<tr>
-							<th scope="row">지시서 작성</th>
-							<td colspan="3">
-							   <input type="radio" 	name="sel" id="sel1" value='1' style="cursor: pointer;"/><span id="sel4">반품지시서</span>
-								&nbsp;&nbsp;&nbsp;&nbsp; 
-								<input type="radio" name="sel" id="sel2" value="2" style="cursor: pointer;"/><span id="sel5">배송지시서</span>
-								&nbsp;&nbsp;&nbsp;&nbsp; 
-								<input type="radio" name="sel" id="sel3" value="3" style="cursor: pointer;"/><span id="sel6">발주지시서</span>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				
-				
-				
-				<div class="btn_areaC mt30">
-				    <input type="hidden" name="Action" id="Action" value="">
-					<a class="btnType blue" id="btnSaveGrpCod" name="btn" onclick="layer1btn()"><span style="cursor: pointer;">작성</span></a> 
-					<a	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span onclick="closemodel()" style="cursor: pointer;">취소</span></a>
-				</div>
-			</dd>
-		</dl>
-		<a href="" class="closePop"><span class="hidden">닫기</span></a>
-	</div>
-	<!-- end of Modal -->
-	
 	
 	<div id="layer" class="layerPop layerType2 bts" style="width: auto;"></div>
+	
+	
 </form>
 </body>
 </html>

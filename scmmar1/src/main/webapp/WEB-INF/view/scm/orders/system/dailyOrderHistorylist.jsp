@@ -52,4 +52,4 @@
 										<input type="hidden" id="pur_cnt" value = "${list.pur_cnt}"> --%>
 							</c:forEach>
 							
-							<input type="hidden" id="total" name="total" value ="${total}"/>
+						<input type="hidden" id="total" name="total" value ="${total}"/>

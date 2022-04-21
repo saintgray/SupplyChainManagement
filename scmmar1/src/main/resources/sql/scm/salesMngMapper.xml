@@ -176,6 +176,34 @@
 			</foreach>
 	</delete>
 	
+	
+	
+	<!-- 주문/발주 고유번호의 모든 구매 상품 idx 값 반환 -->
+	<select id="selectAllPurchaseInfoByIdx" resultType="String">
+		SELECT CONCAT(ts.sales_id,',',ts.sales_nm) 
+		FROM 
+				tb_sales ts JOIN
+			<if test='userType.equals("C")'>
+				tb_purchaseinfo tpi ON tpi.sales_id=ts.sales_id	
+			</if>
+			<if test='!userType.equals("C")'>
+				tb_orderinfo toi ON toi.sales_id=ts.sales_id
+			</if>
+		WHERE pur_id=#{pur_id}
+	</select>
+	
+	
+	
+	<!-- 주문 상세에 주문한 모든 상품번호를 조회해 구매상세,상품번호 형태로 리스트 반환 -->
+	<select id="selectAllSalesByPurchaseIdx" resultType="String">
+		SELECT CONCAT(purinf_id,',',sales_id)sales_id FROM tb_purchaseinfo WHERE purinf_id IN
+		<foreach collection="list" open="(" close=")" separator="," item="idx">
+			#{idx}
+		</foreach>
+	</select>
+	
+	
+	
 
 
 

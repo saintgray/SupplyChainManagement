@@ -1,6 +1,6 @@
 package kr.happyjob.study.epc.service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -23,16 +23,16 @@ public class RefundRequestServiceImpl implements RefundRequestService {
 		
 		
 		
-	public ArrayList<OrderListItemDTO> getOrderList(SearchParamDTO param){
+	public List<OrderListItemDTO> getOrderList(SearchParamDTO param){
 		
-		ArrayList<OrderListItemDTO> result = rrdao.getOrderList(param);
+		List<OrderListItemDTO> result = rrdao.getOrderList(param);
 		
 		return result;
 	}
 	
-	public ArrayList<OrderListItemDTO> getOrderDetailList(SearchParamDTO param) {
+	public List<OrderListItemDTO> getOrderDetailList(SearchParamDTO param) {
 		
-		ArrayList<OrderListItemDTO> result = rrdao.getOrderDetailList(param);
+		List<OrderListItemDTO> result = rrdao.getOrderDetailList(param);
 		
 		return result;
 	}
@@ -53,9 +53,9 @@ public class RefundRequestServiceImpl implements RefundRequestService {
 	}
 	
 	
-	public ArrayList<String> getBankNameList() {
+	public List<String> getBankNameList() {
 		
-		ArrayList<String> result = rrdao.getBankNameList();
+		List<String> result = rrdao.getBankNameList();
 		return result;
 	}
 	

@@ -22,6 +22,7 @@ public interface WarehouseService {
 	int insertWarehouse(WarehouseDetail data);
 	int deleteWarehouse(String wh_id) throws StockRemainsException;
 	int updateWarehouse(WarehouseDetail data);
+	List<ComnCodUtilModel> getWhComnCod();
 	
 
 }

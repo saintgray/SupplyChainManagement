@@ -34,7 +34,7 @@ public class UserFormController {
 		
 		if(!action.equals("REGISTER")){
 			
-			model.addAttribute("info", uiService.getUserInfo(userID));
+			model.addAttribute("info", uiService.getUserInfo(userID,null));
 			
 		}
 		

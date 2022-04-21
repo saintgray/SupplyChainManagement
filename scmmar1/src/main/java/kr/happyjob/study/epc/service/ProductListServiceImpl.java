@@ -1,7 +1,8 @@
 package kr.happyjob.study.epc.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,14 @@ public class ProductListServiceImpl implements ProductListService{
 	@Autowired
 	ProductListDao pdao;
 	
-	//variables  using in lambda
+	//variables using in lambda clause
 	boolean doesntExistFlag = false;
 	boolean salesExistDateDifferentFlag = false;
 	boolean alreadyExistFlag = false;
 	
 	@Override
-	public ArrayList<SalesModel> getListProduct(SearchParamDTO param) {
-		ArrayList<SalesModel> list = null;
+	public List<SalesModel> getListProduct(SearchParamDTO param) {
+		List<SalesModel> list = null;
 		list = pdao.getListProduct(param);
 		return list;
 	}
@@ -37,17 +38,17 @@ public class ProductListServiceImpl implements ProductListService{
 	}
 	
 	@Override
-	public ArrayList<String> getSalesTypeList() {
-		ArrayList<String> list = null;
+	public List<String> getSalesTypeList() {
+		List<String> list = null;
 		list = pdao.getSalesTypeList();
 		return list;
 	}
 	
 	
 	@Override
-	public ArrayList<String> getMfcompListBySalesType(String salesType) {
-		ArrayList<String> list = null;
-		HashMap<String, String> map = new HashMap<>();
+	public List<String> getMfcompListBySalesType(String salesType) {
+		List<String> list = null;
+		Map<String, String> map = new HashMap<>();
 		map.put("salesType", salesType);
 		list = pdao.getMfcompListBySalesType(map);
 		return list;
@@ -55,32 +56,32 @@ public class ProductListServiceImpl implements ProductListService{
 	
 
 	@Override
-	public Integer orderAndCartProduct(ShoppingCartItemDTO param) {
-		Integer result = 0;
-		Integer status = null;
+	public int orderAndCartProduct(ShoppingCartItemDTO param) {
+		int result = 0;
 		if("cart".equals(param.getType())) {
-			status = checkCartItem(param);
+			int status = checkCartItem(param);
 			switch(status){
-				case 1 :	//row already exist
+				case 1 :	//cart item already exists
 					System.out.println("already exist");
 					ShoppingCartItemDTO already = getCartItem(param);
 					param.setPur_cnt(already.getPur_cnt() +param.getPur_cnt());
-					result = pdao.updateCartItemCnt(param);
-					break;
-				default :	//insert new row
+					pdao.updateCartItemCnt(param);
+					return status;
+				default :	//insert a new row
 					System.out.println("new row");
-					result = pdao.addProductToCart(param);
+					pdao.addProductToCart(param);
+					return status;
 			}
 			
 		} else	if("order".equals(param.getType())) {
-			status = 1;
-			System.out.println(param.toString());
-			result = pdao.orderProductPurchase(param);
-			result = pdao.orderProductPurchaseinfo(param);
-			
+			int result1 = pdao.orderProductPurchase(param);
+			int result2 = pdao.orderProductPurchaseinfo(param);
+			if(result1==1 && result2==1) {
+				result = 1;
+			}
 		}
 		
-		return status;
+		return result;
 	}
 	
 	@Override
@@ -89,11 +90,12 @@ public class ProductListServiceImpl implements ProductListService{
 		return result;
 	}
 	
-	private Integer checkCartItem(ShoppingCartItemDTO param) {
-		HashMap<String,Object> paramMap = new HashMap<>();
+	private int checkCartItem(ShoppingCartItemDTO param) {
+		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("loginID", param.getLoginID());
 		paramMap.put("sales_id", param.getSales_id());
-		ArrayList<ShoppingCartItemDTO> itemList = pdao.getCartItems(paramMap);
+		paramMap.put("wanted_date", param.getWanted_date());
+		List<ShoppingCartItemDTO> itemList = pdao.getCartItems(paramMap);
 		
 		itemList.forEach((item)->{
 			doesntExistFlag = false;
@@ -109,29 +111,38 @@ public class ProductListServiceImpl implements ProductListService{
 			} else {
 				doesntExistFlag = true;
 			} 
-			System.out.println(doesntExistFlag);
-			System.out.println(salesExistDateDifferentFlag);
-			System.out.println(alreadyExistFlag);
 		});
 		if(alreadyExistFlag) {
+			initFlags();
 			return 1;
 		} else if(salesExistDateDifferentFlag) {
+			initFlags();
 			return 0;
 		} else {
+			initFlags();
 			return -1;
 		}
 	}
-	
+	private void initFlags() {
+		doesntExistFlag = false;
+		salesExistDateDifferentFlag = false;
+		alreadyExistFlag = false;
+	}
 	private ShoppingCartItemDTO getCartItem(ShoppingCartItemDTO param) {
-		HashMap<String,Object> paramMap = new HashMap<>();
+
+		System.out.println("getCartItem > param");
+		System.out.println(param);
+		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("loginID", param.getLoginID());
 		paramMap.put("sales_id", param.getSales_id());
-		ArrayList<ShoppingCartItemDTO> itemList = pdao.getCartItems(paramMap);
+		paramMap.put("wanted_date", param.getWanted_date());
+		List<ShoppingCartItemDTO> itemList = pdao.getCartItems(paramMap);
+		System.out.println("getCartItem > itemList");
+		System.out.println(itemList);
 		if(itemList.size() > 0) {
 			return itemList.get(0);
-		} else {
-			return null;
 		}
+		return null;
 		
 	}
 }

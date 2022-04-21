@@ -1,5 +1,7 @@
 package kr.happyjob.study.scm.sales.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
@@ -21,5 +23,7 @@ public interface SalesManageService {
 	SalesDetails getSalesDetails(String sales_id);
 	
 	int updateSales(SalesRegData data, HttpServletRequest req) throws Exception;
+	
+	List<String> selectAllPurchaseInfoByIdx(String pur_idx,String userType) throws Exception;
 
 }

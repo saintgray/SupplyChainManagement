@@ -9,6 +9,8 @@ public class warehouseModel {
 	private String loginID;
 	private int st_cnt;
 	
+
+	
 	public int getSt_cnt() {
 		return st_cnt;
 	}

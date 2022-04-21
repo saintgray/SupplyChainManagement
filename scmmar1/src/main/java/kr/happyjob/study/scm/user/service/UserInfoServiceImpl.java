@@ -1,6 +1,8 @@
 package kr.happyjob.study.scm.user.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +31,12 @@ public class UserInfoServiceImpl implements UserInfoService {
 	}
 	
 	@Override
-	public UserDetail getUserInfo(String userID){
-		return sst.getMapper(UserInfoDao.class).getUserInfo(userID);
+	public UserDetail getUserInfo(String userID,String pur_idx){
+		System.out.println("## pur_idx :" + pur_idx);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("userID", userID);
+		map.put("pur_idx", pur_idx);
+		return sst.getMapper(UserInfoDao.class).getUserInfo(map);
 	}
 
 	@Override

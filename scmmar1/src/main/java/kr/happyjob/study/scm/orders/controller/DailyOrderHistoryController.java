@@ -1,41 +1,83 @@
 package kr.happyjob.study.scm.orders.controller;
 
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.happyjob.study.scm.orders.model.CompModel;
 import kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel;
 import kr.happyjob.study.scm.orders.model.WorkOrderModel;
 import kr.happyjob.study.scm.orders.model.warehouseModel;
+import kr.happyjob.study.scm.orders.model.whcntModel;
 import kr.happyjob.study.scm.orders.service.DailyOrderHistoryService;
+import kr.happyjob.study.scm.orders.service.whInventoryFormService;
+import kr.happyjob.study.scm.sales.service.SalesManageService;
+import kr.happyjob.study.scm.user.service.UserInfoService;
 
 @Controller
 @RequestMapping("/scm/")
 public class DailyOrderHistoryController {
 	
-	@Autowired
-	DailyOrderHistoryService dailyorderhistoryservice;
+	private final Logger logger = LogManager.getLogger(this.getClass());
 	
+	
+	private DailyOrderHistoryService dailyorderhistoryservice;
+	private whInventoryFormService wiService;
+	private UserInfoService uiService;
+	private SalesManageService smService;
+	
+	public DailyOrderHistoryController() {
+		
+	}
+
+	@Autowired
+	 public DailyOrderHistoryController(DailyOrderHistoryService dailyorderhistoryservice,
+				whInventoryFormService wiService, UserInfoService uiService, SalesManageService smService) {
+			
+			this.dailyorderhistoryservice = dailyorderhistoryservice;
+			this.wiService = wiService;
+			this.uiService = uiService;
+			this.smService = smService;
+	}
+	
+
+
+
+
+
+
+
+
 	// 화면 이동
 	@RequestMapping("dailyOrderHistory.do")
 	public String InitApproval(Model model, @RequestParam Map<String, Object> paramMap) throws Exception {
 		return "scm/orders/dailyOrderHistory";
 	}
 	
-	 // 수주 내역 
+	
+
+	// 수주 내역 
 	 @RequestMapping("listdailyOrderHistory.do")
 	 public String Initlist(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 	         HttpServletResponse response, HttpSession session) throws Exception {
@@ -60,6 +102,7 @@ public class DailyOrderHistoryController {
 	 
 	 // 주문 상세 보기
 	 @RequestMapping("/purchaseinfo/{idx}")
+	 @PostMapping
 	 public String getOrderInfo(@PathVariable String idx,Model model){
 		 
 		 Map<String, Object> paramMap =new HashMap<>();
@@ -68,11 +111,11 @@ public class DailyOrderHistoryController {
 		 
 		 List<WorkOrderModel> infoList=null;
 		 try {
-			 infoList=dailyorderhistoryservice.onedailyOrderHistory(paramMap);
-			 model.addAttribute("infoList",infoList);
-			 if(infoList!=null && !infoList.isEmpty()){
-				 model.addAttribute("depositYN", infoList.get(0).getDepositYN());
-			 }
+				 infoList=dailyorderhistoryservice.onedailyOrderHistory(paramMap);
+				 model.addAttribute("infoList",infoList);
+				 if(infoList!=null && !infoList.isEmpty()){
+					 model.addAttribute("depositYN", infoList.get(0).getDepositYN());
+				 }
 			 
 			 
 			 // 구매한 상품중 반품요청이 하나라도 있다면 Model 객체에 반품요청이 있다는 flag 를 추가한다
@@ -86,59 +129,114 @@ public class DailyOrderHistoryController {
 			 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally{
+			
+			model.addAttribute("pur_id",idx);
+			
 		}
 		return "scm/orders/system/orderInfo"; 
 	 }
 
-	 @RequestMapping("onedailyOrderHistory.do")
-	 public String getPurchaseInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-	         HttpServletResponse response, HttpSession session) throws Exception{
-		 
-		 // target jsp path
-		 String returnjsp = "";
-		 
-		 int selcheck = Integer.parseInt(String.valueOf(paramMap.get("selcheck")));
-		 
-		 
-		 switch(selcheck){
-		 case 1:
-			 returnjsp="scm/orders/system/layer22";
-			 break;
-		 case 2:
-			 returnjsp="scm/orders/system/layer33";
-			 break;
-		 case 3:
-			 returnjsp="scm/orders/system/layer44";
-			 break;
-		 }
- 		
- 		 
- 		 List<warehouseModel> warehouse = dailyorderhistoryservice.warehouse();
-		 List<WorkOrderModel> onedailyOrderHistory = dailyorderhistoryservice.onedailyOrderHistory(paramMap);
-		 List<CompModel> comp = dailyorderhistoryservice.comp();
-		 DailyOrderHistoryModel comf = dailyorderhistoryservice.comf(paramMap);
-		 DailyOrderHistoryModel come = dailyorderhistoryservice.come(paramMap);
-		 
-		 
-		 // 반품지시서? 관련
-		 if(comf == null){
-			 model.addAttribute("comfp","N");
-		 }else{
-			 model.addAttribute("comfp","Y");
-		 }
-		   
-		 if(come == null){
-			 model.addAttribute("comfg","N");
-		 }else{
-			 model.addAttribute("comfg","Y");
-		 }
-		 model.addAttribute("infoList",onedailyOrderHistory);
-		 model.addAttribute("warehouse",warehouse);
-		 model.addAttribute("comp",comp);
-		 
-		 model.addAttribute("depositYN",onedailyOrderHistory.get(0).getDepositYN());
-		 return returnjsp;
-	 }
+	@RequestMapping("/callDirForm/{formType}/{idx}")
+	@PostMapping
+	public String getDataForDirForm(@PathVariable String formType, @PathVariable String idx, HttpSession session, Model model){
+		
+		String targetView="";
+		
+		logger.info("+ initiate getDataForDirForm.....");
+		
+		
+		
+		// 구매한 상품당 재고를 가진 창고와 유효재고수를 보여주어야 할 때는 고객이 상품을 주문했을 때이다.
+		// 회사가 납품업체에게 상품을 발주하는 경우에는 모든 창고를,
+		// 고객이 회사에게 반품하는 경우에는 모든 창고를,
+		// 회사가 납품업체에게 상품을 반품하는 경우에는 창고를 보여주지 않아도 된다.
+		
+		logger.info("+ pur_id : "+idx);
+		logger.info("+ formType : "+formType);
+		
+		
+		Map<String,List<whcntModel>> listOfValidStockList=new HashMap<>();
+		List<whcntModel> validStockList=null;
+		String purchaserUserType= uiService.getUserInfo(null,idx).getUser_Type();
+		
+		
+		if(purchaserUserType.equals("C") && formType.toLowerCase().equals("shippingdir")){
+			targetView="scm/orders/system/validStockList";
+			try{
+				validStockList=wiService.getValidWareHouse(idx,purchaserUserType);
+				
+				
+				int lastIndex=0;
+				for(int i=0; i<validStockList.size(); i++){
+					
+//					logger.info("+ lastIndex : "+lastIndex);
+//					logger.info("+ now sales id :" + validStockList.get(i).getSales_id());
+					if(i!=0){
+						if(!(validStockList.get(i).getSales_id().equals(validStockList.get(i-1).getSales_id()))){
+//							logger.info("+ now i val : "+i+ " now sales_id val : " + validStockList.get(i).getSales_id());
+//							logger.info("prev i val : "+ (i-1)+" prev sales_id val : " + validStockList.get(i-1).getSales_id());
+							
+							// 최소 2개 이상의 창고가 해당 상품을 가지고 있었을 경우
+							if(i-1!=lastIndex){
+								listOfValidStockList.put(String.valueOf(validStockList.get(i-1).getSales_nm()),
+										validStockList.subList(lastIndex, i-1));
+							// 단 하나의 창고만 해당 상품을 가지고 있었을 경우
+							}else{
+								List<whcntModel> list=new ArrayList<>();
+								list.add(validStockList.get(i-1));
+								listOfValidStockList.put(String.valueOf(validStockList.get(i-1).getSales_nm()),list);
+							}			
+							lastIndex=i;
+						}
+						
+						if(i==validStockList.size()-1){
+							if(i==lastIndex){
+								List<whcntModel> list=new ArrayList<>();
+								list.add(validStockList.get(i));
+								listOfValidStockList.put(String.valueOf(validStockList.get(i).getSales_nm()),list);
+							}else{
+								listOfValidStockList.put(String.valueOf(validStockList.get(i).getSales_nm()),
+										validStockList.subList(lastIndex, i));
+							}
+						}
+					}
+				}
+				logger.info("+ map result " + listOfValidStockList);
+				model.addAttribute("list",listOfValidStockList);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+		}else{
+			targetView="scm/orders/system/dirSelectBox";
+			logger.info("+ start search sales_id ref pur_id :" + idx);
+			
+			try {
+				List<String> salesIdAndNameList=smService.selectAllPurchaseInfoByIdx(idx,purchaserUserType);
+				
+				
+				List<List<String>> salesInfoList=new LinkedList<List<String>>();
+				
+				for(String str : salesIdAndNameList){
+					salesInfoList.add(Arrays.asList(str.split(",")));
+				}
+				
+				model.addAttribute("listOfSalesInfoList", salesInfoList);
+				logger.info(salesInfoList);
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+			}
+			
+			
+		}
+		
+		
+		return targetView;
+	}
+	
+		
 	
 	 @RequestMapping("whcnd.do")
 	 @ResponseBody

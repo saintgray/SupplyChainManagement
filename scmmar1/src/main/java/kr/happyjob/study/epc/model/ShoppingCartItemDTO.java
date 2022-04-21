@@ -97,7 +97,16 @@ public class ShoppingCartItemDTO {
 		this.wanted_date = wanted_date;
 	}
 
+	public String getWantedDate() {
+		return wanted_date;
+	}
 
+
+	public void setWantedDate(String wanted_date) {
+		this.wanted_date = wanted_date;
+	}
+	
+	
 	public String getLoginID() {
 		return loginID;
 	}

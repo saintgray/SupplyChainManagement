@@ -2,6 +2,7 @@ package kr.happyjob.study.epc.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.LogManager;
@@ -13,7 +14,6 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.happyjob.study.epc.dao.ProductListDao;
 import kr.happyjob.study.epc.dao.ShoppingCartDao;
 import kr.happyjob.study.epc.model.SearchParamDTO;
 import kr.happyjob.study.epc.model.ShoppingCartItemDTO;
@@ -29,13 +29,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	
 	
 	@Override
-	public ArrayList<ShoppingCartItemDTO>getCartList(SearchParamDTO param) {
-		ArrayList<ShoppingCartItemDTO> list = scdao.getCartList(param);  
+	public List<ShoppingCartItemDTO>getCartList(SearchParamDTO param) {
+		List<ShoppingCartItemDTO> list = scdao.getCartList(param);  
 		return list;
 	};
 	
 	@Override
-	public int deleteCartItem(HashMap<String, String> params) {
+	public int deleteCartItem(Map<String, String> params) {
 		int result = scdao.deleteCartItem(params);  
 		return result;
 	};
@@ -43,7 +43,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	@Override
 	public int orderProducts(String data, String loginID, String userType) throws Exception {
 		
-		ArrayList<ShoppingCartItemDTO> params = new ArrayList<>();
+		List<ShoppingCartItemDTO> params = new ArrayList<>();
 		JSONParser parser = new JSONParser();
 		JSONArray json;
 		
@@ -77,15 +77,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			});
 			
 		
-		
-		
-		params.forEach((item)->{
-			logger.info("scservice orderProducts");
-			logger.info(item);
-			scdao.orderProductPurchaseinfo(item);
-			scdao.updateCartItemPurYN(item);
+			params.forEach((item)->{
+				logger.info("scservice orderProducts");
+				logger.info(item);
+				scdao.orderProductPurchaseinfo(item);
+				scdao.updateCartItemPurYN(item);
+				
+			});
 			
-		});
 		} catch (ParseException e) {
 			e.printStackTrace();
 			throw new Exception();

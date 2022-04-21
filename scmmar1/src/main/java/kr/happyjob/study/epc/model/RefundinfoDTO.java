@@ -1,15 +1,6 @@
 package kr.happyjob.study.epc.model;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import net.sf.json.JSONObject;
 
 public class RefundinfoDTO {
 
@@ -20,8 +11,8 @@ public class RefundinfoDTO {
 	Integer purinf_id;
 	Integer return_cnt;
 	Integer rfinfo_id;
-	ArrayList<Integer> checkedPurinfIdList;
-	ArrayList<Integer> checkedReturnCntList;
+	List<Integer> checkedPurinfIdList;
+	List<Integer> checkedReturnCntList;
 	
 	public String getAccount_holder() {
 		return account_holder;
@@ -35,10 +26,10 @@ public class RefundinfoDTO {
 	public Integer getReturn_cnt() {
 		return return_cnt;
 	}
-	public ArrayList<Integer> getCheckedPurinfIdList() {
+	public List<Integer> getCheckedPurinfIdList() {
 		return checkedPurinfIdList;
 	}
-	public ArrayList<Integer> getCheckedReturnCntList() {
+	public List<Integer> getCheckedReturnCntList() {
 		return checkedReturnCntList;
 	}
 	
@@ -66,10 +57,10 @@ public class RefundinfoDTO {
 	public void setReturn_cnt(Integer return_cnt) {
 		this.return_cnt = return_cnt;
 	}
-	public void setCheckedPurinfIdList(ArrayList<Integer> checkedPurinfIdList) {
+	public void setCheckedPurinfIdList(List<Integer> checkedPurinfIdList) {
 		this.checkedPurinfIdList = checkedPurinfIdList;
 	}
-	public void setCheckedReturnCntList(ArrayList<Integer> checkedReturnCntList) {
+	public void setCheckedReturnCntList(List<Integer> checkedReturnCntList) {
 		this.checkedReturnCntList = checkedReturnCntList;
 	}
 	

@@ -1,15 +1,15 @@
 package kr.happyjob.study.epc.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import kr.happyjob.study.epc.model.SearchParamDTO;
 import kr.happyjob.study.epc.model.ShoppingCartItemDTO;
 
 public interface ShoppingCartService {
 
-	public abstract ArrayList<ShoppingCartItemDTO> getCartList(SearchParamDTO param);
-	public abstract int deleteCartItem(HashMap<String, String> params);
+	public abstract List<ShoppingCartItemDTO> getCartList(SearchParamDTO param);
+	public abstract int deleteCartItem(Map<String, String> params);
 	public abstract int orderProducts(String data, String loginID,String userType) throws Exception;
 	public abstract int getCartListTotalCount(String loginID);
 	

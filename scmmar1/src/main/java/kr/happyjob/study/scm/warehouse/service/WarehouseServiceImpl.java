@@ -112,6 +112,11 @@ public class WarehouseServiceImpl implements WarehouseService{
 		
 		return sst.getMapper(WarehouseDao.class).updateWarehouse(data);
 	}
+
+	@Override
+	public List<ComnCodUtilModel> getWhComnCod() {
+		return sst.getMapper(WarehouseDao.class).getWhComnCod();
+	}
 	
 	
 	

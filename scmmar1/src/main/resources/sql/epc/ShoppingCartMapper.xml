@@ -3,9 +3,10 @@
 
 <mapper namespace="kr.happyjob.study.epc.dao.ShoppingCartDao">
 	<select id="getCartList" parameterType="kr.happyjob.study.epc.model.SearchParamDTO" resultType="kr.happyjob.study.epc.model.ShoppingCartItemDTO">
-		SELECT s.photo, s.model_nm, s.price, b.pur_cnt, b.wanteddate as wanted_date, b.sales_id
+		SELECT s.model_nm, s.price, b.pur_cnt, b.wanteddate as wanted_date, b.sales_id, f.file_server_path as photo
 		FROM tb_basket b
 		INNER JOIN tb_sales s ON b.sales_id = s.sales_id
+		LEFT JOIN tb_sales_file f on s.sales_id = f.sales_id
 		WHERE purcYN = 'N'
 			AND loginID = #{loginID}
 		LIMIT #{startIndex}, #{pageBlockSize}
@@ -21,7 +22,7 @@
 	
 	<delete id="deleteCartItem" parameterType="hashmap">
 		DELETE FROM tb_basket
-		WHERE loginID = #{loginID} AND sales_id = #{sales_id}
+		WHERE loginID = #{loginID} AND sales_id = #{sales_id} AND wanteddate like CONCAT(#{wanteddate}, '%')
 			
 	</delete>
 	

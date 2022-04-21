@@ -98,32 +98,6 @@
 	
 	
 	<select id="getStockState" resultType="kr.happyjob.study.scm.orders.model.whcntModel">
-<!-- 	SELECT  dt.sales_id AS sales_id
-            , sa.sales_nm AS sales_nm
-            , dt.in_cnt AS in_cnt
-            , dt.out_cnt AS out_cnt
-      FROM (
-              SELECT ll.sales_id
-                    ,sum(in_cnt) as in_cnt
-                    ,sum(out_cnt) as out_cnt
-               FROM (     
-                      SELECT  dt.sales_id
-                            , dt.dpt_cnt as in_cnt
-                            , 0 as out_cnt
-                      FROM tb_departurehis dt
-                     where dt.dpt_type = '0'
-                       and dt.sales_id = #{sales_id} and dt.wh_id = #{wh_id}
-                    union
-                      SELECT  dt.sales_id
-                            , 0 as in_cnt
-                            , dt.dpt_cnt as out_cnt
-                      FROM tb_departurehis dt
-                     where dt.dpt_type = '1'
-                       and dt.sales_id = #{sales_id} and dt.wh_id = #{wh_id}
-                   ) ll
-              group by ll.sales_id
-            ) dt
-        JOIN tb_sales sa ON sa.sales_id = dt.sales_id -->
 		SELECT 
 		  		sal.sales_type, 
 		  		sal.sales_nm, 
@@ -139,6 +113,108 @@
 	</select>
 	
 	
-	
+	<select id="getValidWareHouseInfo" resultType="kr.happyjob.study.scm.orders.model.whcntModel">
+			SELECT 
+					wh_id,
+					wh_nm,
+					wh.sales_id,
+					wh.sales_nm,
+					wh.st_cnt,
+					SUM(IFNULL(pur_cnt,IFNULL(return_cnt,0))) AS 'export_cnt',
+					wh.st_cnt-SUM(IFNULL(pur_cnt,IFNULL(return_cnt,0))) AS 'valid_cnt'
+			FROM 
+						(
+						SELECT tw.wh_id, tw.wh_nm,tsal.sales_id,tsal.sales_nm, ts.st_cnt FROM
+							(
+								tb_warehouse tw JOIN
+								tb_stock ts ON tw.wh_id =ts.wh_id
+												JOIN 
+								tb_sales tsal ON tsal.sales_id =ts.sales_id
+							)
+						) wh 
+					LEFT JOIN
+						(SELECT * FROM (
+							SELECT 
+								oDir.pur_id AS 'oDir_pur_id',
+								oDir.order_id,
+								oDir.sales_id AS 'oDir_sales_id',
+								oDir.return_id,
+								oDir.return_cnt,
+								oDir.deliv_wh_id AS 'oDir_deliv_wh_id',
+								pDir.pur_id AS 'pDir_pur_id',
+								pDir.purinf_id,
+								pDir.sales_id AS 'pDir_sales_id',
+								pDir.pur_cnt,
+								pDir.sales_id,
+								pDir.deliv_wh_id AS 'pDir_deliv_wh_id'
+							FROM (	
+								(SELECT tp.pur_id, toi.order_id, toi.sales_id , tr2.return_id , tr.return_cnt, td2.deliv_wh_id  FROM 
+									(
+										tb_purchase tp  JOIN
+										tb_orderinfo toi ON toi.pur_id =tp.pur_id 
+														JOIN 
+										tb_refundinfo tr ON toi.order_id=tr.order_id 
+														JOIN
+										tb_returndir tr2 ON tr2.rfinfo_id =tr.rfinfo_id 
+														JOIN 
+									 	tb_delivdir td2 ON td2.return_id =tr2.return_id 
+									) WHERE td2.deliverStatus != 'T') oDir
+								LEFT JOIN
+								(SELECT tp.pur_id, tpi.purinf_id, tpi.pur_cnt, tpi.sales_id, td.deliv_wh_id FROM
+									(
+										tb_purchase tp JOIN 
+										tb_purchaseinfo tpi ON tp.pur_id=tpi.pur_id 
+														JOIN 
+										tb_delivdir td ON tpi.purinf_id=td.purinf_id
+									) WHERE td.deliverStatus != 'T') pDir
+								ON pDir.pur_id=oDir.pur_id
+							) 
+							UNION 
+								SELECT 
+									oDir.pur_id AS 'oDir_pur_id',
+									oDir.order_id,
+									oDir.sales_id AS 'oDir_sales_id',
+									oDir.return_id,
+									oDir.return_cnt,
+									oDir.deliv_wh_id AS 'oDir_deliv_wh_id',
+									pDir.pur_id AS 'pDir_pur_id',
+									pDir.purinf_id,
+									pDir.sales_id AS 'pDir_sales_id',
+									pDir.pur_cnt,
+									pDir.sales_id,
+									pDir.deliv_wh_id AS 'pDir_deliv_wh_id'
+								FROM (	
+									(SELECT tp.pur_id,toi.order_id, toi.sales_id , tr2.return_id , tr.return_cnt, td2.deliv_wh_id  FROM 
+										(
+											tb_purchase tp  JOIN
+											tb_orderinfo toi ON toi.pur_id =tp.pur_id 
+															JOIN 
+											tb_refundinfo tr ON toi.order_id=tr.order_id 
+															JOIN
+											tb_returndir tr2 ON tr2.rfinfo_id =tr.rfinfo_id 
+															JOIN 
+										 	tb_delivdir td2 ON td2.return_id =tr2.return_id 
+										) WHERE td2.deliverStatus != 'T') oDir
+									RIGHT JOIN
+									(SELECT tp.pur_id, tpi.purinf_id, tpi.pur_cnt, tpi.sales_id, td.deliv_wh_id FROM
+										(
+											tb_purchase tp JOIN 
+											tb_purchaseinfo tpi ON tp.pur_id=tpi.pur_id 
+															JOIN 
+											tb_delivdir td ON tpi.purinf_id=td.purinf_id
+										) WHERE td.deliverStatus != 'T') pDir
+									ON pDir.pur_id=oDir.pur_id
+									)
+							) alias
+						) info
+					ON (info.oDir_sales_id=wh.sales_id AND info.oDir_deliv_wh_id=wh.wh_id) OR (info.pDir_sales_id=wh.sales_id AND info.pDir_deliv_wh_id=wh.wh_id)
+					WHERE wh.sales_id IN
+					<foreach item="idx" collection="list" separator="," open="(" close=")">
+						${idx}
+					</foreach>
+		    GROUP BY wh.wh_id, wh.sales_id
+			ORDER BY sales_id, wh.wh_id		
+			
+	</select>
 	
 </mapper>

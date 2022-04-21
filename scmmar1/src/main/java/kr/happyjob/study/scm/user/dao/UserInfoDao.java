@@ -1,6 +1,7 @@
 package kr.happyjob.study.scm.user.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import kr.happyjob.study.scm.user.model.PageInfo;
 import kr.happyjob.study.scm.user.model.User;
@@ -10,7 +11,7 @@ import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 public interface UserInfoDao {
 
-	UserDetail getUserInfo(String userID);
+	UserDetail getUserInfo(Map<String, Object> params);
 
 	List<User> getUserList(PageInfo param);
 

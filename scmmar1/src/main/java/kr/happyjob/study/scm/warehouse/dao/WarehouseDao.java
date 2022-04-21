@@ -18,5 +18,6 @@ public interface WarehouseDao {
 	int deleteWarehouse(String wh_id);
 	int updateWarehouse(WarehouseDetail data);
 	int getWareHouseStock(String wh_id);
+	List<ComnCodUtilModel> getWhComnCod();
 
 }

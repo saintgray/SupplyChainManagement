@@ -15,4 +15,7 @@ public interface whInventoryFormService {
 	// 총 값
 	public int total(Map<String, Object> paramMap) throws Exception;
 	
+	// 구매한 상품당 유효한 창고리스트 가져오기
+	public List<whcntModel> getValidWareHouse(String pur_idx,String purchaserUserType);
+	
 }

@@ -151,17 +151,16 @@
                         newRow.appendChild(createNewCell('checkbox', 'chbox'));
                         newRow.appendChild(createNewCell('img', 'photo', '', {
                             attrName: 'src',
-                            attrVal: '/serverfile' + '/kakaoRyan.png'
+                            attrVal: item.photo || '/images/nonesalesimg.jpg'
                         }));
                         // newRow.appendChild(createNewCell('img', 'photo','', {attrName:'src', attrVal:'/serverfile' + item.photo}));
                         newRow.appendChild(createNewCell('text', 'modelNm', item.model_nm));
                         newRow.appendChild(createNewCell('text', 'unitPrice', (item.price).toLocaleString()));
                         newRow.appendChild(createNewCell('number', 'purCnt', item.pur_cnt));
                         newRow.appendChild(createNewCell('text', 'totalPrice', (item.price * item.pur_cnt).toLocaleString()));
-                        newRow.appendChild(createNewCell('date', 'wantedDate', item.wanteddate));
+                        newRow.appendChild(createNewCell('date', 'wantedDate', item.wantedDate));
                         newRow.appendChild(createNewCell('button', 'delBtn', '삭제'));
                         newRow.appendChild(createNewCell('hidden', 'salesId', item.sales_id));
-                        console.log('try4');
 
                         document.querySelector('#cartListBody').appendChild(newRow);
 
@@ -177,7 +176,6 @@
                     let newInput = document.createElement('input');
                     newInput.type = typeName;
                     if (typeName == 'date') {
-                        console.log(newInput.value = val.substring(0, 10));
                         newInput.value = val.substring(0, 10);
                     } else if (val) {
                         newInput.value = val;
@@ -293,11 +291,14 @@
                     }
                     const row = e.currentTarget.parentNode.parentNode;
                     const sales_id = row.querySelector('input.salesId').value;
+                    const wantedDate = row.querySelector('input.wantedDate').value;
                     $.ajax({
                         url: 'deleteCartItem',
                         method: 'POST',
                         data: {
-                            sales_id: sales_id
+                            sales_id: sales_id,
+                            wantedDate: wantedDate
+
                         },
                         success: function(result) {
                             listCartTable();

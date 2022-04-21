@@ -11,7 +11,7 @@
 	<dd class="content">
 		
 		
-		<table class="col">
+		<table class="col" id="orderinfo">
 			<thead>
 				<tr>
 					<th scope="col">상세번호</th>
@@ -77,34 +77,31 @@
 				
 		</table>
 		
-		<div id="dirRadioArea" class="mt10">
+		<div id="dirRadioArea" class="mt10">  
 		
 			<!-- 주문했고 배송을 시작하지 않았을 때만(반품 플래그가 없을 때) 배송 지시서 작성 가능 -->
 			<c:if test="${depositYN eq 'Y' && flagReturnYN eq 'N'}">
 				<div>
-					<input type="radio" name="sel" id="shippingDir" value="2" style="cursor: pointer;"/><span id="sel5">배송지시서</span>
+					<input type="radio" name="sel" id="shippingDir" value='${pur_id}'/>
+					<span id="sel5">배송지시서</span>
 				</div>
 			</c:if>
 			
 			<!-- 주문했고 배송완료됐는데 반품을 하는 경우만 반품 지시서 작성 가능 -->
 			<c:if test="${depositYN eq 'Y' && flagReturnYN eq 'Y'}">
 				<div>
-					<input type="radio" name="sel" id="returnDir" value='1' style="cursor: pointer;"/><span id="sel4">반품지시서</span>
+					<input type="radio" name="sel" id="returnDir" value='${pur_id}'/>
+					<span id="sel4">반품지시서</span>
 				</div>
 			</c:if>
 			
 			<!-- 주문했고 배송완료됐고 반품하는 경우에는 발주지시서를 작성할 필요가 없음 -->
 			<c:if test="${!(depositYN eq 'Y' && flagReturnYN eq 'Y')}">
 				<div>
-					<input type="radio" name="sel" id="orderDir" value="3" style="cursor: pointer;"/><span id="sel6">발주지시서</span>
+					<input type="radio" name="sel" id="orderDir" value='${pur_id}'/>
+					<span id="sel6">발주지시서</span>
 				</div>
 			</c:if>
-		</div>
-		
-		<div class="btn_areaC mt30">
-			<input type="hidden" name="Action" id="Action" value="">
-			<a class="btnType blue" id="btnSaveGrpCod" name="btn" onclick="layer1btn()"><span style="cursor: pointer;">작성</span></a> 
-			<a	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span onclick="closemodel()" style="cursor: pointer;">취소</span></a>
 		</div>
 		
 		<!-- 지시서 작성을 위한 area -->

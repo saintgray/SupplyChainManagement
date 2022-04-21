@@ -162,6 +162,15 @@
 		tb_warehouse
 		WHERE wh_id=#{arg0}
 	</delete>
+	
+	
+	<select id="getWhComnCod" resultType="kr.happyjob.study.system.model.ComnCodUtilModel">
+		SELECT 
+			wh_id AS dtl_cod,
+			wh_nm AS dtl_cod_nm	
+		FROM
+			tb_warehouse
+	</select>
 		
 	
 	

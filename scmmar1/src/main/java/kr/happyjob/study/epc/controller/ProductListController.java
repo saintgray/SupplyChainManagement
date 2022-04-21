@@ -1,7 +1,8 @@
 package kr.happyjob.study.epc.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -33,25 +34,30 @@ public class ProductListController {
 	@RequestMapping(value="/productList.do", method=RequestMethod.GET)
 	public String pl(Model model) {
 		
-		/*int totalCount = comnCodService.countListComnGrpCod(paramMap);*/
-		model.addAttribute("totalProductListCnt", 18);
+		int totalCount = pservice.getListProductCnt(new SearchParamDTO());
+		model.addAttribute("totalProductListCnt", totalCount);
 		model.addAttribute("currentPageProductList", 1);
 		return "epc/productList";
 	}
 	
 	@RequestMapping(value="/getProductList", method=RequestMethod.POST)
 	@ResponseBody
-	public HashMap<String, Object> gpl(
+	public Map<String, Object> gpl(
 			Model model,
 				SearchParamDTO param
 			) {
 		
-		HashMap<String, Object> result = new HashMap<>();
+		//SET param
 		param.setStartIndex((param.getCurrentPage()-1)*param.getPageBlockSize());
 		param.setPageBlockSize(param.getPageBlockSize());
-		ArrayList<SalesModel> list = pservice.getListProduct(param);
-		int totalCntProductList = pservice.getListProductCnt(param);
+		
+		//get data list
+		Map<String, Object> result = new HashMap<>();
+		List<SalesModel> list = pservice.getListProduct(param);
 		result.put("list", list);
+		
+		//get total count
+		int totalCntProductList = pservice.getListProductCnt(param);
 		result.put("totalCntProductList", totalCntProductList);
 		return result;
 	}
@@ -66,30 +72,41 @@ public class ProductListController {
 	
 	@RequestMapping(value="/getSalesTypeList", method=RequestMethod.GET)
 	@ResponseBody
-	public ArrayList<String> gstl() {
-		ArrayList<String> stList = pservice.getSalesTypeList();
+	public List<String> gstl() {
+		List<String> stList = pservice.getSalesTypeList();
 		
 		return stList;
 	}
 	
 	@RequestMapping(value="/getMfcompList", method=RequestMethod.POST)
 	@ResponseBody
-	public ArrayList<String> gmfcl( @RequestParam String salesType) {
-		ArrayList<String> mfclist = pservice.getMfcompListBySalesType(salesType);
+	public List<String> gmfcl( @RequestParam String salesType) {
+		List<String> mfclist = pservice.getMfcompListBySalesType(salesType);
 		
 		return mfclist;
 	}
 	
 	@RequestMapping(value="/orderProduct", method=RequestMethod.POST)
 	@ResponseBody
-	public Integer op( ShoppingCartItemDTO param,
+	public int op( ShoppingCartItemDTO param,
 			HttpSession session) {
 		
+		//set param
+		param.setLoginID((String)session.getAttribute("loginId"));
+
+		
+		//log param
 		logger.info("op param");
 		logger.info(param);
 		
-		param.setLoginID((String)session.getAttribute("loginId"));
-		Integer result = pservice.orderAndCartProduct(param);
+		//do service
+		int result = 0;
+		try {
+			result = pservice.orderAndCartProduct(param);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return result;
 	}

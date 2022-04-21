@@ -174,5 +174,20 @@ public class WarehouseController {
 		return resultMap;
 		
 	}
+	@RequestMapping("/whCombo.do")
+	@PostMapping
+	@ResponseBody
+	public Map<String,Object> getWareHouseCombo(){
+		Map<String, Object> resultMap=null;
+		
+		try{
+			List<ComnCodUtilModel> list=whService.getWhComnCod();
+			resultMap=new HashMap<>();
+			resultMap.put("list", list);
+		}catch(Exception e){
+			
+		}
+		return resultMap;
+	}
 
 }

@@ -203,7 +203,7 @@
                     $('tbody#tbodyProductDetail input[name="wanted_date"]').val(dateFormatter(new Date()));
                     $('div#popProductDetail textarea').html(item.info);
                     $('img#productDetailImg').attr({
-                        src: item.file_server_path ? item.file_server_path : "/serverfile/kakaoRyan.png"
+                        src: item.file_server_path ? item.file_server_path : "/images/nonesalesimg.jpg"
                     });
 
                     const inputList = $('tbody#tbodyProductDetail').find('input');
@@ -434,7 +434,7 @@
                         alreadyExist: 1
                     };
                     let existCheck = existCheckType.doesntExist;
-                    // existCheck 설명
+                    // existCheck definition
                     // -1 : doesnt exist
                     // 0 : same product diffrent date
                     // 1 : same product same date

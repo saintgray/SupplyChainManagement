@@ -15,7 +15,7 @@ import kr.happyjob.study.system.model.ComnCodUtilModel;
 @Service
 public interface UserInfoService {
 	
-	UserDetail getUserInfo(String userID);
+	UserDetail getUserInfo(String userID, String pur_idx);
 	PageInfo getUserList(PageInfo param);
 	int insertUser(UserRegData data);
 	int updateUser(UserRegData data);

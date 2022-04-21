@@ -7,20 +7,33 @@
 
 	<select id="getUserInfo" resultType="kr.happyjob.study.scm.user.model.UserDetail">
 		SELECT
-				loginID,
-				password,
-				user_Type,
-				client,
-				name,
-				phone,
-				zipCode,
-				address,
-				dtAddress,
-				email
+				tu.loginID,
+				tu.password,
+				tu.user_Type
+				<if test="userID != null">
+					,tu.client,
+					tu.name,
+					tu.phone,
+					tu.zipCode,
+					tu.address,
+					tu.dtAddress,
+					tu.email
+				</if>
+				
 		FROM
-			tb_userinfo
-		WHERE 
-			loginID=#{arg0}
+			tb_userinfo tu
+			<if test="userID == null">
+				JOIN tb_purchase tp
+				ON tp.loginID=tu.loginID
+			</if>
+		WHERE
+			<if test="userID != null">
+				tu.loginID=#{userID}
+			</if> 
+			<if test="userID == null">
+				tp.pur_id=#{pur_idx}
+			</if>
+			
 	</select>
 	
 	

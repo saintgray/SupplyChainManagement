@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.study.scm.orders.dao.dirDao">
+
+
+
+	<insert id="insertShippingDir" parameterType="kr.happyjob.study.scm.orders.model.DirModel">
+		INSERT 
+		INTO tb_delivdir
+					(
+						purinf_id,
+						deliv_wh_id
+					)
+		VALUES
+					<foreach collection="list" separator=",">
+					(
+						#{purinf_id},
+						#{deliv_wh_id}
+					)
+					</foreach>
+	</insert>
+
+
+
+</mapper>

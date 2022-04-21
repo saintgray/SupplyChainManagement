@@ -80,7 +80,7 @@ public class UserInfoController {
 		
 		UserDetail detail=null;
 		
-		detail=uiService.getUserInfo(id);
+		detail=uiService.getUserInfo(id,null);
 		
 		if(detail!=null){
 			userCount=1;
