@@ -37,8 +37,8 @@
 	
 		<div class="btn_areaC mt30">
 			<input type="hidden" name="action" id="action" value="">
-			<button type="button" class="btn btn-primary" id="writeDir">작성</button> 
-			<button type="button" class="btn" onclick="closemodel()">취소</button>
+			<button type="button" class="btn btn-primary" id="writeBtn">작성</button> 
+			<button type="button" class="btn" id="btnClose" onclick="closemodel()">취소</button>
 		</div>
 	
 </div>

@@ -110,6 +110,10 @@ function connectEvent(){
 			$(this).parent().parent().remove();	
 		}
 	})
+	// 발주 수량 숫자만 삭정
+	$('body').on('keydown','.orderCnt',function(e){
+		 fFilterNumber(e);
+	})
 	
 	// 주문 상세 내역 팝업
 	$('body').on('click','#dailyOrderlist tr',function(){
@@ -121,6 +125,8 @@ function connectEvent(){
 		callAjax('/scm/purchaseinfo/'+$(this).children().eq(0).text(),"post", "text",true,null,callback);
 
 	})
+	
+	// 지시서 form 요청
 	$('body').on('change','#dirRadioArea input[type=radio]',function(){
 		if($(this).is(':checked')){
 			
@@ -138,21 +144,16 @@ function connectEvent(){
 						$('#v-warehouse, #v-orderAndReturn').remove();
 						$('#layer').append(data);
 						$('#action').val(id);
-						if($('.sb').length>0){
+						if($('.su').length>0){
 							let combo_name=$('.sb').eq(0).attr('id');
-							$('.sb').each(function(index,item){
-								console.log('sb'+index);
-								comcombo('','sb'+index,null,null,'/scm/whCombo.do');
+							$('.su').each(function(index,item){
+								// console.log('sb'+index);
+								// comcombo('','sb'+index,null,null,'/scm/whCombo.do');
+								comcombo('','su'+index,null,null,'/scm/supply/comnCod.do');
 							});
 						}
-						
 					};
 					break;
-			///////////////////////////////
-				case 'returnDir':
-					
-					break;
-			///////////////////////////////
 				case 'shippingDir':
 					
 					param=null;
@@ -174,6 +175,8 @@ function connectEvent(){
 					);	
 		}	
 	})
+	
+	// 상품에 대한 발주시 상품당 출고할 창고번호  다중 선택 방지
 	$('body').on('change','#v-warehouse table input[type=checkbox]',function(){
 		$(this).parent().
 				parent().
@@ -182,39 +185,61 @@ function connectEvent(){
 				children('input[type=checkbox]').
 				attr('checked',false);
 	})
-	$('body').on('click','#v-warehouse .btn_areaC #writeBtn',function(){
-		
-		switch($('#action').val()){
-		case 'shippingDir':
-			console.log($('#layer #orderinfo tr').length-1);
-			console.log($('#v-warehouse table').length);
-			if($('#layer #orderinfo tr').length-1!= $('#v-warehouse table').length){
-				alert('창고에 없는 구매상품이 있습니다. 발주 후 진행하세요');
-			}else{
-				var purinfIdxArr=[];
-				$('.targetIdx').each(function(index,item){
-					purinfIdxArr.push($(item).text());
-				})
-				var exportWhArr=[];
-				$('.shippingTarget:checked').each(function(index,item){
-					exportWhArr.push($(item).val());
-				})
-				console.log(purinfIdxArr);
-				console.log(exportWhArr);
-				var param={
+	
+	// 배송 및 발주 지시서 작성
+	$('body').on('click','.btn_areaC #writeBtn',function(){
+		let action=$('#action').val();
+		console.log(action);
+		var param={};
+		switch(action){
+			case 'shippingDir':
+				console.log($('#layer #orderinfo tr').length-1);
+				console.log($('#v-warehouse table').length);
+				if($('#layer #orderinfo tr').length-1!= $('#v-warehouse table').length){
+					alert('창고에 없는 구매상품이 있습니다. 발주 후 진행하세요');
+				}else{
+					var purinfIdxArr=[];
+					$('.targetIdx').each(function(index,item){
+						purinfIdxArr.push($(item).text());
+					})
+					var exportWhArr=[];
+					$('.shippingTarget:checked').each(function(index,item){
+						exportWhArr.push($(item).val());
+					})
+					console.log(purinfIdxArr);
+					console.log(exportWhArr);
+					param={
 							idxList:purinfIdxArr,
 							targetWh:exportWhArr
 						  };
-				callAjax('/scm/dirManage/'+$('#action').val(),'POST','json',true,param,function(data){
-					console.log('테스트 통신 성공');
+					
+				}
+				break;
+			case 'orderDir':
+				var whArr=[];
+				$('#v-orderAndReturn .orderinfo').each(function(index,item){
+					console.log($(item).children('.salesinfo').children('input').val());
+					console.log($(item).children('.su').val());
+					console.log($(item).children('.orderCnt').val());
+					whArr.push($(item).children('.salesinfo').children('input').val()+','+$(item).children('.su').val()+','+$(item).children('.orderCnt').val());
 				})
+				console.log(whArr);
+				param={targetWh:whArr};
+				break;
 			}
-			break;
-		case 'orderDir':
-			break;
-		case 'returnDir':
-			break;
-		}
+		// end of switch
+		var callback=function(data){
+			if(data>0){
+				swal('작성되었습니다');
+			}else{
+				swal('오류가 발생했습니다. 잠시 후 다시 시도하세요');
+			}
+			init($('.paging_area strong').text());
+		};
+		// 지시서 작성 요청 전달
+		console.log(param);
+		callAjax('/scm/dirManage/'+$('#action').val(),'POST','json',true,param,callback);
+		
 	})
 	
 }

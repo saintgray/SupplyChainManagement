@@ -7,16 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.happyjob.study.scm.orders.dao.DailyOrderHistoryDao;
+import kr.happyjob.study.scm.orders.dao.DirDao;
 import kr.happyjob.study.scm.orders.model.CompModel;
 import kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel;
 import kr.happyjob.study.scm.orders.model.WorkOrderModel;
 import kr.happyjob.study.scm.orders.model.warehouseModel;
+import kr.happyjob.study.scm.user.dao.UserInfoDao;
+import kr.happyjob.study.scm.user.service.UserInfoService;
 
 @Service
 public class DailyOrderHistoryServiceImpl implements DailyOrderHistoryService{
 
 	@Autowired
 	DailyOrderHistoryDao dailyorderhistorydao;
+	@Autowired
+	DirDao dirDao;
 	
 	@Override
 	public List<DailyOrderHistoryModel> listdailyOrderHistory(Map<String, Object> paramMap) throws Exception {
@@ -33,6 +38,11 @@ public class DailyOrderHistoryServiceImpl implements DailyOrderHistoryService{
 
 	@Override
 	public List<WorkOrderModel> onedailyOrderHistory(Map<String, Object> paramMap) throws Exception {
+		
+		// 이 주문의 type 추출
+		paramMap.put("type",(int)dirDao.getPurchaseType(paramMap.get("pur_id").toString()));
+		
+		
 		List<WorkOrderModel> onedailyOrderHistory = dailyorderhistorydao.onedailyOrderHistory(paramMap);
 		return onedailyOrderHistory;
 	}

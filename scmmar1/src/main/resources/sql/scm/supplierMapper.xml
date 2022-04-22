@@ -91,5 +91,14 @@
 		WHERE
 			ti.comp_id=#{arg0}
 	</select>
+	
+	
+	<select id="getComnCod" resultType="kr.happyjob.study.system.model.ComnCodUtilModel">
+		SELECT
+			comp_id AS dtl_cod,
+			comp_nm AS dtl_cod_nm
+		FROM
+		tb_comp
+	</select>
 
 </mapper>

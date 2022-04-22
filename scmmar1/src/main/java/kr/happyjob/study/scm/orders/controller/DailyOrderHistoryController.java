@@ -118,14 +118,18 @@ public class DailyOrderHistoryController {
 				 }
 			 
 			 
-			 // 구매한 상품중 반품요청이 하나라도 있다면 Model 객체에 반품요청이 있다는 flag 를 추가한다
+		/*	 // 구매한 상품중 반품요청이 하나라도 있다면 Model 객체에 반품요청이 있다는 flag 를 추가한다
+			 // 구매한 상품중에 배송이 하나라도 시작했다면 객체에 이미 배송지시서를 썻다는 flag 를 추가한다		
 			 model.addAttribute("flagReturnYN","N");
+			 model.addAttribute("flagDelivYN","N");
 			 for(WorkOrderModel orderItem : infoList){
 				 if(orderItem.getReturnYN().equals("Y")){
 					 model.addAttribute("flagReturnYN","Y");
-					 break;
+				 }else if(orderItem.getDeliverStatus()!=null){
+					 model.addAttribute("flagDelivYN","Y");
 				 }
-			 }
+			 }*/
+		 
 			 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,32 +137,35 @@ public class DailyOrderHistoryController {
 			
 			model.addAttribute("pur_id",idx);
 			
+			
 		}
 		return "scm/orders/system/orderInfo"; 
 	 }
 
+	 
+		
+		
+	// 구매한 상품당 재고를 가진 창고와 유효재고수를 보여주어야 할 때는 고객이 상품을 주문했을 때이다.
+	// 회사가 납품업체에게 상품을 발주하는 경우에는 모든 창고를,
+	// 고객이 회사에게 반품하는 경우에는 모든 창고를,
+	// 회사가 납품업체에게 상품을 반품하는 경우에는 창고를 보여주지 않아도 된다.
 	@RequestMapping("/callDirForm/{formType}/{idx}")
 	@PostMapping
 	public String getDataForDirForm(@PathVariable String formType, @PathVariable String idx, HttpSession session, Model model){
 		
 		String targetView="";
-		
-		logger.info("+ initiate getDataForDirForm.....");
-		
-		
-		
-		// 구매한 상품당 재고를 가진 창고와 유효재고수를 보여주어야 할 때는 고객이 상품을 주문했을 때이다.
-		// 회사가 납품업체에게 상품을 발주하는 경우에는 모든 창고를,
-		// 고객이 회사에게 반품하는 경우에는 모든 창고를,
-		// 회사가 납품업체에게 상품을 반품하는 경우에는 창고를 보여주지 않아도 된다.
-		
+
 		logger.info("+ pur_id : "+idx);
 		logger.info("+ formType : "+formType);
-		
+
+		String purchaserUserType= uiService.getUserInfo(null,idx).getUser_Type();
 		
 		Map<String,List<whcntModel>> listOfValidStockList=new HashMap<>();
 		List<whcntModel> validStockList=null;
-		String purchaserUserType= uiService.getUserInfo(null,idx).getUser_Type();
+		
+		
+		
+		
 		
 		
 		if(purchaserUserType.equals("C") && formType.toLowerCase().equals("shippingdir")){
@@ -170,13 +177,8 @@ public class DailyOrderHistoryController {
 				int lastIndex=0;
 				for(int i=0; i<validStockList.size(); i++){
 					
-//					logger.info("+ lastIndex : "+lastIndex);
-//					logger.info("+ now sales id :" + validStockList.get(i).getSales_id());
 					if(i!=0){
 						if(!(validStockList.get(i).getSales_id().equals(validStockList.get(i-1).getSales_id()))){
-//							logger.info("+ now i val : "+i+ " now sales_id val : " + validStockList.get(i).getSales_id());
-//							logger.info("prev i val : "+ (i-1)+" prev sales_id val : " + validStockList.get(i-1).getSales_id());
-							
 							// 최소 2개 이상의 창고가 해당 상품을 가지고 있었을 경우
 							if(i-1!=lastIndex){
 								listOfValidStockList.put(String.valueOf(validStockList.get(i-1).getSales_nm()),
@@ -231,6 +233,7 @@ public class DailyOrderHistoryController {
 			
 			
 		}
+		
 		
 		
 		return targetView;

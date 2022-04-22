@@ -1,10 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.happyjob.study.scm.orders.dao.dirDao">
+<mapper namespace="kr.happyjob.study.scm.orders.dao.DirDao">
+	
+	
+	
+	<select id="getPurchaseType" resultType="Integer">
+		SELECT type FROM tb_purchase WHERE pur_id=#{arg0}
+	</select>
+	
+	<!-- 해당 구매/발주 고유번호에 대해 반품정보가 있는지 확인한다 -->
+	<select id="countRefundInfoByByPurId" resultType="Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			tb_purchase tp JOIN
+			<if test="arg0==1">
+			tb_purchaseinfo tpi ON tp.pur_id=tpi.pur_id
+							JOIN
+			tb_refundinfo tri ON tpi.purinf_id=tri.purinf_id
+			</if>
+			<if test="arg0==0">
+			tb_orderinfo toi ON tp.pur_id=toi.pur_id
+							JOIN
+			tb_refundinfo tri ON toi.order_id=tri.order_id
+			</if>
+		WHERE tp.pur_id=#{arg0}
+	</select>
+	
+	
+	<select id="countRefundDirByPurInfIdx">
+		SELECT
+			COUNT(1)
+		FROM
+		<if test="arg0==1">
+			tb_purchaseinfo tpi ON tp.pur_id=tpi.pur_id
+							JOIN
+			tb_refundinfo tri ON tpi.purinf_id=tri.purinf_id
+							JOIN
+			tb_returndir td ON tri.rfinfo_id=td.rfinfo_id
+			</if>
+			<if test="arg0==0">
+			tb_orderinfo toi ON tp.pur_id=toi.pur_id
+							JOIN
+			tb_refundinfo tri ON toi.order_id=tri.order_id
+							JOIN
+			tb_returndir td ON tri.rf_info_id=td.rfinfo_id
+		</if>
+		
+		<where>
+			<if test="arg1!=null">
+				WHERE td.confirmYN='Y'
+			</if>
+		</where>
+			
+	</select>
 
 
-
-	<insert id="insertShippingDir" parameterType="kr.happyjob.study.scm.orders.model.DirModel">
+	<insert id="insertShippingDir">
 		INSERT 
 		INTO tb_delivdir
 					(
@@ -12,10 +64,10 @@
 						deliv_wh_id
 					)
 		VALUES
-					<foreach collection="list" separator=",">
+					<foreach collection="list" separator="," item="data">
 					(
-						#{purinf_id},
-						#{deliv_wh_id}
+						#{data.purinf_id},
+						#{data.deliv_wh_id}
 					)
 					</foreach>
 	</insert>

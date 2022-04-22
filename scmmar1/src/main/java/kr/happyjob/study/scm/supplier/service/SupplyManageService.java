@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 
 import kr.happyjob.study.scm.supplier.model.ImpSales;
 import kr.happyjob.study.scm.supplier.model.PageInfo;
-import kr.happyjob.study.scm.supplier.model.Supplier;
+import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 @Service
 public interface SupplyManageService {
 	
 	PageInfo getSuppliers(PageInfo info);
 	List<ImpSales> getImpSales(String comp_id);
+	List<ComnCodUtilModel> getComnCod();
 
 }

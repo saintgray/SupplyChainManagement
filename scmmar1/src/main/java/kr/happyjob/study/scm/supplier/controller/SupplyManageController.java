@@ -1,5 +1,8 @@
 package kr.happyjob.study.scm.supplier.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.happyjob.study.scm.supplier.model.PageInfo;
 import kr.happyjob.study.scm.supplier.service.SupplyManageService;
@@ -68,7 +72,14 @@ public class SupplyManageController {
 	}
 	
 	
-	
+	@PostMapping("/supply/comnCod.do")
+	@ResponseBody
+	public Map<String, Object> getSupplyComnCod(){
+		Map<String, Object> result=new HashMap<String, Object>();
+		result.put("list", supplyService.getComnCod());
+		
+		return result;
+	}
 	
 	
 	

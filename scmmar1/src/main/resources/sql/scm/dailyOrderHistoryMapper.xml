@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.happyjob.study.scm.orders.dao.DailyOrderHistoryDao">
-	
 
 	
 	<select id="listdailyOrderHistory" resultType="kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel">
@@ -12,56 +11,19 @@
 			tu.name,
 			SUM(tpi.pur_cnt) AS pur_cnt_total,
 			SUM(ts.price*tpi.pur_cnt) AS total_price,
-			tp.depositYN,
-			CASE WHEN 
-				(SELECT COUNT(1) FROM tb_purchaseinfo tpi2 WHERE tpi2.pur_id=tp.pur_id AND tpi.returnYN = 'Y') &gt; 0
-				THEN 'Y'
-				ELSE 'N'
-				END AS returnYN
+			tp.depositYN
 		FROM 
 			tb_purchase tp  JOIN
 			tb_userinfo tu ON tp.loginID=tu.loginID
 						    LEFT JOIN
 			tb_purchaseinfo tpi ON tpi.pur_id=tp.pur_id
 							LEFT JOIN
-			tb_orderinfo toi ON toi.pur_id=tp.pur_id
+			tb_sales ts ON ts.sales_id=tpi.sales_id
 							LEFT JOIN
-			tb_sales ts ON ts.sales_id=tpi.sales_id OR ts.sales_id=toi.sales_id
+			tb_refundinfo tri ON tpi.purinf_id=tri.purinf_id
 							LEFT JOIN
-			(
-			SELECT st.sales_id, sum(st_cnt) AS sumcnt 
-			FROM tb_stock st 
-			GROUP BY st.sales_id
-			) ll ON ll.sales_id=tpi.sales_id
-		
-		
+			tb_delivdir td ON tpi.purinf_id=td.purinf_id
 		<where>
-				<choose>
-					<when test="returnsearch == 'a'.toString()">
-						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
-						AND 
-						 	CASE tp.type 
-							WHEN 1
-								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
-							WHEN 0
-								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.order_id =toi.order_id) &gt; 0
-							END
-						<!-- and returnYN='Y' -->
-					</when>
-					<when test="returnsearch == 'b'.toString()">
-						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id)=0
-						AND 
-						 	CASE tp.type 
-							WHEN 1
-								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) =0
-							WHEN 0
-								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.order_id =toi.order_id) =0
-							END
-						
-						<!-- and returnYN='N' -->
-					</when>
-				</choose>
-				
 				<if test="!selectsearch.equals('')">
 					<choose>
 						<when test="selectsearch == '0'.toString()">
@@ -86,7 +48,12 @@
 						</when>
 					</choose>
 				</if>
+				AND tu.user_Type='C' 
+				AND tri.rfinfo_id IS NULL
+				AND td.purinf_id is null	
+				AND depositYN='Y'
 		</where>
+		
 		GROUP BY tp.pur_id
 		ORDER BY tp.purdate DESC
 		LIMIT #{pageIndex}, #{pageSize}
@@ -102,42 +69,12 @@
 						    LEFT JOIN
 			tb_purchaseinfo tpi ON tpi.pur_id=tp.pur_id
 							LEFT JOIN
-			tb_orderinfo toi ON toi.pur_id=tp.pur_id
+			tb_sales ts ON ts.sales_id=tpi.sales_id
 							LEFT JOIN
-			tb_sales ts ON ts.sales_id=tpi.sales_id OR ts.sales_id=toi.sales_id
+			tb_refundinfo tri ON tpi.purinf_id=tri.purinf_id
 							LEFT JOIN
-			(
-			SELECT st.sales_id, sum(st_cnt) AS sumcnt 
-			FROM tb_stock st 
-			GROUP BY st.sales_id
-			) ll ON ll.sales_id=tpi.sales_id
+			tb_delivdir td ON tpi.purinf_id=td.purinf_id
 		<where>
-				<choose>
-					<when test="returnsearch == 'a'.toString()">
-						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
-						AND 
-						 	CASE tp.type 
-							WHEN 1
-								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) &gt; 0
-							WHEN 0
-								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.order_id =toi.order_id) &gt; 0
-							END
-						<!-- and returnYN='Y' -->
-					</when>
-					<when test="returnsearch == 'b'.toString()">
-						AND (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id)=0
-						AND 
-						 	CASE tp.type 
-							WHEN 1
-								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.purinf_id=tpi.purinf_id) =0
-							WHEN 0
-								THEN (SELECT COUNT(1) FROM tb_refundinfo tri WHERE tri.order_id =toi.order_id) =0
-							END
-						
-						<!-- and returnYN='N' -->
-					</when>
-				</choose>
-				
 				<if test="!selectsearch.equals('')">
 					<choose>
 						<when test="selectsearch == '0'.toString()">
@@ -162,6 +99,10 @@
 						</when>
 					</choose>
 				</if>
+				AND tu.user_Type='C' 
+				AND tri.rfinfo_id is null
+				AND td.purinf_id is null
+				AND depositYN ='Y'
 		</where>
 		GROUP BY tp.pur_id
 	) alias;
@@ -173,22 +114,18 @@
 	
 	<select id="onedailyOrderHistory" resultType="kr.happyjob.study.scm.orders.model.WorkOrderModel">
 		SELECT 
-			pur.pur_id,
-			pur.depositYN,
-			sal.sales_nm,
-			pinfo.purinf_id,
-			pinfo.pur_cnt,
-			pinfo.returnYN,
-			sal.price*pinfo.pur_cnt AS price_sum,
-			tri.return_cnt,
-			trd.confirmYN
-		FROM tb_purchaseinfo pinfo
-			  JOIN tb_purchase pur ON pinfo.pur_id = pur.pur_id
-			  JOIN tb_userinfo user ON user.loginID = pur.loginID
-			  JOIN tb_sales sal ON sal.sales_id = pinfo.sales_id
-			  LEFT JOIN tb_refundinfo tri ON pinfo.purinf_id=tri.purinf_id
-			  LEFT JOIN tb_returndir trd on trd.rfinfo_id =tri.rfinfo_id
-		WHERE pur.pur_id = #{pur_id}
+			tp.pur_id,
+			tp.depositYN,
+			ts.sales_nm,			
+			tpi.purinf_id,
+			tpi.pur_cnt,
+			ts.price*tpi.pur_cnt AS price_sum,
+			tpi.returnYN
+		FROM tb_purchase tp 
+				JOIN tb_userinfo tu ON tu.loginID=tp.loginID
+				JOIN tb_purchaseinfo tpi ON tp.pur_id=tpi.pur_id
+				JOIN tb_sales ts ON ts.sales_id=tpi.sales_id
+		WHERE tp.pur_id=#{pur_id}
 	</select>
 	
 	

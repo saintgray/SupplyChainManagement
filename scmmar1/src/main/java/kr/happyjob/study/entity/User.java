@@ -1,6 +1,6 @@
 package kr.happyjob.study.entity;
 
-
+import java.util.List;
 
 public class User {
 	
@@ -22,15 +22,20 @@ public class User {
 	protected String photo;
 	protected String deletedYN;
 	
+	protected List<Purchase> purchases;
+	
 	public User() {
 		
 	}
 
 	
 	
+
+
 	public User(String loginID, String userType, String password, String name, String client, String zipCode,
 			String address, String dtAddress, String phone, String email, String businessNo, String regID,
-			String regDate, String upID, String upDate, String photo, String deletedYN) {
+			String regDate, String upID, String upDate, String photo, String deletedYN, List<Purchase> purchases) {
+		
 		this.loginID = loginID;
 		this.userType = userType;
 		this.password = password;
@@ -48,7 +53,10 @@ public class User {
 		this.upDate = upDate;
 		this.photo = photo;
 		this.deletedYN = deletedYN;
+		this.purchases = purchases;
 	}
+
+
 
 
 
@@ -187,6 +195,20 @@ public class User {
 	public void setDeletedYN(String deletedYN) {
 		this.deletedYN = deletedYN;
 	}
+
+
+
+	public List<Purchase> getPurchases() {
+		return purchases;
+	}
+
+
+
+	public void setPurchases(List<Purchase> purchases) {
+		this.purchases = purchases;
+	}
+	
+	
 	
 	
 

@@ -22,6 +22,8 @@ public class WorkOrderModel {
 	private String loginID;
 	private int return_cnt;
 	
+	private String deliverStatus;
+	
 	
 	public WorkOrderModel() {
 	
@@ -186,6 +188,18 @@ public class WorkOrderModel {
 	public void setConfirmYN(String confirmYN) {
 		this.confirmYN = confirmYN;
 	}
+
+
+	public String getDeliverStatus() {
+		return deliverStatus;
+	}
+
+
+	public void setDeliverStatus(String deliverStatus) {
+		this.deliverStatus = deliverStatus;
+	}
+	
+	
 	
 	
 	

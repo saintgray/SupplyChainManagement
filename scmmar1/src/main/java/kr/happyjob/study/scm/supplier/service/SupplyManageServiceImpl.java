@@ -6,9 +6,11 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kr.happyjob.study.common.comnUtils.ComnCodUtil;
 import kr.happyjob.study.scm.supplier.dao.SupplyManageDao;
 import kr.happyjob.study.scm.supplier.model.ImpSales;
 import kr.happyjob.study.scm.supplier.model.PageInfo;
+import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 @Service
 public class SupplyManageServiceImpl implements SupplyManageService {
@@ -63,6 +65,13 @@ public class SupplyManageServiceImpl implements SupplyManageService {
 	@Override
 	public List<ImpSales> getImpSales(String comp_id) {		
 		return sst.getMapper(SupplyManageDao.class).getImpSales(comp_id);
+	}
+
+
+	@Override
+	public List<ComnCodUtilModel> getComnCod() {
+		List<ComnCodUtilModel> list =sst.getMapper(SupplyManageDao.class).getComnCod();
+		return list;
 	}
 	
 	

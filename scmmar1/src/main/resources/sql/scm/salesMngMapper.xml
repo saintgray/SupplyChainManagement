@@ -196,7 +196,11 @@
 	
 	<!-- 주문 상세에 주문한 모든 상품번호를 조회해 구매상세,상품번호 형태로 리스트 반환 -->
 	<select id="selectAllSalesByPurchaseIdx" resultType="String">
-		SELECT CONCAT(purinf_id,',',sales_id)sales_id FROM tb_purchaseinfo WHERE purinf_id IN
+		SELECT 
+			CONCAT(purinf_id,',',sales_id) AS sales_id 
+		FROM 	
+		tb_purchaseinfo 
+		WHERE purinf_id IN
 		<foreach collection="list" open="(" close=")" separator="," item="idx">
 			#{idx}
 		</foreach>
