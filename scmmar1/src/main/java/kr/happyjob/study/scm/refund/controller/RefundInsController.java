@@ -1,4 +1,4 @@
-package kr.happyjob.study.scm.orders.controller;
+package kr.happyjob.study.scm.refund.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -13,19 +13,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import kr.happyjob.study.scm.orders.model.refundInsModel;
-import kr.happyjob.study.scm.orders.service.refundInsService;
+import kr.happyjob.study.scm.refund.model.RefundInsModel;
+import kr.happyjob.study.scm.refund.service.RefundInsService;
 
 @Controller 
 @RequestMapping("/scm/")
-public class refundInsController {
+public class RefundInsController {
 	
 	@Autowired
-	refundInsService refundinsservice;
+	RefundInsService refundinsservice;
 	
 	@RequestMapping("refundIns.do")
 	public String InitStart() throws Exception{
-		return"scm/refundIns";
+		return"scm/refund/refundIns";
 	}
 
 	@RequestMapping("refundInslist.do")
@@ -40,13 +40,13 @@ public class refundInsController {
 	      paramMap.put("pageSize", pageSize);
 	      
 	      int total = refundinsservice.total(paramMap);
-	      List<refundInsModel> relist = refundinsservice.relist(paramMap);
+	      List<RefundInsModel> relist = refundinsservice.relist(paramMap);
 	      
 		model.addAttribute("relist",relist);
 		model.addAttribute("total",total);
 		
 		
-		return"scm/refundInslist";
+		return"scm/refund/system/refundInslist";
 	}
 	
 	

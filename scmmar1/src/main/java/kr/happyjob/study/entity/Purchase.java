@@ -2,8 +2,12 @@ package kr.happyjob.study.entity;
 
 import java.util.List;
 
+
+import org.apache.ibatis.type.Alias;
+@Alias("purchaseAlias")
 public class Purchase {
 	
+
 	protected String purId;
 	protected String purDate;
 	protected String depositYN;
@@ -11,7 +15,7 @@ public class Purchase {
 	protected String type;
 	
 	
-	protected User user;
+	protected Member user;
 	protected List<PurchaseInfo> purchaseInfos;
 	protected List<OrderInfo> orderInfos;
 	
@@ -21,7 +25,7 @@ public class Purchase {
 	}
 
 
-	public Purchase(String purId, String purDate, String depositYN, String depositDate, String type, User user,
+	public Purchase(String purId, String purDate, String depositYN, String depositDate, String type, Member user,
 			List<PurchaseInfo> purchaseInfos, List<OrderInfo> orderInfos) {
 		
 		this.purId = purId;
@@ -85,12 +89,12 @@ public class Purchase {
 	}
 
 
-	public User getUser() {
+	public Member getUser() {
 		return user;
 	}
 
 
-	public void setUser(User user) {
+	public void setUser(Member user) {
 		this.user = user;
 	}
 

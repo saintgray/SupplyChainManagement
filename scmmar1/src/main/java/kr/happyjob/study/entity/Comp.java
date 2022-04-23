@@ -1,11 +1,14 @@
 package kr.happyjob.study.entity;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("comp")
 public class Comp {
 	
 	protected String compId;
 	protected String addr;
 	
-	protected User user;
+	protected Member user;
 	
 	public Comp() {
 		
@@ -13,7 +16,7 @@ public class Comp {
 
 	
 	
-	public Comp(String compId, String addr, User user) {
+	public Comp(String compId, String addr, Member user) {
 		
 		this.compId = compId;
 		this.addr = addr;
@@ -38,11 +41,11 @@ public class Comp {
 		this.addr = addr;
 	}
 
-	public User getUser() {
+	public Member getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(Member user) {
 		this.user = user;
 	}
 	

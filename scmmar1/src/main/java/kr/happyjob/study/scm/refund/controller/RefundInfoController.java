@@ -1,4 +1,4 @@
-package kr.happyjob.study.scm.orders.controller;
+package kr.happyjob.study.scm.refund.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,20 +15,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.happyjob.study.scm.orders.model.refundInfoModel;
-import kr.happyjob.study.scm.orders.service.refundInfoService;
+import kr.happyjob.study.scm.refund.model.RefundInfoModel;
+import kr.happyjob.study.scm.refund.service.RefundInfoService;
 
 
 @Controller 
 @RequestMapping("/scm/")
-public class refundInfoController {
+public class RefundInfoController {
 	
 	@Autowired
-	refundInfoService refundinfoservice;
+	RefundInfoService refundinfoservice;
 	
 	@RequestMapping("refundInfo.do")
 	public String InitStart() throws Exception{
-		return"scm/refundInfo";
+		return "scm/refund/refundInfo";
 	}
 
 	@RequestMapping("refundInfolist.do")
@@ -43,25 +43,25 @@ public class refundInfoController {
 	      paramMap.put("pageSize", pageSize);
 	      
 	      int total = refundinfoservice.total(paramMap);
-	      List<refundInfoModel> reinfolist = refundinfoservice.reinfolist(paramMap);
+	      List<RefundInfoModel> reinfolist = refundinfoservice.reinfolist(paramMap);
 	      
 		model.addAttribute("reinfolist",reinfolist);
 		model.addAttribute("total",total);
 		
 		
-		return"scm/refundInfolist";
+		return"scm/refund/system/refundInfolist";
 	}
 	
 	@RequestMapping("refundinfolistlayer.do")
 	public String onerefundinfo(Model  model, @RequestParam Map<String, Object> paramMap, HttpServletRequest  request,
 	   HttpServletResponse  response, HttpSession  session) throws Exception {	
 		
-	      refundInfoModel onereinfo = refundinfoservice.onereinfo(paramMap);
+	      RefundInfoModel onereinfo = refundinfoservice.onereinfo(paramMap);
 	      
 		model.addAttribute("onereinfo",onereinfo);
 		
 		
-		return"scm/refundinfolistlayer";
+		return"scm/refund/system/refundinfolistlayer";
 	}
 	
 	@RequestMapping("refupdate.do")

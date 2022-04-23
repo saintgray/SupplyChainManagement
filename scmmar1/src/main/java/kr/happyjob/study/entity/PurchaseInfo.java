@@ -1,5 +1,8 @@
 package kr.happyjob.study.entity;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("purinfAlias")
 public class PurchaseInfo {
 	
 	protected String purinfId;

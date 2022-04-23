@@ -1,5 +1,8 @@
 package kr.happyjob.study.entity;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("sale")
 public class Sale {
 	
 	protected String salesId;

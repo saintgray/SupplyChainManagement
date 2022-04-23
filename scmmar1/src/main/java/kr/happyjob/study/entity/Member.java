@@ -2,7 +2,9 @@ package kr.happyjob.study.entity;
 
 import java.util.List;
 
-public class User {
+import org.apache.ibatis.type.Alias;
+@Alias("userAlias")
+public class Member {
 	
 	protected String loginID;
 	protected String userType;
@@ -24,7 +26,7 @@ public class User {
 	
 	protected List<Purchase> purchases;
 	
-	public User() {
+	public Member() {
 		
 	}
 
@@ -32,7 +34,7 @@ public class User {
 	
 
 
-	public User(String loginID, String userType, String password, String name, String client, String zipCode,
+	public Member(String loginID, String userType, String password, String name, String client, String zipCode,
 			String address, String dtAddress, String phone, String email, String businessNo, String regID,
 			String regDate, String upID, String upDate, String photo, String deletedYN, List<Purchase> purchases) {
 		

@@ -15,7 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import kr.happyjob.study.scm.orders.service.refundInfoService;
+import kr.happyjob.study.scm.refund.service.RefundInfoService;
 import kr.happyjob.study.shipping.model.RefundModel;
 import kr.happyjob.study.shipping.service.RefundService;
 
