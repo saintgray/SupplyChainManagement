@@ -6,6 +6,7 @@ import org.apache.ibatis.type.Alias;
 public class Sale {
 	
 	protected String salesId;
+	protected String salesName;
 	protected String salesType;
 	protected String modelCode;
 	protected String price;
@@ -20,10 +21,12 @@ public class Sale {
 	}
 
 
-	public Sale(String salesId, String salesType, String modelCode, String price, String modelName, String photo,
-			String mfComp, String info) {
-		
+
+
+	public Sale(String salesId, String salesName, String salesType, String modelCode, String price, String modelName,
+			String photo, String mfComp, String info) {
 		this.salesId = salesId;
+		this.salesName = salesName;
 		this.salesType = salesType;
 		this.modelCode = modelCode;
 		this.price = price;
@@ -32,6 +35,8 @@ public class Sale {
 		this.mfComp = mfComp;
 		this.info = info;
 	}
+
+
 
 
 	public String getSalesId() {
@@ -112,6 +117,21 @@ public class Sale {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+
+
+
+
+	public String getSalesName() {
+		return salesName;
+	}
+
+
+
+
+	public void setSalesName(String salesName) {
+		this.salesName = salesName;
+	}
+	
 	
 	
 	

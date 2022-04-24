@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.happyjob.study.scm.user.dao.UserInfoDao">
 	
+	
 
 
 
@@ -233,7 +234,7 @@
 
 		
  
- 
+ <!-- 
 	<select id="testGetUsers" resultMap="userAlias">
 	SELECT *FROM tb_userinfo tu
 			JOIN tb_purchase tp
@@ -246,7 +247,7 @@
 	<select id="purc">
 		SELECT *FROM tb_purchase
 	</select>
-
+ -->
 	
 
 	<!-- <resultMap type="userAlias" id="userdetail">

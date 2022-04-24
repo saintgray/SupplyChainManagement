@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.happyjob.study.entity.PurchaseInfo;
 import kr.happyjob.study.scm.refund.model.RefundInfoModel;
 import kr.happyjob.study.scm.refund.service.RefundInfoService;
+
 
 
 @Controller 
@@ -24,7 +26,7 @@ import kr.happyjob.study.scm.refund.service.RefundInfoService;
 public class RefundInfoController {
 	
 	@Autowired
-	RefundInfoService refundinfoservice;
+	RefundInfoService refundService;
 	
 	@RequestMapping("refundInfo.do")
 	public String InitStart() throws Exception{
@@ -42,8 +44,9 @@ public class RefundInfoController {
 	      paramMap.put("pageIndex", pageIndex);	
 	      paramMap.put("pageSize", pageSize);
 	      
-	      int total = refundinfoservice.total(paramMap);
-	      List<RefundInfoModel> reinfolist = refundinfoservice.reinfolist(paramMap);
+	      int total = refundService.total(paramMap);
+	      // List<RefundInfoModel> reinfolist = refundService.reinfolist(paramMap);
+	      List<PurchaseInfo> reinfolist= refundService.getRefundInfoList(paramMap);
 	      
 		model.addAttribute("reinfolist",reinfolist);
 		model.addAttribute("total",total);
@@ -56,7 +59,7 @@ public class RefundInfoController {
 	public String onerefundinfo(Model  model, @RequestParam Map<String, Object> paramMap, HttpServletRequest  request,
 	   HttpServletResponse  response, HttpSession  session) throws Exception {	
 		
-	      RefundInfoModel onereinfo = refundinfoservice.onereinfo(paramMap);
+	      RefundInfoModel onereinfo = refundService.onereinfo(paramMap);
 	      
 		model.addAttribute("onereinfo",onereinfo);
 		
@@ -71,7 +74,7 @@ public class RefundInfoController {
 		 
 		System.out.println(paramMap.get("sales_nm"));
 		 
-		refundinfoservice.refupdate(paramMap);
+		refundService.refupdate(paramMap);
 		
 		 Map<String,Object> returnmap = new HashMap<String,Object>();
 		 String resultMsg = "승인 요청이 완료 되었습니다.";

@@ -3,6 +3,7 @@ package kr.happyjob.study.entity;
 import java.util.List;
 
 import org.apache.ibatis.type.Alias;
+
 @Alias("userAlias")
 public class Member {
 	

@@ -14,19 +14,27 @@ public class OrderInfo {
 	protected Sale sales;
 	protected Comp comp;
 	
+	protected RefundInfo refundInfo;
+	
 	public OrderInfo() {
 		
 	}
 
-	public OrderInfo(String orderId, String wantedDate, String returnYN, Purchase purchase, Sale sales, Comp comp) {
-		
+	
+
+	public OrderInfo(String orderId, String wantedDate, String returnYN, Purchase purchase, Sale sales, Comp comp,
+			RefundInfo refundInfo) {
+	
 		this.orderId = orderId;
 		this.wantedDate = wantedDate;
 		this.returnYN = returnYN;
 		this.purchase = purchase;
 		this.sales = sales;
 		this.comp = comp;
+		this.refundInfo = refundInfo;
 	}
+
+
 
 	public String getOrderId() {
 		return orderId;
@@ -75,6 +83,20 @@ public class OrderInfo {
 	public void setComp(Comp comp) {
 		this.comp = comp;
 	}
+
+
+
+	public RefundInfo getRefundInfo() {
+		return refundInfo;
+	}
+
+
+
+	public void setRefundInfo(RefundInfo refundInfo) {
+		this.refundInfo = refundInfo;
+	}
+	
+	
 	
 	
 	

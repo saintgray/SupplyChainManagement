@@ -2,7 +2,7 @@ package kr.happyjob.study.entity;
 
 import java.util.List;
 
-
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.type.Alias;
 @Alias("purchaseAlias")
 public class Purchase {
@@ -16,6 +16,7 @@ public class Purchase {
 	
 	
 	protected Member user;
+	
 	protected List<PurchaseInfo> purchaseInfos;
 	protected List<OrderInfo> orderInfos;
 	

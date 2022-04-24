@@ -4,61 +4,106 @@
 <mapper namespace="kr.happyjob.study.scm.refund.dao.RefundInfoDao">
 
 
-	<select id="reinfolist" resultType="kr.happyjob.study.scm.refund.model.RefundInfoModel">
-		select sal.sales_nm AS sales_nm
-				,	pinfo.wanted_date AS wanted_date
-				,	ret.return_cnt AS return_cnt
-				, 	(sal.price*ret.return_cnt) AS avg
-				,	ret.return_id AS return_id
-				,	pinfo.purinf_id AS purinf_id
-				,	ret.confirm_requestYN AS confirm_requestYN
-		  from		 tb_returndir ret
-	        join tb_refundinfo reinfo ON reinfo.rfinfo_id = ret.rfinfo_id
-	        join tb_purchaseinfo pinfo ON pinfo.purinf_id = reinfo.purinf_id
-			join tb_sales sal on pinfo.sales_id = sal.sales_id
-				<where>
+	<resultMap type="kr.happyjob.study.entity.PurchaseInfo" id="refundDetail">
+		<result column="purinf_id" property="purinfId"/>
+		<result column="wanted_date" property="wantedDate"/>
+		
+		
+		<association property="sales" javaType="kr.happyjob.study.entity.Sale">
+			<result column="sales_nm" property="salesName"/>
+		</association>
+		
+		
+		<association property="refundInfo" javaType="kr.happyjob.study.entity.RefundInfo">
+		
+			<result column="rfinfo_id" property="refundInfoId"/>
+			<result column="total" property="cnt_total"/>
+			<result column="return_cnt" property="returnCnt"/>
+			
+				<association property="returnDir" javaType="kr.happyjob.study.entity.ReturnDir">
+					<result column="confirmYN" property="confirmYN"/>
+				</association>
+				
+		</association>
+		
+		
+	</resultMap>
+
+
+
+
+	<select id="refundInfoList" resultMap="refundDetail">
+		SELECT
+			pinf.purinf_id,
+			pinf.sales_nm,
+			pinf.wanted_date,
+			tr.return_cnt,
+			SUM(tr.return_cnt*pinf.price) AS total,
+			tr.rfinfo_id,
+			td.return_id,
+			td.confirmYN
+		FROM
+			(
+				SELECT tpi.purinf_id, tpi.wanted_date, ts.sales_id, ts.sales_nm ,ts.price 
+				FROM 		tb_purchaseinfo tpi
+					JOIN	tb_sales ts ON ts.sales_id=tpi.sales_id
+			) pinf
+				 	JOIN tb_refundinfo tr ON pinf.purinf_id=tr.purinf_id
+				 	LEFT JOIN tb_returndir td ON tr.rfinfo_id=td.rfinfo_id
+				WHERE
+					td.rfinfo_id IS NULL
 			    	<choose>
 						<when test="!datesearch1.equals('')">
 						<![CDATA[
-							and (pinfo.wanted_date >=
+							AND (pinf.wanted_date >=
 								#{datesearch1}
-								and
-								pinfo.wanted_date <=
+								AND
+								pinf.wanted_date <=
 									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
 								)
 						]]>	
 						</when>
 					</choose>
 					<if test="!searchinput.equals('')">
-						and sal.sales_nm Like CONCAT('%', #{searchinput}, '%')
+						AND pinf.sales_nm Like CONCAT('%', #{searchinput}, '%')
 					</if>
-			    </where>
+	    GROUP BY pinf.purinf_id
 		LIMIT #{pageIndex}, #{pageSize}
 	</select>
+
 	
-	<select id="total" resultType="int">
-		select count(ret.return_id)
-		   from		 tb_returndir ret
-		        join tb_refundinfo reinfo ON reinfo.rfinfo_id = ret.rfinfo_id
-		        join tb_purchaseinfo pinfo ON pinfo.purinf_id = reinfo.purinf_id
-			 	join tb_sales sal on pinfo.sales_id = sal.sales_id
-				<where>
-			    	<choose>
-						<when test="!datesearch1.equals('')">
-						<![CDATA[
-							and (pinfo.wanted_date >=
-								#{datesearch1}
-								and
-								pinfo.wanted_date <=
-									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
-								)
-						]]>	
-						</when>
-					</choose>
-					<if test="!searchinput.equals('')">
-						and sal.sales_nm Like CONCAT('%', #{searchinput}, '%')
-					</if>
-			    </where>
+	<select id="total" resultType="Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			(
+					SELECT pinf.purinf_id FROM
+					(
+						SELECT tpi.purinf_id
+						FROM 		tb_purchaseinfo tpi
+							JOIN	tb_sales ts ON ts.sales_id=tpi.sales_id
+					) pinf
+						 	JOIN tb_refundinfo tr ON pinf.purinf_id=tr.purinf_id
+						 	LEFT JOIN tb_returndir td ON tr.rfinfo_id=td.rfinfo_id
+						WHERE
+							td.rfinfo_id IS NULL
+					    	<choose>
+								<when test="!datesearch1.equals('')">
+								<![CDATA[
+									AND (pinf.wanted_date >=
+										#{datesearch1}
+										AND
+										pinf.wanted_date <=
+											(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
+										)
+								]]>	
+								</when>
+							</choose>
+							<if test="!searchinput.equals('')">
+								AND pinf.sales_nm Like CONCAT('%', #{searchinput}, '%')
+							</if>
+		    		GROUP BY pinf.purinf_id			
+			) alias
 	</select>
 	
 	<select id="onereinfo" resultType="kr.happyjob.study.scm.refund.model.RefundInfoModel">

@@ -33,23 +33,21 @@ public interface UserInfoDao {
 
 	List<ComnCodUtilModel> getComnCod(String group_code);
 	
-	@ResultMap(value="userAlias")
-	@Results(value={
-			@Result(column="loginID", property="loginID"),
-			@Result(column="password",property="password"),
-			@Result(column="email",property="email"),
-			@Result(property="purchases", column="loginID", many=@Many(select="kr.happyjob.study.scm.user.dao.UserInfoDao.getPurchases"))
-			
-	})
+	
+//	@Results(value={
+//			@Result(column="loginID", property="loginID"),
+//			@Result(column="password",property="password"),
+//			@Result(column="email",property="email"),
+//			@Result(property="purchases", column="loginID", many=@Many(select="kr.happyjob.study.scm.user.dao.UserInfoDao.getPurchases"))
+//	})
 	List<Member> testGetUsers();
 	
-	@ResultMap(value="purc")
-	@Results(value={
-			@Result(column="pur_id", property="purId"),
-			@Result(column="purdate", property="purDate"),
-			@Result(column="depositYN", property="depositYN"),
-			@Result(column="type", property="type")
-	})
+//	@Results(value={
+//			@Result(column="pur_id", property="purId"),
+//			@Result(column="purdate", property="purDate"),
+//			@Result(column="depositYN", property="depositYN"),
+//			@Result(column="type", property="type")
+//	})
 	List<Purchase> getPurchases();
 
 }

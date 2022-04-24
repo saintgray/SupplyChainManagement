@@ -176,20 +176,20 @@ function search(){
 							<table class="col">
 								<caption>caption</caption>
 								<colgroup>
+									<col width="10%">
 									<col width="20%">
 									<col width="30%">
 									<col width="10%">
-									<col width="20%">
 									<col width="20%">
 								</colgroup>
 	
 								<thead>
 									<tr>
+										<th scope="col">반품번호</th>
 										<th scope="col">반품 제품명</th>
 										<th scope="col">반품 신청날짜</th>
 										<th scope="col">반품 수량</th>
 										<th scope="col">반품 금액</th>
-										<th scope="col">승인 요청 여부</th>
 									</tr>
 								</thead>
 								<tbody id="relist"></tbody>
