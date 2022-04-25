@@ -57,7 +57,7 @@ public class VueUserController {
 		Map<String, Object> result=new HashMap<>();
 		
 		
-		if(!action.equals("REGISTER")){
+		if(!action.equals("NEW")){
 			
 			
 			result.put("info", uiService.getUserInfo(userID,null));

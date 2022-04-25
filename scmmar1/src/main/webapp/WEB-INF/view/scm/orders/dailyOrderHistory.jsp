@@ -197,6 +197,7 @@ function connectEvent(){
 				console.log($('#v-warehouse table').length);
 				if($('#layer #orderinfo tr').length-1!= $('#v-warehouse table').length){
 					alert('창고에 없는 구매상품이 있습니다. 발주 후 진행하세요');
+					return;
 				}else{
 					var purinfIdxArr=[];
 					$('.targetIdx').each(function(index,item){

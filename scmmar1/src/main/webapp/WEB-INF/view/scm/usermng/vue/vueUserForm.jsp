@@ -16,7 +16,7 @@
 					<tbody>
 						<tr class="basicinfo-row1">
 							
-							<td rowspan="3" style="vertical-align: top" v-if='action=="REGISTER"'>
+							<td rowspan="3" style="vertical-align: top" v-if='action=="NEW"'>
 								<select id="sb-userType" class="form-control"  v-model="regType">
 									<option value="cust">기업고객</option>
 									<option value="emp">내부직원</option>
@@ -32,7 +32,7 @@
 								<input type="text" 
 										name="loginID" 
 										:readonly='action=="UPDATE"'
-										class="form-control" v-model='info.loginID' v-bind='info.loginID'
+										class="form-control" v-model='info.loginID'
 								>
 									
 							</td>
@@ -51,7 +51,7 @@
 						</tr>
 						
 						<%-- <c:if test="${(not empty info) && (info.user_Type eq 'C')}"> --%>
-							<tr class="custInfo" v-if='(action=="UPDATE" && info.userType=="C") || (action=="REGISTER" && regType=="cust")'>
+							<tr class="custInfo" v-if='(action=="UPDATE" && info.userType=="C") || (action=="NEW" && regType=="cust")'>
 								<td>
 									<span>회사명</span>
 								</td>
@@ -83,7 +83,7 @@
 						</tr>
 						<%-- <c:if test="${(not empty info) && (info.user_Type ne 'C')}"> --%>
 						
-								<tr class="empInfo" v-if='(action=="UPDATE" && info.userType!="C") ||(action=="REGISTER" && regType=="emp")'>
+								<tr class="empInfo" v-if='(action=="UPDATE" && info.userType!="C") ||(action=="NEW" && regType=="emp")'>
 									<td>
 										<span>직원명</span>
 									</td>
@@ -140,8 +140,9 @@
 				
 				<div class="userInfoBtnArea bts">
 					<div class="text-right">
-						<button type="button" class="btn btn-primary" id="btnEditUserInfo">수정</button>
-						<button type="button" class="btn btn-secondary" id="closeModal">취소</button>
+						<button type="button" class="btn btn-primary" v-if='action=="UPDATE"' @click='update'>수정</button>
+						<button type="button" class="btn btn-primary" v-if='action=="NEW"' @click='reg'>등록</button>
+						<button type="button" class="btn btn-secondary" @click='closeModal'>취소</button>
 					</div>
 				</div>
 			</div>
@@ -149,7 +150,7 @@
 		
 		
 		
-		<input type="hidden" id="action" name="action" value="${action}">
+
 		
 		<!-- zipFrame for Daum zipCode API -->
 		<div id="zipFrame" style="position:absolute; display:none" >

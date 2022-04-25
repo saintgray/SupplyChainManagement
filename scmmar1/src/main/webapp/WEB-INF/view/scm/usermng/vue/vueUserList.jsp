@@ -57,8 +57,8 @@
 <div class="bts userInfoBtnArea" style="margin: 10px 0">
 	<%-- <%@ include file="/WEB-INF/view/scm/usermng/vue/vueUserForm.jsp" %> --%>
 	<div class="text-right">
-		<button type="button" class="btn btn-primary" @click='userinfo("","REGISTER")'>신규등록</button>
-		<button type="button" class="btn btn-danger">삭제</button>
+		<button type="button" class="btn btn-primary" @click='userinfo("","NEW")'>신규등록</button>
+		<button type="button" class="btn btn-danger" @click='deleteUser' >삭제</button>
 	</div>
 </div>
 	

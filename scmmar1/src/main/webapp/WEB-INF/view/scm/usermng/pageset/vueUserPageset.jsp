@@ -25,6 +25,9 @@
 				},
 				userinfo:function(userID,action){
 					fuserFormPop({userID:userID, action:action});
+				},
+				deleteUser:function(){
+					fManageUser("DELETE");
 				}
 			}
 		});
@@ -44,21 +47,18 @@
 				action:'',
 				readonly:false,
 				regType:null,
-				info:{
-					loginID:null,
-					password:null,
-					userType:null,
-					name:null,
-					client:null,
-					phone:null,
-					zipCode:null,
-					address:null,
-					dtAddress:null,
-					email:null
-				}
+				info:{}
 			},
 			methods:{
-				
+				closeModal:function(){
+					this.action='';
+				},
+				reg:function(){
+					fManageUser("REGISTER");
+				},
+				update:function(){
+					fManageUser("UPDATE");
+				}
 			}
 		})
 		
@@ -79,23 +79,9 @@
 		callAjax('/scm/vue/getForm', 'post', 'json', false, param, function(data){
 
 				
-				
-				vueUserModel.info.loginID=data.info.loginID;
-				vueUserModel.info.password=data.info.password;
-				vueUserModel.info.userType=data.info.user_Type;
-				vueUserModel.info.name=data.info.name;
-				vueUserModel.info.client=data.info.client;
-				vueUserModel.info.phone=data.info.phone;
-				vueUserModel.info.zipCode=data.info.zipCode;
-				vueUserModel.info.address=data.info.address;
-				vueUserModel.info.dtAddress=data.info.dtAddress;
-				vueUserModel.info.email=data.info.email;
-				console.log(vueUserModel.info);
-				
-								
-				
+				vueUserModel.info=data.info;
 				vueUserModel.action=param.action;
-				if(param.action=='REGISTER'){
+				if(param.action=='NEW'){
 					vueUserModel.regType='cust';
 				}
 				
@@ -123,32 +109,36 @@
 
 	function fManageUser(controlType) {
 		
-		var action=$('#action').val();
+		var action=vueUserModel.action;
 		console.log(action);
 		
-		if(controlType=='DELETE' && action!='UPDATE'){
-			alert('삭제하실 회원을 선택하세요');
+		if(controlType=="DELETE" && (action=="NEW" || action=='')){
+			swal('삭제하실 회원을 선택하세요');
 		}else{
 			
 			
 			var callback=function(data){
+				vueUserModel.action='';
 				fAfterInsertOrUpdate(data,controlType);
 			}
 			
 			if(
-				(controlType=='REGISTER' && confirm('등록하시겠습니까?')) ||
+				(controlType=='REGISTER') ||
 				(controlType=='UPDATE' && confirm('수정하시겠습니까?')) ||
 				(controlType=='DELETE' && confirm('정말로 삭제하시겠습니까?'))
 			  ){
-				if(controlType=='DELETE'){
-					$('#action').val('DELETE');
-				}
 				
-				if(controlType=='REGISTER' && isDuplicated($('input[name=loginID]').val())){
-					alert('이미 등록된 사용자이거나 탈퇴한 회원입니다');
+				/* if(controlType=='DELETE'){
+					$('#action').val('DELETE');
+				} */
+				
+				if(controlType=='REGISTER' && (!validationChecked() || isDuplicated(vueUserModel.info.loginID))){
 					return;
 				}else{
-					callAjax('/scm/userinfo/manage', 'POST', 'json', true, $('#userModalForm').serialize(), callback);	
+					
+					swal('등록/수정 및 삭제 를 시작합니다');
+					// callAjax('/scm/userinfo/manage', 'POST', 'json', true, $('#userModalForm').serialize(), callback);
+					// callAjax('/scm/userinfo/manage', 'POST', 'json', true, vueUserModel.info, callback);
 				}
 			}	
 		}
@@ -179,16 +169,38 @@
 		var callback=function(data){
 			
 			if(data==1){
+				swal('이미 등록된 사용자이거나 탈퇴한 회원입니다');
 				duplicated=true;	
 			}
 		}
-		
-		console.log(loginID);
-		console.log('/scm/userinfo/'+loginID);
-		console.log('started duplicated AJAX Call.......');
 		callAjax('/scm/userinfo/'+loginID, 'POST', 'json', false, {}, callback);
-		
 		return duplicated;
+	}
+	function validationChecked(){
+		var validated=false;
+		let loginID= vueUserModel.info.loginID;
+		let password=vueUserModel.info.password;
+		
+		
+		
+		if(loginID ==null || loginID.length<8){
+			if(loginID==null){
+				swal('아이디는 필수 입력 사항입니다');
+			}else{
+				if(loginID.length<8){
+					swal('아이디는 8자 이상이어야 합니다');	
+				}
+			}
+		}else if(password==null||password.length<8){
+			if(password==null){
+				swal('비밀번호는 필수 입력사항입니다');
+			}else if(password.length<8){
+				swal('8자리 이상의 비밀번호를 사용해주세요');
+			}
+		}else{
+			validated=true;
+		}
+		return validated;
 	}
 
 

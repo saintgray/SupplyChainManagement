@@ -145,6 +145,7 @@
 
 <!-- JQuery Version -->
 <%-- <%@include file="/WEB-INF/view/scm/usermng/pageset/usermngmainPageset.jsp" %> --%>
+
 <!-- Vue Version -->
 <%@include file="/WEB-INF/view/scm/usermng/pageset/vueUserPageset.jsp" %>
 </html>
