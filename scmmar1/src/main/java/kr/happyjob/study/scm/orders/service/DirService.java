@@ -12,6 +12,10 @@ public interface DirService {
 	int insertShippingDir(List<String> purIdxList, List<String> exportTarget,String userType, String action);
 
 	int insertOrderDir(List<String> targetWh, HttpSession session) throws Exception;
+
+	int insertReturnDir(String idx);
+
+	int insertDelivDir(String idx) throws Exception;
 	
 
 }

@@ -54,6 +54,13 @@
 		</where>
 			
 	</select>
+	
+	
+	<select id="getConfirmed" resultType="String">
+		SELECT confirmYN
+		FROM tb_returndir
+		WHERE return_id=#{arg0}
+	</select>
 
 
 	<insert id="insertShippingDir">
@@ -70,6 +77,43 @@
 						#{data.deliv_wh_id}
 					)
 					</foreach>
+	</insert>
+	
+	<insert id="insertReturnDir">
+		INSERT
+		INTO tb_returndir
+						(
+							rfinfo_id
+						)
+		VALUES			(
+							#{arg0}
+						)
+	
+	</insert>
+	
+	
+	<!-- 해당 상품을 구매한 창고번호로 입고하기위해 구입당시 출고했던 창고번호를 사용하여 지시서 작성  -->
+	<insert id="insertDelivDir">
+		INSERT
+		INTO tb_delivdir
+						(
+							return_id,
+							deliv_wh_id
+						)
+		VALUES
+						(
+							#{returnId},
+							(
+								SELECT td.deliv_wh_id from tb_delivdir td WHERE td.purinf_id =
+								(SELECT tp.purinf_id 
+									FROM 		 tb_purchaseinfo tp  
+											JOIN tb_refundinfo tr ON tp.purinf_id=tr.purinf_id
+											JOIN tb_returndir trd ON trd.rfinfo_id=tr.rfinfo_id
+											WHERE trd.return_id=#{arg0}
+								) 
+							) 
+						)
+	
 	</insert>
 
 

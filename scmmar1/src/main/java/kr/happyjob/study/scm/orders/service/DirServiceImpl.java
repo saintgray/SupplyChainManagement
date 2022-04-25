@@ -17,6 +17,7 @@ import kr.happyjob.study.epc.dao.ShoppingCartDao;
 import kr.happyjob.study.scm.orders.dao.DailyOrderHistoryDao;
 import kr.happyjob.study.scm.orders.dao.DirDao;
 import kr.happyjob.study.scm.orders.model.DirModel;
+import kr.happyjob.study.scm.refund.exception.NotConfirmedException;
 import kr.happyjob.study.scm.sales.dao.SalesManageDao;
 
 @Service
@@ -121,6 +122,42 @@ public class DirServiceImpl implements DirService{
 		}
 		
 		
+		
+		return result;
+	}
+
+	/**
+	 * @param idx : 반품 정보 고유번호
+	 */
+	@Override
+	public int insertReturnDir(String idx) {
+		
+		dirDao=sst.getMapper(DirDao.class);
+		
+		
+		
+		int result=0;
+		result=dirDao.insertReturnDir(idx);
+		return result;
+	}
+	
+	/**
+	 * @param idx : 반품지시서 고유번호
+	 */
+	@Override
+	public int insertDelivDir(String idx) throws Exception {
+		
+		dirDao=sst.getMapper(DirDao.class);
+		String confirmed=dirDao.getConfirmed(idx);
+		logger.info("+ is confirmed?? " + confirmed);
+		
+		
+		int result=0;
+		if(confirmed!=null && confirmed.equals("Y")){
+			result=dirDao.insertDelivDir(idx);
+		}else{
+			throw new NotConfirmedException();
+		}
 		
 		return result;
 	}

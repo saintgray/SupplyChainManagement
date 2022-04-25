@@ -31,7 +31,7 @@ public interface RefundInfoDao {
 	// 총 값
 	public int total(Map<String, Object> paramMap) throws Exception;
 	// 단건 조회
-	public RefundInfoModel onereinfo(Map<String, Object> paramMap) throws Exception;
+	public RefundInfo getRefundInfo(Map<String, Object> paramMap) throws Exception;
 	// 승인요청
 	public int refupdate(Map<String,Object> paramMap) throws Exception;	
 }

@@ -54,7 +54,7 @@
 			<if test='"N".equals(showall)'>
 				AND deletedYN='N'
 			</if>
-			<if test="keyword != null">
+			<if test='keyword != null'>
 				
 				<if test='!"all".equals(searchType)'>
 					AND 

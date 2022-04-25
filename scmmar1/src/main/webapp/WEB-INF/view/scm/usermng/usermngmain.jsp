@@ -90,12 +90,12 @@
 						</p>
 						
 						<!-- SearchArea -->
-						<div class="searchArea">
+						<div class="searchArea" id="searchArea">
 							<table style="margin-top: 10px" width="100%" cellpadding="5" cellsapcing="0" border="1">
 							   <tr style="border: 0px; border-color: blue">
 		                           <td width="80" height="25" style="font-size: 120%;">&nbsp;&nbsp;</td>
 		                           <td width="50" height="25" style="font-size: 100%; text-align:left; padding-right:25px;">
-		     	                       <select id="searchKey" name="searchKey" style="width: 150px;" v-model="searchKey">
+		     	                       <select id="searchKey" name="searchKey" style="width: 150px;" v-model="searchType">
 		     	                       		<option value="all">전체</option>
 											<option value="comp_nm" >회사명</option>
 											<option value="emp_nm" >직원명</option>
@@ -106,7 +106,7 @@
 						
 		     	                       <input type="text" style="width: 300px; height: 25px;" id="keyword">
 		     	                       <input type="checkbox" name="showdeletedataYN" id="showall">
-		     	                       <span style="margin-left: 5px">삭제된 정보 표시</span>
+		     	                       <span style="margin-left: 5px" v-model="showall">삭제된 정보 표시</span>
 		     	                       <div class="bts" id="searchBtnWrap">
 		     	                       		<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
 		     	                       </div>                 
@@ -117,18 +117,18 @@
 						</div>
 						
 						<!-- UserListArea -->
-						<div id="userListArea"></div>
-						
-						<!-- Register And Delete Btn Area -->
-						<div class="bts userInfoBtnArea" style="margin: 10px 0">
-							<div class="text-right">
-								<button type="button" class="btn btn-primary" id="regFormBtn">신규등록</button>
-								<button type="button" class="btn btn-danger" id="delUserBtn">삭제</button>
-							</div>
+						<div id="userListArea">
+							<!-- Vue Component -->
+							<%@ include file="/WEB-INF/view/scm/usermng/vue/vueUserList.jsp" %>							
 						</div>
 						
+					
+						
 						<!-- User Form Area -->
-						<form id="userModalForm"></form>
+						<form id="userModalForm">
+							<!-- Vue Component -->
+							<%@include file="/WEB-INF/view/scm/usermng/vue/vueUserForm.jsp" %>
+						</form>
 
 					</div>
 					<!-- end <div id="content"> -->
@@ -143,6 +143,8 @@
 	
 </body>
 
-
-<%@include file="/WEB-INF/view/scm/usermng/pageset/usermngmainPageset.jsp" %>
+<!-- JQuery Version -->
+<%-- <%@include file="/WEB-INF/view/scm/usermng/pageset/usermngmainPageset.jsp" %> --%>
+<!-- Vue Version -->
+<%@include file="/WEB-INF/view/scm/usermng/pageset/vueUserPageset.jsp" %>
 </html>

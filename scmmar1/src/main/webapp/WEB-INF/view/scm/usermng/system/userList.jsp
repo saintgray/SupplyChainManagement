@@ -25,67 +25,77 @@
 				</thead>
 			
 			
-			<c:forEach items="${page.userlist}" var="user">
 			
 			
 			
+			
+			<tbody>	
+				<c:forEach items="${page.userlist}" var="user">	
+					<tr>
+						<td><span class="userID"></span></td>
+						<td>
+							<span>
+								<c:if test="${user.user_Type eq 'C'}">
+									기업고객
+								</c:if>
+								<c:if test="${user.user_Type ne 'C'}">
+									내부직원
+								</c:if>
+							</span>
+						</td>
+						<td>
+							<span>
+								<c:if test="${user.user_Type eq 'C'}">
+									${user.client}
+								</c:if>
+								<c:if test="${user.user_Type ne 'C'}">
+									${user.name}
+								</c:if>
+							</span>
+						</td>
+						<td>
+							<span>
+								<c:choose>
+									<c:when test="${user.user_Type eq 'A'}">
+										SCM관리자
+									</c:when>
+									<c:when test="${user.user_Type eq 'B'}">
+										배송담당자
+									</c:when>
+									<c:when test="${user.user_Type eq 'D'}">
+										구매담당자
+									</c:when>
+									<c:when test="${user.user_Type eq 'E'}">
+										임원
+									</c:when>
+									
+								</c:choose>
+							</span>
+						</td>
+						<td>
+							<span>
+								<c:if test="${user.user_Type eq 'C'}">
+									${user.name}
+								</c:if>
+							</span>
+						</td>
+						<td><span>${user.phone}</span></td>
+						
+					</tr>
 				
-			<tr>
-				<td><span class="userID">${user.loginID}</span></td>
-				<td>
-					<span>
-						<c:if test="${user.user_Type eq 'C'}">
-							기업고객
-						</c:if>
-						<c:if test="${user.user_Type ne 'C'}">
-							내부직원
-						</c:if>
-					</span>
-				</td>
-				<td>
-					<span>
-						<c:if test="${user.user_Type eq 'C'}">
-							${user.client}
-						</c:if>
-						<c:if test="${user.user_Type ne 'C'}">
-							${user.name}
-						</c:if>
-					</span>
-				</td>
-				<td>
-					<span>
-						<c:choose>
-							<c:when test="${user.user_Type eq 'A'}">
-								SCM관리자
-							</c:when>
-							<c:when test="${user.user_Type eq 'B'}">
-								배송담당자
-							</c:when>
-							<c:when test="${user.user_Type eq 'D'}">
-								구매담당자
-							</c:when>
-							<c:when test="${user.user_Type eq 'E'}">
-								임원
-							</c:when>
-							
-						</c:choose>
-					</span>
-				</td>
-				<td>
-					<span>
-						<c:if test="${user.user_Type eq 'C'}">
-							${user.name}
-						</c:if>
-					</span>
-				</td>
-				<td><span>${user.phone}</span></td>
-				
-			</tr>
-			
-			</c:forEach>
+				</c:forEach>
 	
 			</tbody>
 		</table>
+	</div>
+	
+	<!-- Register And Delete Btn Area -->
+	<div class="bts userInfoBtnArea" style="margin: 10px 0">
+		<%-- <%@ include file="/WEB-INF/view/scm/usermng/vue/vueUserForm.jsp" %> --%>
+		<div class="text-right">
+			<button type="button" class="btn btn-primary" id="regFormBtn">신규등록</button>
+			<button type="button" class="btn btn-danger" id="delUserBtn">삭제</button>
+		</div>
 	</div>
 
 </div>

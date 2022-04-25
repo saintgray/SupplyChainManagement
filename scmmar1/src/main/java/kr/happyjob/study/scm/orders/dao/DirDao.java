@@ -10,4 +10,8 @@ public interface DirDao {
 	int countRefundInfoByByPurId(String pur_id);
 	int insertShippingDir(List<DirModel> regData);
 	int countRefundDirByPurInfIdx(String purchaseType, List<String> idxList, String checkConfirm);
+	int insertReturnDir(String idx);
+	int insertDelivDir(String idx);
+	
+	String getConfirmed(String returnId);
 }

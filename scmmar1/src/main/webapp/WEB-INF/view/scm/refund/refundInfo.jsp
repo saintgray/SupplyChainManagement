@@ -26,12 +26,25 @@ var datesearch2 = '';
 
 // onload list 및 검색조건 함수 불러오기
 $(function(){
+	
+	
+	
 	today = new Date();
 	today = today.toISOString().slice(0, 10);
 	$('#serchdate2').val(today);
 	
+	connectEvent();
 	init();
 });
+
+
+function connectEvent(){
+	
+	$('body').on('click','.btn_areaC .dirBtn',function(){
+		
+		 writeDir($('#idx').val(),$(this).attr('id'));
+	})
+}
 
 function init(currentPage){
 	
@@ -65,9 +78,9 @@ function init(currentPage){
 
 
 
-function reinfo(a){
+function reinfo(idx){
 	var param = {	
-			return_id : a	// 반품고유번호
+			rfinfoId : idx	// 반품고유번호
 			}
 	
 	var resultCallback = function(data) {
@@ -80,18 +93,17 @@ function reinfo(a){
 	
 }
 
-function com(){
+function writeDir(idx, id){
 	
-	var a = $("#refdata").serialize();
-	console.log(a);
-	
-	var resultCallback = function(data){
-		alert(data.resultMsg);
-		gfCloseModal();
-		init();
+	if(confirm('지시서를 작성하시겠습니까?')){
+		var resultCallback = function(data){
+			swal(data.resultMsg);
+			gfCloseModal();
+			init($('.paging strong').text());
+		}
+		callAjax('/scm/refund/'+id+'/'+idx, "post", "json", true, null, resultCallback);
 	}
 	
-	callAjax("/scm/refupdate.do", "post", "json", true, $("#refdata").serialize(), resultCallback);
 }
 
 

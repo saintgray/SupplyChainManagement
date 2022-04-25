@@ -50,8 +50,9 @@
 			) pinf
 				 	JOIN tb_refundinfo tr ON pinf.purinf_id=tr.purinf_id
 				 	LEFT JOIN tb_returndir td ON tr.rfinfo_id=td.rfinfo_id
-				WHERE
-					td.rfinfo_id IS NULL
+ 			 		LEFT JOIN tb_delivdir td2 ON td.return_id =td2.return_id 
+				WHERE td2.deliv_id IS NULL
+					<!-- td.rfinfo_id IS NULL -->
 			    	<choose>
 						<when test="!datesearch1.equals('')">
 						<![CDATA[
@@ -85,8 +86,8 @@
 					) pinf
 						 	JOIN tb_refundinfo tr ON pinf.purinf_id=tr.purinf_id
 						 	LEFT JOIN tb_returndir td ON tr.rfinfo_id=td.rfinfo_id
-						WHERE
-							td.rfinfo_id IS NULL
+					 		LEFT JOIN tb_delivdir td2 ON td.return_id =td2.return_id 
+					WHERE td2.deliv_id IS NULL
 					    	<choose>
 								<when test="!datesearch1.equals('')">
 								<![CDATA[
@@ -106,8 +107,31 @@
 			) alias
 	</select>
 	
-	<select id="onereinfo" resultType="kr.happyjob.study.scm.refund.model.RefundInfoModel">
-		select sal.sales_nm AS sales_nm
+	
+	<resultMap type="kr.happyjob.study.entity.RefundInfo" id="refundInfo">
+		<result column="rfinfo_id" property="refundInfoId"/>
+		<result column="account_number" property="accountNumber"/>
+		<result column="account_holder" property="accountHolder"/>
+		<result column="bank_name" property="bankName"/>
+		<result column="return_cnt" property="returnCnt"/>
+		<result column="regdate" property="regDate"/>
+		<association property="returnDir" javaType="kr.happyjob.study.entity.ReturnDir">
+			<result column="return_id" property="returnId"/>
+			<result column="confirmYN" property="confirmYN"/>
+			<association property="delivDir" javaType="kr.happyjob.study.entity.DeliverDir">
+				<result column="deliv_id" property="delivId"/>
+				<result column="deliverStatus" property="deliverStatus"/>
+			</association>
+		</association>
+		<association property="purchaseInfo" javaType="kr.happyjob.study.entity.PurchaseInfo">
+			<association property="sales" javaType="kr.happyjob.study.entity.Sale">
+				<result column="sales_nm" property="salesName"/>
+			</association>
+		</association>
+	</resultMap>
+	
+	<select id="getRefundInfo" resultMap="refundInfo" >
+		<!-- select sal.sales_nm AS sales_nm
 				,	pinfo.wanted_date AS wanted_date
 				,	ret.return_cnt AS return_cnt
 				, 	(sal.price*ret.return_cnt) AS avg
@@ -117,7 +141,40 @@
 		  	  join tb_refundinfo rinfo on ret.rfinfo_id = rinfo.rfinfo_id  
 			  join tb_purchaseinfo pinfo ON pinfo.purinf_id = rinfo.purinf_id
 			  join tb_sales sal on pinfo.sales_id = sal.sales_id
-		 where ret.return_id = #{return_id}
+		 where ret.return_id = #{return_id} -->
+		SELECT 	
+				tpi.purinf_id ,
+				tri.rfinfo_id ,
+				tri.regdate,
+				tri.return_cnt,
+				tri.account_number ,
+				tri.account_holder ,
+				tri.bank_name ,
+				trd.return_id,
+				delv.deliv_id ,
+				delv.detail_name AS deliverStatus  ,
+				delv.orderid,
+				delv.purinf_id,
+				trd.confirmYN,
+				(SELECT sales_nm from tb_sales ts WHERE ts.sales_id=tpi.sales_id) AS sales_nm
+			FROM		tb_purchaseinfo tpi
+			    JOIN 	tb_refundinfo tri ON tpi.purinf_id=tri.purinf_id 
+			    LEFT JOIN tb_returndir trd ON trd.rfinfo_id =tri.rfinfo_id 
+				LEFT JOIN (
+								SELECT  
+										td.purinf_id,
+										td.orderid,
+										td.return_id,
+										td.deliv_id, 
+										td.deliverStatus, 
+										tdc.detail_name
+								FROM
+								tb_delivdir td JOIN tb_detail_code tdc
+													ON td.deliverStatus=tdc.detail_code
+								where tdc.group_code  ="shipCD"
+							) delv 
+							ON delv.return_id=trd.return_id  
+			WHERE tri.rfinfo_id=#{rfinfoId} 
 	</select>
 	
 	<update id="refupdate">

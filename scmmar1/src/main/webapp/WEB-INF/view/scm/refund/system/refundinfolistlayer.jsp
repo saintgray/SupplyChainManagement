@@ -5,49 +5,73 @@
 						   
 		<form id="refdata" action="">
 		<dl >
-			<dt>
-				<strong>반품 지시서</strong>
+			<dt class="mt30" style="text-align:center;">
+				<strong>반품 신청 내역</strong>
 			</dt>
 			<dd class="content">
 				<!-- s : 여기에 내용입력 -->
-				<table class="row">
+				<table class="row" style="margin:0 auto;">
 					<caption>caption</caption>
 					<colgroup>
 						<col width="120px">
 						<col width="*">
 						<col width="120px">
-						<col width="*">
+						<c:if test="${empty onereinfo.returnDir.returnId}">
+							<col width="*">
+						</c:if>
 					</colgroup>
 
 					<tbody>
 						<tr>
 							<th scope="row">반품 제품명<span class="font_red"></span></th>
-							<td><input name="sales_nm" value='${onereinfo.sales_nm}' readonly style="border: none;"></td>
+							<td><input name="sales_nm" value='${onereinfo.purchaseInfo.sales.salesName}' readonly style="border: none;"></td>
 						</tr>
 						<tr>
 							<th scope="row">반품 신청 날짜<span class="font_red"></span></th>
-							<td ><input name="wanted_date" value='${onereinfo.wanted_date }'readonly style="border: none;"></td>
+							<td ><input name="wanted_date" value='${onereinfo.regDate}' readonly style="border: none;"></td>
 						</tr>
 						<tr>
 							<th scope="row">반품 수량<span class="font_red"></span></th>
-						<td ><input name="return_cnt" value='${onereinfo.return_cnt }'readonly style="border: none;"></td>
+						<td ><input name="return_cnt" value='${onereinfo.returnCnt}' readonly style="border: none;"></td>
 						</tr>
 						<tr>
-							<th scope="row">반품 금액<span class="font_red"></span></th>
-							<td ><input name="avg" value='${onereinfo.avg }'readonly style="border: none;"></td>
+							<th scope="row">예금주<span class="font_red"></span></th>
+						<td ><input name="ac-name" value='${onereinfo.accountHolder}' readonly style="border: none;"></td>
 						</tr>
+						<tr>
+							<th scope="row">계좌번호<span class="font_red"></span></th>
+						<td ><input name="ac-num" value='${onereinfo.accountNumber}'readonly style="border: none;"></td>
+						</tr>
+						<c:if test="${not empty onereinfo.returnDir.returnId}">
+							<tr>
+								<th scope="row">승인여부
+								</th>
+								<td>
+									<c:if test="${onereinfo.returnDir.confirmYN eq 'Y'}">
+										<span style="color:green">승인</span>
+									</c:if>
+									<c:if test="${empty onereinfo.returnDir.confirmYN}">
+										<span style="color:grey">미승인</span>
+									</c:if>
+								</td>
+							</tr>
+						</c:if>
 					</tbody>
 				</table>
-				<div class="btn_areaC mt30">
-				    <input type="hidden" name="Action" id="Action" value="">
-				    <input type="hidden" name="return_id"value='${onereinfo.return_id }'>
+				<div class="btn_areaC mt30 bts">
+					
+				    <input type="hidden" id="idx" 
+				    		
+				    		value='<c:if test="${empty onereinfo.returnDir.returnId}">${onereinfo.refundInfoId}</c:if>
+				    		<c:if test="${not empty onereinfo.returnDir.returnId}">${onereinfo.returnDir.returnId}</c:if>'>
 				    <c:choose>
-				    	<c:when test="${onereinfo.confirm_requestYN !='1' }">
-							<a class="btnType blue" id="btnSaveGrpCod" name="btn" onclick="com()"><span style="cursor: pointer;">승인요청</span></a> 
+				    	<c:when test="${empty onereinfo.returnDir}">
+				    		<input type="button" value="반품지시서 작성" id="writeReturnDir" class="btn btn-primary dirBtn">
+				    	</c:when>
+				    	<c:when test="${not empty onereinfo.returnDir.returnId}">
+				    		<input type="button" value="배송지시서 작성" id="writeDelivDir" class="btn btn-primary dirBtn">
 				    	</c:when>
 				    </c:choose>
-					<a href=""	class="btnType gray"  id="btnCloseGrpCod" name="btn"><span>취소</span></a>
-					
 				</div>
 			</dd>
 		</dl>

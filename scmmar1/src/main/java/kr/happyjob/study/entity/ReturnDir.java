@@ -16,21 +16,27 @@ public class ReturnDir {
 	private RefundInfo refundInfo;
 	
 	
+	private DeliverDir delivDir;
+	
+	
 	public ReturnDir() {
 		
 	}
 
 
+
 	public ReturnDir(String returnId, String regDate, String delDate, String editDate, String confirmYN,
-			RefundInfo refundInfo) {
-		super();
+			RefundInfo refundInfo, DeliverDir delivDir) {
+
 		this.returnId = returnId;
 		this.regDate = regDate;
 		this.delDate = delDate;
 		this.editDate = editDate;
 		this.confirmYN = confirmYN;
 		this.refundInfo = refundInfo;
+		this.delivDir = delivDir;
 	}
+
 
 
 	public String getReturnId() {
@@ -90,6 +96,18 @@ public class ReturnDir {
 
 	public void setRefundInfo(RefundInfo refundInfo) {
 		this.refundInfo = refundInfo;
+	}
+
+
+
+	public DeliverDir getDelivDir() {
+		return delivDir;
+	}
+
+
+
+	public void setDelivDir(DeliverDir delivDir) {
+		this.delivDir = delivDir;
 	}
 	
 	
