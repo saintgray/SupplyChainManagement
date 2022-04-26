@@ -31,28 +31,7 @@
 			
 		    GROUP BY wh.wh_id
 		    LIMIT #{pageIndex}, #{pageSize}
-		    
-		    
-		<!-- SELECT		wh.wh_id AS wh_id
-				,	wh.wh_nm AS wh_nm
-				,	sal.sales_id AS sales_id
-				,	sal.sales_nm AS sales_nm
-				,	st.st_cnt AS st_cnt
-				,	wh.wh_loc AS wh_loc
-				,	wh.addr AS addr
-		FROM	tb_warehouse wh
-			left JOIN tb_stock st ON wh.wh_id = st.wh_id
-			left JOIN tb_sales sal ON sal.sales_id = st.sales_id 
-		<where>
-					<choose>
-						<when test="searchgrouptype == '0'.toString()">
-							  and wh.wh_nm Like CONCAT('%', #{searchtext}, '%')
-						</when>
-						<when test="searchgrouptype == '1'.toString()">
-							  and sal.sales_nm Like CONCAT('%', #{searchtext}, '%')
-						</when>
-					</choose>
-		</where> -->
+
 		
 	</select>
 	
@@ -76,23 +55,7 @@
 			GROUP BY wh.wh_id
 
 		) alias
-	
-	
-	
-		<!-- SELECT		count(wh.wh_id)
-		FROM	tb_warehouse wh
-			left JOIN tb_stock st ON wh.wh_id = st.wh_id
-			left JOIN tb_sales sal ON sal.sales_id = st.sales_id 
-		<where>
-					<choose>
-						<when test="searchgrouptype == '0'.toString()">
-							  and wh.wh_nm Like CONCAT('%', #{searchtext}, '%')
-						</when>
-						<when test="searchgrouptype == '1'.toString()">
-							  and sal.sales_nm Like CONCAT('%', #{searchtext}, '%')
-						</when>
-					</choose>
-		</where> -->
+
 	</select>
 	
 	

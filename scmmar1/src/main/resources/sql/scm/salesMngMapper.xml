@@ -15,20 +15,29 @@
 			price
 		FROM
 			tb_sales
-		<if test='!"all.equals(searchType)"'>
-			<where>
-				<if test='"sales_nm".equals(searchType)'>
-					AND sales_nm
-				</if>
-				<if test='"model_nm".equals(searchType)'>
-					AND model_nm
-				</if>
-				<if test='"mfcomp".equals(searchType)'>
-					AND mfcomp
-				</if>
-						LIKE CONCAT('%',#{keyword},'%')
-			</where>
-		</if>
+		<where>
+			<if test='!"all".equals(searchType)'>
+				
+					<if test='"sales_nm".equals(searchType)'>
+						AND sales_nm
+					</if>
+					<if test='"model_nm".equals(searchType)'>
+						AND model_nm
+					</if>
+					<if test='"mfcomp".equals(searchType)'>
+						AND mfcomp
+					</if>
+							LIKE CONCAT('%',#{keyword},'%')
+				
+			</if>
+			<if test='"all".equals(searchType)'>
+				AND (
+							sales_nm LIKE CONCAT('%',#{keyword},'%')
+						OR	model_nm LIKE CONCAT('%',#{keyword},'%')
+						OR	mfcomp LIKE CONCAT('%',#{keyword},'%')
+					)
+			</if>
+		</where>
 		ORDER BY
 			sales_nm
 		LIMIT #{firstIndex}, #{rowsPerPage}
@@ -41,20 +50,29 @@
 			count(1)
 		FROM
 			tb_sales
-		<if test='!"all.equals(searchType)"'>
-			<where>
-				<if test='"sales_nm".equals(searchType)'>
-					AND sales_nm
-				</if>
-				<if test='"model_nm".equals(searchType)'>
-					AND model_nm
-				</if>
-				<if test='"mfcomp".equals(searchType)'>
-					AND mfcomp
-				</if>
-						LIKE CONCAT('%',#{keyword},'%')
-			</where>
-		</if>
+		<where>
+			<if test='!"all".equals(searchType)'>
+				
+					<if test='"sales_nm".equals(searchType)'>
+						AND sales_nm
+					</if>
+					<if test='"model_nm".equals(searchType)'>
+						AND model_nm
+					</if>
+					<if test='"mfcomp".equals(searchType)'>
+						AND mfcomp
+					</if>
+							LIKE CONCAT('%',#{keyword},'%')
+				
+			</if>
+			<if test='"all".equals(searchType)'>
+				AND (
+							sales_nm LIKE CONCAT('%',#{keyword},'%')
+						OR	model_nm LIKE CONCAT('%',#{keyword},'%')
+						OR	mfcomp LIKE CONCAT('%',#{keyword},'%')
+					)
+			</if>
+		</where>
 	</select>
 	
 	<!-- 해당 상품 상세정보 가져오기 -->

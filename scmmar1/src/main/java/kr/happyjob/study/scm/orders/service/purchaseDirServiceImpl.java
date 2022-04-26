@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.happyjob.study.scm.orders.dao.purchaseDirDao;
-import kr.happyjob.study.scm.orders.dao.whInventoryFormDao;
 import kr.happyjob.study.scm.orders.model.purchaseDirModel;
-import kr.happyjob.study.scm.orders.model.whInventoryFormModel;
-import kr.happyjob.study.scm.orders.model.whcntModel;
 
 @Service
 public class purchaseDirServiceImpl implements purchaseDirService {

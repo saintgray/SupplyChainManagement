@@ -22,7 +22,6 @@ import kr.happyjob.study.entity.PurchaseInfo;
 import kr.happyjob.study.entity.RefundInfo;
 import kr.happyjob.study.scm.orders.service.DirService;
 import kr.happyjob.study.scm.refund.exception.NotConfirmedException;
-import kr.happyjob.study.scm.refund.model.RefundInfoModel;
 import kr.happyjob.study.scm.refund.service.RefundInfoService;
 
 

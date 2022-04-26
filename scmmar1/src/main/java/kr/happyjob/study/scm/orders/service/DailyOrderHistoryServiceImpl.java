@@ -12,8 +12,6 @@ import kr.happyjob.study.scm.orders.model.CompModel;
 import kr.happyjob.study.scm.orders.model.DailyOrderHistoryModel;
 import kr.happyjob.study.scm.orders.model.WorkOrderModel;
 import kr.happyjob.study.scm.orders.model.warehouseModel;
-import kr.happyjob.study.scm.user.dao.UserInfoDao;
-import kr.happyjob.study.scm.user.service.UserInfoService;
 
 @Service
 public class DailyOrderHistoryServiceImpl implements DailyOrderHistoryService{

@@ -34,14 +34,8 @@
 		<tr>
 			<td>담당자</td>
 			<td>
-				
-					<%-- <input type="text" class="form-control"  value='${info.loginID}' readonly> --%>
 					<select id="advisor" name="loginID">
 					</select>
-				
-				<%-- <c:if test="${action eq 'NEW'}">
-					<input type="text" class="form-control" >
-				</c:if> --%>
 			</td>
 			<td>전화번호</td>
 			<td>

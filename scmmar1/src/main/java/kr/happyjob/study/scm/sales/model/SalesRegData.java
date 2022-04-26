@@ -1,7 +1,5 @@
 package kr.happyjob.study.scm.sales.model;
 
-import java.util.List;
-
 public class SalesRegData {
 	
 	private String model_code;

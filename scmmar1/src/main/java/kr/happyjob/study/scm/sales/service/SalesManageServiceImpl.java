@@ -11,7 +11,6 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,21 +56,23 @@ public class SalesManageServiceImpl implements SalesManageService{
 		int rowsPerPage=info.getRowsPerPage();
 		int total=info.getTotalCount();
 		
-		int totalPage=total/rowsPerPage;
-		totalPage=total%rowsPerPage>0? totalPage+1 : totalPage;
-		
-		selectPage=selectPage>totalPage? totalPage : selectPage;
-		
-		info.setSelectPage(selectPage);
 		
 		
-		
-		info.setFirstIndex(info.getRowsPerPage()*(info.getSelectPage()-1));
-		
-		info.setSalesList(sst.getMapper(SalesManageDao.class).getSalesList(info));
-		
-		
-		
+		if(total!=0){
+			
+			int totalPage=total/rowsPerPage;
+			
+			totalPage=total%rowsPerPage>0? totalPage+1 : totalPage;
+			
+			// 검색결과 일치하는 결과가 하나도 없을때는 totalpage = 0 이어서 이때 
+			// selectPage 할당시 selectPage=0이 되버리므로 LIMIT 쿼리에서 오류가 난다 (ex)LIMIT -5,5)
+			// 즉 일치하는 결과가 하나도 없을 때를 제외하고 리스트를 가져오면 된다
+			selectPage=selectPage>totalPage? totalPage : selectPage;
+			info.setSelectPage(selectPage);
+			info.setFirstIndex(info.getRowsPerPage()*(info.getSelectPage()-1));
+			info.setSalesList(sst.getMapper(SalesManageDao.class).getSalesList(info));
+			
+		}
 		return info;
 	}
 	
@@ -113,12 +114,12 @@ public class SalesManageServiceImpl implements SalesManageService{
 		
 		if(result==1){
 			
-//			int fileDeleteResult=0;
+			int fileDeleteResult=0;
 //			상품의 삭제는 삭제유무만 업데이트한다
-//			 NewFileUtil.deleteFiles(files);
-//			if(fileDeleteResult!=files.size()){
-//				System.out.println("DB 통신 에러 또는 파일 일부가 로컬경로에서 삭제되지 않음");
-//			}
+			 NewFileUtil.deleteFiles(files);
+			if(fileDeleteResult!=files.size()){
+				System.out.println("DB 통신 에러 또는 파일 일부가 로컬경로에서 삭제되지 않음");
+			}
 			
 		}
 		

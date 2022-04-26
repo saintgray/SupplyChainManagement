@@ -12,6 +12,7 @@ public class SalesDetails {
 	private String model_nm;
 	private String sales_id;
 	private String sales_nm;
+	private String sales_type;
 	private String mfcomp;
 	private String price;
 	private String info;
@@ -21,13 +22,14 @@ public class SalesDetails {
 		
 	}
 
-	public SalesDetails(String model_code, String model_nm, String sales_id, String sales_nm, String mfcomp,
-			String price, String info, List<FileModel> files) {
-		
+	public SalesDetails(String model_code, String model_nm, String sales_id, String sales_nm, String sales_type,
+			String mfcomp, String price, String info, List<FileModel> files) {
+
 		this.model_code = model_code;
 		this.model_nm = model_nm;
 		this.sales_id = sales_id;
 		this.sales_nm = sales_nm;
+		this.sales_type = sales_type;
 		this.mfcomp = mfcomp;
 		this.price = price;
 		this.info = info;
@@ -64,6 +66,15 @@ public class SalesDetails {
 
 	public void setSales_nm(String sales_nm) {
 		this.sales_nm = sales_nm;
+	}
+
+	
+	public String getSales_type() {
+		return sales_type;
+	}
+
+	public void setSales_type(String sales_type) {
+		this.sales_type = sales_type;
 	}
 
 	public String getMfcomp() {

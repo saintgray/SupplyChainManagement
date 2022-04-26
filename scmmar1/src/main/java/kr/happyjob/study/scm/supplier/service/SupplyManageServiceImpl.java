@@ -6,7 +6,6 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.happyjob.study.common.comnUtils.ComnCodUtil;
 import kr.happyjob.study.scm.supplier.dao.SupplyManageDao;
 import kr.happyjob.study.scm.supplier.model.ImpSales;
 import kr.happyjob.study.scm.supplier.model.PageInfo;

@@ -15,87 +15,41 @@
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <style>
 
-table #detail{
+
+#detailArea{
+	margin:20px auto;
 	padding:0;
-	height:auto;
+	animation:showUp .7s ease-out;
 }
-/* #detailArea{
-	animation-duration:1s;
-	animation-name:slideDown;
+#whlist>tr{
+	cursor:pointer;
+}
+#whlist>tr.blur{
+	animation : blur normal 2s infinite ease-in-out;
+}
+@keyframes blur{
+	0%{
+		background-color:white;
+	}
+	50%{
+		background-color:#fafa5f;
+	}
+	100%{
+		background-color:white;
+	}
+}
+@keyframes showUp{
+	0%{
+		opacity:0;
+		transform:translateX(-100%);
+	}
+	100%{
+		opacity:1;
+		transform:translateX(0);
+	}
 }
 
-@keyframes slideDown{
-
-	from{
-		height:0;
-	}
-	to{
-		height:100%;
-	}
-	
-	
-} */
 </style>
-
-
-<script type="text/javascript">
-var searchgrouptype = '';
-var searchtext = '';
-var pageSize = 10;
-var pageBlockSize = 10;
-
-// onload list 및 검색조건 함수 불러오기
-$(function(){
-	
-	init();
-	
-});
-
-function init(currentPage){
-	currentPage = currentPage || 1;
-	var param = {
-			searchgrouptype : searchgrouptype
-		,	searchtext : searchtext
-		,	currentPage : currentPage
-		,	pageSize : pageSize
-			};
-	var resultCallback = function(data) {
-		$("#whlist").empty().append(data);
-		var total = $("#total").val();
-		// 페이지 네비게이션 생성
-		// pageBlockSize 보여지는 페이징 갯수
-		 var paginationHtml = getPaginationHtml(currentPage, total,  pageSize, pageBlockSize, 'init');
-		console.log("paginationHtml : " + paginationHtml);
-		$("#comnGrpCodPagination").empty().append( paginationHtml ); 
-	};
-	
-	callAjax("/scm/whInventoryFormlist.do", "post", "text", true, param, resultCallback);
-}
-
-function search(){
-	searchgrouptype = $("#searchgrouptype").val();
-	searchtext = $("#searchtext").val();
-	init();
-}
-	
-function getStocksDetail(idx,row){
-	
-	$('#detail').remove();
-	
-	var resultCallback = function(data) {
-		
-		
-		$(row).after(data).slideUp();
-		
-	};
-	
-	console.log('idx >> '+idx)
-	
-	callAjax('/scm/warehousestock/'+idx, "post", "text", true, null, resultCallback);
-}
-	
-</script>
-
 
 </head>
 <body>
@@ -159,8 +113,8 @@ function getStocksDetail(idx,row){
 								<tbody id="whlist"></tbody>
 							</table>
 						</div>
-				<div class="paging_area"  id="comnGrpCodPagination"> </div>
-					</div> <!--// content -->
+						<div class="paging_area"  id="comnGrpCodPagination"> </div>
+					</div>
 
 					<h3 class="hidden">풋터 영역</h3>
 						<jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
@@ -210,4 +164,5 @@ function getStocksDetail(idx,row){
 	
 </form>
 </body>
+<%@ include file="/WEB-INF/view/scm/warehouse/pageset/warehouseStocksPageset.jsp" %>
 </html>

@@ -3,11 +3,6 @@ package kr.happyjob.study.scm.user.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Results;
-
 import kr.happyjob.study.entity.Member;
 import kr.happyjob.study.entity.Purchase;
 import kr.happyjob.study.scm.user.model.PageInfo;
@@ -15,7 +10,6 @@ import kr.happyjob.study.scm.user.model.User;
 import kr.happyjob.study.scm.user.model.UserDetail;
 import kr.happyjob.study.scm.user.model.UserRegData;
 import kr.happyjob.study.system.model.ComnCodUtilModel;
-import lombok.val;
 
 public interface UserInfoDao {
 

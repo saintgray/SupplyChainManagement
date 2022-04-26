@@ -97,17 +97,6 @@
 	</select>
 	
 	
-	<!-- <select id="getLocComnCod" resultType="kr.happyjob.study.system.model.ComnCodUtilModel">
-		SELECT
-			wh_loc AS dtl_cod,
-			wh_nm AS dtl_cod_nm
-		FROM
-			tb_warehouse
-		WHERE
-			wh_loc=#{arg0}
-	
-	</select> -->
-	
 	
 	
 	<select id="getWareHouseStock" resultType="Integer">

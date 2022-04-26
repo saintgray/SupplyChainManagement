@@ -91,6 +91,7 @@ public class SalesManageController {
 	public int manageSales(SalesRegData data, String action, HttpServletRequest req){
 		
 		int result=0;
+	
 		
 		try{
 			

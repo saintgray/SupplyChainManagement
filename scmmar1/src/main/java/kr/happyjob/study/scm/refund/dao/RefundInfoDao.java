@@ -3,13 +3,8 @@ package kr.happyjob.study.scm.refund.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Results;
-
 import kr.happyjob.study.entity.PurchaseInfo;
 import kr.happyjob.study.entity.RefundInfo;
-import kr.happyjob.study.scm.refund.model.RefundInfoModel;
 
 public interface RefundInfoDao {
 

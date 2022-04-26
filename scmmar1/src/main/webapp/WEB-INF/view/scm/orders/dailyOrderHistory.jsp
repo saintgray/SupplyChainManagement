@@ -469,19 +469,19 @@ function addrow(){
 
 	<div id="wrap_area">
 
-		<h2 class="hidden">header 영역</h2>
+		<!-- HEADER -->
 		<jsp:include page="/WEB-INF/view/common/header.jsp"></jsp:include>
 
 		<h2 class="hidden">컨텐츠 영역</h2>
 		<div id="container">
 			<ul>
 				<li class="lnb">
-					<!-- lnb 영역 --> <jsp:include
-						page="/WEB-INF/view/common/lnbMenu.jsp"></jsp:include> <!--// lnb 영역 -->
+					<!-- Menu Area --> 
+					<jsp:include page="/WEB-INF/view/common/lnbMenu.jsp"></jsp:include>
 				</li>
+				
+				<!-- CONTENTS -->
 				<li class="contents">
-					<!-- contents -->
-					<h3 class="hidden">contents 영역</h3> <!-- content -->
 					<div class="content">
 
 						<p class="Location">
@@ -516,15 +516,9 @@ function addrow(){
 									<col width="4%">
 									<col width="6%">
 									<col width="6%">
-									<!-- 
-									<col width="10%">
-									<col width="6%">
-									<col width="6%"> 
-									-->
 									<col width="6%">
 									<col width="6%">
 									<col width="4%">
-									<!-- <col width="8%"> -->
 									<col width="4%">
 									<col width="8%">
 								</colgroup>
@@ -534,15 +528,9 @@ function addrow(){
 										<th scope="col">주문번호</th>
 										<th scope="col">주문일자</th>
 										<th scope="col">고객명</th>
-										<!-- 
-										<th scope="col">제품명</th>
-										<th scope="col">재고수</th>
-										<th scope="col">단가</th> 
-										-->
 										<th scope="col">주문수</th>
 										<th scope="col">총 금액</th>
 										<th scope="col">반품요청</th>
-										<!-- <th scope="col">반품처리일자</th> -->
 										<th scope="col">입금</th>
 										<th scope="col">지시서 작성</th>
 									</tr>
@@ -550,16 +538,11 @@ function addrow(){
 								
 								<!-- 일별 수주내역 Data 영역 -->
 								<tbody id="dailyOrderlist"></tbody>
-								
-								
 							</table>
 						</div>
 	
 						<div class="paging_area"  id="comnGrpCodPagination"> </div>
-					</div> <!--// content -->
-
-					<h3 class="hidden">풋터 영역</h3>
-						<jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
+					</div>
 				</li>
 			</ul>
 		</div>

@@ -166,7 +166,7 @@
 							   </select>
 							   
 				
-     	                       <input type="text" style="width: 300px; height: 25px;" id="keyword" v-model="keyword">
+     	                       <input type="text" style="width: 300px; height: 25px;" id="keyword" v-model="keyword" @keydown='search'>
      	                       
      	                       
      	                       <div class="bts" id="searchBtnWrap">
@@ -178,11 +178,15 @@
 					</table>
 				</div>
 				
-				<div class="bts mt10">
+				
+				<!-- JQuery Version -->
+				<!-- This element is managed by vueSalesList Component -->
+				<!-- <div class="bts mt10">
 					<div class="salesMngBtnArea text-right">
 						<button type="button" class="btn btn-primary" id="btnNewSales">제품 등록</button>
 					</div>
-				</div>
+				</div> -->
+				
 				
 				
 				<!-- SALES LIST WRAP -->
@@ -201,6 +205,7 @@
 				
 				<!-- Vue Sales Form Wrap -->
 				<form id="salesInfoForm">
+				
 					<%@ include file="/WEB-INF/view/scm/sales/vue/vueSalesForm.jsp" %>
 				</form>
 				

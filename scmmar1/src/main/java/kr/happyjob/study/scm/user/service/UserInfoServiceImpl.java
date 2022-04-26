@@ -8,7 +8,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;import kr.happyjob.study.login.model.UserInfo;
+import org.springframework.stereotype.Service;
+
 import kr.happyjob.study.scm.user.dao.UserInfoDao;
 import kr.happyjob.study.scm.user.model.PageInfo;
 import kr.happyjob.study.scm.user.model.User;
