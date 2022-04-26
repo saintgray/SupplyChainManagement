@@ -108,7 +108,7 @@
 		     	                       <input type="checkbox" name="showdeletedataYN" id="showall">
 		     	                       <span style="margin-left: 5px" v-model="showall">삭제된 정보 표시</span>
 		     	                       <div class="bts" id="searchBtnWrap">
-		     	                       		<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
+		     	                       		<button type="button" class="btn btn-primary" id="searchBtn" @click='getList'>검색</button>
 		     	                       </div>                 
 			                           
 		                            </td> 

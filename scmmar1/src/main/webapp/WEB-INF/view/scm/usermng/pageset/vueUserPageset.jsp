@@ -38,6 +38,11 @@
 				keyword:null,
 				showall:'',
 				searchType:''
+			},
+			methods:{
+				getList:function(selectPage){
+					getUserListByParam(selectPage);
+				}
 			}
 		})
 		
@@ -58,6 +63,10 @@
 				},
 				update:function(){
 					fManageUser("UPDATE");
+				},
+				findZip:function(e){
+					e.preventDefault();
+					fOpenWinZipCod('zipFrame', 'zipCode', 'address', 'dtAddress');
 				}
 			}
 		})
@@ -76,6 +85,8 @@
 		
 		console.log('init fuserFormPop');
 		console.log(param);
+		
+		
 		callAjax('/scm/vue/getForm', 'post', 'json', false, param, function(data){
 
 				
@@ -84,21 +95,9 @@
 				if(param.action=='NEW'){
 					vueUserModel.regType='cust';
 				}
-				
-				
-				/* if (param.action == 'REGISTER') {
-					$('.basicinfo-row1').after($(getAdditionalInfoFormForCust()));
-					$('#btnEditUserInfo').attr('id', 'regUserBtn').text('등록');
-
-				} */
-
-				
-				// $('#userModalForm').empty().append($(data));
-
-			
-			///////////////////////////////////////
 			
 		});
+		
 
 		
 	}
@@ -118,48 +117,39 @@
 			
 			
 			var callback=function(data){
-				vueUserModel.action='';
 				fAfterInsertOrUpdate(data,controlType);
 			}
 			
-			if(
-				(controlType=='REGISTER') ||
-				(controlType=='UPDATE' && confirm('수정하시겠습니까?')) ||
-				(controlType=='DELETE' && confirm('정말로 삭제하시겠습니까?'))
-			  ){
+			if(controlType=='REGISTER' && (!validationChecked() || isDuplicated(vueUserModel.info.loginID))){
+				return;
+			}else{
 				
-				/* if(controlType=='DELETE'){
-					$('#action').val('DELETE');
-				} */
 				
-				if(controlType=='REGISTER' && (!validationChecked() || isDuplicated(vueUserModel.info.loginID))){
-					return;
-				}else{
-					
-					swal('등록/수정 및 삭제 를 시작합니다');
-					// callAjax('/scm/userinfo/manage', 'POST', 'json', true, $('#userModalForm').serialize(), callback);
-					// callAjax('/scm/userinfo/manage', 'POST', 'json', true, vueUserModel.info, callback);
+				let param=vueUserModel.info;
+				param.action=controlType;
+				if(confirm(param.action=='REGISTER'?'등록하시겠습니까?':param.action=='UPDATE'?'수정하시겠습니까?':'삭제하시겠습니까?')){
+					callAjax('/scm/userinfo/manage', 'POST', 'json', true, param, callback);	
 				}
-			}	
+				
+			}
+				
 		}
 	}
 
 	function fAfterInsertOrUpdate(data,controlType) {
-		console.log(data);
+		
 		if (data==1) {
-			if(controlType=='REGISTER'){
-				alert('등록이 완료되었습니다');	
-			}else if(controlType=='UPDATE'){
-				alert('수정이 완료되었습니다');
-			}else{
-				alert('정상적으로 삭제되었습니다');
-			}
+			let msg=controlType=='REGISTER'?'등록이 완료되었습니다':controlType=='UPDATE'?'수정이 완료되었습니다':'정상적으로 삭제되었습니다';
+			swal(msg);
 			
-			window.location.reload();
+			vueUserModel.action='';
+			vueUserList.getList(vueUserList.selectPage);	
 
 		} else {
 			swal('오류가 발생하였습니다. 잠시후 다시 시도하세요');
 		}
+		
+		
 
 	}
 	
@@ -173,7 +163,9 @@
 				duplicated=true;	
 			}
 		}
+		
 		callAjax('/scm/userinfo/'+loginID, 'POST', 'json', false, {}, callback);
+		
 		return duplicated;
 	}
 	function validationChecked(){
@@ -242,14 +234,13 @@
 		vueUserList.totalCount=data.page.totalCount;
 		vueUserList.userlist=data.page.userlist;
 		
-		
-		var paginationHtml = getPaginationHtml(vueUserList.selectPage, vueUserList.totalCount, vueUserList.rowsPerPage,
-		// pageBlockSize : 페이지의 페이징 : 한 페이지당 몇개의 페이지 번호를 볼 수 있을 지 파라미터로 넘긴다
-		// 5 , 6 , 7,... 변경해보며 테스트해보자
-		5, 'vueUserList.getList');
-
-		// $('#userListArea').empty().append(data).append(paginationHtml);
 		$('#userListArea .paging').remove();
-		$('#userListArea table').after(paginationHtml);
+		$('#userListArea table').after	(
+											getPaginationHtml(	vueUserList.selectPage, 
+																vueUserList.totalCount, 
+																vueUserList.rowsPerPage,
+																5, 
+																'vueUserList.getList')
+										);
 	}
 </script>

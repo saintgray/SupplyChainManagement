@@ -14,7 +14,6 @@
 		getSalesList();
 		
 		$('#st-btn').on('click',function(){
-			console.log('up!');
 			$('html').animate({'scrollTop':0},100);
 		})
 		

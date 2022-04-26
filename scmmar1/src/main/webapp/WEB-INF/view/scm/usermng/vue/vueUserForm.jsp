@@ -81,36 +81,36 @@
 								<input type="text" class="form-control" v-model='info.email'>
 							</td>
 						</tr>
-						<%-- <c:if test="${(not empty info) && (info.user_Type ne 'C')}"> --%>
+					
 						
-								<tr class="empInfo" v-if='(action=="UPDATE" && info.userType!="C") ||(action=="NEW" && regType=="emp")'>
-									<td>
-										<span>직원명</span>
-									</td>
-									<td>
-										<input type="text"  class="form-control" v-model='info.name'>
-									</td>
-									<td>
-										<span>담당업무</span>
-									</td>
-									<td>
-										<select class="form-control" name="user_Type">
-											<option value="A" <c:if test='${info.user_Type eq "A"}'>selected</c:if> >SCM</option>
-											<option value="B" <c:if test='${info.user_Type eq "B"}'>selected</c:if> >배송</option>
-											<option value="D" <c:if test='${info.user_Type eq "D"}'>selected</c:if> >구매</option>
-											<option value="E" <c:if test='${info.user_Type eq "E"}'>selected</c:if> >임원</option>
-										</select>
-									</td>
-								</tr>
-							
-						<%-- </c:if> --%>
+						<tr class="empInfo" v-if='(action=="UPDATE" && info.userType!="C") ||(action=="NEW" && regType=="emp")'>
+							<td>
+								<span>직원명</span>
+							</td>
+							<td>
+								<input type="text"  class="form-control" v-model='info.name'>
+							</td>
+							<td>
+								<span>담당업무</span>
+							</td>
+							<td>
+								<select class="form-control" v-model='info.user_Type'>
+									<option value="A" :selected='info.user_Type==""'>SCM</option>
+									<option value="B">배송</option>
+									<option value="D">구매</option>
+									<option value="E">임원</option>
+								</select>
+							</td>
+						</tr>
+					
+				
 						<tr>
 							<td>
 								<span>우편번호</span>
 							</td>
 							<td colspan="4">
 								<div class="form-inline">
-									<input type="text" class="form-control" name="zipCode" id="zipCode" v-model='info.zipCode' >
+									<input type="text" class="form-control" v-model='info.zipCode' @click='findZip'>
 									<button type="button" class="btn" id="findZip">주소찾기</button>
 								</div>
 								
@@ -121,7 +121,7 @@
 								<span>주소</span>
 							</td>
 							<td colspan="4">
-								<input type="text" id="address" name="address" class="form-control" v-model='info.address' style="width:100%">
+								<input type="text" id="address" class="form-control" v-model='info.address' style="width:100%">
 							</td>
 						</tr>
 						<tr>
@@ -129,7 +129,7 @@
 								<span>상세주소</span>
 							</td>
 							<td colspan="4">
-								<input type="text" id="dtAddress" name="dtAddress" class="form-control" v-model='info.dtAddress' style="width:100%">
+								<input type="text" id="dtAddress" class="form-control" v-model='info.dtAddress' style="width:100%">
 							</td>
 						</tr>
 					</tbody>

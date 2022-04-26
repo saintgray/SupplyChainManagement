@@ -153,12 +153,12 @@
                   	<a href="${CTX_PATH}/scm/productMng.do" class="btn_set refresh">새로고침</a>
                 </p>
 				<!-- SearchArea -->
-				<div class="searchArea">
+				<div class="searchArea" id="v-SearchArea">
 					<table style="margin-top: 10px" width="100%" cellpadding="5" cellsapcing="0" border="1">
 					   <tr style="border: 0px; border-color: blue">
                            <td width="80" height="25" style="font-size: 120%;">&nbsp;&nbsp;</td>
                            <td width="50" height="25" style="font-size: 100%; text-align:left; padding-right:25px;">
-     	                       <select id="searchKey" name="searchKey" style="width: 150px;" v-model="searchKey">
+     	                       <select id="searchKey" name="searchKey" style="width: 150px;" v-model="searchType">
      	                       		<option value="all">전체</option>
 									<option value="sales_nm" >제품명</option>
 									<option value="model_nm" >모델명</option>
@@ -166,11 +166,11 @@
 							   </select>
 							   
 				
-     	                       <input type="text" style="width: 300px; height: 25px;" id="keyword">
+     	                       <input type="text" style="width: 300px; height: 25px;" id="keyword" v-model="keyword">
      	                       
      	                       
      	                       <div class="bts" id="searchBtnWrap">
-     	                       		<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
+     	                       		<button type="button" class="btn btn-primary" id="searchBtn" @click='getList'>검색</button>
      	                       </div>                 
 	                           
                             </td> 
@@ -186,13 +186,23 @@
 				
 				
 				<!-- SALES LIST WRAP -->
-				<div id="salesListWrap"></div>
+				<!-- <div id="salesListWrap"></div> -->
 				
+				<!-- Vue Sales List Wrap -->
+				<div id="salesListWrap">
+					<%@ include file="/WEB-INF/view/scm/sales/vue/vueSalesList.jsp" %>
+				</div>
+						
 				
 				
 				
 				<!-- REGISTER // DELETE // UPDATE // INFO FORM -->
-				<form id="salesInfoForm"></form>
+				<!-- <form id="salesInfoForm"></form> -->
+				
+				<!-- Vue Sales Form Wrap -->
+				<form id="salesInfoForm">
+					<%@ include file="/WEB-INF/view/scm/sales/vue/vueSalesForm.jsp" %>
+				</form>
 				
 				
 				
@@ -212,8 +222,12 @@
 <!-- scroll top btn -->
 <div id="st-btn"></div>
 
+<!-- JQUERY version -->
+<%-- <%@include file="/WEB-INF/view/scm/sales/pageset/salesMngMainPageset.jsp" %> --%>
 
-<%@include file="/WEB-INF/view/scm/sales/pageset/salesMngMainPageset.jsp" %>
+
+<!-- Vue Version -->
+<%@ include file="/WEB-INF/view/scm/sales/pageset/vueSalesManagePageset.jsp" %>
 </body>
 
 </html>

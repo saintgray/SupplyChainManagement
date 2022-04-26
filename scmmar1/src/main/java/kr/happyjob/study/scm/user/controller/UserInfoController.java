@@ -45,7 +45,6 @@ public class UserInfoController {
 		
 		int result=0;
 		
-		System.out.println("action >> "+action);
 		
 		try{
 				switch(action){

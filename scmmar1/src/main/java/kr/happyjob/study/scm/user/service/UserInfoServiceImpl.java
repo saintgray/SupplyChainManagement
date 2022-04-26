@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;import kr.happyjob.study.login.model.UserInfo;
@@ -17,6 +19,7 @@ import kr.happyjob.study.system.model.ComnCodUtilModel;
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
 	
+	private final Logger logger=LogManager.getLogger(this.getClass());
 	
 	private SqlSessionTemplate sst;
 	
@@ -32,7 +35,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 	
 	@Override
 	public UserDetail getUserInfo(String userID,String pur_idx){
-		System.out.println("## pur_idx :" + pur_idx);
+		
 		Map<String, Object> map=new HashMap<String, Object>();
 		map.put("userID", userID);
 		map.put("pur_idx", pur_idx);
@@ -54,14 +57,18 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	public int insertUser(UserRegData data) {
-		
-		return sst.getMapper(UserInfoDao.class).insertUser(data);
+		int result=0;
+		logger.info("+user_Type......?"+data.getUser_Type());
+		// result=sst.getMapper(UserInfoDao.class).insertUser(data);
+		return result;
 	}
 
 	@Override
 	public int updateUser(UserRegData data) {
-		
-		return sst.getMapper(UserInfoDao.class).updateUser(data);
+		int result=0;
+
+		result=sst.getMapper(UserInfoDao.class).updateUser(data);
+		return result;
 	}
 
 	@Override
