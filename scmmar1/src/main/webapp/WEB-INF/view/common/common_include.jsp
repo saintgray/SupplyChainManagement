@@ -8,8 +8,8 @@
 
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/admin/basic.css" />
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/jh_css/style.css" />
-<link rel="stylesheet" type="text/css" href="${CTX_PATH}/js/jquery-ui/jquery-ui-1.11.4/jquery-ui.css" />
-<link rel="stylesheet" type="text/css" href="${CTX_PATH}/js/jquery-ui/jquery-ui-1.11.4/jquery-ui.min.css" />
+<%-- <link rel="stylesheet" type="text/css" href="${CTX_PATH}/js/jquery-ui/jquery-ui-1.11.4/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="${CTX_PATH}/js/jquery-ui/jquery-ui-1.11.4/jquery-ui.min.css" /> --%>
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/vuecss/bootstrap-datepicker3.css" />
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/vuecss/bootstrap-datepicker3.min.css" />
 <link rel="stylesheet" type="text/css" href="${CTX_PATH}/css/vuecss/bootstrap-datepicker3.standalone.min.css" />

@@ -15,7 +15,8 @@
 			price
 		FROM
 			tb_sales
-		<where>
+		WHERE
+			deleteYN='N'
 			<if test='!"all".equals(searchType)'>
 				
 					<if test='"sales_nm".equals(searchType)'>
@@ -37,7 +38,6 @@
 						OR	mfcomp LIKE CONCAT('%',#{keyword},'%')
 					)
 			</if>
-		</where>
 		ORDER BY
 			sales_nm
 		LIMIT #{firstIndex}, #{rowsPerPage}
@@ -50,7 +50,8 @@
 			count(1)
 		FROM
 			tb_sales
-		<where>
+		WHERE
+			deleteYN='N'
 			<if test='!"all".equals(searchType)'>
 				
 					<if test='"sales_nm".equals(searchType)'>
@@ -72,7 +73,6 @@
 						OR	mfcomp LIKE CONCAT('%',#{keyword},'%')
 					)
 			</if>
-		</where>
 	</select>
 	
 	<!-- 해당 상품 상세정보 가져오기 -->

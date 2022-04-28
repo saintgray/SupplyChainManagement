@@ -54,6 +54,10 @@
 				manage:function(action,salesID){
 					fManageSales(action,salesID);
 				},
+				fFilterNumber:function(e){
+					console.log('entered vue method : fFilterNumber')
+					fFilterNumber(e);
+				},
 				close:function(){
 					this.action='';
 					this.info={};
@@ -193,27 +197,34 @@
 	
 	function fManageSales(action,idx){
 		
-		callAjaxFileUpload
-							(
-								'/scm/vue/manage/' + (idx=(idx==null || idx==undefined)?'0':idx), 
-								action, 
-								'json',
-								true,
-								'salesInfoForm', 
-								function(data){
-									fAfterManageCallback(data,action);						
-								}
-							);
+		let confirmMsg=(action=='POST'&&idx==undefined)?'등록하시겠습니까?':(action=='POST')?'정말로 수정하시겠습니까?':'정말로 삭제하시겠습니까? /n 삭제한 정보는 되돌릴 수 없습니다';
+		
+		
+		if(confirm(confirmMsg)){
+			callAjaxFileUpload(
+									'/scm/vue/manage/' + (idx=(idx==null || idx==undefined)?'0':idx), 
+									action, 
+									'json',
+									true,
+									'salesInfoForm', 
+									function(data){
+										fAfterManageCallback(data,action,idx);						
+									}
+									
+								);			
+		}
+		
+
 	}
 	
-	function fAfterManageCallback(data,action){
+	function fAfterManageCallback(data,action,idx){
 		
 		
 		
 		let msg='오류가 발생하였습니다. 잠시 후 다시 시도하세요';
 		
 		if(data==1){
-			msg=action=='POST'?'정상적으로 등록되었습니다':action=='PUT'?'정상적으로 수정되었습니다':'정상적으로 삭제되었습니다';
+			msg=action==(action=='POST'&&idx==0)?'정상적으로 등록되었습니다':action=='POST'?'정상적으로 수정되었습니다':'정상적으로 삭제되었습니다';
 			alert(msg);
 			
 			vueSalesForm.action='';
@@ -260,7 +271,12 @@
 					// $('#shortImages').append('<img src='+e.target.result+'>');
 					
 					if(index==0){
-						vueSalesForm.representPhoto=e.target.result;
+						if(vueSalesForm.action=='INFO'){
+							vueSalesForm.info.files[0].file_server_path=e.target.result;
+						}else{
+							vueSalesForm.representPhoto=e.target.result;	
+						}
+						
 					    //	$('#representPhoto').attr('src',e.target.result);
 					}
 				
@@ -271,8 +287,8 @@
 			})
 			
 			vueSalesForm.photos=photos;
-			console.log(photos);
 			console.log(vueSalesForm.photos);
+			console.log(vueSalesForm.representPhoto);
 		}else{
 			swal('이미지만 등록하실 수 있습니다');
 		}

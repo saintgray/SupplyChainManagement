@@ -16,7 +16,7 @@
 <script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <style>
-
+	
 
 </style>
 <script type="text/javascript">

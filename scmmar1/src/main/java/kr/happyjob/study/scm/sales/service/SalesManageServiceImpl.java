@@ -97,7 +97,6 @@ public class SalesManageServiceImpl implements SalesManageService{
 	}
 	
 	@Override
-	@Transactional
 	public int deleteSales(String idx) throws Exception {
 		
 		// DAO 할당
@@ -112,13 +111,18 @@ public class SalesManageServiceImpl implements SalesManageService{
 		// 해당 상품 데이터를 지운다
 		result=smDao.deleteSales(idx);
 		
-		if(result==1){
+		if(result==1 && files.size()>0){
 			
 			int fileDeleteResult=0;
-//			상품의 삭제는 삭제유무만 업데이트한다
-			 NewFileUtil.deleteFiles(files);
+			
+			// delete files in server
+			NewFileUtil.deleteFiles(files);
+			
+			// delete files data in Database
+			fileDeleteResult=smDao.deleteFiles(files);
+			
 			if(fileDeleteResult!=files.size()){
-				System.out.println("DB 통신 에러 또는 파일 일부가 로컬경로에서 삭제되지 않음");
+				throw new Exception();
 			}
 			
 		}
@@ -157,7 +161,17 @@ public class SalesManageServiceImpl implements SalesManageService{
 		// 3.
 		Map<String, List<MultipartFile>> updateFilesMap=fUtil.extractFilesMap();
 		List<MultipartFile> files=updateFilesMap.get("files");
+		
+		// 사진을 수정하지 않을시 빈 dummy 파일이 한개 들어와서 모두 덮어씌우는 현상 발생
+		// 원인은 모르겠음
+		for(int i=0; i<files.size(); i++){
+			if(files.get(i).getSize()==0){
+				files.remove(i);
+				i=0;
+			}
+		}
 		List<FileModel> updateFiles=fUtil.uploadFiles(files,data.getSales_id());
+		
 		// 4.
 		
 		logger.info("+  " + updateFiles.isEmpty() + " : " + prevFiles);

@@ -36,10 +36,13 @@
 				
 			</div>
 			
-			<div id ="shortImages" v-if='action=="INFO" && info.files.length>0'>
-				<div v-for='(item,index) in info.files'> 
+			<div id ="shortImages" v-if='action=="INFO"'>
+				<div v-if='info.files.length>0' v-for='(item,index) in info.files'> 
 					<img :src='item.file_server_path'>
-				</div> 
+				</div>
+				<div v-if='photos.length>0' v-for='(path,index) in photos'> 
+					<img :src='path'>
+				</div>  
 			</div>
 			<div id ="shortImages" v-if='action=="NEW"'>
 				<div v-if='action=="NEW"' class="testdiv" v-for='(path,index) in photos'>

@@ -110,7 +110,7 @@ public class VueSalesManageController {
 			
 			if(Integer.parseInt(salesID)==0&&req.getMethod().equalsIgnoreCase("post")){
 				logger.info("+ call insertSales ");
-				// result=smService.insertSales(data, req);
+				result=smService.insertSales(data, req);
 
 	
 			}else if(Integer.parseInt(salesID)!=0&&req.getMethod().equalsIgnoreCase("post")){
@@ -118,11 +118,11 @@ public class VueSalesManageController {
 	
 			
 				
-				// result=smService.updateSales(data, req);
+				result=smService.updateSales(data, req);
 				
 			}else if(req.getMethod().equalsIgnoreCase("delete")){
 				logger.info("+ call deleteSales ");
-				// result=smService.deleteSales(salesID);
+				result=smService.deleteSales(salesID);
 			}
 			
 		}catch(Exception e){

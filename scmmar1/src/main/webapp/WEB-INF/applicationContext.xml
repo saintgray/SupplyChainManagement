@@ -54,8 +54,7 @@
 	</bean> 
 	
 	<!-- ## logger format ## -->
-	<bean id="myLogger"
-		class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+	<bean id="myLogger" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
 		<constructor-arg ref="mysqlDataSource" />
 		<property name="logFormatter">
 			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
