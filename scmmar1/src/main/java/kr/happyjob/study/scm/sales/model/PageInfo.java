@@ -11,6 +11,7 @@ public class PageInfo {
 	private String keyword;
 	private int totalCount;
 	private int firstIndex;
+	private int totalPage;
 	
 	private List<Sales> salesList;
 	
@@ -22,17 +23,24 @@ public class PageInfo {
 
 
 
+
+
+
 	public PageInfo(int selectPage, int rowsPerPage, String searchType, String keyword, int totalCount, int firstIndex,
-			List<Sales> salesList) {
-		super();
+			int totalPage, List<Sales> salesList) {
+		
 		this.selectPage = selectPage;
 		this.rowsPerPage = rowsPerPage;
 		this.searchType = searchType;
 		this.keyword = keyword;
 		this.totalCount = totalCount;
 		this.firstIndex = firstIndex;
+		this.totalPage = totalPage;
 		this.salesList = salesList;
 	}
+
+
+
 
 
 
@@ -117,6 +125,26 @@ public class PageInfo {
 	public void setSalesList(List<Sales> salesList) {
 		this.salesList = salesList;
 	}
+
+
+
+
+
+
+	public int getTotalPage() {
+		return totalPage;
+	}
+
+
+
+
+
+
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
+	}
+	
+	
 	
 	
 	

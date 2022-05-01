@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.happyjob.study.scm.sales.model.PageInfo;
@@ -49,6 +50,12 @@ public class VueSalesManageController {
 		logger.info(info.getSearchType());
 		logger.info(String.valueOf(info.getRowsPerPage()));
 		logger.info(String.valueOf(info.getSelectPage()));
+		
+		/*logger.info(params.get("searchType").toString());
+		logger.info(params.get("keyword").toString());
+		logger.info(params.get("selectPage").toString());
+		logger.info(params.get("rowsPerPage").toString());*/
+		
 		
 		Map<String, Object> result= new HashMap<String, Object>();
 		

@@ -55,12 +55,13 @@ public class SalesManageServiceImpl implements SalesManageService{
 		int selectPage=info.getSelectPage();
 		int rowsPerPage=info.getRowsPerPage();
 		int total=info.getTotalCount();
-		
-		
+		int totalPage=1;
+		logger.info("+ SearchParams.....");
+		logger.info(info);
 		
 		if(total!=0){
 			
-			int totalPage=total/rowsPerPage;
+			totalPage=total/rowsPerPage;
 			
 			totalPage=total%rowsPerPage>0? totalPage+1 : totalPage;
 			
@@ -73,6 +74,9 @@ public class SalesManageServiceImpl implements SalesManageService{
 			info.setSalesList(sst.getMapper(SalesManageDao.class).getSalesList(info));
 			
 		}
+		
+		info.setTotalPage(totalPage);
+		
 		return info;
 	}
 	

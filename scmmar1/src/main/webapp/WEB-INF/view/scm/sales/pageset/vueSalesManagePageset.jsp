@@ -281,7 +281,7 @@
 					}
 				
 				})	 
-				
+				console.log(photos);
 				fileReader.readAsDataURL(item);
 				
 			})

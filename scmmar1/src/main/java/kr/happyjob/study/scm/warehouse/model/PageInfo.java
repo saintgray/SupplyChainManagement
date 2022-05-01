@@ -10,6 +10,7 @@ public class PageInfo {
 	private int rowsPerPage;
 	private String searchType;
 	private String keyword;
+	private String totalPage;
 	private int totalCount;
 	private int firstIndex;
 	
@@ -23,15 +24,20 @@ public class PageInfo {
 
 
 
-	public PageInfo(int selectPage, int rowsPerPage, String searchType, String keyword, int totalCount, int firstIndex) {
+	
+	public PageInfo(int selectPage, int rowsPerPage, String searchType, String keyword, String totalPage,
+			int totalCount, int firstIndex, List<Warehouse> whList) {
 		
 		this.selectPage = selectPage;
 		this.rowsPerPage = rowsPerPage;
 		this.searchType = searchType;
 		this.keyword = keyword;
+		this.totalPage = totalPage;
 		this.totalCount = totalCount;
 		this.firstIndex = firstIndex;
+		this.whList = whList;
 	}
+
 
 
 
@@ -117,6 +123,22 @@ public class PageInfo {
 		this.whList = whList;
 	}
 
+
+
+
+	public String getTotalPage() {
+		return totalPage;
+	}
+
+
+
+
+	public void setTotalPage(String totalPage) {
+		this.totalPage = totalPage;
+	}
+
+	
+	
 	
 	
 	
