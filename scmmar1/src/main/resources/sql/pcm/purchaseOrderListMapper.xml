@@ -6,8 +6,10 @@
 	<!-- 발주 내역 목록 조회-->
 	<select id="listPurchaseOrder" resultType="kr.happyjob.study.pcm.model.PcmOrderListModel">
 		/*kr.happy.study.pcm.dao.PcmOrderListDao.listPurchaseOrder*/
-		SELECT od.orderid 
-			 , cp.comp_nm
+		SELECT 
+		       od.order_id  as order_id
+			 , od.orderid  as orderid
+			 , cp.comp_nm 
 			 , sa.sales_nm
 			 , oi.order_cnt
 			 , od.regdate
@@ -23,17 +25,17 @@
 		     WHERE 1=1 
 	 		<if test="(sname != null) and (!sname.equals(''))">
 				<choose>
-					<when test="oname eq 'purchase_copnm'.toString()">
+					<when test="oname eq 'comp_nm'.toString()">
 						AND cp.comp_nm LIKE CONCAT('%', #{sname}, '%')
 					</when>
-					<when test="oname eq 'purchase_modelnm'.toString()">
+					<when test="oname eq 'sales_nm'.toString()">
 						AND	sa.sales_nm LIKE CONCAT('%', #{sname}, '%')
 					</when>
-					<when test="oname eq 'purchase_accn'.toString()">
+					<when test="oname eq 'confirmYN'.toString()">
 						AND	od.confirmYN LIKE CONCAT('%', #{sname}, '%')
 					</when>
-					<when test="oname eq 'purchase_accy'.toString()">
-						AND	od.confirmYN LIKE CONCAT('%', #{sname}, '%')
+					<when test="oname eq 'depositYN'.toString()">
+						AND	od.depositYN LIKE CONCAT('%', #{sname}, '%')
 					</when>
 					<otherwise>
 						
@@ -66,18 +68,16 @@
 		     WHERE 1=1 
 	 		<if test="(sname != null) and (!sname.equals(''))">
 				<choose>
-					<when test="oname eq 'purchase_copnm'.toString()">
+					<when test="oname eq 'comp_nm'.toString()">
 						AND cp.comp_nm LIKE CONCAT('%', #{sname}, '%')
 					</when>
-					<when test="oname eq 'purchase_modelnm'.toString()">
+					<when test="oname eq 'sales_nm'.toString()">
 						AND	sa.sales_nm LIKE CONCAT('%', #{sname}, '%')
 					</when>
-					<when test="oname eq 'purchase_accn'.toString()">
+					<when test="oname eq 'confirmYN'.toString()">
 						AND	od.confirmYN LIKE CONCAT('%', #{sname}, '%')
 					</when>
-					<when test="oname eq 'purchase_accy'.toString()">
-						AND	od.confirmYN LIKE CONCAT('%', #{sname}, '%')
-					</when>
+					
 					
 					<otherwise>
 						<!-- when 조건이 다 참이 아닐때 -->
@@ -100,7 +100,9 @@
 	<!-- 발주 내역 목록 한건 -->
 	<select id="pcmOrderOne" resultType="kr.happyjob.study.pcm.model.PcmOrderListModel">
 	/*kr.happy.study.pcm.dao.PcmOrderListDao.pcmOrderOne*/
-			SELECT od.orderid 
+			SELECT 
+			   od.order_id  as order_id
+			 , od.orderid  as orderid
 			 , cp.comp_nm
 			 , sa.sales_nm
 			 , oi.order_cnt
@@ -114,7 +116,7 @@
 		     inner join tb_detail_code dc on dc.detail_code = sa.sales_type and	dc.group_code = 'proCD'
 		     inner join tb_comp cp on oi.comp_id = cp.comp_id
 		     inner join tb_purchase ph on ph.pur_id = oi.pur_id
-		WHERE od.orderid = #{orderid}
+		WHERE od.orderid = #{orderid} 
 	</select>
 	
 

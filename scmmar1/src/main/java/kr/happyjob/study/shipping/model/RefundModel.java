@@ -7,13 +7,55 @@ public class RefundModel {
 	private String return_id;
 	private String client;
 	private String sales_nm;
+	private String sales_id;
 	private int return_cnt;
 	private Date regdate;
 	private Date editdate;
 	private String wh_nm;
 	private int wh_id;
+	private String rfinfo_id;
+	private String dtAddress;
+	private String address;
+	private String deliverStatus;
+	private String deliv_id;
 	
 	
+	public String getDeliv_id() {
+		return deliv_id;
+	}
+	public void setDeliv_id(String deliv_id) {
+		this.deliv_id = deliv_id;
+	}
+	public String getSales_id() {
+		return sales_id;
+	}
+	public void setSales_id(String sales_id) {
+		this.sales_id = sales_id;
+	}
+	public String getDeliverStatus() {
+		return deliverStatus;
+	}
+	public void setDeliverStatus(String deliverStatus) {
+		this.deliverStatus = deliverStatus;
+	}
+	public String getDtAddress() {
+		return dtAddress;
+	}
+	public void setDtAddress(String dtAddress) {
+		this.dtAddress = dtAddress;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getRfinfo_id() {
+		return rfinfo_id;
+	}
+	public void setRfinfo_id(String rfinfo_id) {
+		this.rfinfo_id = rfinfo_id;
+	}
 	public String getReturn_id() {
 		return return_id;
 	}

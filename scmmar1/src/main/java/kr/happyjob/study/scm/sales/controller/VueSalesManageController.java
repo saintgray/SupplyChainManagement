@@ -121,10 +121,9 @@ public class VueSalesManageController {
 
 	
 			}else if(Integer.parseInt(salesID)!=0&&req.getMethod().equalsIgnoreCase("post")){
-				logger.info("+ call updateSales ");
-	
-			
 				
+				logger.info("+ call updateSales ");
+				data.setSales_id(salesID);
 				result=smService.updateSales(data, req);
 				
 			}else if(req.getMethod().equalsIgnoreCase("delete")){

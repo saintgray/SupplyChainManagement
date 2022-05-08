@@ -7,6 +7,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <title>배송지시서</title>
 <script src='CTX_PATH/js/sweetalert/sweetalert.min.js'></script>
+<script src='/js/lib/twLib.js?v=20220428'></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <style type="text/css">
 	.hover_row:hover {
@@ -22,127 +23,145 @@
 </head>
 <body>
 <script type="text/javascript">
-	// 배송지시서 페이징 설정
-	var pageSizeListDeliOrder = 10;		//한 페이지에 나오는 목록 갯수
-	var pageBlockSizeListDeliOrder = 5;	//페이지 블록 수
-	
-	// 상세코드 페이징 설정
-	var pageSizeComnDtlCod = 5;
-	var pageBlockSizeComnDtlCod = 10;
 
 	
-	
+	var pagesize = 10;
+    var navicnt = 10;
+	var divComGrpCodList;
+    var layer1;
+    
 	
 	//	레디 start
 	$(document).ready(function(){
-		//배송지시서 목록 조회 함수
-		flistDeliOrder();	
 		
-		//데이트픽커 호출 함수
-		fDatePicker();	
-		
-		// 버튼 이벤트 등록
-		fRegisterButtonClickEvent();		
-		
-		//	날짜 초기화
-		$("#cal1").datepicker('setDate', '');
-  	    $("#cal2").datepicker('setDate', '');
-  	    
-  	 	/* 날짜 radio 버튼 초기화 */
-		$('#radio_cal1').prop('checked', !$('#radio_cal1').prop('checked'));		
-  	 	
-		/* 날짜 선택 Checkbox change event */
-		$('input[name="radio_cal"]').change(function(){
-			var radio_cal1 = $('#radio_cal1').prop('checked');
-			var radio_cal2 = $('#radio_cal2').prop('checked');
-			
-		        if(radio_cal1==true && radio_cal2==false){
-		        	$("#cal1").datepicker( "option", "disabled", true );
-		        	$("#cal2").datepicker( "option", "disabled", true );
-		        	$("#cal1").datepicker('setDate', '');
-		      	    $("#cal2").datepicker('setDate', '');
-		        } else{
-		        	$("#cal1").datepicker( "option", "disabled", false );
-		        	$("#cal2").datepicker( "option", "disabled", false );
-		        	$("#cal1").datepicker('setDate', '-3M');
-		      	    $("#cal2").datepicker('setDate', 'today');
-		        }
-		});
-		
-	
-		//검색 버튼
-		$('#btnSearch').click(function(){
-			flistDeliOrder();
-		});
-			
+	    init();
+	    
+	    fn_listsearch();
 		
 	});//	레디 end
 	
 	
+	function init() {
+	       
+	       divComGrpCodList = new Vue({
+	                                    el : "#divComGrpCodList" ,
+	                                 data : {
+	                                            searchlist : [],
+	                                            cal1  : "",
+	                        				 	cal2  : "",
+	                                            sname : "",
+	                        				 	oname : "",
+	                        				 	radio_cal : "all",
+	                        				 	radioshow : false,
+	                                 },
+	                                 methods : {
+	                                	 detailClick : function (deliv_id,deliverStatus,deliv_wh_id) {
+                                		 	fPopModalDeliOrder(deliv_id,deliverStatus,deliv_wh_id);
+	                                    },
+	                                    printDate : function(date) {
+	                                    	return dateFormatter(date);
+	                                    },
+	                                    statusData : function(datas,key,value) {
+	                                    	//let key = 'U,O,E';
+	                                    	//let value = '배송준비,배송시작,배송완료';
+	                                    	return statusVal(datas,key,value);
+	                                    },
+	                                    searchData : function() {
+	                                    	search();
+	                                    },
+	                                    rchange : function(itype){
+	                                    	if(this.radio_cal == "all") {
+	                                    		this.radioshow = false;   
+	                                    		this.cal1=  '';
+	                                    		this.cal2=  '';
+	                        		        } else{
+	                                    		this.radioshow = true;   
+	                                    		this.cal1=  '';
+	                                    		this.cal2=  '';		                        		        	
+	                        		        }	                                    	
+	                                    }
+	                                 }
+	       });
+	       
+	       layer1 = new Vue({
+	                                  el : "#layer1",
+	                               data : {
+	                            	   		deliv_id : "",
+                           	   		  		sales_nm : "",
+                            	   			sales_id : "",
+	                            	   		pur_cnt : "",
+	                            	   		name : "",
+	                            	   		hidden_deliverStatus : "",
+	                            	   		wh_nm : "",
+	                            	   		wh_id : "",
+	                            	   		address : "",
+	                            	   		dtAddress : "",
+	                            	   		deliverStatus : "",
+	                            	   		deliverStatusUd : "",
+                                            statusBtnshow : false,
+                                            statusFinishBtnshow : false
+	                               },methods : {
+	                            	   statusClick : function() {
+	                            		   flistDeliOrder();
+	                            	   },
+	                                    closeModal : function() {
+	                                    	gfCloseModal();
+	                                    }
+	                               }
+	       });
+	    }   
 	
+	//검색 버튼
+	function search() {
+		fn_listsearch();
+	};
 	
+	//리스트 값 가져오기
+	 function fn_listsearch(currpage) {
+		
+			currpage = currpage || 1;
+			var sname = divComGrpCodList.sname;
+			var oname = divComGrpCodList.oname;  
+			var cal1 = divComGrpCodList.cal1;
+			var cal2 = divComGrpCodList.cal2;
+			//파일업로드 관련 폼데이터
+		 	//const frm = new FormData();
+			//var fileTest = divComGrpCodList.fileTest.files[0];
+			/*
+			var fileTest = document.getElementById('fl').files[0];
+			frm.append("currentPage",currpage);
+			frm.append("pageSize",pagesize);
+			frm.append("sname",sname);
+			frm.append("oname",oname);
+			frm.append("fileTest",fileTest);
+		 	*/
+			var param = {
+				 		currentPage : currpage      
+				 	,	pageSize : pagesize
+				 	,	sname : sname
+				 	,	oname : oname
+				 	,	cal1 : cal1
+				 	,	cal2 : cal2
+	       };
+	       
+	       
+	       var listcollback = function(resultdata) {
+	           displatylist(resultdata, currpage);
+	       }
+	       
+	       axiosFnc("/dlm/listDeliOrder.do", "post", param, "p", listcollback); //f 폼데이터  ,p객체
+	       //callAjax("/dlm/listDeliOrder.do", "post", "json", true, param, listcollback);
+	    }
 	
-
-	/** 배송지시서 목록 조회 */
-	function flistDeliOrder(currentPage) {
-		
-		currentPage = currentPage || 1;
-		
-		var sname = $('#sname').val();
-		var oname = $('#searchKey').val();  
-		var cal1 = $('#cal1').val();
-		var cal2 = $('#cal2').val();
-		
-		console.log("currentPage : " + currentPage);
-		
-		var param = {	
-					sname : sname
-				,	oname : oname
-				,	currentPage : currentPage
-				,	pageSize : pageSizeListDeliOrder
-				,	cal1 : cal1
-				, 	cal2 : cal2
-		}
-		
-		var resultCallback = function(data) {
-			flistDeliOrderResult(data, currentPage);
-		};
-		//Ajax실행 방식
-		//callAjax("Url",type,return,async or sync방식,넘겨준거,값,Callback함수 이름)
-		callAjax("/dlm/listDeliOrder.do", "post", "text", true, param, resultCallback);
-	}
-
-	/** 배송지시서 목록 조회 콜백 함수 */
-	function flistDeliOrderResult(data, currentPage) {
-
-		console.log("콜백함수에서 파라미터로 받은 data : " + data);
-		console.log("콜백함수에서 파라미터로 받은 currentPage : " + currentPage);
-		
-		// 기존 목록 삭제
-		$('#tbodyList').empty();
-		
-		// 신규 목록 생성
-		$("#tbodyList").append(data);
-		
- 		// 총 개수 추출 - 페이지 네비게이션에서 사용할 변수
- 		var totalCntListDeliOrder = $("#totalCntListDeliOrder").val();
- 		console.log("totalCntListDeliOrder : " + totalCntListDeliOrder);
-
- 		
- 		// 페이지 네비게이션 생성			  (현재 페이지, 	총 개수,		페이지당 목록 개수, 	페이지 블록 개수, 		페이지 번호를 클릭하면 호출할 함수 객체)
- 		var paginationHtml = getPaginationHtml(currentPage, totalCntListDeliOrder, pageSizeListDeliOrder, pageBlockSizeListDeliOrder, 'flistDeliOrder');
- 		console.log("paginationHtml : " + paginationHtml);
-
- 		// 페이징 영역에 넣기
-  		$("#listPagination").empty().append( paginationHtml );
-		
-  		// 현재 페이지 설정(밸류값 변경)
-  		console.log("before currentPageListDeliOrder : "+ $("#currentPageListDeliOrder").val());
-  		$("#currentPageListDeliOrder").val(currentPage);
-  		console.log("after currentPageListDeliOrder : "+ $("#currentPageListDeliOrder").val());
-	}
+	//가져온 데이터 테이블에 뿌려주기
+	 function displatylist(resultdata, currpage) {
+		divComGrpCodList.searchlist = resultdata.data.listShippingModel;
+		var  totalCntListDeliOrder = resultdata.data.totalCntListDeliOrder;
+		var paginationHtml = getPaginationHtml(currpage, totalCntListDeliOrder, pagesize, navicnt, 'fn_listsearch');
+	      //console.log("paginationHtml : " + paginationHtml);
+	      $("#comnGrpCodPagination").empty().append( paginationHtml );
+   } 
 	
-
 	
 	
 	/** 배송지시서 단건 상세 조회 모달 실행 */
@@ -150,8 +169,8 @@
 		// 신규 저장			(사실 만들필요가 없지만...)
 		if (deliv_id == null || deliv_id=="") {
 			// Transaction type 설정
-			$("#action").val("I");	//INSERT
-			
+			//$("#action").val("I");	//INSERT
+			layer1.action = "I";
 			// 그룹코드 폼 초기화??????????????????????
 			//fInitFormGrpCod();
 			
@@ -161,8 +180,8 @@
 		// 수정 저장
 		} else {
 			// Transaction type 설정
-			$("#action").val("U");	//UPDATE
-			
+			//$("#action").val("U");	//UPDATE
+			layer1.action = "U";
 			// 그룹코드 단건 조회
 			fSelectDeliOrder(deliv_id, deliverStatus,deliv_wh_id);
 		}
@@ -177,12 +196,15 @@
 					, deliv_wh_id : deliv_wh_id			
 					};
 		
-		console.log("param : "+JSON.stringify(param));	//파라미터 확인
-		
-		if(deliverStatus=="U"){	//배송준비중이면 배송완료버튼 보이기
-			$("#btnSaveDeliOrder").show();
-		}else{	//배송완료버튼 숨기기
-			$("#btnSaveDeliOrder").hide();
+		if(deliverStatus == "U"){	//배송준비중이면 배송시작 버튼 보이게
+			layer1.statusBtnshow = true;
+			layer1.statusFinishBtnshow = false;
+		} else if(deliverStatus == "O") {
+			layer1.statusBtnshow = false;
+			layer1.statusFinishBtnshow = true;
+		} else{	//배송완료버튼 숨기기
+			layer1.statusBtnshow = false;
+			layer1.statusFinishBtnshow = false;
 		}
 		
 		
@@ -190,87 +212,108 @@
 			fSelectDeliOrderResult(data);
 		};
 		
-		callAjax("/dlm/selectDeliOrder.do", "post", "json", true, param, resultCallback);
+		//callAjax("/dlm/selectDeliOrder.do", "post", "json", true, param, resultCallback);
+		axiosFnc("/dlm/selectDeliOrder.do", "post", param,"p", resultCallback);//f 폼데이터  ,p객체
 	}
 	
 	
 	/** 배송지시서 단건 상세 조회 콜백 함수*/
-	function fSelectDeliOrderResult(data) {
-		
+	function fSelectDeliOrderResult(resultData) {
+		let data = resultData.data;
 		console.log("fSelectDeliOrderResult(data) : " + JSON.stringify(data));	//파라미터 확인
 		if (data.result == "SUCCESS") {
-
 			// 모달 팝업
 			gfModalPop("#layer1");
 			// 그룹코드 폼 데이터 설정
 			fInitFormDeliOrder(data.shippingModel);
-			
 		} else {
-			swal(data.resultMsg);
-		}	
+			(data.resultMsg);
+		}
+		
 	}
+	
+	
+	
+	 
+	
 	
 	
 	/** 배송지시서 폼 데이터 설정 */
 	function fInitFormDeliOrder(data){
-		console.log("fInitFormDeliOrder(data) : " + JSON.stringify(data));
-
-		$("#deliv_id").val(data.deliv_id);
-		$("#sales_nm").val(data.sales_nm);
-		$("#pur_cnt").val(data.pur_cnt);
-		$("#name").val(data.name);
-		$("#hidden_deliverStatus").val(data.deliverStatus);	//name="deliverStatus"
-		$("#wh_nm").val(data.wh_id_ship);
-		$("#address").val(data.address);
-		$("#dtAddress").val(data.dtAddress);
-	
+		//console.log("---------------------------------------------------")
+		//console.log(" data.wh_id_ship = " + data.wh_id);
+		//console.log("fInitFormDeliOrder(data) : " + JSON.stringify(data));
+		//console.log(" data.deliverStatus ==  " + data.deliverStatus)
+		layer1.deliv_id = data.deliv_id;
+		layer1.sales_nm = data.sales_nm;
+		layer1.sales_id = data.sales_id;
+		layer1.pur_cnt = data.pur_cnt;
+		layer1.name = data.name;
 		//배송상태
-		var deliverStatus = $("#hidden_deliverStatus").val();
-		if(deliverStatus=="U"){
-			$("#deliverStatus").val("배송준비");	//name속성 없음
-		}else if(deliverStatus=="O"){
-// 			$("#deliverStatus").val("배송시작");
-		}else if(deliverStatus=="E"){
-			$("#deliverStatus").val("배송완료");
+		layer1.hidden_deliverStatus = data.deliverStatus;
+		layer1.wh_nm = data.wh_id_ship;
+		layer1.wh_id = data.deliv_wh_id;
+		layer1.address = data.address;
+		layer1.dtAddress = data.dtAddress;
+		//배송 시작, 완료 구분
+		layer1.deliverStatusUd = layer1.hidden_deliverStatus == "U" ? "O" : "E";
+		
+		
+		if(layer1.hidden_deliverStatus == "U"){
+			layer1.deliverStatus = "배송준비";	//name속성 없음
+		}else if(layer1.hidden_deliverStatus == "O"){
+			layer1.deliverStatus = "배송시작";
+		}else if(layer1.hidden_deliverStatus == "E"){
+			layer1.deliverStatus = "배송완료";
 		}
 	}
-		
-	
 	
 	/** 배송지시서 배송상태 저장 */
-	function fSaveDeliOrder() {
-		
+	function flistDeliOrder() {
+		//console.log("fSaveDeliOrder")
 		var resultCallback = function(data) {
 			fSaveDeliOrderResult(data);
 		};
-		console.log("$('#myForm').serialize() : "+$("#myForm").serialize().replace(/%/g, '%25'));
-		var msgConfirm = confirm('배송완료 처리하시겠습니까?')
+		var param = {
+			"deliv_id" : layer1.deliv_id,
+			"dl_status" : layer1.deliverStatusUd,
+			"pur_cnt" : layer1.pur_cnt,
+			"sales_id" : layer1.sales_id,
+			"wh_id" : layer1.wh_id,
+			"deliverStatus" : layer1.hidden_deliverStatus,
+			"action" : layer1.action
+		}
+		var confirmText = layer1.hidden_deliverStatus == "U" ? "배송을 시작하시겠습니까?" : "배송을 완료하시겠습니까?"
+		var msgConfirm = confirm(confirmText)
 		if(msgConfirm){
-			callAjax("/dlm/saveDeliOrder.do", "post", "json", true, $("#myForm").serialize(), resultCallback);			
+			//callAjax("/dlm/saveDeliOrder.do", "post", "json", true, $("#myForm").serialize(), resultCallback);
+			
+			axiosFnc("/dlm/saveDeliOrder.do", "post", param, "p", resultCallback); //url,method,param,callback, pfChk
 		}
 	}
 	
 	/** 배송지시서 배송상태 저장 콜백 함수 */
-	function fSaveDeliOrderResult(data) {
-		
+	function fSaveDeliOrderResult(resultData) {
+		//console.log("jsonparsing  === " + JSON.stringify(resultData));
+		var data = resultData.data;
 		// 목록 조회 페이지 번호
 		var currentPage = "1";
-		if ($("#action").val() != "I") {	//액션이 "I"값이 아니라면?
+		if (layer1.action != "I") {	//액션이 "I"값이 아니라면?
 			currentPage = $("#currentPageListDeliOrder").val();	//	현재페이지 번호를 변수로 담아라
 		}
-		
+		//console.log("data.result ===== " +  JSON.stringify(data));
 		if (data.result == "SUCCESS") {
-			
 			// 응답 메시지 출력
-			swal(data.resultMsg);		
+			alert(data.resultMsg);	
+			//console.log(data.resultMsg);
 			// 모달 닫기
-			gfCloseModal();	
+			gfCloseModal();
 			// 특정 페이지로 목록 조회
-			flistDeliOrder(currentPage);
+			fn_listsearch(currentPage);
 			
 		} else {
 			// 오류 응답 메시지 출력
-			swal(data.resultMsg);
+			alert(data.resultMsg);
 		}
 		
 		// 입력폼 초기화		잘 모르겠음, 필요 없는듯
@@ -280,18 +323,21 @@
 	
 	
 	
-	/** 버튼 이벤트 등록 */
+	/** 버튼 이벤트 등록
 	function fRegisterButtonClickEvent() {
 		$('a[name=btn]').click(function(e) {	//네임속성으로 id값 지정하기
 			e.preventDefault();
-
-			console.log("e : " + e.preventDefault());
+			alert()
+			//console.log("e : " + e.preventDefault());
 			
 			var btnId = $(this).attr('id');
-			console.log("btnId : "+btnId);
+			//console.log("btnId : "+btnId);
 			
 			switch (btnId) {			
-				case 'btnSaveDeliOrder' :	//배송완료 버튼
+				case 'btnSaveDeliOrder' :	//배송준비 버튼
+					fSaveDeliOrder();
+					break;
+				case 'btnSaveDeliOrderFinish' :	//배송시작 버튼
 					fSaveDeliOrder();
 					break;
 				case 'btnCloseDeliOrder' :	//닫기(취소) 버튼
@@ -300,7 +346,7 @@
 			}
 		});
 	}
-	
+	 */
 //	유틸리티 ---------------------------------------------------------------------------------------------------------------------	
 	
 	// DatePicker
@@ -356,7 +402,7 @@
 //---------------------------------------------------------------------------------------------------------------------------------------	
 	
 </script>
-<form id="myForm" action=""  method="" onSubmit="return false">
+<form id="myForm" v-model="" ref="myForm" action=""  method="" onSubmit="return false">
 	<!-- 이건 왜 있는거? 요소 확인용인가? >>> 업데이트 쿼리 실행시 로드시킬 페이지 인덱스 번호인듯  -->
 	<input type="hidden" id="currentPageListDeliOrder" value="1">
 	<!-- 모달 액션 -->
@@ -392,7 +438,7 @@
 					
 					
 					<!-- 목록 영역 -->	
-					<div class="shippingList_area" >
+					<div class="shippingList_area" id="divComGrpCodList">
 					
                     	<!--검색 바 테이블 -->
                         <table style="margin-top:10px; margin-bottom:20px;" width="100%" cellpadding="5"
@@ -402,21 +448,21 @@
                               <td width="40" height="25" style="font-size: 120%;">&nbsp;</td>
                               <td width="*" height="25" style="font-size: 100%; text-align: center;">
                                  <!-- select option -->
-                                 <select id="searchKey" name="searchKey" style="width: 80px; height: 27px;" v-model="searchKey">
-                                    <option value="">전체</option>
+                                 <select id="searchKey" name="searchKey" v-model="oname" style="width: 80px; height: 27px;" >
+                                    <option value="" selected>전체</option>
                                     <option value="U">배송준비</option>
                                     <option value="O">배송시작</option>
                                     <option value="E">배송완료</option>
                                  </select>                                 
                                  <!-- search name -->
-                                 <input type="text" style="width: 150px; height: 25px;" id="sname" name="sname" placeholder="제품명 입력"  onkeypress="if( event.keyCode==13 ){flistDeliOrder();}"> &nbsp;&nbsp;&nbsp;
+                                 <input type="text" style="width: 150px; height: 25px;" id="sname" v-model="sname" name="sname" placeholder="제품명 입력"  onkeypress="if( event.keyCode==13 ){flistDeliOrder();}"> &nbsp;&nbsp;&nbsp;
                                  <!-- calendar date -->
-                                 <input type="radio" name="radio_cal" id="radio_cal1" value="all"><label for="radio_cal1">전체</label> 
-                                 <input type="radio" name="radio_cal" id="radio_cal2" value="choice"><label for="radio_cal2">선택</label> 
-                                 <input name="cal1" id="cal1" readonly="readonly" disabled="disabled" style="height: 25px;"/>
-								 <input name="cal2" id="cal2" readonly="readonly" disabled="disabled" style="height: 25px;"/>
+                                 <input type="radio" name="radio_cal" id="radio_cal1"  value="all" v-model="radio_cal"  @change="rchange"  ><label for="radio_cal1">전체</label> 
+                                 <input type="radio" name="radio_cal" id="radio_cal2" value="choice" v-model="radio_cal" @change="rchange" ><label for="radio_cal2">선택</label> 
+                                 <input type="date" name="cal1" id="cal1" v-model="cal1" v-show="radioshow" style="height: 25px;" />
+								 <input type="date" name="cal2" id="cal2" v-model="cal2" v-show="radioshow" style="height: 25px;" />
                          		 <!-- button -->
-                                 <a href="#" class="btnType blue" id="btnSearch" name="btn"><span>검색</span></a>&nbsp;
+                                 <a href="#" class="btnType blue" id="btnSearch" name="btn" @click="searchData()"><span>검색</span></a>&nbsp;
                               <td width="40" height="25" style="font-size: 120%;">&nbsp;</td>
                            </tr>
                         </table>
@@ -457,22 +503,26 @@
                            
                            
                            <!-- tbody에 리스트 출력 -->
-                           <tbody id="tbodyList">                          
-                           </tbody>
+                           <tbody v-for="(item,index) in searchlist">                          
+                           <tr @click="detailClick(item.deliv_id,item.deliverStatus,item.deliv_wh_id)">
+                           <td>{{ index + 1 }}</td>
+                           <td>{{ item.deliv_id}}</td>
+                           <td>{{ item.sales_nm}}</td>
+                           <td>{{ item.pur_cnt}}</td>
+                           <td>{{ item.name}}</td>
+                           <td>{{ statusData(item.deliverStatus,'U,O,E','배송준비,배송시작,배송완료') }}</td>
+                           <td>{{ printDate(item.regdate) }}</td>
+                           <td>{{ printDate(item.editdate)}}</td>   
+                        </tr>   
+                     </tbody>
                         </table>
                         <!--// 테이블 영역 -->
                      </div>
-                     
+                     <div class="paging_area"  id="comnGrpCodPagination"> </div>
                      <!-- 페이징 영역 -->
-                     <div class="paging_area" id="listPagination"></div>
-         			 <!--// 페이징 영역 -->
 					
 				</div>
 				<!-- //content 영역 -->
-				
-
-				
-				
 				
 				<h3 class="hidden">풋터 영역</h3> <jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
 			</li>
@@ -507,33 +557,45 @@
 						
 						<tr>
 							<th scope="row">배송번호 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="hidden" name="deliverStatus" id="hidden_deliverStatus"><input type="text" class="inputTxt p100" name="deliv_id" id="deliv_id" readonly="readonly"/></td>		
+							<td colspan="3">
+								<input type="hidden" name="deliverStatus" v-model="hidden_deliverStatus" id="hidden_deliverStatus">
+								<input type="text" class="inputTxt p100" v-model="deliv_id" name="deliv_id" id="deliv_id" readonly="readonly"/>
+								</td>		
 						</tr>
 						<tr>
 							<th scope="row">제품명 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="sales_nm" id="sales_nm" readonly="readonly"/></td>							
+							<td colspan="3">
+								<input type="text" class="inputTxt p100" name="sales_nm" v-model="sales_nm" id="sales_nm" readonly="readonly"/>
+								<input type="hidden" class="inputTxt p100" name="sales_id" v-model="sales_id" id="sales_id" readonly="readonly"/>
+							</td>							
 						</tr>
 						<tr>
 							<th scope="row">수량 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="pur_cnt" id="pur_cnt" readonly="readonly"/></td>
+							<td colspan="3"><input type="text" class="inputTxt p100" v-model="pur_cnt" name="pur_cnt" id="pur_cnt" readonly="readonly"/></td>
 						</tr>
 						<tr>
 							<th scope="row">배송담당자 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt p100" name="name" id="name" readonly="readonly"/></td>
+							<td><input type="text" class="inputTxt p100" name="name" v-model="name" id="name" readonly="readonly"/></td>
 							<th scope="row">배송상태 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt p100" id="deliverStatus" readonly="readonly" /></td>
+							<td>
+								<input type="text" class="inputTxt p100" v-model="deliverStatus" id="deliverStatus" readonly="readonly" />
+								<input type="hidden" class="inputTxt p100" v-model="dl_status" id="dl_status"  name="dl_status"  readonly="readonly" />
+							</td>
 						</tr>
 						<tr>					
 							<th scope="row">출발창고지 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="wh_nm" id="wh_nm" readonly="readonly" /></td>
+							<td colspan="3">
+								<input type="text" class="inputTxt p100" v-model="wh_nm" name="wh_nm" id="wh_nm" readonly="readonly" />
+								<input type="hidden" class="inputTxt p100" v-model="wh_id" name="wh_id" id="wh_id" readonly="readonly" />
+							</td>
 						</tr>
 						<tr>					
 							<th scope="row">주소1 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="address" id="address" readonly="readonly" /></td>
+							<td colspan="3"><input type="text" class="inputTxt p100" v-model="address" name="address" id="address" readonly="readonly" /></td>
 						</tr>
 						<tr>					
 							<th scope="row">주소2 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="dtAddress" id="dtAddress" readonly="readonly" /></td>
+							<td colspan="3"><input type="text" class="inputTxt p100" v-model="dtAddress" name="dtAddress" id="dtAddress" readonly="readonly" /></td>
 						</tr>
 <!-- 						<tr> -->
 <!-- 							<th scope="row">배송상태 수정<span class="font_red">*</span></th> -->
@@ -549,8 +611,9 @@
 				<!-- e : 여기에 내용입력 -->
 
 				<div class="btn_areaC mt30">
-					<a href="" class="btnType blue" id="btnSaveDeliOrder" name="btn"><span>배송완료</span></a> 
-					<a href="" class="btnType gray" id="btnCloseDeliOrder" name="btn"><span>닫기</span></a>
+					<a href="#!" class="btnType blue"  @click="statusClick()" v-if="statusBtnshow" name="btn"><span>배송시작</span></a>
+					<a href="#!" class="btnType blue"  @click="statusClick()" v-if="statusFinishBtnshow" name="btn"><span>배송완료</span></a> 
+					<a href="#!" class="btnType gray" @click="closeModal()" id="btnCloseDeliOrder" name="btn"><span>닫기</span></a>
 				</div>
 			</dd>
 		</dl>

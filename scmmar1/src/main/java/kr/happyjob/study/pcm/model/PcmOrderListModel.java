@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class PcmOrderListModel {
 	private int orderid;
+	private int order_id;
 	private String comp_nm;			//발주회사
 	private String sales_nm;		//상품이름
 	private int order_cnt;			//발주갯수
@@ -53,10 +54,18 @@ public class PcmOrderListModel {
 	public void setDepositYN(String depositYN) {
 		this.depositYN = depositYN;
 	}
+	public int getOrder_id() {
+		return order_id;
+	}
+	public void setOrder_id(int order_id) {
+		this.order_id = order_id;
+	}
 	@Override
 	public String toString() {
-		return "PcmOrderListModel [orderid=" + orderid + ", comp_nm=" + comp_nm + ", sales_nm=" + sales_nm
-				+ ", order_cnt=" + order_cnt + ", regdate=" + regdate + ", confirmYN=" + confirmYN + ", depositYN="
-				+ depositYN + "]";
+		return "PcmOrderListModel [orderid=" + orderid + ", order_id=" + order_id + ", comp_nm=" + comp_nm
+				+ ", sales_nm=" + sales_nm + ", order_cnt=" + order_cnt + ", regdate=" + regdate + ", confirmYN="
+				+ confirmYN + ", depositYN=" + depositYN + "]";
 	}
+	
+	
 }

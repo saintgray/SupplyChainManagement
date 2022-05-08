@@ -9,20 +9,26 @@
 		SELECT rd.return_id
 		      , ui.client
 		      , s.sales_nm
-					, rd.return_cnt
+		      , s.sales_id
+					, ri.return_cnt
 		      , rd.regdate
 		      , rd.editdate
 					, wh.wh_nm
-		      , dd.deliv_wh_id			
+					, wh.wh_id
+		      , dd.deliv_wh_id
+		      , dd.deliverStatus
+		      , dd.deliv_id
 		FROM tb_returndir rd 
-		       LEFT OUTER JOIN tb_refundinfo ri ON ri.rfinfo_id = rd.rfinfo_id
-					 LEFT OUTER JOIN tb_purchaseinfo pi ON pi.purinf_id = ri.purinf_id
-					 LEFT OUTER JOIN tb_userinfo ui ON pi.loginID = ui.loginID
-		       LEFT OUTER JOIN tb_delivdir dd on dd.return_id = rd.return_id
-					 LEFT OUTER JOIN tb_warehouse wh ON wh.wh_id = dd.deliv_wh_id
-					 LEFT OUTER JOIN tb_sales s ON pi.sales_id = s.sales_id
-		  
-		<where>			
+				INNER JOIN tb_refundinfo ri ON rd.rfinfo_id = ri.rfinfo_id
+		 		JOIN tb_purchaseinfo pi ON pi.purinf_id = ri.purinf_id
+		 		JOIN tb_userinfo ui ON pi.loginID = ui.loginID
+		 		JOIN tb_delivdir dd on dd.return_id = rd.return_id
+			   	JOIN tb_warehouse wh ON wh.wh_id = dd.deliv_wh_id
+			   	JOIN tb_sales s ON pi.sales_id = s.sales_id
+		  WHERE
+		  		dd.deliverStatus IN ('U','E')
+	  		AND
+		  		pi.returnYN = 'Y'
 			<if test="(sname != null) and (!sname.equals(''))">
 			    and ui.client LIKE CONCAT('%', #{sname}, '%')
 			</if>
@@ -34,39 +40,121 @@
 			<if test="(cal2 != null) and (!cal2.equals(''))">
 			    and rd.regdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY)
 			</if>
-		</where>
-		ORDER BY rd.return_id DESC
+		ORDER BY 
+    		FIELD(dd.deliverStatus, 'E', 'U') 
+    	DESC
 		LIMIT #{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 반품지시서 상세 조회 -->
+	<select id="detailRefund" resultType="kr.happyjob.study.shipping.model.RefundModel">
+		/* kr.happyjob.study.shipping.dao.RefundDao.listRefund */
+		SELECT rd.return_id
+		      , ui.client
+		      , s.sales_nm
+		      , s.sales_id
+					, ri.return_cnt
+		      , rd.regdate
+		      , rd.editdate
+					, wh.wh_nm
+					, wh.wh_id
+		      , dd.deliv_wh_id
+		      , ui.address
+		      , ui.dtAddress
+		      , dd.deliverStatus
+		      , dd.deliv_id
+		FROM tb_returndir rd 
+				INNER JOIN tb_refundinfo ri ON rd.rfinfo_id = ri.rfinfo_id
+		 		JOIN tb_purchaseinfo pi ON pi.purinf_id = ri.purinf_id
+		 		JOIN tb_userinfo ui ON pi.loginID = ui.loginID
+		 		JOIN tb_delivdir dd on dd.return_id = rd.return_id
+			   	JOIN tb_warehouse wh ON wh.wh_id = dd.deliv_wh_id
+			   	JOIN tb_sales s ON pi.sales_id = s.sales_id
+	   	WHERE
+		 		rd.return_id = #{return_id}
+	 	LIMIT 0, 1
 	</select>
 
 
 	<!-- 반품지시서 목록 카운트 -->
 	<select id="countListRefund" resultType="int">
 		/* kr.happyjob.study.shipping.dao.RefundDao.CountListRefund */
-		SELECT count(1) AS tot_cnt
-			
-			FROM tb_returndir rd 
-		       LEFT OUTER JOIN tb_refundinfo ri ON ri.rfinfo_id = rd.rfinfo_id
-					 LEFT OUTER JOIN tb_purchaseinfo pi ON pi.purinf_id = ri.purinf_id
-					 LEFT OUTER JOIN tb_userinfo ui ON pi.loginID = ui.loginID
-		       LEFT OUTER JOIN tb_delivdir dd on dd.return_id = rd.return_id
-					 LEFT OUTER JOIN tb_warehouse wh ON wh.wh_id = dd.deliv_wh_id
-					 LEFT OUTER JOIN tb_sales s ON pi.sales_id = s.sales_id
-					 
-		<where>			
+		SELECT 
+			count(1) AS tot_cnt
+		FROM tb_returndir rd 
+        INNER JOIN tb_refundinfo ri ON rd.rfinfo_id = ri.rfinfo_id
+	 		  JOIN tb_purchaseinfo pi ON pi.purinf_id = ri.purinf_id
+	 		  JOIN tb_userinfo ui ON pi.loginID = ui.loginID
+	 		  JOIN tb_delivdir dd on dd.return_id = rd.return_id
+		   	  JOIN tb_warehouse wh ON wh.wh_id = dd.deliv_wh_id
+		   	  JOIN tb_sales s ON pi.sales_id = s.sales_id
+					
+		WHERE
+		  	dd.deliverStatus IN ('U','E')
 			<if test="(sname != null) and (!sname.equals(''))">
 			    and ui.client LIKE CONCAT('%', #{sname}, '%')
 			</if>
 			
 			<if test="(cal1 != null) and (!cal1.equals(''))">
-			    and rd.regdate  <![CDATA[>=]]> STR_TO_DATE(#{cal1},'%Y-%m-%d')
+			    and rd.editdate  <![CDATA[>=]]> STR_TO_DATE(#{cal1},'%Y-%m-%d')
 			</if>
 			
 			<if test="(cal2 != null) and (!cal2.equals(''))">
-			    and rd.regdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY)
+			    and rd.editdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY)
 			</if>
-		</where>
 	</select>
 
-
+	<!--  수정 날짜  -->
+	<update id="updateDeliReturnDir">
+	 	UPDATE tb_returndir 
+	 		SET 
+	 			editdate = now()
+		WHERE
+			return_id = #{return_id}
+	 </update>
+	 
+	 <!-- 배송 상태 변경 -->
+	 <update id="updateDelidelivDir">
+	 	UPDATE tb_delivdir 
+	 		SET 
+	 			editdate = now(),
+	 			deliverStatus = #{status}
+		WHERE
+			deliv_id = #{deliv_id}
+		AND
+			return_id = #{return_id}
+	 </update>
+	 
+	 <!-- 재고입출내역 insert -->
+	<insert id="insertDeparturehis">
+		/* kr.happyjob.study.shipping.dao.ShippingDao.insertDeparturehis */
+		INSERT INTO tb_departurehis (
+		   dpt_id
+		  ,comp_id
+		  ,dpt_type
+		  ,dptdate
+		  ,dpt_cnt
+		  ,sales_id
+		  ,wh_id
+		  ,deliv_id
+		) 
+		VALUES (
+			default,
+		 	null,
+			0,
+			 now(),
+			 #{pur_cnt},
+			 #{sales_id},
+			 #{wh_id},
+			 #{deliv_id}
+		)
+	</insert>
+	 
+	 	<!-- 창고 증가 감소 -->
+	<update id="updateStockReduce">
+		/* kr.happyjob.study.shipping.dao.ShippingDao.updateStockReduce */
+		UPDATE tb_stock
+		   SET st_cnt = st_cnt + #{pur_cnt}
+		 WHERE sales_id = #{sales_id} AND wh_id = #{wh_id}
+	</update>
 </mapper>

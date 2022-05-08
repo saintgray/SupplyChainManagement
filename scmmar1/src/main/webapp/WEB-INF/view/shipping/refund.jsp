@@ -8,6 +8,7 @@
 <title>반품지시서</title>
 <script src='CTX_PATH/js/sweetalert/sweetalert.min.js'></script>
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
+<script src='/js/lib/twLib.js?v=20220428'></script> <!--  개인 소스  -->
 <style type="text/css">
 	.hover_row:hover {
 		background: #87CEFA;
@@ -22,63 +23,100 @@
 </head>
 <body>
 <script type="text/javascript">
-	// 반품지시서 페이징 설정
-	var pageSizeListRefund = 10;		//한 페이지에 나오는 목록 갯수
-	var pageBlockSizeListRefund = 5;	//페이지 블록 수
-	
-// 	// 상세코드 페이징 설정
-// 	var pageSizeComnDtlCod = 5;
-// 	var pageBlockSizeComnDtlCod = 10;
-
 	
 	
+	var pagesize = 10;
+	var navicnt = 10;
+	var divComGrpCodList;
+	var layer1 = "";
+	var divComGrpCodList;
+	var layer1;
 	
 	//	레디 start
 	$(document).ready(function(){
 		//반품지시서 목록 조회 함수
+		init();
 		flistRefund();	
-		
-		//데이트픽커 호출 함수
-		fDatePicker();	
-		
-		// 버튼 이벤트 등록
-		//fRegisterButtonClickEvent();		
-		
-		//	날짜 초기화
-		$("#cal1").datepicker('setDate', '');
-  	    $("#cal2").datepicker('setDate', '');
-  	    
-  	 	/* 날짜 radio 버튼 초기화 */
-		$('#radio_cal1').prop('checked', !$('#radio_cal1').prop('checked'));		
-  	 	
-		/* 날짜 선택 Checkbox change event */
-		$('input[name="radio_cal"]').change(function(){
-			var radio_cal1 = $('#radio_cal1').prop('checked');
-			var radio_cal2 = $('#radio_cal2').prop('checked');
-			
-		        if(radio_cal1==true && radio_cal2==false){
-		        	$("#cal1").datepicker( "option", "disabled", true );
-		        	$("#cal2").datepicker( "option", "disabled", true );
-		        	$("#cal1").datepicker('setDate', '');
-		      	    $("#cal2").datepicker('setDate', '');
-		        } else{
-		        	$("#cal1").datepicker( "option", "disabled", false );
-		        	$("#cal2").datepicker( "option", "disabled", false );
-		        	$("#cal1").datepicker('setDate', '-3M');
-		      	    $("#cal2").datepicker('setDate', 'today');
-		        }
-		});
-		
-	
-		//검색 버튼
-		$('#btnSearch').click(function(){
-			//flistRefund();
-		});
-
 		
 	});//	레디 end
 	
+	function init() {
+	       
+	       divComGrpCodList = new Vue({
+	                                    el : "#divComGrpCodList" ,
+	                                 data : {
+	                                            searchlist : [],
+	                                            cal1  : "",
+	                        				 	cal2  : "",
+	                                            sname : "",
+	                        				 	radio_cal : "all",
+	                        				 	deliverStatus : "",
+	                        				 	deliv_id : "",
+	                        				 	radioshow : false,
+	                        				 	action : ""
+	                                 },
+	                                 methods : {
+	                                	 detailClick : function (return_id) {
+                             		 	 	fPopModalDeliOrder(return_id);
+	                                    },
+	                                    searchData : function() {
+	                                    	search();
+	                                    },
+	                                    
+	                                    printDate : function(date) {
+	                                    	return dateFormatter(date);
+	                                    },
+	                                    statusData : function(datas,key,value) {
+	                                    	//let key = 'U,O,E';
+	                                    	//let value = '배송준비,배송시작,배송완료';
+	                                    	return statusVal(datas,key,value);
+	                                    },
+	                                    rchange : function(itype){
+	                                    	if(this.radio_cal == "all") {
+	                                    		this.radioshow = false;   
+	                                    		this.cal1=  '';
+	                                    		this.cal2=  '';
+	                        		        } else{
+	                                    		this.radioshow = true;   
+	                                    		this.cal1=  '';
+	                                    		this.cal2=  '';		                        		        	
+	                        		        }	                                    	
+	                                    }
+	                                 }
+	       });
+	       
+	       layer1 = new Vue({
+	                                  el : "#layer1",
+	                               data : {
+	                            	   		return_id : "",
+                         	   				sales_id : "",
+                         	   				sales_nm : "",
+	                            	   		client : "",
+	                            	   		rfinfo_id : "",
+	                            	   		dtAddress : "",
+	                            	   		address : "",
+	                            	   		wh_nm : "",
+	                            	   		wh_id : "",
+	                            	   		deliv_id : "",
+	                            	   		deliverStatus : "",
+	                            	   		name : "",
+	                            	   		pur_cnt : 0,
+	                            	   		btnSaveDeliOrder : false
+	                               },methods : {
+	                            	   statusClick : function() {
+	                            		   fSaveDeliOrder();
+	                            	   },
+	                                    closeModal : function() {
+	                                    	gfCloseModal();
+	                                    }
+	                               }
+	       });
+	      
+	    }   
 	
+	function search() { //검색 내용 출력
+		flistRefund();
+	}
 	
 	
 	
@@ -89,269 +127,160 @@
 		
 		currentPage = currentPage || 1;
 		
-		var sname = $('#sname').val();
-		var cal1 = $('#cal1').val();
-		var cal2 = $('#cal2').val();
-		
-		console.log("currentPage : " + currentPage);
+		var sname = divComGrpCodList.sname;
+		var cal1 = divComGrpCodList.cal1;
+		var cal2 = divComGrpCodList.cal2;
 		
 		var param = {	
 					sname : sname
 				,	currentPage : currentPage
-				,	pageSize : pageSizeListRefund
+				,	pageSize : pagesize
 				,	cal1 : cal1
 				, 	cal2 : cal2
 		}
 		
 		var resultCallback = function(data) {
-			flistRefundResult(data, currentPage);
+			displatylist(data, currentPage);
 		};
 		//Ajax실행 방식
 		//callAjax("Url",type,return,async or sync방식,넘겨준거,값,Callback함수 이름)
-		callAjax("/dlm/listRefund.do", "post", "text", true, param, resultCallback);
+		//callAjax("/dlm/listRefund.do", "post", "text", true, param, resultCallback);
+		axiosFnc("/dlm/listRefund.do", "post", param, "p", resultCallback); //f 폼데이터  ,param객체
 	}
 
 	
-	/** 반품지시서 목록 조회 콜백 함수 */
-	function flistRefundResult(data, currentPage) {
-
-		console.log("콜백함수에서 파라미터로 받은 data : " + data);
-		console.log("콜백함수에서 파라미터로 받은 currentPage : " + currentPage);
-		
-		// 기존 목록 삭제
-		$('#tbodyList').empty();
-		
-		// 신규 목록 생성
-		$("#tbodyList").append(data);
-		
- 		// 총 개수 추출 - 페이지 네비게이션에서 사용할 변수
- 		var totalCntListRefund = $("#totalCntListRefund").val();
- 		console.log("totalCntListRefund : " + totalCntListRefund);
-
- 		
- 		// 페이지 네비게이션 생성			  (현재 페이지, 	총 개수,		페이지당 목록 개수, 	페이지 블록 개수, 		페이지 번호를 클릭하면 호출할 함수 객체)
- 		var paginationHtml = getPaginationHtml(currentPage, totalCntListRefund, pageSizeListRefund, pageBlockSizeListRefund, 'flistRefund');
- 		console.log("paginationHtml : " + paginationHtml);
-
- 		// 페이징 영역에 넣기
-  		$("#listPagination").empty().append( paginationHtml );
-		
-  		// 현재 페이지 설정(밸류값 변경)
-  		console.log("before currentPageListRefund : "+ $("#currentPageListRefund").val());
-  		$("#currentPageListRefund").val(currentPage);
-  		console.log("after currentPageListRefund : "+ $("#currentPageListRefund").val());
-	}
-	
+	//가져온 데이터 테이블에 뿌려주기
+	 function displatylist(resultdata, currpage) {
+		divComGrpCodList.searchlist = resultdata.data.listRefund;
+		var  totalCntListRefund = resultdata.data.totalCntListRefund;
+		var paginationHtml = getPaginationHtml(currpage, totalCntListRefund, pagesize, navicnt, 'flistRefund');
+	      //console.log("paginationHtml : " + paginationHtml);
+	      $("#comnGrpCodPagination").empty().append( paginationHtml );
+  } 	
 
 	
 	
 	/** 반품지시서 단건 상세 조회 모달 실행 */
-// 	function fPopModalDeliOrder(deliv_id, deliverStatus) {	//deliverStatus : 반품완료 버튼 없앨려고 만든 파라미터
+/** 배송지시서 단건 상세 조회 */
+	function fPopModalDeliOrder(return_id) {
+		var param = { return_id : return_id };
 		
-// 		// 신규 저장			(사실 만들필요가 없지만...)
-// 		if (deliv_id == null || deliv_id=="") {
-// 			// Transaction type 설정
-// 			$("#action").val("I");	//INSERT
-			
-// 			// 그룹코드 폼 초기화??????????????????????
-// 			//fInitFormGrpCod();
-			
-// 			// 모달 팝업
-// 			gfModalPop("#layer1");
+		
+		var resultCallback = function(data) {
+			fSelectDeliOrderResult(data)
+		};
+		
+		axiosFnc("/dlm/detailRefund.do", "post", param, "p", resultCallback); //f 폼데이터  ,param객체
+		//callAjax("/dlm/detailRefund.do", "post", "json", true, param, resultCallback);
+	}
+	
+function fSelectDeliOrderResult(resultData) {
+		var data = resultData.data;
+ 		console.log("fSelectDeliOrderResult(data) : " + JSON.stringify(data));	//파라미터 확인
+ 		if (data.result == "SUCCESS") {
 
-// 		// 수정 저장
-// 		} else {
-// 			// Transaction type 설정
-// 			$("#action").val("U");	//UPDATE
-			
-// 			// 그룹코드 단건 조회
-// 			fSelectDeliOrder(deliv_id, deliverStatus);
-// 		}
-// 	}
-	
-	
-	/** 반품지시서 단건 상세 조회 */
-// 	function fSelectDeliOrder(deliv_id, deliverStatus) {
-		
-// 		var param = { deliv_id : deliv_id
-// 					, deliverStatus : deliverStatus };
-		
-// 		console.log("param : "+JSON.stringify(param));	//파라미터 확인
-		
-// 		if(deliverStatus=="U"){	//반품준비중이면 반품완료버튼 보이기
-// 			$("#btnSaveDeliOrder").show();
-// 		}else{	//반품완료버튼 숨기기
-// 			$("#btnSaveDeliOrder").hide();
-// 		}
-		
-		
-// 		var resultCallback = function(data) {
-// 			fSelectDeliOrderResult(data);
-// 		};
-		
-// 		callAjax("/dlm/selectDeliOrder.do", "post", "json", true, param, resultCallback);
-// 	}
-	
-	
-	/** 반품지시서 단건 상세 조회 콜백 함수*/
-// 	function fSelectDeliOrderResult(data) {
-		
-// 		console.log("fSelectDeliOrderResult(data) : " + JSON.stringify(data));	//파라미터 확인
-// 		if (data.result == "SUCCESS") {
-
-// 			// 모달 팝업
-// 			gfModalPop("#layer1");
+ 			// 모달 팝업
+ 			gfModalPop("#layer1");
 // 			// 그룹코드 폼 데이터 설정
-// 			fInitFormDeliOrder(data.shippingModel);
+ 			fInitFormDeliOrder(data.refundModel);
 			
-// 		} else {
-// 			swal(data.resultMsg);
-// 		}	
-// 	}
+ 		} else {
+ 			swal(data.resultMsg);
+ 		}	
+ 	}
 	
 	
 	/** 반품지시서 폼 데이터 설정 */
-// 	function fInitFormDeliOrder(data){
-// 		console.log("fInitFormDeliOrder(data) : " + JSON.stringify(data));
-
-// 		$("#deliv_id").val(data.deliv_id);
-// 		$("#sales_nm").val(data.sales_nm);
-// 		$("#pur_cnt").val(data.pur_cnt);
-// 		$("#name").val(data.name);
-// 		$("#hidden_deliverStatus").val(data.deliverStatus);	//name="deliverStatus"
-// 		$("#wh_nm").val(data.wh_nm);
-// 		$("#address").val(data.address);
-// 		$("#dtAddress").val(data.dtAddress);
-	
-// 		//반품상태
-// 		var deliverStatus = $("#hidden_deliverStatus").val();
-// 		if(deliverStatus=="U"){
-// 			$("#deliverStatus").val("반품준비");	//name속성 없음
-// 		}else if(deliverStatus=="O"){
-// 			$("#deliverStatus").val("반품시작");
-// 		}else if(deliverStatus=="E"){
-// 			$("#deliverStatus").val("반품완료");
-// 		}
-// 	}
+ 	function fInitFormDeliOrder(data){
+ 		//console.log("fInitFormDeliOrder(data) : " + JSON.stringify(data));
+			
+	 		layer1.return_id = data.return_id;
+	 		layer1.sales_id = data.sales_id;
+	 		layer1.pur_cnt = data.return_cnt;
+	 		layer1.client = data.client;
+	 		layer1.rfinfo_id = data.rfinfo_id;
+	 		layer1.dtAddress = data.dtAddress;
+	 		layer1.address = data.address;
+	 		layer1.wh_nm = data.wh_nm;
+	 		layer1.wh_id = data.wh_id;
+	 		layer1.deliv_id = data.deliv_id;
+	 		layer1.sales_nm = data.sales_nm;
+	 		var deliverStatus = data.deliverStatus;
+	 		layer1.deliverStatusData = data.deliverStatus;
+	 		
+			var name = '${sessionScope.userNm}';
+			layer1.name = name;
+	 		//반품상태
+	 		if(deliverStatus=="U"){
+	 			layer1.deliverStatus = "반품전";	//name속성 없음
+	 			layer1.btnSaveDeliOrder = true;
+	 		}else if(deliverStatus=="E"){
+	 			layer1.deliverStatus = "반품완료";	//name속성 없음
+	 			layer1.btnSaveDeliOrder = false;
+	 		}
+	 		
+ 		
+ 		
+ 	}
 		
 	
 	
 	/** 반품지시서 반품상태 저장 */
-// 	function fSaveDeliOrder() {
+ 	function fSaveDeliOrder() {
 		
-// 		var resultCallback = function(data) {
-// 			fSaveDeliOrderResult(data);
-// 		};
-// 		console.log("$('#myForm').serialize() : "+$("#myForm").serialize().replace(/%/g, '%25'));
-// 		var msgConfirm = confirm('반품완료 처리하시겠습니까?')
-// 		if(msgConfirm){
-// 			callAjax("/dlm/saveDeliOrder.do", "post", "json", true, $("#myForm").serialize(), resultCallback);			
-// 		}
-// 	}
+		var param = {
+				"pur_cnt" : layer1.pur_cnt,
+				"sales_id" : layer1.sales_id,
+				"wh_id" : layer1.wh_id,
+				"deliv_id" : layer1.deliv_id,
+				"return_id" : layer1.return_id,
+				"deliverStatus" : layer1.deliverStatusData
+		}
+		
+ 		var resultCallback = function(data) {
+ 			fSaveDeliOrderResult(data);
+ 		};
+ 		
+ 		var msgConfirm = confirm('반품완료 처리하시겠습니까?')
+ 		if(msgConfirm){
+ 			axiosFnc("/dlm/saveDeliReturn.do", "post", param, "p", resultCallback); //url,method,param, pfChk, callback
+ 			//callAjax("/dlm/saveDeliReturn.do", "post", "json", true, $("#myForm").serialize(), resultCallback);			
+ 		}
+ 	}
 	
 	/** 반품지시서 반품상태 저장 콜백 함수 */
-// 	function fSaveDeliOrderResult(data) {
+ 	function fSaveDeliOrderResult(resultData) {
+		console.log("fSaveDeliOrderResult = " + JSON.stringify(resultData));
+		var data = resultData.data;
+ 		// 목록 조회 페이지 번호
+ 		var currentPages = "1";
+ 		
+ 		/*
+ 		if ($("#action").val() != "I") {	//액션이 "I"값이 아니라면?
+ 			currentPage = $("#currentPageListDeliOrder").val();	//	현재페이지 번호를 변수로 담아라
+ 		}
+ 		*/
 		
-// 		// 목록 조회 페이지 번호
-// 		var currentPage = "1";
-// 		if ($("#action").val() != "I") {	//액션이 "I"값이 아니라면?
-// 			currentPage = $("#currentPageListDeliOrder").val();	//	현재페이지 번호를 변수로 담아라
-// 		}
-		
-// 		if (data.result == "SUCCESS") {
+ 		if (data.result == "SUCCESS") {
 			
-// 			// 응답 메시지 출력
-// 			swal(data.resultMsg);		
-// 			// 모달 닫기
-// 			gfCloseModal();	
-// 			// 특정 페이지로 목록 조회
-// 			flistDeliOrder(currentPage);
+ 			// 응답 메시지 출력
+ 			swal(data.resultMsg);		
+ 			// 모달 닫기
+ 			gfCloseModal();	
+ 			// 특정 페이지로 목록 조회
+ 			flistRefund(currentPages);
 			
-// 		} else {
-// 			// 오류 응답 메시지 출력
-// 			swal(data.resultMsg);
-// 		}
+ 		} else {
+ 			// 오류 응답 메시지 출력
+ 			swal(data.resultMsg);
+ 		}
 		
 // 		// 입력폼 초기화		잘 모르겠음, 필요 없는듯
 // 		//fInitFormGrpCod();
-// 	}
-	
-	
-	
-	
-	/** 버튼 이벤트 등록 */
-// 	function fRegisterButtonClickEvent() {
-// 		$('a[name=btn]').click(function(e) {	//네임속성으로 id값 지정하기
-// 			e.preventDefault();
-
-// 			console.log("e : " + e.preventDefault());
-			
-// 			var btnId = $(this).attr('id');
-// 			console.log("btnId : "+btnId);
-			
-// 			switch (btnId) {			
-// 				case 'btnSaveDeliOrder' :	//반품완료 버튼
-// 					fSaveDeliOrder();
-// 					break;
-// 				case 'btnCloseDeliOrder' :	//닫기(취소) 버튼
-// 					gfCloseModal();
-// 					break;
-// 			}
-// 		});
-// 	}
-	
-//	유틸리티 ---------------------------------------------------------------------------------------------------------------------	
-	
-	// DatePicker
- 	function fDatePicker(){
- 	    $.datepicker.setDefaults($.datepicker.regional['ko']); //언어설정
- 	    $( "#cal1" ).datepicker({	//시작일
- 	         changeMonth: true, 
- 	         changeYear: true,
- 	         nextText: '다음 달',
- 	         prevText: '이전 달', 
- 	         dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
- 	         dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'], 
- 	         monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
- 	         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
- 	         showAnim: "slide", //애니메이션을 적용한다.
- 	         dateFormat: "yy-mm-dd",
- 	         minDate: new Date('2020-01-01'),
- 	         maxDate: 0,                       // 선택할수있는 최소날짜, ( 0 : 오늘 이후 날짜 선택 불가)
- 	         onClose: function( selectedDate ) {    
- 	              //시작일(startDate) datepicker가 닫힐때
- 	              //종료일(endDate)의 선택할수있는 최소 날짜(minDate)를 선택한 시작일로 지정
- 	             $("#cal2").datepicker( "option", "minDate", selectedDate );
-  
- 	         }    
-
- 	    });
- 	    
- 	    $( "#cal2" ).datepicker({	//종료일
- 	         changeMonth: true, 
- 	         changeYear: true,
- 	         nextText: '다음 달',
- 	         prevText: '이전 달', 
- 	         dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
- 	         dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'], 
- 	         monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
- 	         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
- 	         showAnim: "slide", //애니메이션을 적용한다.
- 	         dateFormat: "yy-mm-dd",
- 	         minDate: new Date('2020-01-01'),
- 	         maxDate: 0, 
- 	         onClose: function( selectedDate ) {    
- 	             // 종료일(endDate) datepicker가 닫힐때
- 	             // 시작일(startDate)의 선택할수있는 최대 날짜(maxDate)를 선택한 시작일로 지정
- 	             $("#cal1").datepicker( "option", "maxDate", selectedDate );
-
- 	         }    
-
- 	    }); 
- 	    
- 	    $("#cal1").datepicker('setDate', '-3M');
- 	    $("#cal2").datepicker('setDate', 'today');
  	}
+	
+	
+	
 //---------------------------------------------------------------------------------------------------------------------------------------	
 	
 </script>
@@ -378,7 +307,7 @@
 			
 			<li class="contents">			
 				<!-- content 영역 -->
-				<div class="content">
+				<div class="content" id="divComGrpCodList">
 					<!-- 상단 네비게이션 -->			
 					<p class="Location">
 						<a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a> 					
@@ -403,16 +332,16 @@
                                                             
                                  <!-- search name -->
                                  <label for="sname">업체명</label>
-                                 <input type="text" style="width: 150px; height: 25px;" id="sname" name="sname" placeholder="업체명 입력"  onkeypress="if( event.keyCode==13 ){flistRefund();}"> &nbsp;&nbsp;&nbsp;
+                                 <input type="text" style="width: 150px; height: 25px;" v-model="sname" placeholder="업체명 입력"  onkeypress="if( event.keyCode==13 ){flistRefund();}"> &nbsp;&nbsp;&nbsp;
                                 
                                  <!-- calendar date -->
-                                 <input type="radio" name="radio_cal" id="radio_cal1" value="all"><label for="radio_cal1">전체</label> 
-                                 <input type="radio" name="radio_cal" id="radio_cal2" value="choice"><label for="radio_cal2">선택</label> 
-                                 <input name="cal1" id="cal1" readonly="readonly" disabled="disabled" style="height: 25px;"/>
-								 <input name="cal2" id="cal2" readonly="readonly" disabled="disabled" style="height: 25px;"/>
+                                 <input type="radio" name="radio_cal" v-model="radio_cal" @change="rchange" value="all"><label for="radio_cal1">전체</label> 
+                                 <input type="radio" name="radio_cal" v-model="radio_cal" @change="rchange" value="choice"><label for="radio_cal2">선택</label> 
+                                 <input type="date" name="cal1" v-model="cal1" v-show="radioshow" />
+								 <input type="date" name="cal2" v-model="cal2" v-show="radioshow" />
                          		
                          		 <!-- button -->
-                                 <a href="#" class="btnType blue" id="btnSearch" name="btn"><span>검색</span></a>&nbsp;
+                                 <a href="#!" class="btnType blue" @click="searchData()"><span>검색</span></a>&nbsp;
                               <td width="40" height="25" style="font-size: 120%;">&nbsp;</td>
                            </tr>
                         </table>
@@ -441,6 +370,7 @@
                               	 <th scope="col">고객명</th>
                                  <th scope="col">제품명</th>
                                  <th scope="col">반품 개수</th>
+                                 <th scope="col">반품 상태</th>
                                  <th scope="col">등록일</th>
                                  <th scope="col">반품 처리일</th>
                                  <th scope="col">배정 창고</th>
@@ -449,14 +379,23 @@
                            
                            
                            <!-- tbody에 리스트 출력 -->
-                           <tbody id="tbodyList">                          
+                           <tbody v-for="(v , i) in searchlist" @click="detailClick(v.return_id)">
+                               <td>{{ i + 1 }}</td>
+	                           <td>{{ v.return_id}}</td>
+	                           <td>{{ v.client}}</td>
+	                           <td>{{ v.sales_nm}}</td>
+	                           <td>{{ v.return_cnt}}</td>
+	                           <td>{{ statusData(v.deliverStatus,'U,E','반품준비,반품완료') }}</td>
+	                           <td>{{ printDate(v.regdate) }}</td>
+	                           <td>{{ printDate(v.editdate)}}</td>                          
+	                           <td>{{ v.wh_nm}}</td>                          
                            </tbody>
                         </table>
                         <!--// 테이블 영역 -->
                      </div>
                      
                      <!-- 페이징 영역 -->
-                     <div class="paging_area" id="listPagination"></div>
+                     <div class="paging_area"  id="comnGrpCodPagination"> </div>
          			 <!--// 페이징 영역 -->
 					
 				</div>
@@ -499,33 +438,50 @@
 						
 						<tr>
 							<th scope="row">반품번호 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="hidden" name="deliverStatus" id="hidden_deliverStatus"><input type="text" class="inputTxt p100" name="deliv_id" id="deliv_id" readonly="readonly"/></td>		
+							<td colspan="3">
+								<input type="hidden" v-model="deliverStatus" >
+								<input type="hidden" v-model="deliv_id" >
+								<input type="hidden" v-model="wh_id" >
+								<input type="text" class="inputTxt p100" v-model="return_id" />
+								<%-- 외래키 키  반품 상세 값 --%>
+								<input type="hidden" class="inputTxt p100" v-model="rfinfo_id" />
+							</td>		
 						</tr>
 						<tr>
 							<th scope="row">제품명 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="sales_nm" id="sales_nm" readonly="readonly"/></td>							
+							<td colspan="3">
+								<input type="text" class="inputTxt p100" v-model="sales_nm"/>
+								<input type="hidden" class="inputTxt p100" v-model="sales_id" />
+							</td>							
 						</tr>
 						<tr>
 							<th scope="row">수량 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="pur_cnt" id="pur_cnt" readonly="readonly"/></td>
+							<td colspan="3"><input type="text" class="inputTxt p100" v-model="pur_cnt" /></td>
+						</tr>
+						<tr>
+							<th scope="row">고객명 <span class="font_red">*</span></th>
+							<td colspan="3"><input type="text" class="inputTxt p100" v-model="client"/></td>
 						</tr>
 						<tr>
 							<th scope="row">반품담당자 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt p100" name="name" id="name" readonly="readonly"/></td>
+							<td><input type="text" class="inputTxt p100" v-model="name" /></td>
 							<th scope="row">반품상태 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt p100" id="deliverStatus" readonly="readonly" /></td>
+							<td>
+								<input type="text" class="inputTxt p100"
+								 	v-model="deliverStatus" />
+							</td>
 						</tr>
 						<tr>					
 							<th scope="row">출발창고지 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="wh_nm" id="wh_nm" readonly="readonly" /></td>
+							<td colspan="3"><input type="text" class="inputTxt p100" v-model="wh_nm"  /></td>
 						</tr>
 						<tr>					
 							<th scope="row">주소1 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="address" id="address" readonly="readonly" /></td>
+							<td colspan="3"><input type="text" class="inputTxt p100" v-model="address"  /></td>
 						</tr>
 						<tr>					
 							<th scope="row">주소2 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100" name="dtAddress" id="dtAddress" readonly="readonly" /></td>
+							<td colspan="3"><input type="text" class="inputTxt p100" v-model="dtAddress" /></td>
 						</tr>
 <!-- 						<tr> -->
 <!-- 							<th scope="row">반품상태 수정<span class="font_red">*</span></th> -->
@@ -541,8 +497,8 @@
 				<!-- e : 여기에 내용입력 -->
 
 				<div class="btn_areaC mt30">
-					<a href="" class="btnType blue" id="btnSaveDeliOrder" name="btn"><span>반품완료</span></a> 
-					<a href="" class="btnType gray" id="btnCloseDeliOrder" name="btn"><span>닫기</span></a>
+					<a href="#!" class="btnType blue" @click="statusClick()" v-show="btnSaveDeliOrder"  ><span>반품완료</span></a> 
+					<a href="#!" class="btnType gray" @click="closeModal()"><span>닫기</span></a>
 				</div>
 			</dd>
 		</dl>

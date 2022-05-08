@@ -17,12 +17,16 @@
 								
 								<c:forEach items="${listRefund}" var="list">
 								
-									<tr class="hover_row"  onclick="">
+									<tr class="hover_row"  onclick="fPopModalDeliOrder( '${list.return_id}' )">
 										<td style="color: black; font-weight: bold;">${totalCntListRefund - nRow}</td>
 										<td>${list.return_id}</td>
 										<td>${list.client}</td>
 										<td>${list.sales_nm}</td>
 										<td>${list.return_cnt}</td>
+										<td>
+											<c:if test="${list.deliverStatus eq 'U'}">반품전</c:if>
+											<c:if test="${list.deliverStatus eq 'E'}">반품완료</c:if>
+										</td>
 										<td><fmt:formatDate value="${list.regdate}" pattern="yyyy-MM-dd" /></td>
 										<td><fmt:formatDate value="${list.editdate}" pattern="yyyy-MM-dd" /></td>
 										<td>${list.wh_nm}</td>

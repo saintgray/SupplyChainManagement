@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import kr.happyjob.study.shipping.dao.RefundDao;
 import kr.happyjob.study.shipping.model.RefundModel;
@@ -28,6 +27,34 @@ public class RefundServiceImpl implements RefundService{
 		return totalCount;
 	}
 	
+	@Override
+	public RefundModel detailRefund(Map<String, Object> paramMap) throws Exception {
+		RefundModel detailRefund = refundDao.detailRefund(paramMap);
+		return detailRefund;
+	}
 	
+	@Override
+	public int updateDeliReturnDir(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return refundDao.updateDeliReturnDir(paramMap);
+	}	
+	
+	@Override
+	public int updateStockReduce(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return refundDao.updateStockReduce(paramMap);
+	}
+	
+	@Override
+	public void insertDeparturehis(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		refundDao.insertDeparturehis(paramMap);
+	}
+	
+	@Override
+	public int updateDelidelivDir(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return refundDao.updateDelidelivDir(paramMap);
+	}
 	
 }

@@ -36,6 +36,7 @@ public class AuthCheckInterceptor extends HandlerInterceptorAdapter {
 			
 			Object authInfo = session.getAttribute("usrMnuAtrt");
 			if (authInfo != null) {
+				
 				return true;
 			}
 		}

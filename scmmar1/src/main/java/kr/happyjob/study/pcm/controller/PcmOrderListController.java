@@ -21,6 +21,7 @@ import kr.happyjob.study.pcm.model.PcmOrderListModel;
 import kr.happyjob.study.pcm.service.PcmOrderListService;
 
 
+
 @Controller
 @RequestMapping("/pcm/")
 public class PcmOrderListController {
@@ -37,9 +38,9 @@ public class PcmOrderListController {
 	/**
 	 * 초기화면
 	 */
-	     @RequestMapping("purchaseOrder.do")
+	@RequestMapping("purchaseOrder.do")
 	public String initpurchaseOrder(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
+			HttpServletResponse response, HttpSession session) throws Exception { 	 
 		
 		logger.info("+ Start " + className + ".initpurchaseOrder");
 		logger.info("   - paramMap : " + paramMap);
@@ -49,44 +50,43 @@ public class PcmOrderListController {
 		return "/pcm/purchaseOrderList";
 	}
 	     
-	     /**
-	 	 * 발주 내역 목록 출력
-	 	 */
-	 	@RequestMapping("listPurchaseOrder.do")
-		public String listPurchaseOrder(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-				HttpServletResponse response, HttpSession session) throws Exception {
-			
-	 		
-	 		
-			logger.info("+ Start " + className + ".pcmOrderList");
-			logger.info("   - paramMap : " + paramMap);
-			
-			int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));	// 현재 페이지 번호
-			int pageSize = Integer.parseInt((String)paramMap.get("pageSize"));			// 페이지 사이즈
-			
-			int pageIndex = (currentPage-1)*pageSize;									// 페이지 시작 row 번호
-					
-			paramMap.put("pageIndex", pageIndex);
-			paramMap.put("pageSize", pageSize);
-			
-			
-			// 발주내역목록 조회
-			List<PcmOrderListModel> listPurchaseOrderModel = pcmOrderListService.listPurchaseOrder(paramMap);
-			model.addAttribute("listPurchaseOrderModel", listPurchaseOrderModel);
-			
-			// 발주내역 목록 카운트 조회
-			int totalCount = pcmOrderListService.totalCount(paramMap);
-			model.addAttribute("totalCnt", totalCount);
-			
-			model.addAttribute("pageSize", pageSize);
-			model.addAttribute("currentPage",currentPage);
-			
-			logger.info("+ End " + className + ".listPurchaseOrder");
-			
-			//모델에 담긴 데이터들이 전달된다.
-			return "pcm/orderList";
-		}
 	 	
+	 	// 0426
+	 	  @RequestMapping("listPurchaseOrder.do")
+		   @ResponseBody
+		   public Map<String,Object> initpurchaseOrderlist(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+		         HttpServletResponse response, HttpSession session) throws Exception {
+		      
+		      logger.info("+ Start " + className + ".initpurchaseOrder");
+		      logger.info("   - paramMap : " + paramMap);
+		      
+		      
+		      int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));   // 현재 페이지 번호
+		      int pageSize = Integer.parseInt((String)paramMap.get("pageSize"));         // 페이지 사이즈
+		      int pageIndex = (currentPage-1)*pageSize;                                    // 페이지 시작 row 번호
+		       
+		      paramMap.put("pageIndex", pageIndex);
+		      paramMap.put("pageSize", pageSize);
+		      
+		      Map<String, Object> resultMap = new HashMap<String, Object>();
+		      
+		      // 공통 그룹코드 목록 조회
+		      List<PcmOrderListModel> listPurchaseOrderModel = pcmOrderListService.listPurchaseOrder(paramMap);
+
+		      resultMap.put("listPurchaseOrderModel", listPurchaseOrderModel); 
+		      
+		      int totalCount = pcmOrderListService.totalCount(paramMap);
+		      resultMap.put("totalCnt", totalCount); 
+		      
+		      resultMap.put("pageSize", pageSize);
+		      resultMap.put("currentPage",currentPage);
+		      
+
+		      return resultMap;
+		   }	
+	 	
+	 	
+//======================================================하나 선택	 	
 		@RequestMapping("pcmOrderOne.do")
 		@ResponseBody
 		public Map<String, Object> pcmOrderOne (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
@@ -110,6 +110,7 @@ public class PcmOrderListController {
 		
 		}
 		
+	
+		
 	 	
 }
-

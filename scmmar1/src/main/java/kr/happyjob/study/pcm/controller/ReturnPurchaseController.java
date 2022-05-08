@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.happyjob.study.pcm.model.PcmOrderListModel;
 import kr.happyjob.study.pcm.model.PcmReturnListModel;
 import kr.happyjob.study.pcm.service.PcmReturnListService;
 
@@ -53,7 +52,7 @@ public class ReturnPurchaseController {
 	     /**
 	 	 * 반품 내역 목록 출력
 	 	 */
-	 	@RequestMapping("listPurchaseReturn.do")
+/*	 	@RequestMapping("listPurchaseReturn.do")
 		public String listPurchaseReturn(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 				HttpServletResponse response, HttpSession session) throws Exception {
 			
@@ -84,7 +83,45 @@ public class ReturnPurchaseController {
 			
 			//모델에 담긴 데이터들이 전달된다.
 			return "pcm/returnList";
-		}
+		}*/
+	     
+	     
+	  
+	 	  @RequestMapping("listPurchaseReturn.do")
+		   @ResponseBody
+		   public Map<String,Object> listPurchaseReturn(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+		         HttpServletResponse response, HttpSession session) throws Exception {
+		      
+		      logger.info("+ Start " + className + ".listPurchaseReturn");
+		      logger.info("   - paramMap : " + paramMap);
+		      
+		      
+		      int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));   // 현재 페이지 번호
+		      int pageSize = Integer.parseInt((String)paramMap.get("pageSize"));         // 페이지 사이즈
+		      int pageIndex = (currentPage-1)*pageSize;                                    // 페이지 시작 row 번호
+		       
+		      paramMap.put("pageIndex", pageIndex);
+		      paramMap.put("pageSize", pageSize);
+		      
+		      Map<String, Object> resultMap = new HashMap<String, Object>();
+		      
+		      // 공통 그룹코드 목록 조회
+		      List<PcmReturnListModel> listPurchaseReturnModel = pcmReturnListService.listPurchaseReturn(paramMap);
+		      resultMap.put("listPurchaseReturnModel", listPurchaseReturnModel); 
+		      
+		      
+		      int totalCount = pcmReturnListService.totalCount(paramMap);
+
+		      resultMap.put("totalCnt", totalCount); 		      
+		      resultMap.put("pageSize", pageSize);
+		      resultMap.put("currentPage",currentPage);
+		      
+		      logger.info("+ End " + className + ".vuelistComnGrpCod");
+		      
+
+		      return resultMap;
+		   }	
+	     //------------------------------한건 조회
 	 	
 		@RequestMapping("pcmReturnOne.do")
 		@ResponseBody

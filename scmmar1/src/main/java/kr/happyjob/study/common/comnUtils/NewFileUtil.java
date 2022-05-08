@@ -72,23 +72,20 @@ public class NewFileUtil {
 		
 		logger.info("   - uploadFiles() started ");
 		
-		// Return value
-        // List<List<FileModel>> fileModelArray=new LinkedList<List<FileModel>>();
-        
-//       Map<String, List<FileModel>> fileModelListMap=new HashMap<String, List<FileModel>>();
-		 Map<String, List<MultipartFile>> filesListMap=new HashMap<String, List<MultipartFile>>();
+	
+		Map<String, List<MultipartFile>> filesListMap=new HashMap<String, List<MultipartFile>>();
 		
 		
-		
+			
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)HttpServletRequest;
 		
-        Iterator<String> elementOfFileInputs = multipartHttpServletRequest.getFileNames();
-        
-        
-        while(elementOfFileInputs.hasNext()){
-        	
-        	
-        	String inputName=elementOfFileInputs.next();
+		Iterator<String> elementOfFileInputs = multipartHttpServletRequest.getFileNames();
+		
+		
+		while(elementOfFileInputs.hasNext()){
+		
+		
+		String inputName=elementOfFileInputs.next();
         	
         	
             
@@ -126,6 +123,7 @@ public class NewFileUtil {
             
             
             String newFileName=renameOfFile(ofileName);
+            
             String localFilePath = uploadFilePath.concat(newFileName);
             String serverFilePath = (virtualRootPath+File.separator)
             														.concat(itemFilePath+File.separator)

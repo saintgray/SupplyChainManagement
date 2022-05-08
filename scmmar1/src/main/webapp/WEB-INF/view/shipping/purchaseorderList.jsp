@@ -15,35 +15,21 @@
  							
 								<c:set var="nRow" value="${pageSize*(currentPageListDeliOrder-1)}" />
 								
-								<c:forEach items="${listShippingModel}" var="list">
-								
-									<tr class="hover_row"  onclick="fPopModalDeliOrder('${list.deliv_id}', '${list.deliverStatus}','${list.deliv_wh_id }')">
+								<c:forEach items="${ListPurchaseOrder}" var="list">
+									<tr class="hover_row"  onclick="fPopModalPurchase('${list.orderid}')">
 										<td style="color: black; font-weight: bold;">${totalCntListDeliOrder - nRow}</td>
-										<td>${list.deliv_id}</td>
 										<td>${list.sales_nm}</td>
-										<td>${list.pur_cnt}</td>
-										<td>${list.name}</td>
-										<td>
-											<c:if test="${list.deliverStatus eq 'U'}">배송준비</c:if>
-											<c:if test="${list.deliverStatus eq 'O'}">배송시작</c:if>
-											<c:if test="${list.deliverStatus eq 'E'}">배송완료</c:if>
-										</td>
-<%-- 										<td>${list.regdate}</td> --%>
-<%-- 										<td>${list.editdate}</td> --%>
-<%-- 										<td>${list.deldate}</td> --%>
+										<td>${list.name}</td> 
+										<td>발주</td>
+										<td>${list.order_cnt}</td>
+										<td><fmt:formatNumber value="${list.order_cnt * list.price}" /></td>
 										<td><fmt:formatDate value="${list.regdate}" pattern="yyyy-MM-dd" /></td>
 										<td><fmt:formatDate value="${list.editdate}" pattern="yyyy-MM-dd" /></td>
 <%-- 										<td><fmt:formatDate value="${list.deldate}" pattern="yyyy-MM-dd" /></td>	 --%>
 									</tr>
-									
 									<c:set var="nRow" value="${nRow + 1}" />
-									
 								</c:forEach>
-									
 							</c:if>
-							 
-							 
-							 
 <%-- 							 <td><a href="javascript:fListComnDtlCod(1, '${list.grp_cod}', '${list.grp_cod_nm}')">${list.grp_cod}</a></td> --%>
 							
 <!-- 							<td> -->

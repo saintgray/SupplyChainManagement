@@ -9,7 +9,6 @@
 	</tr>
 </c:if>
 
-
 <c:if test="${totalCnt > 0 }">
 	<c:set var="nRow" value="${pageSize*(currentPage-1)}" />
 	<c:forEach items="${listPurchaseOrderModel}" var="list">
@@ -32,7 +31,7 @@
 					<button type="button" class="btn btn-primary" onclick="fPcmOrderOne('${list.orderid}')">발주</button>
 					<%-- <a class="btnType3 color1" href="javascript:fPcmOrderOne('${list.orderid}');"><span >발주</span></a> --%>
 				</c:if>
-				<c:if test="${list.confirmYN!='Y'}">
+				<c:if test="${list.confirmYN=='N'}">
 					<button type="button" class="btn btn-primary" disabled="disabled">발주</button>					
 				</c:if>
 			</td>

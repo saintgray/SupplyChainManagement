@@ -13,9 +13,177 @@
 	//페이징 설정
 	var pageSize = 5;			//페이지당 보여주는 목록 갯수
 	var pageBlockSize = 5;	//페이지 번호 갯수
+
+    var layer1;
+    var searcharea;
+    
+    $(document).ready(function() {
+         
+       init();     
+
+       fn_listsearch();
+       
+    });
+    function init() {
+    		divReturnList = new Vue({
+				             el : "#divReturnList",
+				          data : {
+				                     returnlist : [],
+				                     totalCnt: 0
+				          },
+				          methods : {
+				          
+				              rowclick: function (return_id, confirmYN) {
+				            	  fn_select_one(return_id , confirmYN);
+				             }  
+				          },
+				          filters : {  		             
+					      	date_filter : function(value){ 		          
+					                if(value == '') return '';		          
+					                var js_date = new Date(value); //javaScript date 타입화	
+					                // 연도, 월, 일 추출
+					                var year = js_date.getFullYear();
+					                var month = js_date.getMonth() + 1;
+					                var day = js_date.getDate();
+			
+					                // 월, 일의 경우 한자리 수 값이 있기 때문에 공백에 0 처리
+					                if(month < 10){
+					                	month = '0' + month;
+					                }
+			
+					                if(day < 10){
+					                	day = '0' + day;
+					                }
+			
+					                // 최종 포맷 (ex - '2021-10-08')
+					                return year + '-' + month + '-' + day;
+					      	}
+				          }
+				});//divReturnList끝
+				
+		    	 layer1 = new Vue({
+				             el : "#layer1",
+				          data : {
+					        	  return_id : "",
+					        	  return_cnt : "",
+					        	  regdate : "",
+					        	  confirmYN : "",
+					        	  comp_nm : "",
+					        	  sales_nm : ""
+				          }										
+				});//layer끝
+		    	searcharea = new Vue({
+		                     el : "#searcharea",
+		                     data : {
+				                     searchKey : "comp_nm",
+				                     sname : "",
+				                     cal1 : "",
+				                     cal2 : "",
+				                     searchoption:[			                                  
+				                                  { "id" : "comp_nm", "name" : "반품 업체 "   },
+				                                  { "id" : "sales_nm", "name" : "제품 "  }
+				                              ]
+				                   }
+
+				});
+    	
+    }
+    
+		function fn_listsearch(currentPage) {
+		        
+				//매개변수로 넘어오는 currentPage(현재페이지)가 없으면 1이된다.
+				currentPage = currentPage || 1;
+				if($('#confirmCheck').is(":checked")){		// 승인 요청만 표기 > 체크 박스 사용할때 체크가 된상태인지 아닌지 확인
+					var confirmCheck = 1;
+				}else{
+					var confirmCheck = 0;
+				}
+				
+				var param = {
+					confirmCheck : confirmCheck, // 승인 요청만 표기
+					sname : searcharea.sname,
+		            oname : searcharea.searchKey,
+					currentPage : currentPage,		 //현재페이지
+					cal1 : searcharea.cal1,
+					cal2 : searcharea.cal2,
+					pageSize : pageSize			//페이지 크기
+				}				
+		       
+				var resultCallback = function(data) {
+					fPurchaseReturnListResult(data, currentPage);
+					console.log(data); 
+					console.log(">>>>>>>>>>>>>>>>>>>>>>"+  JSON.stringify(data)); 
+				};
+			
+				callAjax("/pcm/listPurchaseReturn.do", "post", "json", true, param, resultCallback); //resultCallback에 저장되있는 함수가 실행된다.
+			} 
+		
+		    
+			function fPurchaseReturnListResult(data, currentPage) {
+				
+				divReturnList.returnlist = data.listPurchaseReturnModel;
+				
+			
+				
+				var  totalCntcod = data.totalCnt;
+				//console.log(totalCntcod); 
+				divReturnList.totalCnt = totalCntcod;
+			
+				var paginationHtml = getPaginationHtml(currentPage, totalCntcod,
+						pageSize, pageBlockSize, 'fn_listsearch');
+		
+				$("#pagingnavi").empty().append(paginationHtml);
+				$("#currentPage").val(currentPage);
+			}	
+			
+			  function fn_Return_PopModal(return_id, confirmYN) {   
+		          fn_select_one(return_id, confirmYN);   
+			    }
+			
+			//[row 클릭시 팝업 orderid==============================================
+			  function fn_select_one(return_id, confirmYN) {
+				  if (confirmYN == 'Y'){
+					  
+					  console.log("fn_select_one row 클릭 : " + return_id +" , "  +confirmYN);
+				       var param = {
+				    		   return_id : return_id  ,  confirmYN : confirmYN
+				       };		       
+				       var selectonecallback = function(onedata) {
+				          initeditpopup(onedata.pcmReturnListModel);
+				       } 		       
+				       callAjax("/pcm/pcmReturnOne.do", "post", "json", true, param, selectonecallback);		
+				  }  
+			       
+			    }
+			  
+			  function initeditpopup(object) {
+				  var return_id = object.return_id;
+				  console.log("object.return_id : " + return_id);
+				  console.log("initeditpopup_object : " +  JSON.stringify(object)    );
+				  
+				   
+		          layer1.return_id = object.return_id;
+		          layer1.return_cnt = object.return_cnt;
+		          layer1.regdate = object.regdate;  
+		          layer1.confirmYN = object.confirmYN;
+		          layer1.comp_nm = object.comp_nm;
+		          layer1.sales_nm = object.sales_nm;
+		         
+		          gfModalPop("#layer1");
+			    } 
+			
+			function changeConfirmCheck() {
+				fn_listsearch(1)
+			}
+			
+			function enterkey() {
+				if (window.event.keyCode == 13) {
+					fn_listsearch();
+			    }
+			}	
 	
-	
-	/** 설명:OnLoad event : html화면이 실행되자마자 자바스크립트가 OnLoad event 이벤트를 실행시킨다.  */ 
+/* 	
+	// 설명:OnLoad event : html화면이 실행되자마자 자바스크립트가 OnLoad event 이벤트를 실행시킨다.  
 	$(function() {
 	
 		// 그룹코드 조회 : OnLoad event가 실행되면서 처음에 그룹코드 조회 함수부터 실행되는 것!(여기서부터 시작)
@@ -26,7 +194,7 @@
 		fRegisterButtonClickEvent();
 	});
 	
-	/** 버튼 이벤트 등록 */
+	// 버튼 이벤트 등록 //
 	function fRegisterButtonClickEvent() {
 		//a태그의 name이 btn인것을 클릭시 함수 실행
 		$('a[name=btn]').click(function(e) {
@@ -51,7 +219,7 @@
 		});
 	}
 
-	/** 반품내역 폼 초기화 */
+	// 반품내역 폼 초기화 //
 	function fInitPcmReturn(object) {
 		//$("#orderid").focus();
 		if( object == "" || object == null || object == undefined) {
@@ -83,7 +251,7 @@
 	}
 	
 	
-	/**반품내역 목록 조회**/
+	//반품내역 목록 조회//
 	function fPurchaseReturnList(currentPage) {
 		
 		//매개변수로 넘어오는 currentPage(현재페이지)가 없으면 1이된다.
@@ -119,10 +287,12 @@
 			pageSize : pageSize			//페이지 크기
 		}
 		
+	
 		
 		//변수를 하나 만들어서 함수를 저장만 해뒀다.(함수 실행은 밑에있는 callAjax에서!!)
 		//data는 컨트롤러의 리턴값이다.??
 		var resultCallback = function(data) {
+			console.log("???????????????????? : " +data);
 			fPurchaseReturnListResult(data, currentPage);
 		};
 		
@@ -133,7 +303,7 @@
 	}
 
 	 
-	/** 반품내역 목록 조회 콜백 함수 */
+	// 반품내역 목록 조회 콜백 함수//
 	function fPurchaseReturnListResult(data, currentPage) {
 
 		//swal(data);
@@ -207,23 +377,23 @@
 	}
 	
 	
-	/** 반품내역 한건 조회*/
+	// 반품내역 한건 조회//
    function fPcmReturnOne(return_id) {
       
       var param = { return_id : return_id };
       
 		var resultCallback = function(data) {
 			fPcmReturnOneResult(data, currentPage);
-			//alert(data.pcmOrderListModel.orderid);
+			//alert(data.pcmreturnlistModel.orderid);
 		};
       
 		callAjax("/pcm/pcmReturnOne.do", "post", "json", true, param, resultCallback);
 	}
 	
 	
-	/** 반품내역 한건 조회 콜백 */
+	// 반품내역 한건 조회 콜백 //
 	function fPcmReturnOneResult(data) {
-		//alert(data.pcmOrderListModel.orderid);
+		//alert(data.pcmreturnlistModel.orderid);
 		if (data.result == "SUCCESS") {
 			console.log(data);
 			//var uName = data.uName;			
@@ -243,7 +413,7 @@
 	
 	function changeConfirmCheck() {
 		fPurchaseReturnList(1)
-	}
+	} */
 	
 </script>
 </head>
@@ -291,25 +461,24 @@
 							
 							<div class="purchaseReturnList_area">
 							<!--검색창 부분  -->
-								<table style="margin-top:10px; margin-bottom:20px;" width="100%" cellpadding="5"
-									cellspacing="0" border="1" align="left"
-									style="collapse; border: 1px #50bcdf;">
+								<table style="margin-top:10px; margin-bottom:20px;" width="100%" cellpadding="5"cellspacing="0" border="1" align="left"style="collapse; border: 1px #50bcdf;">
 									<tr style="border: 0px; border-color: blue">
 										<td height="25" style="font-size: 100%;">&nbsp;&nbsp;<input type="checkbox" value="" onchange="changeConfirmCheck()" id="confirmCheck">&nbsp;승인 요청만 표기</td>
 										<td width="*" height="25" style="font-size: 100%; text-align: center;">
-											<select id="searchKeyInput" name="searchKey" style="width: 80px;">
-												<option value="purchase_copnm">업체</option>
-												<option value="purchase_modelnm">제품</option>
-											</select>
-											<input type="text" style="width: 150px; height: 25px;" id="snameInput" name="sname"> &nbsp;&nbsp;&nbsp;
-											<input type="date" id="cal1Input" name="cal1" /> ~ <input type="date" id="cal2Input" name="cal2" /> &nbsp;
-											<a href="" class="btnType blue" id="btnSearch" name="btn"><span>검색</span></a>&nbsp;
+											<p id="searcharea" class="conTitle">
+												<select id="searchKey" name="searchKey" style="width: 150px;" v-model="searchKey"  v-model="onePick">
+			                                      <option v-for="key in searchoption" :value="key.id">{{ key.name }}</option>
+												</select>
+												<input type="text" style="width: 300px; height: 25px;" id="sname" name="sname" v-model="sname"  @keyup.enter="enterkey">   &nbsp;&nbsp;&nbsp;                  
+			                                	<input type="date" id="cal1Input" name="cal1" v-model="cal1" /> ~ <input type="date" id="cal2Input" name="cal2" v-model="cal2" /> &nbsp;
+			                                	<a href="javascript:fn_listsearch()" class="btnType blue" id="btnSearchGrpcod" name="btn"><span>검  색</span></a>   
 											<!-- <a href="" class="btnType blue" id="btnInitSearch" name="btn"><span>초기화</span></a></td> -->
+											</p>
 										<td width="40" height="25" style="font-size: 120%;">&nbsp;</td>
 									</tr>
 								</table>
 								
-								
+							 <div id="divReturnList">	
 								<table class="col">
 									<caption>caption</caption>
 									<colgroup>
@@ -335,9 +504,34 @@
 											<th scope="col">상세보기</th>
 										</tr>
 									</thead>
-<!-- 									listPurchaseOrder -->
-									<tbody id="listPurchaseReturn"></tbody>
+<!-- 									listPurchaseReturn -->
+									<tbody id="listPurchaseReturn" v-for="(oneitem,index) in returnlist"  >	
+											<tr @click="rowclick(oneitem.return_id ,oneitem.confirmYN)" v-if="totalCnt > 0"  >	
+												<td>{{ index+1 }} </td>
+												<td>{{ oneitem.return_id}}</td>
+									            <td>{{ oneitem.comp_nm}}</td>
+									            <td>{{ oneitem.sales_nm}}</td>
+									            <td>{{ oneitem.return_cnt}}</td>
+									            <td>{{ oneitem.regdate | date_filter}}</td>	
+									            <td v-if="oneitem.confirmYN =='Y'">승인</td><td v-else-if="oneitem.confirmYN =='N'">미승인</td><td v-else>-</td>								            
+									            <td>									            	
+									            	<span v-if="oneitem.confirmYN=='Y'">
+									            		<button type="button" class="btn btn-primary" 
+									            		 @click="fn_Return_PopModal(oneitem.return_id ,oneitem.confirmYN )"> 상세보기</button></span>
+									         	 				            
+									            </td> 	
+									         </tr>	
+									         <tr  v-else-if="totalCnt = 0">
+													<td colspan="6">데이터가 존재하지 않습니다.</td>
+											</tr>
+									
+									</tbody>
+									
+									
+									
 								</table>
+								</div>
+								
 							</div>
 							<div class="paging_area" id="pagingnavi"></div>
 						
@@ -371,21 +565,21 @@
 							<tr>
 								<th scope="row">반품 번호 <span class="font_red">*</span></th>
 								<td>
-									<input type="text" class="inputTxt p100" id="return_id" name="return_id" />
+									<input type="text" class="inputTxt p100" id="return_id" name="return_id"  v-model="return_id" readonly/>
 								</td>
 								<th scope="row">반품회사 <span class="font_red">*</span></th>
 								<td>
-									<input type="text" class="inputTxt p100" id="comp_nm" name="comp_nm" readonly/>
+									<input type="text" class="inputTxt p100" id="comp_nm" name="comp_nm"  v-model="comp_nm" readonly/>
 								</td>
 							</tr>
 							<tr>
 								<th scope="row">제품명<span class="font_red">*</span></th>
 								<td>
-									<input type="text" class="inputTxt p100" id="sales_nm" name="sales_nm" readonly/>
+									<input type="text" class="inputTxt p100" id="sales_nm" name="sales_nm" v-model="sales_nm" readonly/>
 								</td>
 								<th scope="row">수량<span class="font_red">*</span></th>
 								<td>
-									<input type="" class="inputTxt p100" id="return_cnt" name="return_cnt" readonly/>
+									<input type="text" class="inputTxt p100" id="return_cnt" name="return_cnt" v-model="return_cnt" readonly/>
 								</td>
 							</tr>
 						</tbody>

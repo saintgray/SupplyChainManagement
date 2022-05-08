@@ -21,7 +21,8 @@
 		                    LEFT JOIN tb_userinfo ui
 		                           ON p.loginID = ui.loginID
 		
-		    WHERE pi.returnYN='N'
+		    WHERE 
+		    	pi.returnYN='N'
 			<if test="(sname != null) and (!sname.equals(''))">
 			    and s.sales_nm LIKE CONCAT('%', #{sname}, '%')
 			</if>
@@ -37,9 +38,12 @@
 			<if test="(cal2 != null) and (!cal2.equals(''))">
 			    and dd.regdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY)
 			</if>
-		
-		ORDER BY deliv_id DESC
-		LIMIT #{pageIndex}, #{pageSize}
+			
+		ORDER BY
+			FIELD(dd.deliverStatus, 'E', 'O', 'U') DESC, 
+			dd.deliv_id DESC
+		LIMIT 
+			#{pageIndex}, #{pageSize}
 	</select>
 
 
@@ -78,11 +82,14 @@
 
 	<!-- 배송지시서 단건 상세 조회 selectOne -->
 	<select id="selectDeliOrder" resultType="kr.happyjob.study.shipping.model.ShippingModel">
+	/* kr.happyjob.study.shipping.dao.ShippingDao.selectDeliOrder */
 		select del.deliv_ID 
 			,	sal.sales_nm
+			,	sal.sales_id
 			,	pinfo.pur_cnt
 			,	user.name
           	, 	del.deliverStatus
+          	,	del.deliv_wh_id
           	,  (select wh_nm 
           		from tb_warehouse
           		 where wh_id = #{deliv_wh_id}
@@ -102,7 +109,7 @@
 	<update id="updateDeliOrder">
 		/* kr.happyjob.study.shipping.dao.ShippingDao.updateDeliOrder */
 		UPDATE tb_delivdir 
-		   SET deliverStatus = 'E'
+		   SET deliverStatus = #{dl_status}
 			  , editdate = NOW()
 		 WHERE deliv_id = #{deliv_id}	
 	</update>
@@ -130,7 +137,16 @@
 		  ,wh_id
 		  ,deliv_id
 		) 
-		VALUES (default, null, 1, now(), #{pur_cnt}, #{sales_id}, #{wh_id}, #{deliv_id})
+		VALUES (
+			default,
+		 	null,
+			1,
+			 now(),
+			 #{pur_cnt},
+			 #{sales_id},
+			 #{wh_id},
+			 #{deliv_id}
+		)
 	</insert>
 
 

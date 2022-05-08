@@ -15,4 +15,6 @@ public interface SalesTopDao {
 	// 매출목록 카운트 조회
 	public int SalesTopCnt(Map<String, Object> paramMap)throws Exception ;
 
+	public List<SalesTopModel> SalesTopListChart(Map<String, Object> paramMap)throws Exception ;
+
 }

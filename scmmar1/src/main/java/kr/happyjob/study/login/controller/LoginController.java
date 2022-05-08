@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -155,18 +156,19 @@ public class LoginController {
    
             
     
-    resultMap.put("result", result);
-    resultMap.put("resultMsg", resultMsg);
-    resultMap.put("serverName", request.getServerName());
-  
-  
-  
-  
-  logger.info("+ End LoginController.loginProc.do");
+	resultMap.put("result", result);
+	resultMap.put("resultMsg", resultMsg);
+	resultMap.put("serverName", request.getServerName());
+	  
+	  
+	  
+	  
+	logger.info("+ End LoginController.loginProc.do");
 
       return resultMap;
    }
    
+
    
    /**
 * 로그아웃
@@ -183,6 +185,22 @@ public class LoginController {
       mav.setViewName("redirect:/login.do");
       
       return mav;
+   }
+   @RequestMapping("/vue/loginOut.do")
+   @ResponseBody
+   public Map<String,Object> logOut(HttpSession session){
+	   
+	   logger.info("+ vue logout process");
+	   
+	   Map<String,Object> result=new HashMap<>();
+	   try{
+		   session.invalidate();
+		   result.put("msg", "정상적으로 로그아웃되었습니다.");
+	   }catch(Exception e){
+		   result.put("msg", "오류가 발생했습니다. 잠시 후 다시 시도하세요");
+		   
+	   }
+	   return result;
    }
    /*회원가입*/
    @RequestMapping("register.do")
@@ -524,41 +542,5 @@ public class LoginController {
       return resultMap;
    }   
    
-/*	@RequestMapping("saveFileTest.do")
-	@ResponseBody
-	public Map<String, Object> saveFileTest(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
-		
-		logger.info("+ Start saveFileTest");
-		logger.info("   - paramMap : " + paramMap);
-		
-		String action = (String)paramMap.get("action");
-		String result = "SUCCESS";
-		String resultMsg = "저장 되었습니다.";
-		
-		
-		
-		if ("I".equals(action)) {
-			//CmntBbsService.insertCmntBbs(paramMap, request); // 게시글 신규 저장 
-			logger.info("  action  :  " + action);
-			LoginService.insertFile(paramMap,request);
-		} else if("U".equals(action)) {
-			//CmntBbsService.updateCmntBbs(paramMap, request); // 게시글 수정 저장
-			logger.info("  action  :  " + action);
-			LoginService.updateFile(paramMap,request);
-		} else {
-			logger.info("  action  :  " + action);
-			result = "FALSE";
-			resultMsg = "알수 없는 요청 입니다.";
-		}
-		
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("result", result);
-		resultMap.put("resultMsg", resultMsg);
-		
-		logger.info("+ End saveFileTest");
-		
-		return resultMap;
-	}*/
    
 }

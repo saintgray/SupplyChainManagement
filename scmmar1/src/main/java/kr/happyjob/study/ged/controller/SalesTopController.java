@@ -1,5 +1,6 @@
 package kr.happyjob.study.ged.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.happyjob.study.ged.model.SalesTopModel;
 import kr.happyjob.study.ged.service.SalesTopService;
@@ -24,7 +26,7 @@ public class SalesTopController {
 	
 	@Autowired
 	SalesTopService salesTopService;
-	
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
     // Set logger
 	private final Logger logger = LogManager.getLogger(this.getClass());
 
@@ -76,5 +78,38 @@ public class SalesTopController {
 		    System.out.println(salesTopList);
 		    return "ged/SalesTopList";
 		}
+		@RequestMapping("salesTopChartList")
+
+		@ResponseBody
+
+		public Map<String, Object> salesTopChartList(@RequestParam Map<String, Object> paramMap) throws Exception {
+
+			
+
+			logger.info("+ Start " + className + ".salesTopList");
+
+			logger.info("   - paramMap : " + paramMap);
+
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+
+			
+
+			
+
+			// 매출 목록 조회
+
+			List<SalesTopModel> salesTopList = salesTopService.SalesTopListChart(paramMap);
+
+			resultMap.put("salesTopList", salesTopList);
+
+			
+
+			
+
+		    return resultMap;
+
+		}
+
+ 
 
 }

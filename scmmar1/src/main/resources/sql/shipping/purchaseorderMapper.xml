@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.shipping.dao.PurchaseorderDAO">
+	
+	<!-- 발주 목록 -->		
+	<select id="ListPurchaseOrder" resultType="kr.happyjob.study.shipping.model.PurchaseorderModel">
+	<!--  발주, 반품 조건 -->
+	/* kr.happyjob.study.shipping.dao.PurchaseorderDAO.ListPurchaseOrder */
+	<if test="viewText.equals('order')">
+		SELECT 
+				od.orderid,
+				od.regdate,
+				od.editdate,
+				oi.order_cnt,
+				sl.sales_nm,
+				sl.price,
+				ui.name,
+				dd.deliverStatus
+		FROM tb_orderdir AS od
+			LEFT JOIN tb_orderinfo AS oi ON od.order_id = oi.order_id
+			JOIN tb_sales AS sl ON sl.sales_id = oi.sales_id
+			JOIN tb_purchase AS pc ON pc.pur_id = oi.pur_id
+			JOIN tb_userinfo AS ui ON ui.loginID = pc.loginID
+			JOIN tb_delivdir AS dd ON dd.orderid = od.orderid
+		<where>
+			<if test="(sname != null) and (!sname.equals(''))">
+			    and sl.sales_nm LIKE CONCAT('%', #{sname}, '%')
+			</if>
+			<if test="(cal1 != null) and (!cal1.equals(''))">
+			    and od.regdate  <![CDATA[>=]]> STR_TO_DATE(#{cal1},'%Y-%m-%d')
+			</if>
+			
+			<if test="(cal2 != null) and (!cal2.equals(''))">
+			    and od.regdate <![CDATA[<=]]> DATE_ADD(STR_TO_DATE(#{cal2},'%Y-%m-%d')  , INTERVAL 1 DAY)
+			</if>
+		</where>
+		ORDER BY
+			od.orderid DESC	
+	</if>
+	
+	
+	<if test="(!viewText.equals('order'))">
+		SELECT * FROM tb_returndir
+	</if>	
+		LIMIT 
+			#{pageIndex}, #{pageSize}
+	</select>
+	
+	<!-- 발주 목록 총 갯수 조회 -->
+	<select id="countListPurchaseOrder" resultType="int">
+	/* kr.happyjob.study.shipping.dao.PurchaseorderDAO.countListPurchaseOrder */
+		SELECT 
+			count(1)
+		FROM tb_orderdir AS od
+			LEFT JOIN tb_orderinfo AS oi ON od.order_id = oi.order_id
+			JOIN tb_sales AS sl ON sl.sales_id = oi.sales_id
+			JOIN tb_purchase AS pc ON pc.pur_id = oi.pur_id
+			JOIN tb_userinfo AS ui ON ui.loginID = pc.loginID
+			JOIN tb_delivdir AS dd ON dd.orderid = od.orderid
+	</select>
+	
+	<!-- 발주 상세 목록 -->		
+	<select id="selectPurchaseOrder" resultType="kr.happyjob.study.shipping.model.PurchaseorderModel">
+	/* kr.happyjob.study.shipping.dao.PurchaseorderDAO.selectPurchaseOrder */
+		SELECT 
+				od.orderid,
+				od.regdate,
+				od.editdate,
+				oi.order_cnt,
+				sl.sales_nm,
+				sl.price,
+				ui.name,
+				dd.deliverStatus
+		FROM tb_orderdir AS od
+			LEFT JOIN tb_orderinfo AS oi ON od.order_id = oi.order_id
+			JOIN tb_sales AS sl ON sl.sales_id = oi.sales_id
+			JOIN tb_purchase AS pc ON pc.pur_id = oi.pur_id
+			JOIN tb_userinfo AS ui ON ui.loginID = pc.loginID
+			JOIN tb_delivdir AS dd ON dd.orderid = od.orderid
+		WHERE
+			od.orderid = #{orderid}
+		LIMIT 
+			0, 1
+	</select>
+</mapper>

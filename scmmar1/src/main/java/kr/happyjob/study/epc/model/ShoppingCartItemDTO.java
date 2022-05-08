@@ -1,5 +1,8 @@
 package kr.happyjob.study.epc.model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ShoppingCartItemDTO {
 
 	int pur_id;
@@ -94,6 +97,9 @@ public class ShoppingCartItemDTO {
 
 
 	public void setWanted_date(String wanted_date) {
+		if(wanted_date.length() > 9) {
+			this.wanted_date = wanted_date.substring(0, 10);
+		}
 		this.wanted_date = wanted_date;
 	}
 
@@ -103,9 +109,23 @@ public class ShoppingCartItemDTO {
 
 
 	public void setWantedDate(String wanted_date) {
+		if(wanted_date.length() > 9) {
+			this.wanted_date = wanted_date.substring(0, 10);
+		}
 		this.wanted_date = wanted_date;
 	}
 	
+	public String getWanteddate() {
+		return wanted_date;
+	}
+
+
+	public void setWanteddate(String wanted_date) {
+		if(wanted_date.length() > 9) {
+			this.wanted_date = wanted_date.substring(0, 10);
+		}
+		this.wanted_date = wanted_date;
+	}
 	
 	public String getLoginID() {
 		return loginID;
