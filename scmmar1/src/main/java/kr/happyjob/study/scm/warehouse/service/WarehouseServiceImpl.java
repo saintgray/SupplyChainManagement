@@ -71,9 +71,7 @@ public class WarehouseServiceImpl implements WarehouseService{
 		WarehouseDetail detail=sst.getMapper(WarehouseDao.class).getWareHouseInfo(idx);
 		// 수정 등록 삭제시에는 권한을 체크하는 NoticeManageAuthInterceptor 에서 SCM 담당자가 아닌 사람의 요청에 대해서는 튕겨내므로
 		// 모든 사용자에 대해서 선택한 창고의 PK 값을 세션에 저장할 필요가 없다 (서버의 부하 증가 고려)
-		if(session.getAttribute("userType").equals("A")){
-			session.setAttribute("whID", detail.getWh_id());
-		}
+		
 		return detail;
 	}
 

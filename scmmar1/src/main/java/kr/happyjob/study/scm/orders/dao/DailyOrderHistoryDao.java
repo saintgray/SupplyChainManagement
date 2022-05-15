@@ -23,7 +23,9 @@ public interface DailyOrderHistoryDao {
 	//납품업체 목록 조회
 	public List<CompModel> comp() throws Exception;
 
-	//발주지시서 저장
+	// 구매 저장
+	public int testInsertPurchase(Map<String,Object> paramMap) throws Exception;
+	//발주 상세 저장
 	public int insertcom1(Map<String, Object> paramMap) throws Exception;
 	//발주지시서 저장
 	public int insertcom2(Map<String, Object> paramMap) throws Exception;

@@ -12,7 +12,10 @@ import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import kr.happyjob.study.common.exception.NotNumbersException;
 import kr.happyjob.study.epc.dao.ShoppingCartDao;
 import kr.happyjob.study.scm.orders.dao.DailyOrderHistoryDao;
 import kr.happyjob.study.scm.orders.dao.DirDao;
@@ -29,6 +32,8 @@ public class DirServiceImpl implements DirService{
 	private SqlSessionTemplate sst;
 	private DirDao dirDao;
 	private SalesManageDao salesDao;
+	private ShoppingCartDao scDao;
+	private DailyOrderHistoryDao dhDao;
 	
 	
 	public DirServiceImpl() {
@@ -93,16 +98,24 @@ public class DirServiceImpl implements DirService{
 		int result=0;
 		
 		// 1. 주문/발주 테이블에 insert
-		// 2. 의 PK 를 가지고 targetWh(창고번호, 상품번호 쌍) 에 있는 정보로 발주상세 테이블에 insert
+		// 2. 의 PK 를 가지고 targetCompSales(납품회사번호, 상품번호 쌍) 에 있는 정보로 발주상세 테이블에 insert
 		// 3. 의 PK 를 가지고 발주 지시서 insert
+		
+		// 수량은 숫자만 허용하므로 숫자가 아닌 값을 입력시 오류 발생
+//		dirDao=sst.getMapper(DirDao.class);
+		
+		
+		dhDao=sst.getMapper(DailyOrderHistoryDao.class);
+		// scDao=sst.getMapper(ShoppingCartDao.class);
+		
 		
 		Map<String, Object> paramMap=new HashMap<>();
 		paramMap.put("pur_id", "");
 		paramMap.put("userType", session.getAttribute("userType").toString());
 		paramMap.put("loginID", session.getAttribute("loginId").toString());
 		
-		result=sst.getMapper(ShoppingCartDao.class).orderProductPurchase(paramMap);
-		
+		// result=scDao.orderProductPurchase(paramMap);
+		result=dhDao.testInsertPurchase(paramMap);
 		
 		Map<String, Object> orderInfParamMap=new HashMap<>();
 		orderInfParamMap.put("fk","");
@@ -110,15 +123,21 @@ public class DirServiceImpl implements DirService{
 		orderInfParamMap.put("pur_id", paramMap.get("pur_id"));
 		
 		for(String arg : targetCompSales){
+			if(arg.split(",").length==3 && arg.split(",")[2].matches("([1-9])\\d*")){
+				orderInfParamMap.put("com_cnt", arg.split(",")[2]);
+			}else{
+				logger.info("+ catchaed notnumbersException!!");
+				throw new Exception();
+			}
 			orderInfParamMap.put("sales_id", arg.split(",")[0]);
 			orderInfParamMap.put("com_code", arg.split(",")[1]);
-			orderInfParamMap.put("com_cnt", arg.split(",")[2]);
 			
-			result=sst.getMapper(DailyOrderHistoryDao.class).insertcom2(orderInfParamMap);
+			
+			result=dhDao.insertcom2(orderInfParamMap);
 			
 				Map<String, Object> orderDirMap=new HashMap<>();
 				orderDirMap.put("fk", orderInfParamMap.get("fk"));
-				result=sst.getMapper(DailyOrderHistoryDao.class).insertcom1(orderDirMap);
+				result=dhDao.insertcom1(orderDirMap);
 		}
 		
 		
