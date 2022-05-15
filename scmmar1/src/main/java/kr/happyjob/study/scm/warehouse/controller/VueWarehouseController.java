@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import kr.happyjob.study.common.comnUtils.ComnCodUtil;
 import kr.happyjob.study.scm.user.service.UserInfoService;
 import kr.happyjob.study.scm.warehouse.exception.StockRemainsException;
 import kr.happyjob.study.scm.warehouse.model.PageInfo;
@@ -24,7 +25,8 @@ import kr.happyjob.study.scm.warehouse.model.WarehouseDetail;
 import kr.happyjob.study.scm.warehouse.service.WarehouseService;
 import kr.happyjob.study.system.model.ComnCodUtilModel;
 
-@RestController("/scm/vue")
+@RestController
+@RequestMapping("/scm/vue")
 public class VueWarehouseController {
 
 	// private final Logger logger = LogManager.getLogger(this.getClass());
@@ -49,18 +51,11 @@ public class VueWarehouseController {
 
 
 
-
-	@RequestMapping("/whinfo.do")
-	@GetMapping
-	public String initWhInfoMain(){
-		
-		return "scm/warehouse/warehousemngmain";
-	}
 	
 	
-	@RequestMapping("/whlist")
-	@PostMapping
+	@PostMapping("/whlist")
 	public Map<String,Object> getWhList(Model model, String action, PageInfo param){
+		
 		
 		Map<String, Object> result=new HashMap<>();
 		try{
@@ -79,18 +74,21 @@ public class VueWarehouseController {
 		Map<String,Object> result=new HashMap<>();
 		
 		
-		
+		WarehouseDetail info=null;
 		if(!action.equalsIgnoreCase("NEW")){
-			WarehouseDetail info=null;
+			
 			info = whService.getWareHouseInfo(wh_id, session);
-			result.put("info",info);
+			
 		}else{
-			result.put("locationList", whService.getLocCod("wareCD"));
+			info=new WarehouseDetail();
+			result.put("locationList", ComnCodUtil.getComnCod("wareCD"));
 		}
+		result.put("info",info);
 		result.put("advisorList", uiService.getAdvisorCod("B"));
 		
 		
-		return result;	}
+		return result;	
+	}
 	
 	
 

@@ -6,8 +6,10 @@ import java.util.Map;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.happyjob.study.scm.user.model.PageInfo;
@@ -70,4 +72,20 @@ public class VueUserController {
 		
 	}
 
+	
+	
+	@PostMapping("/vue/userinfo/{userID}")
+	public Map<String, Object> getUserInfo(@PathVariable("userID") String id){
+		
+		Map<String, Object> result= new HashMap<>();
+		
+		UserDetail detail=null;
+		
+		detail=uiService.getUserInfo(id,null);
+		
+		if(detail!=null){
+			result.put("userinfo", detail);
+		}
+		return result;
+	}
 }
