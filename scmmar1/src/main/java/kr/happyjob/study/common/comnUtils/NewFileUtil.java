@@ -63,8 +63,10 @@ public class NewFileUtil {
 	}
 
 	/** 
-	 * 파일 업로드 
-	 * @return 저장된 파일 메타 정보
+	 * 파일 추출
+	 * <input type=file name="..."> 태그당  등록한 파일들을 Map 객체로 반환
+	 * key 는 input tag 의 name 이름이며 value 는 그 태그에 등록한 files 들이다. (List<Multipartfile>)
+	 * 
 	 */
 	public Map<String, List<MultipartFile>> extractFilesMap() throws Exception {
 		
@@ -120,21 +122,23 @@ public class NewFileUtil {
         
         	String ofileName = multipartFile.getOriginalFilename();
             String fileExtension = ofileName.substring(ofileName.lastIndexOf(".")+1);
-            
-            
             String newFileName=renameOfFile(ofileName);
-            
             String localFilePath = uploadFilePath.concat(newFileName);
             String serverFilePath = (virtualRootPath+File.separator)
             														.concat(itemFilePath+File.separator)
 			                										.concat(dateDir)
-			                										.concat(newFileName); // web module에 등록된 가상 디렉토리
-            int fileSize = (int)multipartFile.getSize(); // 532
+			                										.concat(newFileName);
+            int fileSize = (int)multipartFile.getSize();
 
             //파일 실제 업로드 로직
-            File orgFile = new File(localFilePath); // 실제 시스템 디렉토리에 저장
+            File orgFile = new File(localFilePath);
+            
+            // debugging
             logger.info("   - localFilePath : " + localFilePath);
             logger.info("   - serverFilePath : " + serverFilePath);
+            logger.info("   - originalFileName : " + ofileName);
+            logger.info("   - newFileName : " + newFileName);
+            logger.info("   - fileExtension : " + fileExtension);
             
             // upload
         	multipartFile.transferTo(orgFile);	
@@ -142,12 +146,6 @@ public class NewFileUtil {
             
         	
             //디비 등록 용 로직
-            logger.info("   - originalFileName : " + ofileName);
-            logger.info("   - newFileName : " + newFileName);
-            logger.info("   - fileExtension : " + fileExtension);
-            
-            
-
             FileModel fileModel=new FileModel(
             									serverFilePath.replace(File.separatorChar, '/'),
             									localFilePath.replace(File.separatorChar, '/'), 

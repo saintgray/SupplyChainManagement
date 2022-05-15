@@ -136,7 +136,10 @@
 			<mvc:exclude-mapping path="/js/**" />
 			<mvc:exclude-mapping path="/fonts/**" />
 			<mvc:exclude-mapping path="/html/**" />
+			<!-- jsp version -->
 			<bean class="kr.happyjob.study.common.interceptor.AuthCheckInterceptor" />
+			<!-- npm version -->
+			<!-- <bean class="kr.happyjob.study.common.interceptor.VueAuthCheckInterceptor"></bean> -->
 		</mvc:interceptor>
 		
 		<mvc:interceptor>

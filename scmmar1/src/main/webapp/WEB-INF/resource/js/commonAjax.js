@@ -43,7 +43,6 @@ function callAjax(url, method, dataType, async, param, callback) {
          console.log("xhr : " + xhr);
          console.log("status : " + status);
          console.log("err : " + err);
-               
          if (xhr.status == 901) {
             alert("로그인 정보가 없습니다.\n다시 로그인 해 주시기 바랍니다.");
             location.replace('/login.do');

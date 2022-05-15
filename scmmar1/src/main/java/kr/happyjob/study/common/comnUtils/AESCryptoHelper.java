@@ -13,14 +13,14 @@ import org.bouncycastle.crypto.params.KeyParameter;
 
 
 /**
- * <p>AES 알고리즘을 이용한 암호화, 복호화 기능을 제공한다.</p>
- * <p>여기 구현은 <a href="http://www.bouncycastle.org/java.html" target="_blank">BouncyCastle (http://www.bouncycastle.org/java.html)</a>
+ * AES 알고리즘을 이용한 암호화, 복호화 기능을 제공한다.
+ * 여기 구현은 http://www.bouncycastle.org/java.html
  * 에서 제공하는 Library를 이용했다.
  * 이는 이 클래스가 대체하기 위한 Visual Basic으로 구현된 알고리즘이
  * 256비트 Key를 이용한 256비트 블록크기의 암호화를 구현하였는데
  * 자바에서 기본으로 제공하는 AES 알고리즘은 128bit 블록단위만 지원하기
  * (혹은 방법을 못 찾았을 수도) 때문이다.
- * <strong>BouncyCastle</strong> 에서 제공하는 Library는 이를 지원한다.</p>
+ * BouncyCastle 에서 제공하는 Library는 이를 지원한다.
  * 
  * 주의할 점은 여기 구현은 대체 대상이 되는 Visual Basic 모듈에서
  * 암호화 대상 문자열을 byte로 치환하였을 때 16 byte 까지만 실제로

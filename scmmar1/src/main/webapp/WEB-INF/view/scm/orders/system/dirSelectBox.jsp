@@ -21,7 +21,7 @@
 				<img src="/images/treeview/minus.gif" class="remove">
 			</div>
 			<%-- <select id="sb${state.index}" class="sb form-control"></select> --%>
-			<select id="su${state.index}" class="su form-control"></select>
+			<select id="sb${state.index}" class="su form-control"></select>
 			<input type="text" class="orderCnt form-control" placeholder="수량">
 		</div>
 	</c:forEach>

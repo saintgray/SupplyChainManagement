@@ -24,9 +24,8 @@
 							LEFT JOIN
 			tb_delivdir td ON tpi.purinf_id=td.purinf_id
 		<where>
-				<if test="!selectsearch.equals('')">
-					<choose>
-						<when test="selectsearch == '0'.toString()">
+				<if test='!"null".equals(selectsearch)'>
+					
 						<![CDATA[
 							and (tp.purdate >=
 								#{datesearch1}
@@ -35,18 +34,7 @@
 									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
 								)
 							]]>		
-						</when>
-						<when test="selectsearch == '1'.toString()">
-						<![CDATA[
-							and (tp.purdate >=
-								#{datesearch1}
-								and
-								tp.purdate <=
-									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
-								)
-							]]>
-						</when>
-					</choose>
+						
 				</if>
 				AND tu.user_Type='C' 
 				AND tri.rfinfo_id IS NULL
@@ -75,9 +63,8 @@
 							LEFT JOIN
 			tb_delivdir td ON tpi.purinf_id=td.purinf_id
 		<where>
-				<if test="!selectsearch.equals('')">
-					<choose>
-						<when test="selectsearch == '0'.toString()">
+				<if test='!"null".equals(selectsearch)'>
+					
 						<![CDATA[
 							and (tp.purdate >=
 								#{datesearch1}
@@ -86,18 +73,7 @@
 									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
 								)
 							]]>		
-						</when>
-						<when test="selectsearch == '1'.toString()">
-						<![CDATA[
-							and (tp.purdate >=
-								#{datesearch1}
-								and
-								tp.purdate <=
-									(select date_add(date_format(#{datesearch2}, '%Y-%m-%d'), interval 1 day))
-								)
-							]]>
-						</when>
-					</choose>
+						
 				</if>
 				AND tu.user_Type='C' 
 				AND tri.rfinfo_id is null

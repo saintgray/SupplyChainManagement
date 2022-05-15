@@ -16,32 +16,20 @@ public class AuthCheckInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-
 		HttpSession session = request.getSession(false);
 		if (session != null) {
-			
 			String requestUri = request.getRequestURI();
-			
-			//System.out.println("request.getContextPath() " + request.getContextPath());
-			 
 			if ("/".equals(requestUri)) {
-				
 				logger.info("root path in");
-				
 				response.sendRedirect(request.getContextPath() + "/dashboard/dashboard.do");
 				response.flushBuffer();
-				
 				return false;
 			}
-			
 			Object authInfo = session.getAttribute("usrMnuAtrt");
 			if (authInfo != null) {
-				
 				return true;
 			}
 		}
-		
-		
 		String ajaxCall = (String) request.getHeader("AJAX");
 		if ("true".equals(ajaxCall)) {
 			response.sendError(901);
