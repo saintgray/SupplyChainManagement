@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import kr.happyjob.study.scm.user.exception.UserExistException;
 import kr.happyjob.study.scm.user.model.PageInfo;
 import kr.happyjob.study.scm.user.model.UserDetail;
 import kr.happyjob.study.scm.user.model.UserRegData;
@@ -16,7 +17,7 @@ public interface UserInfoService {
 	
 	UserDetail getUserInfo(String userID, String pur_idx);
 	PageInfo getUserList(PageInfo param);
-	int insertUser(UserRegData data);
+	int insertUser(UserRegData data) throws UserExistException;
 	int updateUser(UserRegData data);
 	int deleteUser(String userID);
 	int getTotalCount(PageInfo info);

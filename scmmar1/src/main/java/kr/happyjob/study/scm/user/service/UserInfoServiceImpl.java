@@ -10,7 +10,9 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kr.happyjob.study.login.model.UserInfo;
 import kr.happyjob.study.scm.user.dao.UserInfoDao;
+import kr.happyjob.study.scm.user.exception.UserExistException;
 import kr.happyjob.study.scm.user.model.PageInfo;
 import kr.happyjob.study.scm.user.model.User;
 import kr.happyjob.study.scm.user.model.UserDetail;
@@ -23,6 +25,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 	private final Logger logger=LogManager.getLogger(this.getClass());
 	
 	private SqlSessionTemplate sst;
+	private UserInfoDao uiDao;
 	
 	public UserInfoServiceImpl() {
 	
@@ -46,21 +49,45 @@ public class UserInfoServiceImpl implements UserInfoService {
 	@Override
 	public PageInfo getUserList(PageInfo param) {
 		
-		param.setFirstIndex(param.getRowsPerPage()*(param.getSelectPage()-1));
+		uiDao=sst.getMapper(UserInfoDao.class);
 		
-		List<User> userlist=sst.getMapper(UserInfoDao.class).getUserList(param);
-		param.setUserlist(userlist);
+		int selectPage=param.getSelectPage();
+		int rowsPerPage=param.getRowsPerPage();
+		int totalPage=Integer.parseInt(param.getTotalPage());
 		
-		param.setTotalCount(sst.getMapper(UserInfoDao.class).getTotalCount(param));
+		int totalCount= uiDao.getTotalCount(param);
 		
+		List<User> userList=null;
+		
+		if(totalCount>0){
+			totalPage=totalCount/rowsPerPage;
+			totalPage=totalCount%rowsPerPage==0?totalPage:totalPage+1;
+			selectPage=selectPage>totalPage?totalPage:selectPage;
+			param.setFirstIndex(rowsPerPage*(selectPage-1));
+			userList=uiDao.getUserList(param);
+			logger.info("+totalPage : "+totalPage);
+		}else{
+			totalPage=1;
+		}
+		
+		param.setUserlist(userList);
+		param.setSelectPage(selectPage);
+		param.setTotalPage(String.valueOf(totalPage));
+		param.setTotalCount(totalCount);
+		param.setUserlist(userList);
+
 		return param;
 	}
 
 	@Override
-	public int insertUser(UserRegData data) {
+	public int insertUser(UserRegData data) throws UserExistException {
 		int result=0;
-		logger.info("+user_Type......?"+data.getUser_Type());
-		// result=sst.getMapper(UserInfoDao.class).insertUser(data);
+		UserDetail detail=getUserInfo(data.getLoginID(), null);
+		if(detail!=null){
+			throw new UserExistException();
+		}else{
+			result=uiDao.insertUser(data);
+		}
 		return result;
 	}
 

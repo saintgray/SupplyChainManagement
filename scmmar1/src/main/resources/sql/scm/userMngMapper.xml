@@ -214,7 +214,7 @@
 		SET
 			deletedYN = 'Y'
 		WHERE
-			loginID=#{arg0}
+			loginID=#{arg0} AND deletedYN='N'
 	</update>
 	
 	

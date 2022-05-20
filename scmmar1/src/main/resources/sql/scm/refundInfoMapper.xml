@@ -78,9 +78,9 @@
 			COUNT(1)
 		FROM
 			(
-					SELECT pinf.purinf_id FROM
+					SELECT pinf.purinf_id, pinf.sales_nm, pinf.wanted_date FROM
 					(
-						SELECT tpi.purinf_id
+						SELECT tpi.purinf_id, ts.sales_nm, tpi.wanted_date
 						FROM 		tb_purchaseinfo tpi
 							JOIN	tb_sales ts ON ts.sales_id=tpi.sales_id
 					) pinf

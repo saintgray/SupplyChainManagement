@@ -9,6 +9,7 @@ public class PageInfo {
 	private String searchType;
 	private String keyword;
 	private int totalCount;
+	private int totalPage;
 	private int firstIndex;
 	private List<Supplier> suppliers;
 	
@@ -17,16 +18,23 @@ public class PageInfo {
 	}
 
 
-	public PageInfo(int selectPage, int rowsPerPage, String searchType, String keyword, int totalCount,
-			int firstIndex) {
-		super();
+	
+
+
+	public PageInfo(int selectPage, int rowsPerPage, String searchType, String keyword, int totalCount, int totalPage,
+			int firstIndex, List<Supplier> suppliers) {
 		this.selectPage = selectPage;
 		this.rowsPerPage = rowsPerPage;
 		this.searchType = searchType;
 		this.keyword = keyword;
 		this.totalCount = totalCount;
+		this.totalPage = totalPage;
 		this.firstIndex = firstIndex;
+		this.suppliers = suppliers;
 	}
+
+
+
 
 
 	public int getSelectPage() {
@@ -96,6 +104,22 @@ public class PageInfo {
 
 	public void setSuppliers(List<Supplier> suppliers) {
 		this.suppliers = suppliers;
+	}
+
+
+
+
+
+	public int getTotalPage() {
+		return totalPage;
+	}
+
+
+
+
+
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
 	}
 	
 	

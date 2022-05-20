@@ -1,91 +1,111 @@
 package kr.happyjob.study.scm.user.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.happyjob.study.scm.user.exception.UserExistException;
 import kr.happyjob.study.scm.user.model.PageInfo;
 import kr.happyjob.study.scm.user.model.UserDetail;
+import kr.happyjob.study.scm.user.model.UserRegData;
 import kr.happyjob.study.scm.user.service.UserInfoService;
 
 @RestController
-@RequestMapping("/scm")
+@RequestMapping("/scm/vue")
 public class VueUserController {
 
 	private final Logger logger = LogManager.getLogger(this.getClass());
-	
+
 	private UserInfoService uiService;
 
 	public VueUserController() {
-	
+
 	}
-	
+
 	@Autowired
 	public VueUserController(UserInfoService uiService) {
 		this.uiService = uiService;
 	}
 
-	@PostMapping("/vue/userList")
-	public Map<String,Object> getUserList(PageInfo param){
+	@GetMapping("/users")
+	public Map<String, Object> getUserList(PageInfo param, HttpServletResponse resp) throws IOException {
+
+		Map<String, Object> result = null;
+
+		try {
+			result = new HashMap<String, Object>();
+			result.put("page", uiService.getUserList(param));
+		} catch (Exception e) {
+			resp.sendError(500);
+		}
+		return result;
+	}
+
+	@GetMapping("/user/{id}")
+	public Map<String, Object> getUser(@PathVariable String id, HttpServletResponse resp) throws IOException {
 		
-		logger.info("+ Vue getUserList initiated....");
-		
-		Map<String,Object> result= null;
+		Map<String, Object> result = new HashMap<>();
+
+		UserDetail detail = null;
+		try{
+			detail = uiService.getUserInfo(id, null);
+			
+		}catch(Exception e){
+			resp.sendError(500);
+		}
+		result.put("info",detail);
+		return result;
+
+	}
+
+	@PostMapping("/user")
+	public void insertUser(UserRegData data, HttpServletResponse resp){
+		int result=0;
 		
 		try{
-			result=new HashMap<String, Object>();
-			result.put("page",uiService.getUserList(param));
+			result=uiService.insertUser(data);
+			if(result==1){
+				resp.setStatus(200);
+			}
 		}catch(Exception e){
-			e.printStackTrace();
+			if(e instanceof UserExistException){
+				resp.setStatus(903);
+			}else{
+				resp.setStatus(500);
+			}
 		}
-		return  result;
 	}
 	
-	
-	
-	@PostMapping("/vue/getForm")
-	public Map<String,Object> initUserForm(String action, String userID){
+	@DeleteMapping("/user/{id}")
+	public void deleteUser(@PathVariable String id, HttpServletResponse resp){
 		
+		int result=0;
 		
-		Map<String, Object> result=new HashMap<>();
-		
-		
-		if(!action.equals("NEW")){
-			
-			
-			result.put("info", uiService.getUserInfo(userID,null));
-
-		}else{
-			result.put("info", new UserDetail());
+		try{
+			result=uiService.deleteUser(id);
+			if(result==0){
+				resp.setStatus(903);
+			}else if(result==1){
+				resp.setStatus(200);
+			}else{
+				resp.setStatus(500);
+			}
+		}catch(Exception e){
+			resp.setStatus(500);
 		}
-		
-
-		return result;
-		
-	}
-
-	
-	
-	@PostMapping("/vue/userinfo/{userID}")
-	public Map<String, Object> getUserInfo(@PathVariable("userID") String id){
-		
-		Map<String, Object> result= new HashMap<>();
-		
-		UserDetail detail=null;
-		
-		detail=uiService.getUserInfo(id,null);
-		
-		if(detail!=null){
-			result.put("userinfo", detail);
-		}
-		return result;
 	}
 }
