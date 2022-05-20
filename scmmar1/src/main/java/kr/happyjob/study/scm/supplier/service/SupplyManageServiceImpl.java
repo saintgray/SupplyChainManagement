@@ -42,6 +42,12 @@ public class SupplyManageServiceImpl implements SupplyManageService {
 		int rowsPerPage=info.getRowsPerPage();
 		int total=info.getTotalCount();
 		
+		if(total>0){
+			
+		}else{
+			
+		}
+		
 		int totalPage=total/rowsPerPage;
 		totalPage=total%rowsPerPage>0? totalPage+1 : totalPage;
 		
