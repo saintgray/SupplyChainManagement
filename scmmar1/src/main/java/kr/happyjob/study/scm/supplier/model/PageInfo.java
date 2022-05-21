@@ -17,10 +17,6 @@ public class PageInfo {
 	
 	}
 
-
-	
-
-
 	public PageInfo(int selectPage, int rowsPerPage, String searchType, String keyword, int totalCount, int totalPage,
 			int firstIndex, List<Supplier> suppliers) {
 		this.selectPage = selectPage;
@@ -32,10 +28,6 @@ public class PageInfo {
 		this.firstIndex = firstIndex;
 		this.suppliers = suppliers;
 	}
-
-
-
-
 
 	public int getSelectPage() {
 		return selectPage;
@@ -107,21 +99,15 @@ public class PageInfo {
 	}
 
 
-
-
-
 	public int getTotalPage() {
 		return totalPage;
 	}
-
-
-
-
 
 	public void setTotalPage(int totalPage) {
 		this.totalPage = totalPage;
 	}
 	
+
 	
 	
 	

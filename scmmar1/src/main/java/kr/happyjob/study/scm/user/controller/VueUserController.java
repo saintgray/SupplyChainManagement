@@ -8,14 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.happyjob.study.scm.user.exception.UserExistException;
@@ -41,6 +39,7 @@ public class VueUserController {
 		this.uiService = uiService;
 	}
 
+
 	@GetMapping("/users")
 	public Map<String, Object> getUserList(PageInfo param, HttpServletResponse resp) throws IOException {
 
@@ -51,9 +50,11 @@ public class VueUserController {
 			result.put("page", uiService.getUserList(param));
 		} catch (Exception e) {
 			resp.sendError(500);
+
 		}
 		return result;
 	}
+
 
 	@GetMapping("/user/{id}")
 	public Map<String, Object> getUser(@PathVariable String id, HttpServletResponse resp) throws IOException {
@@ -69,7 +70,28 @@ public class VueUserController {
 		}
 		result.put("info",detail);
 		return result;
-
+	}
+	
+	@GetMapping("/user/{id}")
+	public Map<String,Object> getUser(String action, @PathVariable(value="id") String userID, HttpServletResponse resp) throws IOException{
+		
+		
+		Map<String, Object> result=new HashMap<>();
+		UserDetail detail=null;
+		try{
+			detail=uiService.getUserInfo(userID, null);
+			if(detail==null){
+				resp.setStatus(903);
+			}else{
+				result.put("info", detail);
+//			    test resp send Error
+//				resp.setStatus(903);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 
 	@PostMapping("/user")

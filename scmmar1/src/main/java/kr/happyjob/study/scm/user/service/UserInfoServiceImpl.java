@@ -8,6 +8,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.instrument.classloading.tomcat.TomcatLoadTimeWeaver;
 import org.springframework.stereotype.Service;
 
 import kr.happyjob.study.login.model.UserInfo;
@@ -49,6 +50,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 	@Override
 	public PageInfo getUserList(PageInfo param) {
 		
+
 		uiDao=sst.getMapper(UserInfoDao.class);
 		
 		int selectPage=param.getSelectPage();
@@ -56,7 +58,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 		int totalPage=Integer.parseInt(param.getTotalPage());
 		
 		int totalCount= uiDao.getTotalCount(param);
-		
 		List<User> userList=null;
 		
 		if(totalCount>0){
@@ -81,13 +82,23 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	public int insertUser(UserRegData data) throws UserExistException {
+		
 		int result=0;
-		UserDetail detail=getUserInfo(data.getLoginID(), null);
-		if(detail!=null){
+		
+		Map<String, Object> params= new HashMap<>();
+		params.put("userID", data.getLoginID());
+		
+		uiDao=sst.getMapper(UserInfoDao.class);
+		UserDetail user = null;
+		user=uiDao.getUserInfo(params);
+		logger.info(String.valueOf(user!=null));
+		
+		if(user!=null){
 			throw new UserExistException();
 		}else{
 			result=uiDao.insertUser(data);
 		}
+		
 		return result;
 	}
 

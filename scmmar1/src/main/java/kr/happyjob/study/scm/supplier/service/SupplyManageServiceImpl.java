@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import kr.happyjob.study.scm.supplier.dao.SupplyManageDao;
 import kr.happyjob.study.scm.supplier.model.ImpSales;
 import kr.happyjob.study.scm.supplier.model.PageInfo;
+import kr.happyjob.study.scm.supplier.model.Supplier;
 import kr.happyjob.study.system.model.ComnCodUtilModel;
 
 @Service
@@ -36,33 +37,33 @@ public class SupplyManageServiceImpl implements SupplyManageService {
 		
 		supplyDao=sst.getMapper(SupplyManageDao.class);
 		
-		info.setTotalCount(supplyDao.getTotalCount(info));
-		
 		int selectPage=info.getSelectPage();
 		int rowsPerPage=info.getRowsPerPage();
-		int total=info.getTotalCount();
-		
+
+		int totalPage=info.getTotalPage();
+		int total=supplyDao.getTotalCount(info);
+		List<Supplier> suppliers=null;
 		if(total>0){
+			totalPage=total/rowsPerPage;
+			totalPage=total%rowsPerPage>0? totalPage+1 : totalPage;
+			
+			selectPage=selectPage>totalPage? totalPage : selectPage;
+			
+			int firstIndex=total==0?0:rowsPerPage*(selectPage-1);
+			info.setFirstIndex(firstIndex);
+			suppliers=supplyDao.getSuppliers(info);
+			
 			
 		}else{
-			
+			totalPage=1;
+			selectPage=1;
 		}
-		
-		int totalPage=total/rowsPerPage;
-		totalPage=total%rowsPerPage>0? totalPage+1 : totalPage;
-		
-		selectPage=selectPage>totalPage? totalPage : selectPage;
-		
-		int firstIndex=total==0?0:rowsPerPage*(selectPage-1);
-		
+
 		
 		info.setSelectPage(selectPage);
-		
-		
-		
-//		info.setFirstIndex(info.getRowsPerPage()*(info.getSelectPage()-1));
-		info.setFirstIndex(firstIndex);
-		info.setSuppliers(supplyDao.getSuppliers(info));
+		info.setTotalCount(total);
+		info.setTotalPage(totalPage);
+		info.setSuppliers(suppliers);
 		
 		return info;
 	}
