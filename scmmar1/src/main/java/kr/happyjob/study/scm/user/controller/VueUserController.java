@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,30 +58,30 @@ public class VueUserController {
 		}
 		return result;
 	}
-
-
 	
 	@GetMapping("/user/{id}")
-	public Map<String,Object> getUser(String action, @PathVariable(value="id") String userID, HttpServletResponse resp) throws IOException{
+	public ResponseEntity<?> getUser(@PathVariable(value="id") String userID){
 		
+		UserDetail detail = null;
 		
-		Map<String, Object> result=new HashMap<>();
-		UserDetail detail=null;
+		ResponseEntity<?> respEntity=null;
+		
 		try{
 			detail=uiService.getUserInfo(userID, null);
+			
 			if(detail==null){
-				resp.setStatus(903);
+				respEntity=ResponseEntity.noContent().build();
 			}else{
-				result.put("info", detail);
-//			    test resp send Error
-//				resp.setStatus(903);
+				respEntity=ResponseEntity.ok(detail);
 			}
+			
 		}catch(Exception e){
-			e.printStackTrace();
+			respEntity=ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		
-		return result;
-	}
+		return respEntity;
+	}	
+	
 	@PutMapping("/user/{id}")
 	public void editUser(@RequestBody UserRegData data, HttpServletResponse resp){
 		
