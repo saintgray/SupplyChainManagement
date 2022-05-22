@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -77,6 +79,20 @@ public class VueUserController {
 		}
 		
 		return result;
+	}
+	@PutMapping("/user/{id}")
+	public void editUser(@RequestBody UserRegData data, HttpServletResponse resp){
+		
+		logger.info("+ editUser method initiated...");
+		logger.info(data.getAddress());
+		logger.info(data.getClient());
+		logger.info(data.getName());
+		logger.info(data.getLoginID());
+		logger.info(data.getEmail());
+		logger.info(data.getPhone());
+		logger.info("=====================================\n");
+		
+		resp.setStatus(201);
 	}
 
 	@PostMapping("/user")
