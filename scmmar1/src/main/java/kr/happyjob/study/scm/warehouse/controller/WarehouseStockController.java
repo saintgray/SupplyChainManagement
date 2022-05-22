@@ -1,4 +1,4 @@
-package kr.happyjob.study.scm.orders.controller;
+package kr.happyjob.study.scm.warehouse.controller;
 
 import java.util.List;
 import java.util.Map;
