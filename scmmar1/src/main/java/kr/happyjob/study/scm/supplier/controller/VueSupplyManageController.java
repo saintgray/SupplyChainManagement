@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,8 +44,8 @@ public class VueSupplyManageController {
 	
 	
 
-	@GetMapping("/suppliers")
-	public Map<String,Object> getSuppliers(PageInfo info,HttpServletResponse resp){
+	@PostMapping("/suppliers")
+	public Map<String,Object> getSuppliers(@RequestBody PageInfo info,HttpServletResponse resp){
 		
 		Map<String, Object> page = new HashMap<String, Object>();
 		

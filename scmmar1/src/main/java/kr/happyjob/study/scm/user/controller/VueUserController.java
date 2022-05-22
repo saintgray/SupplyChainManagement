@@ -56,21 +56,6 @@ public class VueUserController {
 	}
 
 
-	@GetMapping("/user/{id}")
-	public Map<String, Object> getUser(@PathVariable String id, HttpServletResponse resp) throws IOException {
-		
-		Map<String, Object> result = new HashMap<>();
-
-		UserDetail detail = null;
-		try{
-			detail = uiService.getUserInfo(id, null);
-			
-		}catch(Exception e){
-			resp.sendError(500);
-		}
-		result.put("info",detail);
-		return result;
-	}
 	
 	@GetMapping("/user/{id}")
 	public Map<String,Object> getUser(String action, @PathVariable(value="id") String userID, HttpServletResponse resp) throws IOException{
