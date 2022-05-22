@@ -21,7 +21,7 @@ import kr.happyjob.study.scm.orders.service.shippingDirectionService;
 
 @Controller
 @RequestMapping("/scm/")
-public class shippingDirectionController {
+public class ShippingDirectionController {
 	
 	@Autowired
 	shippingDirectionService shippingdirectionservice;

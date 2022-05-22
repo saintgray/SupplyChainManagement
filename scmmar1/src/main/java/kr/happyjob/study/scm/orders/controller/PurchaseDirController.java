@@ -18,7 +18,7 @@ import kr.happyjob.study.scm.orders.service.purchaseDirService;
 
 @Controller
 @RequestMapping("/scm/")
-public class purchaseDirController {
+public class PurchaseDirController {
 	
 	@Autowired
 	purchaseDirService purchasedirservice;
