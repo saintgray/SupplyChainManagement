@@ -159,6 +159,18 @@
 		WHERE  ntc_no = #{ntc_no}
 			]]>
 	</select>
+	
+	<select id="getNotice" resultType="kr.happyjob.study.notice.model.NoticeModel">
+		SELECT ntc_no,
+			   loginID,
+			   ntc_title,
+			   ntc_regdate,
+			   ntc_regdate,
+			   ntc_content
+		FROM   tb_notice
+		WHERE  ntc_no = #{arg0}
+	</select>
+	
 
 	
 

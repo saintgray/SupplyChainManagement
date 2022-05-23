@@ -21,7 +21,7 @@
                , user_Type as mem_author
       FROM tb_userinfo 
      WHERE loginID = #{lgn_Id}
-        AND password = #{pwd}
+        AND password = #{pwd} AND deletedYN='N'
      </select>
      
      

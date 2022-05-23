@@ -18,7 +18,10 @@ public interface ScmNoticeService {
 
 	int noticeTotalCnt(Map<String, Object> paramMap) throws Exception;
 
-	NoticeModel detailNotice(Map<String, Object> paramMap) throws Exception;
+	NoticeModel detailNotice(Map<String,Object> parmaMap) throws Exception;
+	
+	// for vue request
+	NoticeModel getNotice(String idx);
 
 	public int insertNotice(NoticeModel data, List<MultipartFile> files,HttpServletRequest request) throws Exception;
 

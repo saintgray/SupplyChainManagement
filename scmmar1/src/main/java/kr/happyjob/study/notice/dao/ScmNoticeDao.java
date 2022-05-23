@@ -12,6 +12,8 @@ public interface ScmNoticeDao {
 	public List<NoticeModel> selectNoticeList(Map<String, Object> paramMap);
 	
 	public NoticeModel detailNotice(Map<String, Object> paramMap);
+	// for vue request
+	public NoticeModel getNotice(String idx);
 	public List<FileModel> selectFilesByNoticeId(Map<String, Object> paramMap);
 	
 	public int insertNotice(NoticeModel data);

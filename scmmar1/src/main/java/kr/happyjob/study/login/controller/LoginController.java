@@ -110,6 +110,7 @@ public class LoginController {
 	  Map<String, Object> resultMap = new HashMap<String, Object>();
 	  
 	  if (lgnInfoModel != null) {
+		  
 	     result = "SUCCESS";
 	     resultMsg = "사용자 로그인 정보가 일치 합니다.";
 	     

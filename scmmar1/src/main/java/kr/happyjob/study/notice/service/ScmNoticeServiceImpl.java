@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 	@Autowired
 	ScmNoticeDao noticeDao;
 	
+	private Logger log = LogManager.getLogger(this.getClass());
 	
 	//private final static String rootPath = "c://";
 	
@@ -69,6 +72,15 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 		return detailNotice;
 	}
 	
+	
+	
+	@Override
+	public NoticeModel getNotice(String idx) {
+		NoticeModel notice=null;
+		notice=noticeDao.getNotice(idx);
+		return notice;
+	}
+
 	// 파일정보 가져오기
 	@Override
 	public List<FileModel> selectFilesByNoticeId(Map<String, Object> paramMap)throws Exception {
@@ -157,7 +169,8 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 		
 		updateResult=noticeDao.updateNotice(paramMap);
 		
-		System.out.println("files null?? >>>"+String.valueOf(files!=null));
+		
+		log.info("files null?? >>>"+String.valueOf(files!=null));
 		
 		if(updateResult>0 && files!=null){
 			
