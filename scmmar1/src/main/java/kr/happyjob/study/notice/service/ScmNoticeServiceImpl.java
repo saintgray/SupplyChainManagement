@@ -1,5 +1,6 @@
 package kr.happyjob.study.notice.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +79,11 @@ public class ScmNoticeServiceImpl implements ScmNoticeService {
 	public NoticeModel getNotice(String idx) {
 		NoticeModel notice=null;
 		notice=noticeDao.getNotice(idx);
+		if(notice!=null){
+			Map<String,Object> paramMap=new HashMap<String, Object>();
+			paramMap.put("ntc_no", idx);
+			notice.setFilesInfo(noticeDao.selectFilesByNoticeId(paramMap));
+		}
 		return notice;
 	}
 

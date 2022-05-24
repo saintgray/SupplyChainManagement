@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,13 +38,16 @@ public class VueRefundInfoController {
 		this.dirService = dirService;
 	}
 
-	@GetMapping("/refunds")
+//@PostMapping("refunds")
+	@GetMapping("/refunds")	
 	public Map<String,Object> refundInfolist(@RequestParam Map<String, Object> paramMap ,HttpServletResponse response) throws Exception {
-
+	//public Map<String,Object> refundInfolist(@RequestBody ParamsVO params ,HttpServletResponse response) throws Exception {
+		
 		int currentPage = Integer.parseInt(paramMap.get("currentPage").toString()); 
 		int pageSize = Integer.parseInt(paramMap.get("pageSize").toString());
 		int totalPage=Integer.parseInt(paramMap.get("totalPage").toString());
 		int pageIndex = (currentPage - 1) * pageSize;
+		
 		
 		int total = refundService.total(paramMap);
 		if(total>0){
@@ -67,7 +69,7 @@ public class VueRefundInfoController {
 		
 		Map<String, Object> result= new HashMap<>();
 		result.put("param", paramMap);
-
+		
 		return result;
 	}
 
